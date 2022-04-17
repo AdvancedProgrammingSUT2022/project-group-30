@@ -1,7 +1,7 @@
-package Models.features;
+package models.features;
 
-import Models.Output;
-import Models.Tile;
+import models.Output;
+import models.Tile;
 
 public abstract class Feature {
     protected Output output;

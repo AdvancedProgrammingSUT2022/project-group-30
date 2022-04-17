@@ -1,13 +1,13 @@
-package Models.resources;
+package models.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Models.Feature;
-import Models.ImprovementType;
-import Models.Output;
-import Models.TerrainProperty;
-import Models.TerrainType;
+import models.Feature;
+import models.ImprovementType;
+import models.Output;
+import models.TerrainProperty;
+import models.TerrainType;
 
 public class BonusResource extends Resource {
     public static BonusResource BANANA = new BonusResource(new Output(0, 1, 0),

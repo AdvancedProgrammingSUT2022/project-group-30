@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 public class Tile {
     public boolean isOfType(TerrainProperty property) {

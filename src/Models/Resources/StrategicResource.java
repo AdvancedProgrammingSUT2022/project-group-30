@@ -1,15 +1,15 @@
-package Models.resources;
+package models.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import Models.Civilization;
-import Models.ImprovementType;
-import Models.Output;
-import Models.Technology;
-import Models.TerrainProperty;
-import Models.TerrainType;
+import models.Civilization;
+import models.ImprovementType;
+import models.Output;
+import models.Technology;
+import models.TerrainProperty;
+import models.TerrainType;
 
 public class StrategicResource extends Resource {
     private Technology prerequisiteTechnology;

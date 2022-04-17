@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 public class Civilization {
     public boolean hasTechnology(Technology technology) {

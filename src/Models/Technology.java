@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 public enum Technology {
     SCIENTIFIC_THEORY(),

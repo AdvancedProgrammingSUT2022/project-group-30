@@ -1,13 +1,13 @@
-package Models.resources;
+package models.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Models.Feature;
-import Models.ImprovementType;
-import Models.Output;
-import Models.TerrainProperty;
-import Models.TerrainType;
+import models.Feature;
+import models.ImprovementType;
+import models.Output;
+import models.TerrainProperty;
+import models.TerrainType;
 
 public class LuxuryResource extends Resource {
     LuxuryResource COTTON = new LuxuryResource(new Output(2, 0, 0),

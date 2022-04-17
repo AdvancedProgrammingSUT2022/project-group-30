@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 public enum TerrainType implements TerrainProperty {
     DESERT(),

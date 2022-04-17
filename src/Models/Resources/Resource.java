@@ -1,12 +1,12 @@
-package Models.resources;
+package models.resources;
 
 import java.util.ArrayList;
 
-import Models.Civilization;
-import Models.ImprovementType;
-import Models.Output;
-import Models.TerrainProperty;
-import Models.Tile;
+import models.Civilization;
+import models.ImprovementType;
+import models.Output;
+import models.TerrainProperty;
+import models.Tile;
 
 
 public abstract class Resource {
