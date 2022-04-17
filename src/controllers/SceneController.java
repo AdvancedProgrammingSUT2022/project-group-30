@@ -13,12 +13,12 @@ public class SceneController {
     }
 
     public static SceneController getSceneController(){
-        return sceneController == null ? new SceneController() : sceneController;
+        return sceneController == null ? sceneController = new SceneController() : sceneController;
     }
 
     public void run(){
         while(this.nextView != null){
-            nextView.run();
+            this.nextView.run();
         }
     }
 

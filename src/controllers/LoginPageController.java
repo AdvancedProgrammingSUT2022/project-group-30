@@ -16,11 +16,11 @@ public class LoginPageController {
     }
 
     public static LoginPageController getLoginPageController(){
-        return loginPageController == null ? new LoginPageController() : loginPageController;
+        return loginPageController == null ? loginPageController = new LoginPageController() : loginPageController;
     }
 
     public boolean checkUsernameValidity(String username){
-        Matcher matcher = Pattern.compile("[a-zA-Z]{1}\\s*[a-zA-Z]*").matcher(username);
+        Matcher matcher = Pattern.compile("[a-zA-Z0-9]{1}\\s*[a-zA-Z0-9]*").matcher(username);
         return matcher.matches() ? true : false;
     }
 
@@ -29,18 +29,17 @@ public class LoginPageController {
     }
     
     public boolean checkPasswordValidity(String password){
-        Matcher uppercaseMatcher = Pattern.compile("[A-Z]+").matcher(password);
-        Matcher lowercaseMatcher = Pattern.compile("[a-z]+").matcher(password);
-        Matcher numberMatcher = Pattern.compile("[0-9]+").matcher(password);
-        Matcher whiteSpaceMatcher = Pattern.compile("\\s+").matcher(password);
-        if(uppercaseMatcher.matches() && lowercaseMatcher.matches() && numberMatcher.matches() && !whiteSpaceMatcher.matches()){
+        Matcher uppercaseMatcher = Pattern.compile(".*[A-Z]+.*").matcher(password);
+        Matcher lowercaseMatcher = Pattern.compile(".*[a-z]+.*").matcher(password);
+        Matcher numberMatcher = Pattern.compile(".*[0-9]+.*").matcher(password);
+        if(uppercaseMatcher.matches() && lowercaseMatcher.matches() && numberMatcher.matches()){
             return true;
         }
         return false;
     }
 
     public boolean checkNicknameValidity(String nickname){
-        Matcher matcher = Pattern.compile("[a-zA-Z0-9_-@]{1}\\s*[a-zA-Z0-9_-@]*").matcher(nickname);
+        Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]{1}\\s*[a-zA-Z0-9_-]*").matcher(nickname);
         return matcher.matches() ? true : false;
     }
 
@@ -68,6 +67,14 @@ public class LoginPageController {
             return true;
         }
         return false;
+    }
+
+    public boolean isUserLoggedIn(){
+        return this.programDatabase.getLoggedInUser() == null ? false : true;
+    }
+
+    public boolean checkNextMenuValidity(String menuName){
+        return menuName.equals("Main Menu") ? true : false;
     }
 
     public void loginUser(String username){

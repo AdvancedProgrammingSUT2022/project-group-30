@@ -14,7 +14,7 @@ public class ProgramDatabase {
     }
 
     public static ProgramDatabase getProgramDatabase(){
-        return programDatabase == null ? new ProgramDatabase() : programDatabase;
+        return programDatabase == null ? programDatabase = new ProgramDatabase() : programDatabase;
     }
 
     public User getUserByUsername(String username){

@@ -20,41 +20,79 @@ public class LoginPageView implements View{
     }
 
     public static LoginPageView getLoginPageView(){
-        return loginPageView == null ? new LoginPageView() : loginPageView; 
+        return loginPageView == null ? loginPageView = new LoginPageView() : loginPageView; 
     }
 
     public void run(){
         Scanner scanner = MyScanner.getScanner();
-        boolean quit = false;
-        while(!quit){
+        boolean quitMenu = false;
+        boolean quitProgram = false;
+        while(!quitMenu){
             String input = scanner.nextLine();
             Matcher matcher;
-            if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER)) != null){
+            if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_1)) != null){
                 this.registerUser(matcher);
             }
-            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_ABBREVIATED_FORM)) != null){
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_2)) != null){
                 this.registerUser(matcher);
             }
-            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.LOGIN_USER)) != null){
-                this.loginUser(matcher);
-                quit = true;
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_3)) != null){
+                this.registerUser(matcher);
             }
-            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.LOGIN_USER_ABBREVIATED_FORM)) != null){
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_4)) != null){
+                this.registerUser(matcher);
+            }
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_5)) != null){
+                this.registerUser(matcher);
+            }
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.CREATE_USER_PATTERN_6)) != null){
+                this.registerUser(matcher);
+            }
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.LOGIN_USER_PATTERN_1)) != null){
                 this.loginUser(matcher);
-                quit = true;
+            }
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.LOGIN_USER_PATTERN_2)) != null){
+                this.loginUser(matcher);
+            }
+            else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.ENTER_MENU)) != null){
+                if(this.enterMenu(matcher)){
+                    quitMenu = true;
+                }
             }
             else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.EXIT_MENU)) != null){
-                quit = true;
+                quitMenu = true;
+                quitProgram = true;
             }
             else if((matcher = LoginPageCommands.getCommandMatcher(input, LoginPageCommands.SHOW_MENU)) != null){
                 this.showMenu();
             }
+            else{
+                System.out.println("Invalid command!");
+            }
         }
-        scanner.close();
+        this.goToNextView(quitProgram);
     }
 
-    public void goToNextView(){
+    // returns true if entering new menu is possible, false otherwise
+    public boolean enterMenu(Matcher matcher){
+        String menuName = matcher.group("menuName");
+        if(!this.controller.checkNextMenuValidity(menuName)){
+            System.out.println("menu navigation is not possible");
+            return false;
+        }
+        if(!this.controller.isUserLoggedIn()){
+            System.out.println("please login first");
+            return false;
+        }
+        return true;
+    }
+
+    public void goToNextView(boolean quit){
         SceneController sceneController = SceneController.getSceneController();
+        if(quit){
+            sceneController.setNextView(null);
+            return;
+        }
         MainPageView mainPageView = MainPageView.getMainPageView();
         mainPageView.setController();
         sceneController.setNextView(mainPageView);
@@ -84,11 +122,11 @@ public class LoginPageView implements View{
             return;
         }
         if(!this.controller.checkPasswordValidity(password)){
-            System.out.println("The Password must contain at least one uppercase letter, one lowercase letter, and one number character, and must not contain any whiteSpaces.");
+            System.out.println("The Password must contain at least one uppercase letter, one lowercase letter, and one number character.");
             return;
         }
         if(!this.controller.checkNicknameValidity(nickname)){
-            System.out.println("Nickname can only contain uppercase and lowercase English letters, numbers, and characters from this character set: {@,-,_}");
+            System.out.println("Nickname can only contain uppercase and lowercase English letters, numbers, and characters from this character set: {-,_}");
             return;
         }
         if(!this.controller.checkUsernameUniqueness(username)){
