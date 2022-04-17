@@ -1,4 +1,4 @@
-package Models.Features;
+package Models.features;
 
 import Models.Output;
 import Models.Tile;

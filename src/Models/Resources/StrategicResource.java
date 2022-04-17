@@ -1,4 +1,4 @@
-package Models.Resources;
+package Models.resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
