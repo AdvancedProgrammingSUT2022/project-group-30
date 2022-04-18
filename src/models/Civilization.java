@@ -1,7 +1,9 @@
 package models;
 
+import models.technology.Technology;
+
 public class Civilization {
-    public boolean hasTechnology(TechnologyType technology) {
+    public boolean hasTechnology(Technology technology) {
         //TODO
         return true;
     }

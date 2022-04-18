@@ -6,33 +6,33 @@ import java.util.HashMap;
 
 import models.Civilization;
 import models.Output;
-import models.TechnologyType;
 import models.TerrainType;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.technology.Technology;
 
 public class StrategicResource extends Resource {
-    private TechnologyType prerequisiteTechnology;
+    private Technology prerequisiteTechnology;
 
     public static StrategicResource COAL = new StrategicResource(new Output(0, 0, 1),
             ImprovementType.MINE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.HILLS, TerrainType.GRASSLAND)),
-            TechnologyType.SCIENTIFIC_THEORY);
+            Technology.SCIENTIFIC_THEORY);
     public static StrategicResource HORSE = new StrategicResource(new Output(0, 0, 1),
             ImprovementType.PASTURE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.TUNDRA, TerrainType.PLAINS, TerrainType.GRASSLAND)),
-            TechnologyType.ANIMAL_HUSBANDRY);
+            Technology.ANIMAL_HUSBANDRY);
     public static StrategicResource IRON = new StrategicResource(new Output(0, 0, 1),
             ImprovementType.MINE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.TUNDRA, TerrainType.PLAINS, TerrainType.GRASSLAND, TerrainType.DESERT,
                             TerrainType.SNOW, TerrainType.HILLS)),
-            TechnologyType.IRON_WORKING);
+            Technology.IRON_WORKING);
 
     public StrategicResource(Output output, ImprovementType prerequisiteImprovement,
-            ArrayList<TerrainProperty> allowedTerrains, TechnologyType prerequisTechnology) {
+            ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology) {
         super(output, prerequisiteImprovement, allowedTerrains);
         this.prerequisiteTechnology = prerequisTechnology;
     }
