@@ -1,5 +1,7 @@
 package models;
 
+import models.technology.Technology;
+
 public class Civilization {
     public boolean hasTechnology(Technology technology) {
         //TODO

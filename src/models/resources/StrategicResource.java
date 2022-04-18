@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 import models.Civilization;
 import models.Output;
-import models.Technology;
 import models.TerrainType;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.technology.Technology;
 
 public class StrategicResource extends Resource {
     private Technology prerequisiteTechnology;
