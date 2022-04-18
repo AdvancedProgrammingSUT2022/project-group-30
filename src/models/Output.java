@@ -1,4 +1,4 @@
-package src.Models;
+package models;
 
 public class Output {
     private int gold;
