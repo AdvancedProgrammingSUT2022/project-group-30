@@ -23,9 +23,8 @@ public class Tile {
 
     public Tile(TerrainType terrainType, Feature feature, Civilization civilization,
             HashMap<Resources, Integer> resources, Ruins ruins) {
-        //TODO .. change following command
-        this.terrainType = terrainType;
-        feature.plantFeatureOnTileAndApplyOutputChanges(feature, this);
+        TerrainType.setTerrainTypeToTileAndApllyOutputChanges(this, terrainType);
+        Feature.plantFeatureOnTileAndApplyOutputChanges(feature, this);
         this.civilization = civilization;
         this.resources = resources;
         this.improvements = new ArrayList<>();
@@ -115,11 +114,15 @@ public class Tile {
         return this.works;
     }
 
-    public Output getOutput(){
+    public Output getOutput() {
         return this.output;
     }
 
-    public void setFeature(Feature feature){
+    public void setFeature(Feature feature) {
         this.feature = feature;
+    }
+
+    public void setTerrainType(TerrainType terrainType) {
+        this.terrainType = terrainType;
     }
 }
