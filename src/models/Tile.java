@@ -63,7 +63,7 @@ public class Tile {
     }
 
     public boolean isOfType(TerrainProperty property) {
-        if (this.terrainType == property || this.feature == property)
+        if (this.terrainType.equals(property) || this.feature == property)
             return true;
         return false;
     }

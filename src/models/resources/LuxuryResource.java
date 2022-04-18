@@ -6,7 +6,7 @@ import java.util.Arrays;
 import models.Feature;
 import models.ImprovementType;
 import models.Output;
-import models.TerrainProperty;
+import models.interfaces.TerrainProperty;
 import models.TerrainType;
 
 public class LuxuryResource extends Resource {
@@ -46,7 +46,7 @@ public class LuxuryResource extends Resource {
             new ArrayList<TerrainProperty>(Arrays.asList(TerrainType.TUNDRA, TerrainType.DESERT, TerrainType.HILLS)));
     LuxuryResource SUGAR = new LuxuryResource(new Output(2, 0, 0),
             ImprovementType.PLANTATION,
-            new ArrayList<TerrainProperty>(Arrays.asList(Feature.FLOODPLAINS, Feature.MARSH, TerrainType.HILLS)));
+            new ArrayList<TerrainProperty>(Arrays.asList(Feature.FLOOD_PLAINS, Feature.MARSH, TerrainType.HILLS)));
 
             
     public LuxuryResource(Output output, ImprovementType prerequisiteImprovement,

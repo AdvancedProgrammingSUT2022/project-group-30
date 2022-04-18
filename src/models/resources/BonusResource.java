@@ -6,7 +6,7 @@ import java.util.Arrays;
 import models.Feature;
 import models.ImprovementType;
 import models.Output;
-import models.TerrainProperty;
+import models.interfaces.TerrainProperty;
 import models.TerrainType;
 
 public class BonusResource extends Resource {
@@ -30,7 +30,7 @@ public class BonusResource extends Resource {
     public static BonusResource WHEAT = new BonusResource(new Output(0, 1, 0),
             ImprovementType.PASTURE,
             new ArrayList<TerrainProperty>(
-                    Arrays.asList(TerrainType.PLAINS, Feature.FLOODPLAINS)));
+                    Arrays.asList(TerrainType.PLAINS, Feature.FLOOD_PLAINS)));
 
     public BonusResource(Output output, ImprovementType prerequisiteImprovement,
             ArrayList<TerrainProperty> allowedTerrains) {

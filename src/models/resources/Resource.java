@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import models.Civilization;
 import models.ImprovementType;
 import models.Output;
-import models.TerrainProperty;
+import models.interfaces.TerrainProperty;
 import models.Tile;
 
 
@@ -35,7 +35,7 @@ public abstract class Resource {
     }
 
     public boolean canBeExploited(Tile tile) {
-        if (tile.containsImprovement(prerequisiteImprovement)) {
+        if (tile.containsImprovment(prerequisiteImprovement)) {
             return true;
         } else {
             return false;

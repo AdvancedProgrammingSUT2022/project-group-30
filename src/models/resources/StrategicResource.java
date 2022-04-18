@@ -8,8 +8,8 @@ import models.Civilization;
 import models.ImprovementType;
 import models.Output;
 import models.Technology;
-import models.TerrainProperty;
 import models.TerrainType;
+import models.interfaces.TerrainProperty;
 
 public class StrategicResource extends Resource {
     private Technology prerequisiteTechnology;

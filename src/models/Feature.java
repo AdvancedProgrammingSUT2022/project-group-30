@@ -29,7 +29,7 @@ public enum Feature implements TerrainProperty {
         }
 
         if (feature.equals(OASIS)) {
-            if (tile.getTerrainType().equals(TerrainType.Desert))
+            if (tile.getTerrainType().equals(TerrainType.DESERT))
                 return true;
             return false;
         }
