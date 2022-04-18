@@ -29,13 +29,13 @@ public enum TerrainType implements TerrainProperty {
             return;
         }
         tile.setTerrainType(terrainType);
-        tile.getOutput().setFood(tile.getOutput().getFood() + terrainType.getOutput().getFood());
-        tile.getOutput().setGold(tile.getOutput().getGold() + terrainType.getOutput().getGold());
-        tile.getOutput().setProduction(tile.getOutput().getProduction() + terrainType.getOutput().getProduction());
+        tile.getOutput().add(terrainType.getOutput());
     }
 
     public static void changeTerrainTypeOnTile(Tile tile, TerrainType newTerrainType) {
-            tile.setTerrainType(newTerrainType);
+        tile.getOutput().subtract(tile.getTerrainType().getOutput());
+        tile.setTerrainType(newTerrainType);
+        tile.getOutput().add(tile.getTerrainType().getOutput());
     }
 
     public Output getOutput() {

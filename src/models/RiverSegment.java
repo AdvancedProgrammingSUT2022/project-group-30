@@ -9,7 +9,7 @@ public class RiverSegment {
         this.secondTile = secondTile;
     }
 
-    public Tile getFisrtTile() {
+    public Tile getFirstTile() {
         return this.firstTile;
     }
 
