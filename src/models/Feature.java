@@ -1,7 +1,7 @@
 package models;
 
 import models.interfaces.TerrainProperty;
-import models.utilities.Debugger;
+import utilities.Debugger;
 
 public enum Feature implements TerrainProperty {
     FLOOD_PLAINS(new Output(0, 2, 0), -33, 1),

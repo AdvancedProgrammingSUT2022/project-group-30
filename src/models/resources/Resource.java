@@ -3,10 +3,10 @@ package models.resources;
 import java.util.ArrayList;
 
 import models.Civilization;
-import models.ImprovementType;
 import models.Output;
 import models.interfaces.TerrainProperty;
 import models.Tile;
+import models.improvements.ImprovementType;
 
 
 public abstract class Resource {

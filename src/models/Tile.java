@@ -3,6 +3,9 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import models.buildings.Building;
+import models.improvements.Improvement;
+import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.resources.Resources;
 

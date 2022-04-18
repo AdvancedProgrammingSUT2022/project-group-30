@@ -1,4 +1,4 @@
-package models;
+package models.improvements;
 public enum ImprovementType {
     PASTURE(),
     FARM(),

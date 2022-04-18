@@ -1,4 +1,6 @@
-package models;
+package models.improvements;
+
+import models.Civilization;
 
 public class Improvement {
     private final ImprovementType type;

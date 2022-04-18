@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import models.Civilization;
-import models.ImprovementType;
 import models.Output;
 import models.Technology;
 import models.TerrainType;
+import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 
 public class StrategicResource extends Resource {

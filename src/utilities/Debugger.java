@@ -1,4 +1,4 @@
-package models.utilities;
+package utilities;
 
 public class Debugger {
     public static void debug(String input){

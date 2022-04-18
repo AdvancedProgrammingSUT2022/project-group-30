@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import models.Feature;
-import models.ImprovementType;
 import models.Output;
 import models.interfaces.TerrainProperty;
 import models.TerrainType;
+import models.improvements.ImprovementType;
 
 public class BonusResource extends Resource {
     public static BonusResource BANANA = new BonusResource(new Output(0, 1, 0),
