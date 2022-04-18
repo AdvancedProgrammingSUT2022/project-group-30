@@ -65,7 +65,7 @@ public enum Technology {
     TELEGRAPH(0, new ArrayList<Technology>(Arrays.asList(ELECTRICITY)));
 
 
-    class Relations {
+    private static class Relations {
         public static HashMap<Technology, ArrayList<Technology>> forwardRelations = new HashMap<Technology, ArrayList<Technology>>();
         public static HashMap<Technology, ArrayList<Technology>> backwardRelations = new HashMap<Technology, ArrayList<Technology>>();
     }
