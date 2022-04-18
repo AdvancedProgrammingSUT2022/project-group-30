@@ -38,6 +38,7 @@ public enum Feature implements TerrainProperty {
 
     public void plantFeatureOnTileAndApplyOutputChanges(Feature feature, Tile tile) {
         if (isTileCompatibleWithFeature(feature, tile))
+        //??
             tile.setFeature(feature);
         else {
             Debugger.debug("the feature is not compatible with the tile!");
@@ -60,11 +61,8 @@ public enum Feature implements TerrainProperty {
 
     public void removeFeatureOnTile(Tile tile) {
         if (tile.getFeature() != null)
+            //??
             tile.setFeature(null);
-    }
-
-    public void setOutput(Output output) {
-        this.output = output;
     }
 
     public Output getOutput() {

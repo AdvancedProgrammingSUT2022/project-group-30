@@ -45,10 +45,4 @@ public class GameMap {
         return this.frameBase;
     }
 
-    public void setFrameBase(Tile frameBase){
-        this.frameBase = frameBase;
-    }
-
-
-
 }

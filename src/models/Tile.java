@@ -79,48 +79,24 @@ public class Tile {
         return this.terrainType;
     }
 
-    public void setTerrainType(TerrainType terrainType) {
-        this.terrainType = terrainType;
-    }
-
     public Feature getFeature() {
         return this.feature;
-    }
-
-    public void setFeature(Feature feature) {
-        this.feature = feature;
     }
 
     public Civilization getCivilization() {
         return this.civilization;
     }
 
-    public void setCivilization(Civilization civilization) {
-        this.civilization = civilization;
-    }
-
     public HashMap<Resources, Integer> getResources() {
         return this.resources;
-    }
-
-    public void setResources(HashMap<Resources, Integer> resources) {
-        this.resources = resources;
     }
 
     public ArrayList<Improvement> getImprovements() {
         return this.improvements;
     }
 
-    public void setImprovements(ArrayList<Improvement> improvements) {
-        this.improvements = improvements;
-    }
-
     public ArrayList<Building> getBuildings() {
         return this.buildings;
-    }
-
-    public void setBuildings(ArrayList<Building> buildings) {
-        this.buildings = buildings;
     }
 
     public boolean getIsPillaged() {
@@ -135,19 +111,15 @@ public class Tile {
         return this.ruins;
     }
 
-    public void setRuins(Ruins ruins) {
-        this.ruins = ruins;
-    }
-
     public ArrayList<Work> getWorks() {
         return this.works;
     }
 
-    public void setWorks(ArrayList<Work> works) {
-        this.works = works;
-    }
-
     public Output getOutput(){
         return this.output;
+    }
+
+    public void setFeature(Feature feature){
+        this.feature = feature;
     }
 }
