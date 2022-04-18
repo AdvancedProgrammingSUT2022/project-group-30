@@ -1,7 +1,7 @@
 package models;
 
 public class Civilization {
-    public boolean hasTechnology(Technology technology) {
+    public boolean hasTechnology(TechnologyType technology) {
         //TODO
         return true;
     }
