@@ -1,42 +1,52 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import models.interfaces.TerrainProperty;
 import utilities.Debugger;
 
 public enum Feature implements TerrainProperty {
-    FLOOD_PLAINS(new Output(0, 2, 0), -33, 1),
-    FOREST(new Output(0, 1, 1), 25, 2),
-    ICE(new Output(0, 0, 0), 0, Integer.MAX_VALUE),
-    JUNGLE(new Output(0, 1, -1), 25, 2),
-    MARSH(new Output(0, -1, 0), -33, 2),
-    OASIS(new Output(1, 3, 0), -33, 1);
+    FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, 1),
+    FOREST(new Output(0, 1, 1),
+            new ArrayList<TerrainType>(
+                    Arrays.asList(TerrainType.GRASSLAND, TerrainType.HILLS, TerrainType.PLAINS, TerrainType.TUNDRA)),
+            25, 2),
+    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, Integer.MAX_VALUE),
+    JUNGLE(new Output(0, 1, -1), new ArrayList<TerrainType>(Arrays.asList(TerrainType.HILLS, TerrainType.PLAINS)), 25,
+            2),
+    MARSH(new Output(0, -1, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.GRASSLAND)), -33, 2),
+    OASIS(new Output(1, 3, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, 1);
 
     private Output output;
+    private ArrayList<TerrainType> terrainTypes;
     private int combatModifier;
     private int movementCost;
 
-    private Feature(Output output, int combatModifier, int movementCost) {
+    private Feature(Output output, ArrayList<TerrainType> terrainTypes, int combatModifier, int movementCost) {
         this.output = output;
+        this.terrainTypes = terrainTypes;
         this.combatModifier = combatModifier;
         this.movementCost = movementCost;
     }
 
-    public boolean isTileCompatibleWithFeature(Feature feature, Tile tile) {
-        if (feature.equals(FLOOD_PLAINS)) {
+    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile) {
+        if (feature.equals(FLOOD_PLAINS) && feature.getTerrainTypes().contains(tile.getTerrainType())) {
             if (tile.isNearTheRiver())
                 return true;
             return false;
         }
 
-        if (feature.equals(OASIS)) {
+        if (feature.equals(OASIS) && feature.getTerrainTypes().contains(tile.getTerrainType())) {
             if (tile.getTerrainType().equals(TerrainType.DESERT))
                 return true;
             return false;
-        }
-        return true;
+        } else if (feature.getTerrainTypes().contains(tile.getTerrainType()))
+            return true;
+        return false;
     }
 
-    public void plantFeatureOnTileAndApplyOutputChanges(Feature feature, Tile tile) {
+    public static void plantFeatureOnTileAndApplyOutputChanges(Feature feature, Tile tile) {
         if (isTileCompatibleWithFeature(feature, tile))
             tile.setFeature(feature);
         else {
@@ -57,13 +67,9 @@ public enum Feature implements TerrainProperty {
         }
     }
 
-    public void removeFeatureOnTile(Tile tile) {
+    public static void removeFeatureOnTile(Tile tile) {
         if (tile.getFeature() != null)
             tile.setFeature(null);
-    }
-
-    public void setOutput(Output output) {
-        this.output = output;
     }
 
     public Output getOutput() {
@@ -84,6 +90,10 @@ public enum Feature implements TerrainProperty {
 
     public int getMovementCost() {
         return this.movementCost;
+    }
+
+    public ArrayList<TerrainType> getTerrainTypes() {
+        return this.terrainTypes;
     }
 
 }
