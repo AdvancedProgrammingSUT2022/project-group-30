@@ -2,7 +2,7 @@ package models;
 
 public enum TechnologyType {
     AGRICULTURE,
-    ANIMA_HUSBANDRY,
+    ANIMAL_HUSBANDRY,
     ARCHERY,
     BRONZE_WORKING,
     CALENDAR,

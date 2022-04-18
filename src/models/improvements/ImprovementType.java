@@ -37,11 +37,11 @@ public enum ImprovementType {
      RAILROAD(new Output(0, 0, 0), ??, new
      ArrayList<TerrainProperty>(Arrays.asList(TerrainType.DESERT, TerrainType.GRASSLAND, TerrainType.HILLS, TerrainType.PLAINS, TerrainType.SNOW, TerrainType.TUNDRA, Feature.FLOOD_PLAINS, Feature.FOREST, Feature.JUNGLE, Feature.MARSH, Feature.OASIS)));
    
-     private Output output;
-    private Technology prerequisiteTechnology;
-    private ArrayList<TerrainProperty> terrainProperties;
+     private final Output output;
+    private final Technology prerequisiteTechnology;
+    private final ArrayList<TerrainProperty> terrainProperties;
     private boolean isPillaged;
-    private double maintenanceCost;
+    private final double maintenanceCost;
 
     private ImprovementType(Output output, Technology prerequisiteTechnology,
             ArrayList<TerrainProperty> terrainProperties, double maintenanceCost) {
@@ -50,6 +50,30 @@ public enum ImprovementType {
         this.terrainProperties = terrainProperties;
         this.isPillaged = false;
         this.maintenanceCost = maintenanceCost;
+    }
+
+    public Output getOutput(){
+        return this.output;
+    }
+
+    public Technology getPrerequisiteTechnology(){
+        return this.prerequisiteTechnology;
+    }
+
+    public ArrayList<TerrainProperty> getTerrainProperties(){
+        return this.terrainProperties;
+    }
+
+    public boolean getIsPillaged(){
+        return this.isPillaged;
+    }
+
+    public void setIsPillaged(boolean isPillaged){
+        this.isPillaged = isPillaged;
+    }
+
+    public double getMaintenanceCost(){
+        return this.maintenanceCost;
     }
 
 }
