@@ -50,6 +50,7 @@ public enum Feature implements TerrainProperty {
             tile.getOutput().setProduction(feature.getOutput().getProduction());
         }
 
+        //?? feature. or this.
         else {
             tile.getOutput().setFood(tile.getOutput().getFood() + feature.getOutput().getFood());
             tile.getOutput().setGold(tile.getOutput().getGold() + feature.getOutput().getGold());
