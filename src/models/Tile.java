@@ -50,7 +50,7 @@ public class Tile {
 
     public boolean isNearTheRiver() {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
-            if (river.getFisrtTile().equals(this) || river.getSecondTile().equals(this))
+            if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
                 return true;
         }
         return false;

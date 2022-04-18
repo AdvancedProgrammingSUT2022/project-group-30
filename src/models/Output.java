@@ -11,6 +11,24 @@ public class Output {
         this.production = production;
     }
 
+    public void add(Output other) {
+        food += other.getFood();
+        gold += other.getGold();
+        production += other.getProduction();
+    }
+    
+    public void subtract(Output other) {
+        food -= other.getFood();
+        gold -= other.getGold();
+        production -= other.getProduction();
+    }
+
+    public void setEqualTo(Output other) {
+        food = other.getFood();
+        gold = other.getGold();
+        production = other.getProduction();
+    }
+
     public void setGold(int gold){
         this.gold = gold;
     }

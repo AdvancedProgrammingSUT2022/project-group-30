@@ -35,14 +35,9 @@ public enum Feature implements TerrainProperty {
             if (tile.isNearTheRiver())
                 return true;
             return false;
-        }
-
-        if (feature.equals(OASIS) && feature.getTerrainTypes().contains(tile.getTerrainType())) {
-            if (tile.getTerrainType().equals(TerrainType.DESERT))
-                return true;
-            return false;
-        } else if (feature.getTerrainTypes().contains(tile.getTerrainType()))
+        } else if (feature.getTerrainTypes().contains(tile.getTerrainType())) {
             return true;
+        }
         return false;
     }
 
@@ -55,21 +50,26 @@ public enum Feature implements TerrainProperty {
         }
 
         if (feature.equals(FOREST)) {
-            tile.getOutput().setFood(feature.getOutput().getFood());
-            tile.getOutput().setGold(feature.getOutput().getGold());
-            tile.getOutput().setProduction(feature.getOutput().getProduction());
+            tile.getOutput().setEqualTo(feature.getOutput());
         }
 
         else {
-            tile.getOutput().setFood(tile.getOutput().getFood() + feature.getOutput().getFood());
-            tile.getOutput().setGold(tile.getOutput().getGold() + feature.getOutput().getGold());
-            tile.getOutput().setProduction(tile.getOutput().getProduction() + feature.getOutput().getProduction());
+            tile.getOutput().add(feature.getOutput());
         }
     }
 
-    public static void removeFeatureOnTile(Tile tile) {
-        if (tile.getFeature() != null)
-            tile.setFeature(null);
+    public static void removeFeatureOnTile(Tile tile) { // needs to undo feature's output effects
+        if (tile.getFeature() == null) {
+            return;
+        }
+
+        if (tile.getFeature().equals(FOREST)) {
+            tile.getOutput().setEqualTo(tile.getTerrainType().getOutput());
+        } else {
+            tile.getOutput().setEqualTo(tile.getTerrainType().getOutput());
+        }
+
+        tile.setFeature(null);
     }
 
     public Output getOutput() {
@@ -95,5 +95,4 @@ public enum Feature implements TerrainProperty {
     public ArrayList<TerrainType> getTerrainTypes() {
         return this.terrainTypes;
     }
-
 }
