@@ -46,6 +46,16 @@ public class TechnologyMap {
         return true;
     }
 
+    public ArrayList<Technology> getLearnedTechnologies() {
+        ArrayList<Technology> result = new ArrayList<Technology>();
+        for (Technology technology : map.keySet()) {
+            if (map.get(technology)) {
+                result.add(technology);
+            }
+        }
+        return result;
+    }
+
     public ArrayList<Technology> getUnlockedTechnologies() {
         ArrayList<Technology> result = new ArrayList<Technology>();
         for (Technology technology : map.keySet()) {
