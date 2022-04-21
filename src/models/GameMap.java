@@ -2,6 +2,8 @@ package models;
 
 import java.util.ArrayList;
 
+import models.units.Unit;
+
 public class GameMap {
     public static final int NUMBER_OF_TILES = 100;
     private Tile[][] map;

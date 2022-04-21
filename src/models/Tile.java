@@ -8,6 +8,7 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.resources.Resources;
+import models.works.Work;
 
 public class Tile {
     private TerrainType terrainType;
@@ -68,6 +69,14 @@ public class Tile {
         if (this.terrainType.equals(property) || this.feature == property)
             return true;
         return false;
+    }
+
+    public void addImprovement(Improvement improvement) {
+        // TODO
+    }
+
+    public void removeWork() {
+        // TODO
     }
 
     public void goToNextTurn() {
