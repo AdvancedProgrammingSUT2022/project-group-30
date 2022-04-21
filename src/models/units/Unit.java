@@ -68,12 +68,12 @@ public class Unit implements Selectable, TurnHandler {
         }
     }
 
-    public double getEffectiveCombatStrength() {
+    public double calculateEffectiveCombatStrength() {
         // TODO
         return 0;
     }
     
-    public double getEffectiveRangedCombatStrength() {
+    public double calculateEffectiveRangedCombatStrength() {
         // TODO
         return 0;
     }
@@ -98,6 +98,11 @@ public class Unit implements Selectable, TurnHandler {
     public void move() {    // like a setter for location : but it handles other things as well
         // TODO
         hasBeenInactive = false;
+    }
+
+    
+    public Civilization getOwner() {
+        return this.owner;
     }
 
     public Tile getLocation() {
