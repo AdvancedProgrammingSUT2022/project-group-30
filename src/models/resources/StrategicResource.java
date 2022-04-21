@@ -52,4 +52,18 @@ public class StrategicResource extends Resource {
         result.put(IRON, 0);
         return result;
     }
+
+
+
+    public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) {      // utility function used in UnitType constructor
+        HashMap<StrategicResource, Integer> result = new HashMap<>();
+        for (StrategicResource resource : resources) {
+            if (result.containsKey(resource)) {
+                result.put(resource, result.get(resource) + 1);
+            } else {
+                result.put(resource, 1);
+            }
+        }
+        return result;
+    }
 }

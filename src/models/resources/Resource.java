@@ -1,6 +1,7 @@
 package models.resources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import models.Civilization;
 import models.Output;
@@ -43,8 +44,9 @@ public abstract class Resource {
     }
 
     
-       
     public Output getOutput() {
         return output;
     }
+
+
 }
