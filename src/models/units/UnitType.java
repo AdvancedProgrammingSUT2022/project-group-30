@@ -1,5 +1,7 @@
 package models.units;
 
-public  abstract class UnitType {
+import models.interfaces.Selectable;
+
+public  abstract class UnitType implements Selectable{
     
 }

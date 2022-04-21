@@ -7,8 +7,8 @@ public enum TerrainType implements TerrainProperty {
     DESERT(new Output(0, 0, 0), -33, 1),
     GRASSLAND(new Output(0, 2, 0), -33, 1),
     HILLS(new Output(0, 0, 2), 25, 2),
-    MOUNTAIN(new Output(0, 0, 0), 25, Double.MAX_VALUE),
-    OCEAN(new Output(0, 0, 0), 25, Double.MAX_VALUE),
+    MOUNTAIN(new Output(0, 0, 0), 25, 100000),
+    OCEAN(new Output(0, 0, 0), 25, 100000),
     PLAINS(new Output(0, 1, 1), -33, 1),
     SNOW(new Output(0, 0, 0), -33, 1),
     TUNDRA(new Output(0, 1, 0), -33, 1);
@@ -35,7 +35,13 @@ public enum TerrainType implements TerrainProperty {
     }
 
     public static void changeTerrainTypeOnTile(Tile tile, TerrainType newTerrainType) {
-            tile.setTerrainType(newTerrainType);
+        tile.getOutput().setFood(tile.getOutput().getFood() - tile.getTerrainType().getOutput().getFood());
+        tile.getOutput().setGold(tile.getOutput().getGold() - tile.getTerrainType().getOutput().getGold());
+        tile.getOutput().setProduction(tile.getOutput().getProduction() - tile.getTerrainType().getOutput().getProduction());
+        tile.setTerrainType(newTerrainType);
+        tile.getOutput().setFood(tile.getOutput().getFood() + newTerrainType.getOutput().getFood());
+        tile.getOutput().setGold(tile.getOutput().getGold() + newTerrainType.getOutput().getGold());
+        tile.getOutput().setProduction(tile.getOutput().getProduction() + newTerrainType.getOutput().getProduction());
     }
 
     public Output getOutput() {
