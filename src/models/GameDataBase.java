@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import controllers.diplomacy.Diplomacy;
 import models.interfaces.Selectable;
+import models.units.Unit;
 
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;

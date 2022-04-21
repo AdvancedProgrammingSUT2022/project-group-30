@@ -60,7 +60,7 @@ public class Tile {
     public boolean isCityOfTileNearTheRiver() {
         City city = this.getCityOfTile();
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
-            if (city.getTerritories().contains(river.getFisrtTile())
+            if (city.getTerritories().contains(river.getFirstTile())
                     || city.getTerritories().contains(river.getSecondTile()))
                 return true;
         }
