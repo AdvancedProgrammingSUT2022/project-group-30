@@ -130,10 +130,6 @@ public class City implements Selectable {
         return founder;
     }
 
-    public void setFounder(Civilization founder) {
-        this.founder = founder;
-    }
-
     public Civilization getOwner() {
         return owner;
     }
@@ -152,10 +148,6 @@ public class City implements Selectable {
 
     public Tile getCentraTile() {
         return centraTile;
-    }
-
-    public void setCentraTile(Tile centraTile) {
-        this.centraTile = centraTile;
     }
 
     public void setTerritories(ArrayList<Tile> territories) {
