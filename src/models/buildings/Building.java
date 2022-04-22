@@ -1,5 +1,7 @@
 package models.buildings;
 
-public class Building {
+import models.interfaces.Producible;
+
+public class Building implements Producible{
     
 }

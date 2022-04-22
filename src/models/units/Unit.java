@@ -2,11 +2,12 @@ package models.units;
 
 import models.Civilization;
 import models.Tile;
+import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 
 
-public class Unit implements Selectable, TurnHandler {
+public class Unit implements Selectable, TurnHandler, Producible {
     private final Civilization owner;
     private final UnitType type;
     private Tile location;
