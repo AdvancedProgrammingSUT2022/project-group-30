@@ -5,22 +5,25 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import views.PrintableCharacters;
+
 public class GameMap {
     private static GameMap gameMap;
 
     //public static final int NUMBER_OF_TILES = 100;
     private Tile[][] map;
     private ArrayList<RiverSegment> rivers;
-    //private Tile frameBase;
+    private Tile frameBase;
 
     private GameMap() throws FileNotFoundException {
         this.initializeMap();
         this.rivers = new ArrayList<>();
+        this.frameBase = null;
         //map = new Tile[NUMBER_OF_TILES][NUMBER_OF_TILES];
         //rivers = new ArrayList<>();
     }
 
-    public GameMap getGameMap() throws FileNotFoundException{
+    public static GameMap getGameMap() throws FileNotFoundException{
         if(gameMap != null){
             return gameMap;
         }
@@ -78,6 +81,18 @@ public class GameMap {
         return null;
     }
 
+    public Tile[][] findTilesToPrint() throws FileNotFoundException{
+        Tile tiles[][] = new Tile[3][6];
+        int startingXPoint = this.frameBase.findTileXCoordinateInMap();
+        int startingYPoint = this.frameBase.findTileYCoordinateInMap();
+        for(int i = 0; i < tiles.length; i++){
+            for(int j = 0; j < tiles[i].length; j++){
+                tiles[i][j] = this.map[i+startingXPoint][j+startingYPoint];
+            }
+        }
+        return tiles;
+    }
+
     public ArrayList<Tile> findClosestPath(Tile origin, Tile destination){
         //TODO
         return null;
@@ -98,17 +113,17 @@ public class GameMap {
         return null;
     }
 
-    // public Tile[][] getMap(){
+    public Tile[][] getMap(){
         
-    //     return this.map;
-    // }
+        return this.map;
+    }
 
     public ArrayList<RiverSegment> getRivers (){
         return this.rivers;
     }
 
-    // public Tile getFrameBase(){
-    //     return this.frameBase;
-    // }
+    public Tile getFrameBase(){
+        return this.frameBase;
+    }
 
 }

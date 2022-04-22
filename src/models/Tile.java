@@ -1,5 +1,6 @@
 package models;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -68,6 +69,32 @@ public class Tile {
         if (this.terrainType.equals(property) || this.feature == property)
             return true;
         return false;
+    }
+
+    // returns -1 if the Tile is not in the map
+    public int findTileXCoordinateInMap() throws FileNotFoundException{
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return j;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int findTileYCoordinateInMap() throws FileNotFoundException{
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return i;
+                }
+            }
+        }
+        return -1;
+
     }
 
     public void goToNextTurn() {
