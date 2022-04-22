@@ -16,7 +16,8 @@ public class GameDataBase {
     private ArrayList<WarInfo> wars = new ArrayList<>();
     private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
     private ArrayList<Diplomacy> diplomaticRelations = new ArrayList<>();
- 
+    private Civilization currentPlayer;
+
     public static GameDataBase getGameDataBase() {
         if (gameDataBase == null)
             gameDataBase = new GameDataBase();
@@ -69,5 +70,12 @@ public class GameDataBase {
 
     public ArrayList<Diplomacy> getDiplomaticRelations(){
         return this.diplomaticRelations;
+    }
+
+    public Civilization getCurrentPlayer() {
+        return currentPlayer;
+    }
+    public void setCurrentPlayer(Civilization currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }
