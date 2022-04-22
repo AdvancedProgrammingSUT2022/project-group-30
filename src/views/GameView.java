@@ -1,26 +1,45 @@
 package views;
 
-public class GameView implements View{
+import java.util.Scanner;
+
+import controllers.GameController;
+import utilities.MyScanner;
+
+public class GameView implements View {
 
     private static GameView gameView;
 
-    private GameView(){
-
+    private GameView() {
+        scanner = MyScanner.getScanner();
+        controller = GameController.getGameController();
     }
 
     public static GameView getGameView(){
         return gameView == null ? gameView = new GameView() : gameView;
     }
 
-    public void run(){
+    private GameController controller;
+    private Scanner scanner;
 
-    }
-
-    public void showMenu(){
-
-    }
-    
-    public void setController(){
+    public void run() {
+        controller.startGame();
+        showMap();
         
+        while (true) {
+            
+        }
+    }
+
+    private void showMap() {
+        // TODO : mahyar 
+    }
+
+    @Override
+    public void showMenu() {
+        // leave empty
+    }
+    @Override
+    public void setController() {
+        // nakhoondam
     }
 }
