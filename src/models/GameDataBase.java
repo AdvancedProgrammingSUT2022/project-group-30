@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 
 import controllers.diplomacy.Diplomacy;
+import controllers.diplomacy.WarInfo;
 import models.interfaces.Selectable;
 import models.units.Unit;
 
@@ -54,8 +55,8 @@ public class GameDataBase {
         if (!this.wars.contains(war))
             this.wars.add(war);
     }
-
   
+    //??
     // public void initializeDiplomaticRelationMap(ArrayList<CivilizationPair> civilizationPairs) {
     //     for(CivilizationPair civilizationPair : civilizationPairs){
     //         //MINETODO .. create Diplomatic class and fill the following () with "civilizationPair, 0"
