@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import views.PrintableCharacters;
-
 public class GameMap {
     private static GameMap gameMap;
 
@@ -15,7 +13,7 @@ public class GameMap {
     private ArrayList<RiverSegment> rivers;
     private Tile frameBase;
 
-    private GameMap() throws FileNotFoundException {
+    private GameMap() {
         this.initializeMap();
         this.rivers = new ArrayList<>();
         this.frameBase = null;
@@ -23,7 +21,7 @@ public class GameMap {
         //rivers = new ArrayList<>();
     }
 
-    public static GameMap getGameMap() throws FileNotFoundException{
+    public static GameMap getGameMap(){
         if(gameMap != null){
             return gameMap;
         }
@@ -31,26 +29,33 @@ public class GameMap {
         return gameMap;
     }
 
-    private void initializeMap() throws FileNotFoundException{
-        File mapFile = new File("../utilities/map1.txt");
-        Scanner scanner = new Scanner(mapFile);
-        ArrayList<String> fileLines = new ArrayList<>();
-        while(scanner.hasNextLine()){
-            String input = scanner.nextLine();
-            fileLines.add(input);
-        }
-        String mapTerrainTypes[][] = new String[fileLines.size()][];
-        for(int i = 0; i < fileLines.size(); i++){
-            String tokens[] = fileLines.get(i).split("\\s+");
-            mapTerrainTypes[i] = tokens;
-        }
-        this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
-        for(int i = 0; i < this.map.length; i++){
-            for(int j = 0; j < this.map[i].length; j++){
-                map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, null, null, null);
+    private void initializeMap(){
+        File mapFile = new File("utilities","map1.txt");
+        Scanner scanner;
+        try {
+            scanner = new Scanner(mapFile);
+            ArrayList<String> fileLines = new ArrayList<>();
+            while(scanner.hasNextLine()){
+                String input = scanner.nextLine();
+                fileLines.add(input);
             }
+            String mapTerrainTypes[][] = new String[fileLines.size()][];
+            for(int i = 0; i < fileLines.size(); i++){
+                String tokens[] = fileLines.get(i).split("\\s+");
+                mapTerrainTypes[i] = tokens;
+            }
+            this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
+            for(int i = 0; i < this.map.length; i++){
+                for(int j = 0; j < this.map[i].length; j++){
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, null, null, null);
+                }
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
-        scanner.close();
+
     }
 
     private TerrainType findTileTerrainTypeFromFile(String terrainType){
@@ -81,7 +86,7 @@ public class GameMap {
         return null;
     }
 
-    public Tile[][] findTilesToPrint() throws FileNotFoundException{
+    public Tile[][] findTilesToPrint(){
         Tile tiles[][] = new Tile[3][6];
         int startingXPoint = this.frameBase.findTileXCoordinateInMap();
         int startingYPoint = this.frameBase.findTileYCoordinateInMap();
@@ -91,6 +96,7 @@ public class GameMap {
             }
         }
         return tiles;
+
     }
 
     public ArrayList<Tile> findClosestPath(Tile origin, Tile destination){
@@ -120,6 +126,10 @@ public class GameMap {
 
     public ArrayList<RiverSegment> getRivers (){
         return this.rivers;
+    }
+
+    public void setFrameBase(Tile tile){
+        this.frameBase = tile;
     }
 
     public Tile getFrameBase(){

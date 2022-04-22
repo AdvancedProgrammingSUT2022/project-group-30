@@ -1,5 +1,8 @@
 package views;
 
+import models.TerrainType;
+import models.Tile;
+
 public class PrintableCharacters {
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -15,9 +18,37 @@ public class PrintableCharacters {
     private char character;
     private String ANSI_COLOR;
 
-    public PrintableCharacters(char character){
-        this.character = character;
-        this.ANSI_COLOR = null;
+    public PrintableCharacters(){
+        this.character = ' ';
+        this.ANSI_COLOR = ANSI_RESET;
+    }
+
+    public static String findTilesColor(Tile tile){
+        if(tile.getTerrainType() == TerrainType.MOUNTAIN){
+            return ANSI_RED_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.OCEAN){
+            return ANSI_BLUE_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.PLAINS){
+            return ANSI_YELLOW_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.SNOW){
+            return ANSI_WHITE_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.TUNDRA){
+            return ANSI_CYAN_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.HILLS){
+            return ANSI_PURPLE_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.GRASSLAND){
+            return ANSI_GREEN_BACKGROUND;
+        }
+        else if(tile.getTerrainType() == TerrainType.DESERT){
+            return ANSI_RED_BACKGROUND_BRIGHT;
+        }
+        return null;
     }
 
     public void setCharacter(char character){

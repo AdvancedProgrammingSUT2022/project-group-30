@@ -1,6 +1,5 @@
 package models;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,7 +22,8 @@ public class Tile {
     private Output output;
 
     public Tile(TerrainType terrainType, Feature feature, Civilization civilization,
-            HashMap<Resources, Integer> resources, Ruins ruins) {
+            HashMap<Resources, Integer> resources, Ruins ruins)   {
+        this.output = new Output(0, 0, 0);
         TerrainType.setTerrainTypeToTileAndApllyOutputChanges(this, terrainType);
         Feature.plantFeatureOnTileAndApplyOutputChanges(feature, this);
         this.civilization = civilization;
@@ -33,7 +33,6 @@ public class Tile {
         this.isPillaged = false;
         this.ruins = ruins;
         this.works = new ArrayList<>();
-        this.output = new Output(0, 0, 0);
     }
 
     public Output calculateOutput(Output output) {
@@ -41,7 +40,7 @@ public class Tile {
         return null;
     }
 
-    public City getCityOfTile() {
+    public City getCityOfTile()   {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (city.getTerritory().contains(this))
                 return city;
@@ -49,7 +48,7 @@ public class Tile {
         return null;
     }
 
-    public boolean isNearTheRiver() {
+    public boolean isNearTheRiver()   {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
             if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
                 return true;
@@ -72,7 +71,7 @@ public class Tile {
     }
 
     // returns -1 if the Tile is not in the map
-    public int findTileXCoordinateInMap() throws FileNotFoundException{
+    public int findTileXCoordinateInMap()  {
         GameMap map = GameMap.getGameMap();
         for(int i = 0; i < map.getMap().length; i++){
             for(int j = 0; j < map.getMap()[i].length; j++){
@@ -84,7 +83,7 @@ public class Tile {
         return -1;
     }
 
-    public int findTileYCoordinateInMap() throws FileNotFoundException{
+    public int findTileYCoordinateInMap()  {
         GameMap map = GameMap.getGameMap();
         for(int i = 0; i < map.getMap().length; i++){
             for(int j = 0; j < map.getMap()[i].length; j++){

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;
     private ArrayList<City> cities;
-    private GameMap map;
+    private GameMap map = GameMap.getGameMap();
     
-    private GameDataBase(){
-
+    private GameDataBase()  {
+        map = GameMap.getGameMap();
     }
 
-    public static GameDataBase getGameDataBase(){
+    public static GameDataBase getGameDataBase()  {
         if(gameDataBase == null)
             gameDataBase = new GameDataBase();
         return gameDataBase;
