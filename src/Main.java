@@ -5,7 +5,7 @@ import utilities.MyScanner;
 import views.LoginPageView;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner scanner = MyScanner.getScanner();
         SceneController sceneController = SceneController.getSceneController();
         LoginPageView loginPageView = LoginPageView.getLoginPageView();

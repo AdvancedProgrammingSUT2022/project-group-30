@@ -24,7 +24,8 @@ public class TechnologyMap {
         map.put(technology, true);
     }
 
-    public void learnTechnologyAndPrerequisites(Technology technology) {   // discovers the technology and any of its prerequisites that are not yet unlocked
+    public void learnTechnologyAndPrerequisites(Technology technology) { // discovers the technology and any of its
+                                                                         // prerequisites that are not yet unlocked
         for (Technology prerequisite : technology.getPrerequisiteTechnologies()) {
             if (map.get(prerequisite) == false) {
                 learnTechnologyAndPrerequisites(prerequisite);

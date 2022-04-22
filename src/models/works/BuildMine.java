@@ -16,7 +16,7 @@ public class BuildMine extends BuildImprovement {
 
     @Override
     public int calculateRequiredTurns() {
-        // TODO 
+        // TODO
         return 0;
     }
 }

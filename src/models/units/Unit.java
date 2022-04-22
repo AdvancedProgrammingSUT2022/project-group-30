@@ -6,7 +6,6 @@ import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 
-
 public class Unit implements Selectable, TurnHandler, Producible {
     private final Civilization owner;
     private final UnitType type;
@@ -19,7 +18,7 @@ public class Unit implements Selectable, TurnHandler, Producible {
     private boolean hasBeenInactive;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
-    private Tile destination;     // Depending on how we implement schedualed movement, might turn into a path
+    private Tile destination; // Depending on how we implement schedualed movement, might turn into a path
     private boolean hasReceivedCommand;
 
     public Unit(Civilization owner, UnitType type, Tile location) {
@@ -52,16 +51,17 @@ public class Unit implements Selectable, TurnHandler, Producible {
         if (hasBeenInactive) {
             inactivityDuration++;
         }
-        if (true /* you can heal*/) {
+        if (true /* you can heal */) {
             heal();
         }
     }
 
-    public void assemble() { 
+    public void assemble() {
         isAssembled = true;
     }
 
-    public boolean isAssembled() {  // needs to be checked for all units, but only siege units may return false, the rest all return true
+    public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
+                                   // rest all return true
         if (type.needsAssmbly()) {
             return isAssembled;
         } else {
@@ -73,20 +73,20 @@ public class Unit implements Selectable, TurnHandler, Producible {
         // TODO
         return 0;
     }
-    
+
     public double calculateEffectiveRangedCombatStrength() {
         // TODO
         return 0;
     }
 
-    public void heal() {    // replaces the setter for hitPointsLeft
+    public void heal() { // replaces the setter for hitPointsLeft
         // TODO
     }
 
     public boolean isWaitingForCommand() {
         // TODO : might be incomplete
 
-        if (state.waitsForCommand == false) {   // if it is in an inactive state like fortified or sleeping, return false
+        if (state.waitsForCommand == false) { // if it is in an inactive state like fortified or sleeping, return false
             return false;
         }
         if (movePointsLeft > 0 && hasReceivedCommand == false) {
@@ -96,12 +96,11 @@ public class Unit implements Selectable, TurnHandler, Producible {
         }
     }
 
-    public void move() {    // like a setter for location : but it handles other things as well
+    public void move() { // like a setter for location : but it handles other things as well
         // TODO
         hasBeenInactive = false;
     }
 
-    
     public Civilization getOwner() {
         return this.owner;
     }
@@ -141,7 +140,6 @@ public class Unit implements Selectable, TurnHandler, Producible {
     public int getInactivityDuration() {
         return this.inactivityDuration;
     }
-
 
     public int getStateDuration() {
         return this.stateDuration;

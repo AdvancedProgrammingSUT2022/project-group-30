@@ -17,7 +17,7 @@ public class GameController {
         return gameController;
     }
 
-    public Tile findWorksLocation(Work work) {  // gets a work and finds the tile that owns it
+    public Tile findWorksLocation(Work work) { // gets a work and finds the tile that owns it
         // TODO
         return null;
     }

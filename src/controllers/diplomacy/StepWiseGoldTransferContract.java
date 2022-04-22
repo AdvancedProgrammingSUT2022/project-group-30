@@ -11,7 +11,8 @@ public class StepWiseGoldTransferContract extends Diplomacy {
     private final double totalTurns;
     private double turnsPast;
 
-    public StepWiseGoldTransferContract(Civilization recipient, Civilization payer, double totalAmount, double totalTurns) {
+    public StepWiseGoldTransferContract(Civilization recipient, Civilization payer, double totalAmount,
+            double totalTurns) {
         this.pair = new CivilizationPair(recipient, payer);
         this.recipient = recipient;
         this.payer = payer;
@@ -21,11 +22,11 @@ public class StepWiseGoldTransferContract extends Diplomacy {
         this.turnsPast = 0;
     }
 
-    public Civilization getRecipient(){
+    public Civilization getRecipient() {
         return this.recipient;
     }
 
-    public Civilization getPayer(){
+    public Civilization getPayer() {
         return this.payer;
     }
 
@@ -33,27 +34,27 @@ public class StepWiseGoldTransferContract extends Diplomacy {
         return this.totalAmount;
     }
 
-    public double getAmountPaid(){
+    public double getAmountPaid() {
         return this.amountPaid;
     }
 
-    public void setAmountPaid(double amountPaid){
+    public void setAmountPaid(double amountPaid) {
         this.amountPaid = amountPaid;
     }
 
-    public double getTotalTurns(){
+    public double getTotalTurns() {
         return this.totalTurns;
     }
 
-    public double getTurnsPast(){
+    public double getTurnsPast() {
         return this.turnsPast;
     }
 
-    public void setTurnsPast(double turnsPast){
+    public void setTurnsPast(double turnsPast) {
         this.turnsPast = turnsPast;
     }
 
-    public void goToNextTurn(){
-        //TODO
+    public void goToNextTurn() {
+        // TODO
     }
 }

@@ -11,13 +11,13 @@ public enum MainPageCommands {
 
     private String regex;
 
-    private MainPageCommands(String regex){
+    private MainPageCommands(String regex) {
         this.regex = regex;
     }
 
-    public static Matcher getCommandMatcher(String input, MainPageCommands mainPageCommands){
+    public static Matcher getCommandMatcher(String input, MainPageCommands mainPageCommands) {
         Matcher matcher = Pattern.compile(mainPageCommands.regex).matcher(input);
         return matcher.matches() ? matcher : null;
     }
-    
+
 }

@@ -23,21 +23,6 @@ public enum TerrainType implements TerrainProperty {
         this.movementCost = movementCost;
     }
 
-    public static void setTerrainTypeToTileAndApllyOutputChanges(Tile tile, TerrainType terrainType) {
-        if (tile.getTerrainType() != null) {
-            Debugger.debug("this tile has terrainType!");
-            return;
-        }
-        tile.setTerrainType(terrainType);
-        tile.getOutput().add(terrainType.getOutput());
-    }
-
-    public static void changeTerrainTypeOnTile(Tile tile, TerrainType newTerrainType) {
-        tile.getOutput().subtract(tile.getTerrainType().getOutput());
-        tile.setTerrainType(newTerrainType);
-        tile.getOutput().add(tile.getTerrainType().getOutput());
-    }
-
     public Output getOutput() {
         return this.output;
     }

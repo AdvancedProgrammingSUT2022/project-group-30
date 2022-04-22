@@ -9,7 +9,7 @@ public class Citizen {
         workPlace = null;
     }
 
-    public Citizen(Workable workPlace){
+    public Citizen(Workable workPlace) {
         this.workPlace = workPlace;
     }
 

@@ -11,10 +11,10 @@ import models.units.Unit;
 public class City implements Selectable {
     private final Civilization founder;
     private Civilization owner;
-    //Should I delete following field??
+    // Should I delete following field??
     private boolean isPuppet;
     private final Tile centraTile;
-    //should I add it in constructor??
+    // should I add it in constructor??
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
     private Producible entityInProduction;
@@ -25,7 +25,7 @@ public class City implements Selectable {
     private double rangedCombatStrength;
     private double range;
     private double hitPoints;
-    //TODO initialize 5 following fields with proper number
+    // TODO initialize 5 following fields with proper number
     private double expansionProgress;
     private double expansionLimit;
     private double populationProgress;
@@ -33,8 +33,9 @@ public class City implements Selectable {
     private double populationShrinkageLimit;
     private ArrayList<Citizen> citizens = new ArrayList<>();
 
-    //MINETODO  where is the appropriate place to initialze combatStrength and rangedCombatStrength...(Maybe instead of get, you should calculate them)
-    public City(Civilization founder, Tile tile, double combatStrength, double rangedCombatStrength){
+    // MINETODO where is the appropriate place to initialze combatStrength and
+    // rangedCombatStrength...(Maybe instead of get, you should calculate them)
+    public City(Civilization founder, Tile tile, double combatStrength, double rangedCombatStrength) {
         this.founder = founder;
         this.owner = founder;
         this.isPuppet = false;
@@ -92,13 +93,13 @@ public class City implements Selectable {
     }
 
     public void addCitizen() {
-        // MINETODO  check it
+        // MINETODO check it
         this.citizens.add(new Citizen());
     }
 
     public void killACitizen() {
-        // MINETODO check it 
-        //which one??
+        // MINETODO check it
+        // which one??
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
@@ -111,7 +112,7 @@ public class City implements Selectable {
     }
 
     public void assignCitizenToWorkplace(Workable workPlace, Citizen citizen) {
-        //MINETODO   check it   check errors...
+        // MINETODO check it check errors...
         citizen.setWorkPlace(workPlace);
     }
 
@@ -153,7 +154,6 @@ public class City implements Selectable {
     public void setTerritories(ArrayList<Tile> territories) {
         this.territories = territories;
     }
-
 
     public HashMap<Producible, Integer> getProductionReserve() {
         return productionReserve;
@@ -270,7 +270,7 @@ public class City implements Selectable {
     public ArrayList<Tile> getTerritories() {
         return territories;
     }
-    
+
     public void setHammerCount(double hammerCount) {
         this.hammerCount = hammerCount;
     }

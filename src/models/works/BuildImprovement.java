@@ -17,7 +17,7 @@ public class BuildImprovement extends Work {
 
     @Override
     public int calculateRequiredTurns() {
-        //  TODO
+        // TODO
         return 0;
     }
 }
