@@ -3,15 +3,15 @@ package controllers.diplomacy;
 import models.Civilization;
 import models.CivilizationPair;
 
-public class DiplomaticRelation extends Diplomacy{
+public class DiplomaticRelationsMap extends Diplomacy{
     double friendliness;
 
-    public DiplomaticRelation(CivilizationPair pair){
+    public DiplomaticRelationsMap(CivilizationPair pair){
         this.friendliness = 0;
         this.pair = pair;
     }
 
-    public DiplomaticRelation(Civilization civ1, Civilization civ2){
+    public DiplomaticRelationsMap(Civilization civ1, Civilization civ2){
         this.friendliness = 0;
         this.pair = new CivilizationPair(civ1, civ2);
     }

@@ -1,7 +1,6 @@
 package models.resources;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import models.Civilization;
 import models.Output;

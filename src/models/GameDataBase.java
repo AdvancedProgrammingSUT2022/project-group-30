@@ -16,7 +16,7 @@ public class GameDataBase {
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
     private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
-    private ArrayList<Diplomacy> diplomaticRelations = new ArrayList<>();
+    private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
  
     public static GameDataBase getGameDataBase() {
         if (gameDataBase == null)
@@ -69,6 +69,6 @@ public class GameDataBase {
     }
 
     public ArrayList<Diplomacy> getDiplomaticRelations(){
-        return this.diplomaticRelations;
+        return this.AllDiplomaticRelations;
     }
 }
