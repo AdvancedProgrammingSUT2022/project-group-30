@@ -16,7 +16,7 @@ public class Main {
         // sceneController.run();
         // scanner.close();
         GameMap map = GameMap.getGameMap();
-        map.setFrameBase(map.getMap()[0][0]);
+        map.setFrameBase(map.getMap()[13][3]);
         GameView gameView = GameView.getGameView();
         gameView.showMap();
         

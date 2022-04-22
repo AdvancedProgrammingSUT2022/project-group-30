@@ -44,6 +44,7 @@ public class GameMap {
                 String tokens[] = fileLines.get(i).split("\\s+");
                 mapTerrainTypes[i] = tokens;
             }
+            System.out.println(mapTerrainTypes[0].length);
             this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
             for(int i = 0; i < this.map.length; i++){
                 for(int j = 0; j < this.map[i].length; j++){
@@ -92,7 +93,7 @@ public class GameMap {
         int startingYPoint = this.frameBase.findTileYCoordinateInMap();
         for(int i = 0; i < tiles.length; i++){
             for(int j = 0; j < tiles[i].length; j++){
-                tiles[i][j] = this.map[i+startingXPoint][j+startingYPoint];
+                tiles[i][j] = this.map[i+startingYPoint][j+startingXPoint];
             }
         }
         return tiles;
