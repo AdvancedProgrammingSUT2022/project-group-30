@@ -13,11 +13,11 @@ import models.works.Work;
 public class Tile {
     private TerrainType terrainType;
     private Feature feature;
-    private Civilization civilization;
+    private Civilization civilization;  // TODO : delete, is not necessary
     private HashMap<Resources, Integer> resources;
     private ArrayList<Improvement> improvements;
     private ArrayList<Building> buildings;
-    private boolean isPillaged;
+    private boolean isPillaged; // TODO : is tile pillaged, or improvement?
     private Ruins ruins;
     private ArrayList<Work> works;
     private Output output;
