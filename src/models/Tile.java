@@ -7,10 +7,11 @@ import models.buildings.Building;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.interfaces.Workable;
 import models.resources.Resources;
 import models.works.Work;
 
-public class Tile {
+public class Tile implements Workable{
     private TerrainType terrainType;
     private Feature feature;
     private Civilization civilization;

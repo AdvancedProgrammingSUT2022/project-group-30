@@ -78,7 +78,7 @@ public class Civilization {
     }
 
     public double calculateNetScienceProduction() {
-        // TODO
+        // MINETODO
         return 0;
     }
 
