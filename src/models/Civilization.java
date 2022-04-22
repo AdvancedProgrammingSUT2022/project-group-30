@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.interfaces.Producible;
+import models.interfaces.TileImage;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
@@ -12,9 +13,8 @@ import utilities.Debugger;
 public class Civilization {
     private final User user;
     private final String name;
-    private ArrayList<Tile> revealedTiles = new ArrayList<>();
-    private ArrayList<Tile> visibleTiles = new ArrayList<>();
-    private HashMap<LuxuryResource, Integer> luxuryResources = new HashMap<>();
+    private HashMap<Tile, TileImage> mapImage = new HashMap<>();
+    private HashMap<LuxuryResource, Integer> luxuryResources;
     private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
     private ArrayList<Technology> technologies = new ArrayList<>();
     private double goldCount;
@@ -39,6 +39,34 @@ public class Civilization {
         this.score = 0;
         this.capital = originCapital;
         this.originCapital = originCapital;
+        mapImage = new HashMap<>();
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            mapImage.put(tile, null);
+        }
+    }
+
+    public TileImage getTileImage(Tile tile) {
+        if (mapImage.containsKey(tile) == false) {
+            Debugger.debug("The tile passed to Civilization's getTileImage method is not in the GameMap: " + tile);
+            return null;
+        }
+        return mapImage.get(tile);
+    }
+
+    public TileVisibility getTileVisibility(Tile tile) {
+        if (mapImage.containsKey(tile) == false) {
+            Debugger.debug("The tile passed to Civilization's getTileVisibility method is not in the GameMap: " + tile);
+            return null;
+        }
+        if (mapImage.get(tile) == null) {
+            return TileVisibility.FOG_OF_WAR;
+        } else if (mapImage.get(tile) instanceof TileHistory) {
+            return TileVisibility.REVEALED;
+        } else if (mapImage.get(tile) instanceof Tile) {
+            return TileVisibility.VISIBLE;
+        } else {
+            return null;
+        }
     }
 
     public void goToNextTurn() {
@@ -119,28 +147,6 @@ public class Civilization {
 
     public void setGoldCount(int goldCount) {
         this.goldCount = goldCount;
-    }
-
-    public TileVisibility getTileVisibility(Tile tile) {
-        // TODO
-        return null;
-    }
-
-
-    public ArrayList<Tile> getRevealedTiles() {
-        return revealedTiles;
-    }
-
-    public void setRevealedTiles(ArrayList<Tile> revealedTiles) {
-        this.revealedTiles = revealedTiles;
-    }
-
-    public ArrayList<Tile> getVisibleTiles() {
-        return visibleTiles;
-    }
-
-    public void setVisibleTiles(ArrayList<Tile> visibleTiles) {
-        this.visibleTiles = visibleTiles;
     }
 
     public HashMap<LuxuryResource, Integer> getLuxuryResources() {

@@ -39,7 +39,20 @@ public class Unit implements Selectable, TurnHandler, Producible {
         } else {
             isAssembled = true;
         }
+    }
 
+    public Unit createImage() {
+        Unit image = new Unit(owner, type, location);
+        image.hitPointsLeft = hitPointsLeft;
+        image.movePointsLeft = movePointsLeft;
+        image.experiencePoints = experiencePoints;
+        image.state = state;
+        image.hasBeenInactive = hasBeenInactive;
+        image.inactivityDuration = inactivityDuration;
+        image.stateDuration = stateDuration;
+        image.hasReceivedCommand = hasReceivedCommand;
+        image.isAssembled = isAssembled;
+        return image;
     }
 
     public void goToNextTurn() {
@@ -152,5 +165,7 @@ public class Unit implements Selectable, TurnHandler, Producible {
     public void setDestination(Tile destination) {
         this.destination = destination;
     }
+
+    
 
 }

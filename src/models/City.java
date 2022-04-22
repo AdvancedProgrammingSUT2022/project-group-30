@@ -13,14 +13,13 @@ public class City implements Selectable {
     private Civilization owner;
     // Should I delete following field??
     private boolean isPuppet;
-    private final Tile centraTile;
+    private final Tile centralTile;
     // should I add it in constructor??
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
     private Producible entityInProduction;
     private double hammerCount;
     private double foodCount;
-    private double garrinonedUnit;
     private double combatStrength;
     private double rangedCombatStrength;
     private double range;
@@ -35,19 +34,29 @@ public class City implements Selectable {
 
     // MINETODO where is the appropriate place to initialze combatStrength and
     // rangedCombatStrength...(Maybe instead of get, you should calculate them)
-    public City(Civilization founder, Tile tile, double combatStrength, double rangedCombatStrength) {
+    public City(Civilization founder, Tile tile, double combatStrength, double rangedCombatStrength) {  // WARNING : if you change this, apply the same changes to the createImage method, he makes copies :)
         this.founder = founder;
         this.owner = founder;
         this.isPuppet = false;
-        this.centraTile = tile;
+        this.centralTile = tile;
         this.territories.add(tile);
         this.hammerCount = 0;
         this.foodCount = 0;
-        this.garrinonedUnit = 0;
         this.combatStrength = combatStrength;
         this.rangedCombatStrength = rangedCombatStrength;
         this.hitPoints = 20;
         this.range = 2;
+    }
+
+    public City createImage() {
+        City image = new City(founder, centralTile, combatStrength, rangedCombatStrength);
+        image.setOwner(owner);
+        image.setIsPuppet(isPuppet);
+        image.territories = new ArrayList(territories);
+        image.setHammerCount(hammerCount);
+        image.setFoodCount(foodCount);
+        image.setHitPoints(hitPoints);
+        return image;
     }
 
     public void goToNextTurn() {
@@ -147,8 +156,8 @@ public class City implements Selectable {
         this.isPuppet = isPuppet;
     }
 
-    public Tile getCentraTile() {
-        return centraTile;
+    public Tile getCentralTile() {
+        return centralTile;
     }
 
     public void setTerritories(ArrayList<Tile> territories) {
@@ -169,14 +178,6 @@ public class City implements Selectable {
 
     public void setEntityInProduction(Producible entityInProduction) {
         this.entityInProduction = entityInProduction;
-    }
-
-    public double getGarrinonedUnit() {
-        return garrinonedUnit;
-    }
-
-    public void setGarrinonedUnit(double garrinonedUnit) {
-        this.garrinonedUnit = garrinonedUnit;
     }
 
     public double getCombatStrength() {

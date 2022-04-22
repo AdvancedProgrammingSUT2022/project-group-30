@@ -63,4 +63,12 @@ public class GameMap {
     public Tile getFrameBase() {
         return this.frameBase;
     }
+
+    public static GameMap getGameMap() {
+        return null;
+    }
+
+    public ArrayList<Tile> getAllMapTiles() {
+        return null;
+    }
 }

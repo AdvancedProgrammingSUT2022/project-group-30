@@ -1,8 +1,12 @@
 package controllers;
 
+import java.util.ArrayList;
+
+import models.City;
 import models.GameDataBase;
 import models.Tile;
 import models.TileVisibility;
+import models.units.Unit;
 import models.works.Work;
 
 public class GameController {
@@ -38,5 +42,19 @@ public class GameController {
 
     public TileVisibility getTileVisibilityForPlayer(Tile tile) {  // returns Visible, Fog of War, or Revealed
         return database.getCurrentPlayer().getTileVisibility(tile);
+    }
+
+    public ArrayList<Unit> getUnitsInTile(Tile tile) {
+        // TODO
+        return null;
+    }
+
+    public City getCityInTile(Tile tile) {
+        for (City city : database.getCities()) {
+            if (city.getCentralTile() == tile) {
+                return city;
+            }
+        }
+        return null;
     }
 }

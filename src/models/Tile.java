@@ -3,22 +3,23 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.GameController;
 import models.buildings.Building;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.interfaces.TileImage;
 import models.interfaces.Workable;
 import models.resources.Resources;
+import models.units.Unit;
 import models.works.Work;
-import utilities.Debugger;
 
-public class Tile implements Workable {
+public class Tile implements Workable, TileImage {
     private TerrainType terrainType;
     private Civilization civilization;
     private HashMap<Resources, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private ArrayList<Building> buildings = new ArrayList<>();
-    private boolean isPillaged;
     private Ruins ruins;
     private ArrayList<Work> works;
     private Output output;
@@ -29,9 +30,32 @@ public class Tile implements Workable {
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, null);
         this.civilization = civilization;
         this.resources = resources;
-        this.isPillaged = false;
         this.ruins = ruins;
         this.output = new Output(0, 0, 0);
+    }
+
+    public TileHistory createTileHistory() {
+        TileHistory history = new TileHistory();
+        Tile tile = new Tile(terrainType, civilization, new HashMap<Resources, Integer>(resources), ruins);
+        history.setTile(tile);
+        ArrayList<Unit> units = GameController.getGameController().getUnitsInTile(this);
+        for (Unit unit : units) {
+            history.getUnits().add(unit.createImage());
+        }
+        for (Improvement improvement : improvements) {
+            history.getImprovements().add(improvement.createImage());
+        }
+        for (Building building : buildings) {
+            history.getBuildings().add(building.createImage());
+        }
+        City city = GameController.getGameController().getCityInTile(this);
+        if (city == null) {
+            history.setCity(null);
+        } else {
+            history.setCity(city.createImage());
+        }
+        
+        return history;
     }
 
     public void setTerrainTypeAndFeaturesAndApplyOutputChanges(TerrainType terrainType, ArrayList<Feature> features) {
@@ -125,14 +149,6 @@ public class Tile implements Workable {
 
     public ArrayList<Building> getBuildings() {
         return this.buildings;
-    }
-
-    public boolean getIsPillaged() {
-        return this.isPillaged;
-    }
-
-    public void setIsPillaged(boolean isPillaged) {
-        this.isPillaged = isPillaged;
     }
 
     public Ruins getRuins() {
