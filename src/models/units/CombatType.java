@@ -1,4 +1,5 @@
 package models.units;
+
 import java.util.ArrayList;
 
 public enum CombatType {

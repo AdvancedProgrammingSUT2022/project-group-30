@@ -3,6 +3,7 @@ package models;
 import java.util.ArrayList;
 
 import controllers.diplomacy.Diplomacy;
+import controllers.diplomacy.WarInfo;
 import models.interfaces.Selectable;
 import models.units.Unit;
 
@@ -15,8 +16,8 @@ public class GameDataBase {
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
     private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
-    private ArrayList<Diplomacy> diplomaticRelations = new ArrayList<>();
     private Civilization currentPlayer;
+    private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
 
     public static GameDataBase getGameDataBase() {
         if (gameDataBase == null)
@@ -56,20 +57,22 @@ public class GameDataBase {
             this.wars.add(war);
     }
 
-  
-    // public void initializeDiplomaticRelationMap(ArrayList<CivilizationPair> civilizationPairs) {
-    //     for(CivilizationPair civilizationPair : civilizationPairs){
-    //         //MINETODO .. create Diplomatic class and fill the following () with "civilizationPair, 0"
-    //         this.diplomaticRelations.add(new DiplomaticRelation());
-    //     }
+    // ??
+    // public void initializeDiplomaticRelationMap(ArrayList<CivilizationPair>
+    // civilizationPairs) {
+    // for(CivilizationPair civilizationPair : civilizationPairs){
+    // //MINETODO .. create Diplomatic class and fill the following () with
+    // "civilizationPair, 0"
+    // this.diplomaticRelations.add(new DiplomaticRelation());
+    // }
     // }
 
-    public ArrayList<CivilizationPair> getCivilizationPairs(){
+    public ArrayList<CivilizationPair> getCivilizationPairs() {
         return this.civilizationPairs;
     }
 
-    public ArrayList<Diplomacy> getDiplomaticRelations(){
-        return this.diplomaticRelations;
+    public ArrayList<Diplomacy> getDiplomaticRelations() {
+        return this.AllDiplomaticRelations;
     }
 
     public Civilization getCurrentPlayer() {

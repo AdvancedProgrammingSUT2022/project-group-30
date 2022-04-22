@@ -37,30 +37,30 @@ public class GameMap {
         return null;
     }
 
-    public int findMovementCost(Unit unit, Tile destination){
-        //TODO
+    public int findMovementCost(Unit unit, Tile destination) {
+        // TODO
         return 0;
     }
 
-    public Tile findTileToAppendToCity(City city){
-        //TODO
+    public Tile findTileToAppendToCity(City city) {
+        // TODO
         return null;
     }
 
-    public ArrayList<Tile> getZOCTilesForCivilization(Civilization  civilization){
-        //TODO
+    public ArrayList<Tile> getZOCTilesForCivilization(Civilization civilization) {
+        // TODO
         return null;
     }
 
-    public Tile[][] getMap(){
+    public Tile[][] getMap() {
         return this.map;
     }
 
-    public ArrayList<RiverSegment> getRivers (){
+    public ArrayList<RiverSegment> getRivers() {
         return this.rivers;
     }
 
-    public Tile getFrameBase(){
+    public Tile getFrameBase() {
         return this.frameBase;
     }
 }

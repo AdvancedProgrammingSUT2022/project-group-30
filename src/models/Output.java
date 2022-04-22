@@ -5,7 +5,7 @@ public class Output {
     private int food;
     private int production;
 
-    public Output(int gold, int food, int production){
+    public Output(int gold, int food, int production) {
         this.gold = gold;
         this.food = food;
         this.production = production;
@@ -16,7 +16,7 @@ public class Output {
         gold += other.getGold();
         production += other.getProduction();
     }
-    
+
     public void subtract(Output other) {
         food -= other.getFood();
         gold -= other.getGold();
@@ -29,30 +29,28 @@ public class Output {
         production = other.getProduction();
     }
 
-    public void setGold(int gold){
+    public void setGold(int gold) {
         this.gold = gold;
     }
 
-    public int getGold(){
+    public int getGold() {
         return this.gold;
     }
 
-    public void setFood(int food){
+    public void setFood(int food) {
         this.food = food;
     }
 
-    public int getFood(){
+    public int getFood() {
         return this.food;
     }
 
-    public void setProduction(int production){
+    public void setProduction(int production) {
         this.production = production;
     }
 
-    public int getProduction(){
+    public int getProduction() {
         return this.production;
     }
 
-
-    
 }
