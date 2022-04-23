@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import models.buildings.Building;
 import models.improvements.Improvement;
+import models.interfaces.TileImage;
 import models.units.Unit;
 
-public class TileHistory {
+public class TileHistory implements TileImage{
     private Tile tile;
     private ArrayList<Unit> units;
     private ArrayList<Improvement> improvements;

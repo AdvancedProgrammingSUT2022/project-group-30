@@ -1,7 +1,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import models.interfaces.Producible;
@@ -246,4 +245,8 @@ public class Civilization implements TurnHandler {
     public String getName() {
         return name;
     }
+    public HashMap<Tile, TileImage> getMapImage(){
+        return this.mapImage;
+    }
+
 }
