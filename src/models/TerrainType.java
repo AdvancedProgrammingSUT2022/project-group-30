@@ -6,8 +6,8 @@ public enum TerrainType implements TerrainProperty {
     DESERT(new Output(0, 0, 0), -33, 1),
     GRASSLAND(new Output(0, 2, 0), -33, 1),
     HILLS(new Output(0, 0, 2), 25, 2),
-    MOUNTAIN(new Output(0, 0, 0), 25, 100000),
-    OCEAN(new Output(0, 0, 0), 25, 100000),
+    MOUNTAIN(new Output(0, 0, 0), 25, GameMap.EXPENSIVE_MOVEMENT_COST),
+    OCEAN(new Output(0, 0, 0), 25, GameMap.EXPENSIVE_MOVEMENT_COST),
     PLAINS(new Output(0, 1, 1), -33, 1),
     SNOW(new Output(0, 0, 0), -33, 1),
     TUNDRA(new Output(0, 1, 0), -33, 1);

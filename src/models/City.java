@@ -5,10 +5,11 @@ import java.util.HashMap;
 
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
+import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.units.Unit;
 
-public class City implements Selectable {
+public class City implements Selectable, TurnHandler {
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??

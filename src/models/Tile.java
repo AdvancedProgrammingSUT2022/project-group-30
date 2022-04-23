@@ -7,11 +7,12 @@ import models.buildings.Building;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.resources.Resources;
 import models.works.Work;
 
-public class Tile implements Workable {
+public class Tile implements Workable, TurnHandler {
     private TerrainType terrainType;
     private Civilization civilization;
     private HashMap<Resources, Integer> resources = new HashMap<>();

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.interfaces.Producible;
+import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
-import utilities.Debugger;
 
-public class Civilization {
+public class Civilization implements TurnHandler{
     private final User user;
     private final String name;
     private ArrayList<Tile> revealedTiles = new ArrayList<>();
