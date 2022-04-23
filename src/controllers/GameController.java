@@ -91,6 +91,7 @@ public class GameController {
     public void createUnit(UnitType type, Civilization owner, Tile location) {
         Unit newUnit = new Unit(owner, type, location);
         gameDataBase.getUnits().add(newUnit);
+        setMapImageOfCivilization(owner);
         // TODO TOROKKKHOOODAAA : update visibility for owner tile
     }
 
@@ -151,8 +152,22 @@ public class GameController {
     }
 
     public boolean areTwoTilesAdjacent(Tile tile1, Tile tile2) {
-        // TODO
-        return true;
+        int x = tile1.findTileXCoordinateInMap();
+        int y = tile1.findTileYCoordinateInMap();
+        int x2 = tile2.findTileXCoordinateInMap();
+        int y2 = tile2.findTileYCoordinateInMap();
+        if (x == x2 && Math.abs(y - y2) == 1)
+            return true;
+        if (y == y2 && Math.abs(x - x2) == 1)
+            return true;
+        if (x % 2 == 0) {
+            if (Math.abs(x - x2) == 1 && (y2 - y == 1))
+                return true;
+            return false;
+        }
+        if ((y - y2 == 1) && Math.abs(x - x2) == 1)
+            return true;
+        return false;
     }
 
     public boolean hasCommonRiver(Tile tile1, Tile tile2) {
@@ -228,8 +243,21 @@ public class GameController {
     }
 
     public ArrayList<Tile> getAdjacentTiles(Tile tile) {
-        // TODO
-        return null;
+        int x = tile.findTileXCoordinateInMap();
+        int y = tile.findTileYCoordinateInMap();
+        ArrayList<Tile> tiles = new ArrayList<>();
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y));
+        if (x % 2 == 0) {
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y + 1));
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y + 1));
+        } else {
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y - 1));
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y - 1));
+        }
+        return tiles;
     }
 
     public boolean isTileBlocker(Tile tile) {
@@ -260,9 +288,9 @@ public class GameController {
             finalTiles.addAll(waitingTiles);
             return finalTiles;
         }
-
-        for (Tile visibleTile : finalTiles) {
-            finalTiles.addAll(getAdjacentTiles(visibleTile));
+        int size = finalTiles.size();
+        for (int i=0; i<size; i++) {
+            finalTiles.addAll(getAdjacentTiles(finalTiles.get(i)));
         }
         finalTiles.addAll(waitingTiles);
         finalTiles.add(tile);
