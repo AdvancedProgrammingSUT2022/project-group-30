@@ -9,12 +9,13 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
+import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.resources.Resources;
 import models.units.Unit;
 import models.works.Work;
 
-public class Tile implements Workable, TileImage {
+public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
     private Civilization civilization;
     private HashMap<Resources, Integer> resources = new HashMap<>();
@@ -27,7 +28,7 @@ public class Tile implements Workable, TileImage {
 
     public Tile(TerrainType terrainType, Civilization civilization,
             HashMap<Resources, Integer> resources, Ruins ruins) {
-        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, null);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;

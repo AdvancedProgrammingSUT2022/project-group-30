@@ -7,6 +7,7 @@ import utilities.Debugger;
 
 public class GameMap {
     public static final int NUMBER_OF_TILES = 100;
+    public static final int EXPENSIVE_MOVEMENT_COST = 10000;
     private Tile[][] map;
     private ArrayList<RiverSegment> rivers;
     private Tile frameBase;
