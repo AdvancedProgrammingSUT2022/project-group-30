@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import models.interfaces.TerrainProperty;
-import utilities.Debugger;
 
 public enum Feature implements TerrainProperty {
     FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, 1),
@@ -12,7 +11,7 @@ public enum Feature implements TerrainProperty {
             new ArrayList<TerrainType>(
                     Arrays.asList(TerrainType.GRASSLAND, TerrainType.HILLS, TerrainType.PLAINS, TerrainType.TUNDRA)),
             25, 2),
-    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, 100000),
+    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, GameMap.EXPENSIVE_MOVEMENT_COST),
     JUNGLE(new Output(0, 1, -1), new ArrayList<TerrainType>(Arrays.asList(TerrainType.HILLS, TerrainType.PLAINS)), 25,
             2),
     MARSH(new Output(0, -1, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.GRASSLAND)), -33, 2),
@@ -39,40 +38,6 @@ public enum Feature implements TerrainProperty {
             return true;
         }
         return false;
-    }
-
-    public static void plantFeatureOnTileAndApplyOutputChanges(Feature feature, Tile tile)   {
-        if(feature == null){
-            return;
-        }
-        if (isTileCompatibleWithFeature(feature, tile))
-            tile.setFeature(feature);
-        else {
-            Debugger.debug("the feature is not compatible with the tile!");
-            return;
-        }
-
-        if (feature.equals(FOREST)) {
-            tile.getOutput().setEqualTo(feature.getOutput());
-        }
-
-        else {
-            tile.getOutput().add(feature.getOutput());
-        }
-    }
-
-    public static void removeFeatureOnTile(Tile tile) { // needs to undo feature's output effects
-        if (tile.getFeature() == null) {
-            return;
-        }
-
-        if (tile.getFeature().equals(FOREST)) {
-            tile.getOutput().setEqualTo(tile.getTerrainType().getOutput());
-        } else {
-            tile.getOutput().setEqualTo(tile.getTerrainType().getOutput());
-        }
-
-        tile.setFeature(null);
     }
 
     public Output getOutput() {

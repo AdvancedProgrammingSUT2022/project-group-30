@@ -2,11 +2,11 @@ package models.units;
 
 import models.Civilization;
 import models.Tile;
+import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 
-
-public class Unit implements Selectable, TurnHandler {
+public class Unit implements Selectable, TurnHandler, Producible {
     private final Civilization owner;
     private final UnitType type;
     private Tile location;
@@ -18,7 +18,7 @@ public class Unit implements Selectable, TurnHandler {
     private boolean hasBeenInactive;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
-    private Tile destination;     // Depending on how we implement schedualed movement, might turn into a path
+    private Tile destination; // Depending on how we implement schedualed movement, might turn into a path
     private boolean hasReceivedCommand;
 
     public Unit(Civilization owner, UnitType type, Tile location) {
@@ -39,7 +39,20 @@ public class Unit implements Selectable, TurnHandler {
         } else {
             isAssembled = true;
         }
+    }
 
+    public Unit createImage() {
+        Unit image = new Unit(owner, type, location);
+        image.hitPointsLeft = hitPointsLeft;
+        image.movePointsLeft = movePointsLeft;
+        image.experiencePoints = experiencePoints;
+        image.state = state;
+        image.hasBeenInactive = hasBeenInactive;
+        image.inactivityDuration = inactivityDuration;
+        image.stateDuration = stateDuration;
+        image.hasReceivedCommand = hasReceivedCommand;
+        image.isAssembled = isAssembled;
+        return image;
     }
 
     public void goToNextTurn() {
@@ -51,16 +64,17 @@ public class Unit implements Selectable, TurnHandler {
         if (hasBeenInactive) {
             inactivityDuration++;
         }
-        if (true /* you can heal*/) {
+        if (true /* you can heal */) {
             heal();
         }
     }
 
-    public void assemble() { 
+    public void assemble() {
         isAssembled = true;
     }
 
-    public boolean isAssembled() {  // needs to be checked for all units, but only siege units may return false, the rest all return true
+    public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
+                                   // rest all return true
         if (type.needsAssmbly()) {
             return isAssembled;
         } else {
@@ -72,20 +86,20 @@ public class Unit implements Selectable, TurnHandler {
         // TODO
         return 0;
     }
-    
+
     public double calculateEffectiveRangedCombatStrength() {
         // TODO
         return 0;
     }
 
-    public void heal() {    // replaces the setter for hitPointsLeft
+    public void heal() { // replaces the setter for hitPointsLeft
         // TODO
     }
 
     public boolean isWaitingForCommand() {
         // TODO : might be incomplete
 
-        if (state.waitsForCommand == false) {   // if it is in an inactive state like fortified or sleeping, return false
+        if (state.waitsForCommand == false) { // if it is in an inactive state like fortified or sleeping, return false
             return false;
         }
         if (movePointsLeft > 0 && hasReceivedCommand == false) {
@@ -95,12 +109,11 @@ public class Unit implements Selectable, TurnHandler {
         }
     }
 
-    public void move() {    // like a setter for location : but it handles other things as well
+    public void move() { // like a setter for location : but it handles other things as well
         // TODO
         hasBeenInactive = false;
     }
 
-    
     public Civilization getOwner() {
         return this.owner;
     }
@@ -141,7 +154,6 @@ public class Unit implements Selectable, TurnHandler {
         return this.inactivityDuration;
     }
 
-
     public int getStateDuration() {
         return this.stateDuration;
     }
@@ -152,6 +164,10 @@ public class Unit implements Selectable, TurnHandler {
 
     public void setDestination(Tile destination) {
         this.destination = destination;
+    }
+
+    public UnitType getType(){
+        return this.type;
     }
 
 }

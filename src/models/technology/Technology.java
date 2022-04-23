@@ -64,7 +64,6 @@ public enum Technology {
     COMBUSTION(0, new ArrayList<Technology>(Arrays.asList(REPLACEABLE_PARTS, RAILROAD, DYNAMITE))),
     TELEGRAPH(0, new ArrayList<Technology>(Arrays.asList(ELECTRICITY)));
 
-
     private static class Relations {
         public static HashMap<Technology, ArrayList<Technology>> forwardRelations = new HashMap<Technology, ArrayList<Technology>>();
         public static HashMap<Technology, ArrayList<Technology>> backwardRelations = new HashMap<Technology, ArrayList<Technology>>();
@@ -94,6 +93,7 @@ public enum Technology {
     public ArrayList<Technology> getDependentTechnologies() {
         return Relations.forwardRelations.get(this);
     }
+
     public ArrayList<Technology> getPrerequisiteTechnologies() {
         return Relations.backwardRelations.get(this);
     }

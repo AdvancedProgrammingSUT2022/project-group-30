@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import models.units.Unit;
+import utilities.Debugger;
 
 public class GameMap {
     private static GameMap gameMap;
+
+    public static final int EXPENSIVE_MOVEMENT_COST = 10000;
 
     private Tile[][] map;
     private ArrayList<RiverSegment> rivers;
@@ -47,7 +50,7 @@ public class GameMap {
             this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
             for(int i = 0; i < this.map.length; i++){
                 for(int j = 0; j < this.map[i].length; j++){
-                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, null, null, null);
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, null, null);
                 }
             }
             scanner.close();
@@ -144,23 +147,39 @@ public class GameMap {
         return riverSegments;
     }
 
+    public Tile getTile(int x, int y) {
+        if (y >= map.length || y < 0 || x >= map[y].length || x < 0) {
+            Debugger.debug("getTile of GameMap called with invalid indices x:" + x + ", y: " + y);
+            return null;
+        }
+        return map[y][x];
+    }
+
+    public boolean areCoordinatesValid(int x, int y) {
+        if (y >= map.length || y < 0 || x >= map[y].length || x < 0) {
+            return false;
+        }
+        return true;
+    }
+
+
     public ArrayList<Tile> findClosestPath(Tile origin, Tile destination){
         //TODO
         return null;
     }
 
-    public int findMovementCost(Unit unit, Tile destination){
-        //TODO
+    public int findMovementCost(Unit unit, Tile destination) {
+        // TODO
         return 0;
     }
 
-    public Tile findTileToAppendToCity(City city){
-        //TODO
+    public Tile findTileToAppendToCity(City city) {
+        // TODO
         return null;
     }
 
-    public ArrayList<Tile> getZOCTilesForCivilization(Civilization  civilization){
-        //TODO
+    public ArrayList<Tile> getZOCTilesForCivilization(Civilization civilization) {
+        // TODO
         return null;
     }
 
@@ -169,7 +188,7 @@ public class GameMap {
         return this.map;
     }
 
-    public ArrayList<RiverSegment> getRivers (){
+    public ArrayList<RiverSegment> getRivers() {
         return this.rivers;
     }
 
@@ -181,4 +200,13 @@ public class GameMap {
         return this.frameBase;
     }
 
+    public ArrayList<Tile> getAllMapTiles() {
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for(int i = 0; i < this.map.length; i++){
+            for(int j = 0; j < this.map[i].length; j++){
+                tiles.add(map[i][j]);
+            }
+        }
+        return tiles;
+    }
 }

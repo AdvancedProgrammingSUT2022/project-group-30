@@ -3,18 +3,23 @@ package menusEnumerations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public enum GameMainPageCommands {
-    COMMAND("");
+import controllers.Commands;
+
+public class GameMainPageCommands extends Commands {
+    public static GameMainPageCommands GET_TILE_INFO = new GameMainPageCommands("(info)?(?<x>\\d+)\\s*[:,]\\s*(?<y>\\d+)");
+    public static GameMainPageCommands SELECT_UNIT = new GameMainPageCommands("select unit (?<x>\\d+)\\s*[:,](?<x>\\d+)");
+    public static GameMainPageCommands SELECT_CIVILIAN_UNIT = new GameMainPageCommands(
+            "select civ(ilian unit)?\\s*(?<x>\\d+)\\s*[:,](?<y>\\d+)");
 
     private String regex;
 
-    private GameMainPageCommands(String regex){
-        this.regex = regex;
+    GameMainPageCommands(String regex) {
+        super(regex);
     }
 
-    public static Matcher getCommandMatcher(String input, GameMainPageCommands gameMainPageCommands){
-        Matcher matcher = Pattern.compile(input).matcher(gameMainPageCommands.regex);
-        return matcher.matches() ? matcher : null;
+    @Override
+    public Matcher getCommandMatcher(String command) {
+        Matcher matcher = Pattern.compile(regex).matcher(command);
+        return matcher;
     }
-    
 }

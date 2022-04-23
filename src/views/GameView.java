@@ -7,22 +7,43 @@ import models.GameMap;
 import models.RiverSegment;
 import models.Tile;
 import utilities.PrintableCharacters;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import menusEnumerations.GameMainPageCommands;
+import models.TileVisibility;
+import utilities.MyScanner;
 
 public class GameView implements View{
 
     private static GameView gameView;
     private GameController controller = GameController.getGameController();
 
-    private GameView(){
 
+    private GameView() {
+        scanner = MyScanner.getScanner();
+        controller = GameController.getGameController();
     }
 
     public static GameView getGameView(){
         return gameView == null ? gameView = new GameView() : gameView;
     }
 
-    public void run(){
+    private Scanner scanner;
 
+    public void run() {
+        controller.startGame();
+        showMap();
+        
+        String command;
+        Matcher matcher;
+        while (true) {
+            command = scanner.nextLine().trim();
+            if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
+                printTileInfo(matcher);
+            } else {
+                System.out.println("Invalid Command!");
+            }
+        }
     }
 
     public void showMap()  {
@@ -147,13 +168,39 @@ public class GameView implements View{
     }
 
 
-    public void showMenu(){
+    private void printTileInfo(Matcher matcher) {
+        // TODO : needs to handle fog of war
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        System.out.println("printing info for tile : x, y");
+        if (controller.areCoordinatesValid(x, y) == false) {
+            System.out.println("Invalid coordinates");
+        } else {
+            Tile tile = controller.getTileByCoordinates(x, y);
+            System.out.println("x : " + x + ", y : " + y);
+            TileVisibility visibility = controller.getTileVisibilityForPlayer(tile);
+            System.out.println("Visibility : " + visibility.getName());
 
+            if (visibility == TileVisibility.FOG_OF_WAR) {
+                return;
+            }
+
+            System.out.println("Terrain Type : " + tile.getTerrainType());
+            
+            
+            // TODO
+        }
     }
-    
+
+    @Override
     public void setController()  {
         this.controller = GameController.getGameController();
         this.controller.setGameDataBase();
         this.controller.setProgramDatabase();
+    }
+
+    @Override
+    public void showMenu() {
+        // leave empty
     }
 }

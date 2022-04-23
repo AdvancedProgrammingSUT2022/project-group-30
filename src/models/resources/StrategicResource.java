@@ -53,9 +53,12 @@ public class StrategicResource extends Resource {
         return result;
     }
 
-
-
-    public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) {      // utility function used in UnitType constructor
+    public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) { // utility
+                                                                                                                   // function
+                                                                                                                   // used
+                                                                                                                   // in
+                                                                                                                   // UnitType
+                                                                                                                   // constructor
         HashMap<StrategicResource, Integer> result = new HashMap<>();
         for (StrategicResource resource : resources) {
             if (result.containsKey(resource)) {

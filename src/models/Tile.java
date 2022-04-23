@@ -3,37 +3,73 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.GameController;
 import models.buildings.Building;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
+import models.interfaces.TileImage;
+import models.interfaces.TurnHandler;
+import models.interfaces.Workable;
 import models.resources.Resources;
+import models.units.Unit;
 import models.works.Work;
 
-public class Tile {
+public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
-    private Feature feature;
     private Civilization civilization;
-    private HashMap<Resources, Integer> resources;
-    private ArrayList<Improvement> improvements;
-    private ArrayList<Building> buildings;
-    private boolean isPillaged;
+    private HashMap<Resources, Integer> resources = new HashMap<>();
+    private ArrayList<Improvement> improvements = new ArrayList<>();
+    private ArrayList<Building> buildings = new ArrayList<>();
     private Ruins ruins;
     private ArrayList<Work> works;
     private Output output;
+    private ArrayList<Feature> features = new ArrayList<>();
 
-    public Tile(TerrainType terrainType, Feature feature, Civilization civilization,
-            HashMap<Resources, Integer> resources, Ruins ruins)   {
+    public Tile(TerrainType terrainType, Civilization civilization,
+            HashMap<Resources, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
-        TerrainType.setTerrainTypeToTileAndApllyOutputChanges(this, terrainType);
-        Feature.plantFeatureOnTileAndApplyOutputChanges(feature, this);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
         this.resources = resources;
-        this.improvements = new ArrayList<>();
-        this.buildings = new ArrayList<>();
-        this.isPillaged = false;
         this.ruins = ruins;
         this.works = new ArrayList<>();
+    }
+
+    public TileHistory createTileHistory() {
+        TileHistory history = new TileHistory();
+        Tile tile = new Tile(terrainType, civilization, new HashMap<Resources, Integer>(resources), ruins);
+        history.setTile(tile);
+        ArrayList<Unit> units = GameController.getGameController().getUnitsInTile(this);
+        for (Unit unit : units) {
+            history.getUnits().add(unit.createImage());
+        }
+        for (Improvement improvement : improvements) {
+            history.getImprovements().add(improvement.createImage());
+        }
+        for (Building building : buildings) {
+            history.getBuildings().add(building.createImage());
+        }
+        City city = GameController.getGameController().getCityInTile(this);
+        if (city == null) {
+            history.setCity(null);
+        } else {
+            history.setCity(city.createImage());
+        }
+        
+        return history;
+    }
+
+    public void setTerrainTypeAndFeaturesAndApplyOutputChanges(TerrainType terrainType, ArrayList<Feature> features) {
+        this.setTerrainType(terrainType);
+        if (features == null || features.isEmpty() || !features.contains(Feature.FOREST))
+            this.getOutput().add(terrainType.getOutput());
+        if (features == null)
+            return;
+        this.features = features;
+        for (Feature feature : features) {
+            this.getOutput().add(feature.getOutput());
+        }
     }
 
     public Output calculateOutput(Output output) {
@@ -76,7 +112,7 @@ public class Tile {
     }
 
     public boolean isOfType(TerrainProperty property) {
-        if (this.terrainType.equals(property) || this.feature == property)
+        if (this.terrainType.equals(property) || this.features.contains(property))
             return true;
         return false;
     }
@@ -121,8 +157,8 @@ public class Tile {
         return this.terrainType;
     }
 
-    public Feature getFeature() {
-        return this.feature;
+    public ArrayList<Feature> getFeatures() {
+        return this.features;
     }
 
     public Civilization getCivilization() {
@@ -141,14 +177,6 @@ public class Tile {
         return this.buildings;
     }
 
-    public boolean getIsPillaged() {
-        return this.isPillaged;
-    }
-
-    public void setIsPillaged(boolean isPillaged) {
-        this.isPillaged = isPillaged;
-    }
-
     public Ruins getRuins() {
         return this.ruins;
     }
@@ -159,10 +187,6 @@ public class Tile {
 
     public Output getOutput() {
         return this.output;
-    }
-
-    public void setFeature(Feature feature) {
-        this.feature = feature;
     }
 
     public void setTerrainType(TerrainType terrainType) {
