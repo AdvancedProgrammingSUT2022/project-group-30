@@ -9,17 +9,17 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
+import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.resources.Resources;
 import models.units.Unit;
 import models.works.Work;
 
-public class Tile implements Workable, TileImage {
+public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
     private Civilization civilization;
     private HashMap<Resources, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
-    private ArrayList<Building> buildings = new ArrayList<>();
     private Ruins ruins;
     private ArrayList<Work> works;
     private Output output;
@@ -27,11 +27,12 @@ public class Tile implements Workable, TileImage {
 
     public Tile(TerrainType terrainType, Civilization civilization,
             HashMap<Resources, Integer> resources, Ruins ruins) {
-        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, null);
+        this.output = new Output(0, 0, 0);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;
-        this.output = new Output(0, 0, 0);
+        this.works = new ArrayList<>();
     }
 
     public TileHistory createTileHistory() {
@@ -44,9 +45,6 @@ public class Tile implements Workable, TileImage {
         }
         for (Improvement improvement : improvements) {
             history.getImprovements().add(improvement.createImage());
-        }
-        for (Building building : buildings) {
-            history.getBuildings().add(building.createImage());
         }
         City city = GameController.getGameController().getCityInTile(this);
         if (city == null) {
@@ -75,7 +73,7 @@ public class Tile implements Workable, TileImage {
         return null;
     }
 
-    public City getCityOfTile() {
+    public City getCityOfTile()   {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (city.getTerritories().contains(this))
                 return city;
@@ -83,7 +81,7 @@ public class Tile implements Workable, TileImage {
         return null;
     }
 
-    public boolean isNearTheRiver() {
+    public boolean isNearTheRiver()   {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
             if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
                 return true;
@@ -115,6 +113,30 @@ public class Tile implements Workable, TileImage {
         return false;
     }
 
+    // returns -1 if the Tile is not in the map
+    public int findTileXCoordinateInMap()  {
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return j;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int findTileYCoordinateInMap()  {
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
     public void addImprovement(Improvement improvement) {
         // TODO
     }
@@ -145,10 +167,6 @@ public class Tile implements Workable, TileImage {
 
     public ArrayList<Improvement> getImprovements() {
         return this.improvements;
-    }
-
-    public ArrayList<Building> getBuildings() {
-        return this.buildings;
     }
 
     public Ruins getRuins() {

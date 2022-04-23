@@ -3,17 +3,20 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import models.buildings.Building;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
+import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.units.Unit;
 
-public class City implements Selectable {
+public class City implements Selectable, TurnHandler {
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??
     private boolean isPuppet;
     private final Tile centralTile;
+    private ArrayList<Building> buildings = new ArrayList<>();
     // should I add it in constructor??
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
@@ -52,15 +55,23 @@ public class City implements Selectable {
         City image = new City(founder, centralTile, combatStrength, rangedCombatStrength);
         image.setOwner(owner);
         image.setIsPuppet(isPuppet);
-        image.territories = new ArrayList(territories);
+        image.territories = new ArrayList<>(territories);
         image.setHammerCount(hammerCount);
         image.setFoodCount(foodCount);
         image.setHitPoints(hitPoints);
+        for (Building building : buildings) {
+            image.getBuildings().add(building.createImage());
+        }
         return image;
     }
 
     public void goToNextTurn() {
         // TODO
+    }
+
+    public Unit getGarrisoningUnit() {      // return null if city is not garrisoned, return the garrisoning unit otherwise
+        // TODO
+        return null;
     }
 
     public double calculateFoodProduction() {
@@ -280,4 +291,7 @@ public class City implements Selectable {
         this.foodCount = foodCount;
     }
 
+    public ArrayList<Building> getBuildings() {
+        return buildings;
+    }
 }

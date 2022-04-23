@@ -11,7 +11,7 @@ public enum Feature implements TerrainProperty {
             new ArrayList<TerrainType>(
                     Arrays.asList(TerrainType.GRASSLAND, TerrainType.HILLS, TerrainType.PLAINS, TerrainType.TUNDRA)),
             25, 2),
-    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, 100000),
+    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, GameMap.EXPENSIVE_MOVEMENT_COST),
     JUNGLE(new Output(0, 1, -1), new ArrayList<TerrainType>(Arrays.asList(TerrainType.HILLS, TerrainType.PLAINS)), 25,
             2),
     MARSH(new Output(0, -1, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.GRASSLAND)), -33, 2),
@@ -29,8 +29,8 @@ public enum Feature implements TerrainProperty {
         this.movementCost = movementCost;
     }
 
-    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile) {
-        if (feature.equals(FLOOD_PLAINS) && feature.getTerrainTypes().contains(tile.getTerrainType())) {
+    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile)   {
+        if (feature == Feature.FLOOD_PLAINS && feature.getTerrainTypes().contains(tile.getTerrainType())) {
             if (tile.isNearTheRiver())
                 return true;
             return false;

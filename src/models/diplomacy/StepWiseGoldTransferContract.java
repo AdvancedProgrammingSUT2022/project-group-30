@@ -1,9 +1,10 @@
-package controllers.diplomacy;
+package models.diplomacy;
 
 import models.Civilization;
 import models.CivilizationPair;
+import models.interfaces.TurnHandler;
 
-public class StepWiseGoldTransferContract extends Diplomacy {
+public class StepWiseGoldTransferContract extends Diplomacy implements TurnHandler{
     private final Civilization recipient;
     private final Civilization payer;
     private final double totalAmount;
