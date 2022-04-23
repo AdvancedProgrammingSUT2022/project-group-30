@@ -234,4 +234,8 @@ public class Civilization implements TurnHandler{
         return originCapital;
     }
 
+    public HashMap<Tile, TileImage> getMapImage(){
+        return this.mapImage;
+    }
+
 }
