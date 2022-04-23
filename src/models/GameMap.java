@@ -135,6 +135,16 @@ public class GameMap {
 
     }
 
+    public ArrayList<RiverSegment> findTilesRiverSegments(Tile tile){
+        ArrayList<RiverSegment> riverSegments = new ArrayList<>();
+        for(int i = 0; i < this.rivers.size(); i++){
+            if(rivers.get(i).getFirstTile() == tile || rivers.get(i).getSecondTile() == tile){
+                riverSegments.add(rivers.get(i));
+            }
+        }
+        return riverSegments;
+    }
+
     public ArrayList<Tile> findClosestPath(Tile origin, Tile destination){
         //TODO
         return null;

@@ -1,6 +1,10 @@
 package views;
 
+import java.util.ArrayList;
+
 import controllers.GameController;
+import models.GameMap;
+import models.RiverSegment;
 import models.Tile;
 
 public class GameView implements View{
@@ -46,11 +50,49 @@ public class GameView implements View{
             for(int j = 0; j < tiles[i].length; j++){
                 int tileStartingVerticalIndex = (j%2)*3+6*i;
                 int tileStartingHorizontalIndex = 2+j*8;
-                this.drawATile(printableCharacters, tileStartingVerticalIndex, tileStartingHorizontalIndex);
+                this.drawATile(printableCharacters, tileStartingVerticalIndex, tileStartingHorizontalIndex, tiles[i][j]);
             }
         }
         this.colorTiles(tiles, printableCharacters);
+        this.colorRiverSegments(tiles, printableCharacters);
         return printableCharacters;
+    }
+
+    private void colorRiverSegments(Tile tiles[][], PrintableCharacters printableCharacters[][]){
+        for(int i = 0 ; i < tiles.length; i++){
+            for(int j = 0; j < tiles[i].length; j++){
+                ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
+                for(int k = 0; k < riverSegments.size(); k++){
+                    String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
+                    this.colorATileRiverSegment(riverDirection, printableCharacters, j, i);
+                }
+            }
+        }
+    }
+
+    private void colorATileRiverSegment(String riverDirection, PrintableCharacters printableCharacters[][], int XIndex, int YIndex){
+        int tileStartingVerticalIndex = (XIndex%2)*3+6*YIndex;
+        int tileStartingHorizontalIndex = 2+XIndex*8;
+        if(riverDirection.equals("RU")){
+            printableCharacters[tileStartingVerticalIndex+2][tileStartingHorizontalIndex+8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+1][tileStartingHorizontalIndex+7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex+6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+        }
+        else if(riverDirection.equals("RD")){
+            printableCharacters[tileStartingVerticalIndex+5][tileStartingHorizontalIndex+6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+4][tileStartingHorizontalIndex+7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+3][tileStartingHorizontalIndex+8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+        }
+        else if(riverDirection.equals("LU")){
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+1][tileStartingHorizontalIndex-1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+2][tileStartingHorizontalIndex-2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+        }
+        else if(riverDirection.equals("LD")){
+            printableCharacters[tileStartingVerticalIndex+3][tileStartingHorizontalIndex-2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+4][tileStartingHorizontalIndex-1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex+5][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+        }
     }
 
     private void colorTiles(Tile tiles[][], PrintableCharacters printableCharacters[][]){
@@ -75,7 +117,15 @@ public class GameView implements View{
         }
     }
 
-    private void drawATile(PrintableCharacters printableCharacters[][] , int i, int j){
+    private void drawATile(PrintableCharacters printableCharacters[][] , int i, int j, Tile tile){
+        int tileXCoordinate = tile.findTileXCoordinateInMap();
+        int tileYCoordinate = tile.findTileYCoordinateInMap();
+        printableCharacters[i+1][j+1].setCharacter((char) (tileYCoordinate / 10 + 48));
+        printableCharacters[i+1][j+2].setCharacter((char) (tileYCoordinate % 10 + 48));
+        printableCharacters[i+1][j+3].setCharacter(',');
+        printableCharacters[i+1][j+4].setCharacter((char) (tileYCoordinate / 10 + 48));
+        printableCharacters[i+1][j+5].setCharacter((char) (tileYCoordinate % 10 + 48));
+
         printableCharacters[i][j].setCharacter('/');
         printableCharacters[i+1][j-1].setCharacter('/');
         printableCharacters[i+2][j-2].setCharacter('/');
