@@ -16,6 +16,7 @@ public class GameMap {
     private GameMap() {
         this.initializeMap();
         this.rivers = new ArrayList<>();
+        this.initializeRivers();
         this.frameBase = null;
         //map = new Tile[NUMBER_OF_TILES][NUMBER_OF_TILES];
         //rivers = new ArrayList<>();
@@ -44,7 +45,6 @@ public class GameMap {
                 String tokens[] = fileLines.get(i).split("\\s+");
                 mapTerrainTypes[i] = tokens;
             }
-            System.out.println(mapTerrainTypes[0].length);
             this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
             for(int i = 0; i < this.map.length; i++){
                 for(int j = 0; j < this.map[i].length; j++){
@@ -57,6 +57,41 @@ public class GameMap {
             e.printStackTrace();
         }
 
+    }
+
+    private void initializeRivers(){
+        File riversFile = new File("utilities","map1Rivers.txt");
+        Scanner scanner;
+        try {
+            scanner = new Scanner(riversFile);
+            ArrayList<String> fileLines = new ArrayList<>();
+            while(scanner.hasNextLine()){
+                fileLines.add(scanner.nextLine());
+            }
+            for(int i = 0; i < fileLines.size(); i++){
+                String tokens[] = fileLines.get(i).split("\\s+");
+                for(int j = 0; j < tokens.length; j++){
+                    String coordinates[] = tokens[j].split("-");
+                    int firstTileYCoordinate = Integer.parseInt(coordinates[0]);
+                    int firstTileXCoordinate = Integer.parseInt(coordinates[1]);
+                    int secondTileYCoordinate = Integer.parseInt(coordinates[2]);
+                    int secondTileXCoordinate = Integer.parseInt(coordinates[3]);
+                    if(RiverSegment.checkTilesCoordinatesValidity(firstTileXCoordinate, firstTileYCoordinate, secondTileXCoordinate, secondTileYCoordinate)){
+                        Tile firstTile = this.map[firstTileYCoordinate][firstTileXCoordinate];
+                        Tile secondTile = this.map[secondTileYCoordinate][secondTileXCoordinate];
+                        RiverSegment river = new RiverSegment(firstTile, secondTile);
+                        this.rivers.add(river);
+                    }
+                }
+
+            }
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
     }
 
     private TerrainType findTileTerrainTypeFromFile(String terrainType){
