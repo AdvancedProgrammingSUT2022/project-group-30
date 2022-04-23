@@ -15,7 +15,7 @@ public class TileHistory {
 
     public TileHistory() {
         units = new ArrayList<>();
-        improvements = new ArrayList();
+        improvements = new ArrayList<>();
         buildings = new ArrayList<>();
     }
 
