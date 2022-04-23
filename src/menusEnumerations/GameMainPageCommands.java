@@ -3,8 +3,6 @@ package menusEnumerations;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import controllers.Commands;
-
 public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands GET_TILE_INFO = new GameMainPageCommands("(info)?(?<x>\\d+)\\s*[:,]\\s*(?<y>\\d+)");
     public static GameMainPageCommands SELECT_UNIT = new GameMainPageCommands("select unit (?<x>\\d+)\\s*[:,](?<x>\\d+)");

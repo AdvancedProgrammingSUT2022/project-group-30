@@ -1,4 +1,4 @@
-package controllers;
+package menusEnumerations;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
