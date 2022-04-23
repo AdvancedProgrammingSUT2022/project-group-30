@@ -149,4 +149,8 @@ public enum UnitType {
         public boolean isStateAllowed(UnitState state) {
                 return combatType.isStateAllowed(state);
         }
+
+        public CombatType getCombatType() {
+                return combatType;
+        }
 }
