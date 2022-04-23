@@ -69,6 +69,8 @@ public class GameController {
             }
         }
         return null;
+    }
+    
     public boolean areTwoTilesAdjacent(Tile tile1, Tile tile2) {
         // TODO
         return true;

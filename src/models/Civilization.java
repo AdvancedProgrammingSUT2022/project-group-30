@@ -9,6 +9,7 @@ import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import utilities.Debugger;
 
 public class Civilization implements TurnHandler{
     private final User user;
