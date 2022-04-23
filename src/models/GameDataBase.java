@@ -2,8 +2,8 @@ package models;
 
 import java.util.ArrayList;
 
-import controllers.diplomacy.Diplomacy;
-import controllers.diplomacy.WarInfo;
+import models.diplomacy.Diplomacy;
+import models.diplomacy.WarInfo;
 import models.interfaces.Selectable;
 import models.units.Unit;
 
@@ -11,13 +11,17 @@ public class GameDataBase {
     private static GameDataBase gameDataBase = null;
     private Selectable selectedEntity;
     private ArrayList<Civilization> civilizations = new ArrayList<>();
-    private GameMap map;
+    private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
     private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
     private Civilization currentPlayer;
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
+
+    private GameDataBase()  {
+        map = GameMap.getGameMap();
+    }
 
     public static GameDataBase getGameDataBase() {
         if (gameDataBase == null)

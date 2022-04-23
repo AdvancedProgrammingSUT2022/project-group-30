@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import models.City;
 import models.Feature;
 import models.GameDataBase;
+import models.ProgramDatabase;
 import models.MPCost;
 import models.MPCostClass;
 import models.RiverSegment;
@@ -23,6 +24,9 @@ import utilities.Debugger;
 
 public class GameController {
     private static GameController gameController;
+
+    private GameDataBase gameDataBase = GameDataBase.getGameDataBase();
+    private ProgramDatabase programDatabase;
 
     private GameController() {
         database = GameDataBase.getGameDataBase();
@@ -61,6 +65,22 @@ public class GameController {
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         // TODO
         return null;
+    }
+
+    public void setProgramDatabase(){
+        this.programDatabase = ProgramDatabase.getProgramDatabase();
+    }
+
+    public ProgramDatabase getProgramDatabase(){
+        return this.programDatabase;
+    }
+
+    public void setGameDataBase()  {
+        this.gameDataBase = GameDataBase.getGameDataBase();
+    }
+
+    public GameDataBase getGameDataBase(){
+        return this.gameDataBase;
     }
 
     public City getCityInTile(Tile tile) {

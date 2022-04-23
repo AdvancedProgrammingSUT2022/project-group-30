@@ -27,11 +27,12 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public Tile(TerrainType terrainType, Civilization civilization,
             HashMap<Resources, Integer> resources, Ruins ruins) {
+        this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;
-        this.output = new Output(0, 0, 0);
+        this.works = new ArrayList<>();
     }
 
     public TileHistory createTileHistory() {
@@ -72,7 +73,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
-    public City getCityOfTile() {
+    public City getCityOfTile()   {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (city.getTerritories().contains(this))
                 return city;
@@ -80,7 +81,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
-    public boolean isNearTheRiver() {
+    public boolean isNearTheRiver()   {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
             if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
                 return true;
@@ -112,6 +113,30 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return false;
     }
 
+    // returns -1 if the Tile is not in the map
+    public int findTileXCoordinateInMap()  {
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return j;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int findTileYCoordinateInMap()  {
+        GameMap map = GameMap.getGameMap();
+        for(int i = 0; i < map.getMap().length; i++){
+            for(int j = 0; j < map.getMap()[i].length; j++){
+                if(map.getMap()[i][j] == this){
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
     public void addImprovement(Improvement improvement) {
         // TODO
     }

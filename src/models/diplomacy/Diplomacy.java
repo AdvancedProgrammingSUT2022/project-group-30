@@ -1,4 +1,4 @@
-package controllers.diplomacy;
+package models.diplomacy;
 
 import models.CivilizationPair;
 

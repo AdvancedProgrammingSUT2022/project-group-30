@@ -55,7 +55,7 @@ public class City implements Selectable, TurnHandler {
         City image = new City(founder, centralTile, combatStrength, rangedCombatStrength);
         image.setOwner(owner);
         image.setIsPuppet(isPuppet);
-        image.territories = new ArrayList(territories);
+        image.territories = new ArrayList<>(territories);
         image.setHammerCount(hammerCount);
         image.setFoodCount(foodCount);
         image.setHitPoints(hitPoints);

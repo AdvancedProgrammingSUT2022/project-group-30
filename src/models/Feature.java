@@ -29,8 +29,8 @@ public enum Feature implements TerrainProperty {
         this.movementCost = movementCost;
     }
 
-    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile) {
-        if (feature.equals(FLOOD_PLAINS) && feature.getTerrainTypes().contains(tile.getTerrainType())) {
+    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile)   {
+        if (feature == Feature.FLOOD_PLAINS && feature.getTerrainTypes().contains(tile.getTerrainType())) {
             if (tile.isNearTheRiver())
                 return true;
             return false;
