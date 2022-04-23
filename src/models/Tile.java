@@ -10,7 +10,6 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.Workable;
 import models.resources.Resources;
 import models.works.Work;
-import utilities.Debugger;
 
 public class Tile implements Workable {
     private TerrainType terrainType;
@@ -26,7 +25,7 @@ public class Tile implements Workable {
 
     public Tile(TerrainType terrainType, Civilization civilization,
             HashMap<Resources, Integer> resources, Ruins ruins) {
-        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, null);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
         this.resources = resources;
         this.isPillaged = false;

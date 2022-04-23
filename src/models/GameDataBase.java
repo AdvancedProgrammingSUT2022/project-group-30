@@ -71,7 +71,7 @@ public class GameDataBase {
         return this.civilizationPairs;
     }
 
-    public ArrayList<Diplomacy> getDiplomaticRelations() {
+    public ArrayList<Diplomacy> getAllDiplomaticRelations() {
         return this.AllDiplomaticRelations;
     }
 

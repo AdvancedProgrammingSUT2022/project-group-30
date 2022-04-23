@@ -1,7 +1,6 @@
 package models;
 
 import models.interfaces.TerrainProperty;
-import utilities.Debugger;
 
 public enum TerrainType implements TerrainProperty {
     DESERT(new Output(0, 0, 0), -33, 1),

@@ -23,4 +23,8 @@ public class DiplomaticRelationsMap extends Diplomacy {
     public void setFriendliness(double friendliness) {
         this.friendliness = friendliness;
     }
+
+    public CivilizationPair getPair(){
+        return this.pair;
+    }
 }

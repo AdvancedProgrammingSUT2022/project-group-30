@@ -153,4 +153,9 @@ public class Unit implements Selectable, TurnHandler, Producible {
         this.destination = destination;
     }
 
+
+    public UnitType getType(){
+        return this.type;
+    }
+
 }
