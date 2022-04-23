@@ -8,6 +8,7 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.resources.Resources;
+import models.works.Work;
 
 public class Tile {
     private TerrainType terrainType;
@@ -42,7 +43,7 @@ public class Tile {
 
     public City getCityOfTile()   {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
-            if (city.getTerritory().contains(this))
+            if (city.getTerritories().contains(this))
                 return city;
         }
         return null;
@@ -51,6 +52,16 @@ public class Tile {
     public boolean isNearTheRiver()   {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
             if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isCityOfTileNearTheRiver() {
+        City city = this.getCityOfTile();
+        for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
+            if (city.getTerritories().contains(river.getFirstTile())
+                    || city.getTerritories().contains(river.getSecondTile()))
                 return true;
         }
         return false;
@@ -93,6 +104,13 @@ public class Tile {
             }
         }
         return -1;
+    }
+    public void addImprovement(Improvement improvement) {
+        // TODO
+    }
+
+    public void removeWork() {
+        // TODO
     }
 
     public void goToNextTurn() {

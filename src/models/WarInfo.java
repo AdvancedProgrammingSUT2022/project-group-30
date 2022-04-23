@@ -1,5 +1,5 @@
 package models;
 
-public class Unit {
+public class WarInfo {
     
 }

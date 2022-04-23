@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import models.units.Unit;
+
 public class GameMap {
     private static GameMap gameMap;
 
