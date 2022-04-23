@@ -15,6 +15,7 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.technology.Technology;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
@@ -105,11 +106,10 @@ public class GameController {
     }
 
     public boolean isInZOC(Unit unit, Tile tile) {
-        // unit2 okeye??
         for (Unit unit2 : GameDataBase.getGameDataBase().getUnits()) {
             if (areTwoTilesAdjacent(tile, unit2.getLocation())
-                    && !unit.getOwner().equals(unit2.getOwner())
-                    && unit2.getOwner().equals(unit2.getLocation().getCivilization()))
+                    && !unit.getOwner().equals(unit2.getOwner()) &&
+                    unit2.getType().getCombatType() != CombatType.CIVILIAN)
                 return true;
         }
         return false;
@@ -138,7 +138,7 @@ public class GameController {
                 || destinationTile.getFeatures().contains(Feature.ICE)) {
             return MPCost.IMPASSABLE;
         }
-        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile))// MINETODO add relation effects
+        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile)) // MINETODO add relation effects
             hasCommonRoadOrRailRoad = true;
         if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad
                 && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))

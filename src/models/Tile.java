@@ -20,7 +20,6 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private Civilization civilization;
     private HashMap<Resources, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
-    private ArrayList<Building> buildings = new ArrayList<>();
     private Ruins ruins;
     private ArrayList<Work> works;
     private Output output;
@@ -45,9 +44,6 @@ public class Tile implements Workable, TileImage, TurnHandler {
         }
         for (Improvement improvement : improvements) {
             history.getImprovements().add(improvement.createImage());
-        }
-        for (Building building : buildings) {
-            history.getBuildings().add(building.createImage());
         }
         City city = GameController.getGameController().getCityInTile(this);
         if (city == null) {
@@ -146,10 +142,6 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public ArrayList<Improvement> getImprovements() {
         return this.improvements;
-    }
-
-    public ArrayList<Building> getBuildings() {
-        return this.buildings;
     }
 
     public Ruins getRuins() {
