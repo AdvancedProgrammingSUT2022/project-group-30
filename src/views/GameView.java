@@ -1,8 +1,11 @@
 package views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import controllers.GameController;
+import models.City;
+import models.Feature;
 import models.GameMap;
 import models.ProgramDatabase;
 import models.RiverSegment;
@@ -16,7 +19,10 @@ import java.util.regex.Pattern;
 import menusEnumerations.GameMainPageCommands;
 import models.TileVisibility;
 import models.User;
+import models.buildings.Building;
+import models.improvements.Improvement;
 import models.interfaces.TileImage;
+import models.resources.Resource;
 import models.units.Unit;
 import utilities.MyScanner;
 
@@ -46,11 +52,85 @@ public class GameView implements View {
         Matcher matcher;
         while (true) {
             command = scanner.nextLine().trim();
-            if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
+            if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
+                showMap();
+            } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
                 printTileInfo(matcher);
             } else {
                 System.out.println("Invalid Command!");
             }
+        }
+    }
+
+    private void printTileInfo(Matcher matcher) {
+        // TODO : needs to handle fog of war
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        System.out.println("printing info for tile : x, y");
+        if (controller.areCoordinatesValid(x, y) == false) {
+            System.out.println("Invalid coordinates");
+            return;
+        }
+
+        TileImage image = controller.getCurrentPlayer().getTileImage(controller.getTileByCoordinates(x, y));
+        System.out.println("x : " + x + ", y : " + y);
+
+        if (image == null) {
+            System.out.println("This tile is not visible!");
+            return;
+        }
+
+        Tile tile = null;
+        ArrayList<Unit> units = new ArrayList<>();
+        City cityCentral = null;    // the city whose center is this tile
+        City city = null;   // the city whose territory this tile is in but is not the center of
+        if (image instanceof Tile) {
+            tile = (Tile) image;
+            units = controller.getUnitsInTile(tile);
+            cityCentral = controller.getCityCenteredInTile(tile);
+            city = controller.whoseTerritoryIsTileIn(tile);
+        } else if (image instanceof TileHistory) {
+            System.out.println("This tile is only revealed, the information contained may be out of date");
+            TileHistory history = (TileHistory) image;
+
+            tile = history.getTile();
+            units = history.getUnits();
+            cityCentral = history.getCity();
+            city = cityCentral;
+        }
+
+        System.out.println("Terrain Type : " + tile.getTerrainType().getName());
+        System.out.println("Features:");
+        for (Feature feature : tile.getFeatures()) {
+            System.out.println(feature.getName());
+        }
+        System.out.println();
+        if (cityCentral != null) {
+            System.out.println(city.getOwner().getName() + "'s city is located here");
+        } else if (city != null) {
+            System.out.println("This tile is located in the territory of a city owned by " + city.getOwner().getName());
+        }
+
+        System.out.println("Units:");
+        for (Unit unit : units) {
+            System.out.println(unit.getOwner().getName() + "'s " + unit.getType().getName());
+        }
+
+        System.out.println("Resources:");
+        HashMap<Resource, Integer> resources = tile.getResources();
+        for (Resource resource : resources.keySet()) {
+            if (resources.get(resource) > 0 && resource.isDiscoverable(controller.getCurrentPlayer())) {
+                System.out.println(resource);
+            }
+        }
+
+        System.out.println("Improvements:");
+        for (Improvement improvement : tile.getImprovements()) {
+            System.out.print(improvement.getType().getName());
+            if (improvement.isPillaged()) {
+                System.out.print(" (pillaged)");
+            }
+            System.out.println();
         }
     }
 
@@ -62,34 +142,6 @@ public class GameView implements View {
                         + PrintableCharacters.ANSI_RESET);
             }
             System.out.println();
-        }
-    }
-
-    private void printTileInfo(Matcher matcher) {
-        // TODO : needs to handle fog of war
-        int x = Integer.parseInt(matcher.group("x"));
-        int y = Integer.parseInt(matcher.group("y"));
-        System.out.println("printing info for tile : x, y");
-        if (controller.areCoordinatesValid(x, y) == false) {
-            System.out.println("Invalid coordinates");
-        } else {
-            Tile tile = controller.getTileByCoordinates(x, y);
-            System.out.println("x : " + x + ", y : " + y);
-            TileVisibility visibility = controller.getTileVisibilityForPlayer(tile);
-            System.out.println("Visibility : " + visibility.getName());
-
-            if (visibility == TileVisibility.FOG_OF_WAR) {
-                return;
-            }
-
-            // TOF:
-            ArrayList<Unit> units = controller.getUnitsInTile(tile);
-            for (Unit unit : units) {
-                System.out.println("Unit : " + unit.getType().getName() + ", owner : " + unit.getOwner().getName());
-            }
-            // System.out.println("Terrain Type : " + tile.getTerrainType());
-
-            // TODO
         }
     }
 

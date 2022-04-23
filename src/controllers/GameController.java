@@ -91,7 +91,7 @@ public class GameController {
     public void createUnit(UnitType type, Civilization owner, Tile location) {
         Unit newUnit = new Unit(owner, type, location);
         gameDataBase.getUnits().add(newUnit);
-        // TODO TOROKKKHOOODAAA : update visibility for owner tile
+        setMapImageOfCivilization(owner);
     }
 
     public Tile findWorksLocation(Work work) { // gets a work and finds the tile that owns it
@@ -141,9 +141,18 @@ public class GameController {
         return this.gameDataBase;
     }
 
-    public City getCityInTile(Tile tile) {
+    public City getCityCenteredInTile(Tile tile) {
         for (City city : gameDataBase.getCities()) {
             if (city.getCentralTile() == tile) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)
+        for (City city : gameDataBase.getCities()) {
+            if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {
                 return city;
             }
         }

@@ -10,22 +10,22 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
-import models.resources.Resources;
+import models.resources.Resource;
 import models.units.Unit;
 import models.works.Work;
 
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
     private Civilization civilization;
-    private HashMap<Resources, Integer> resources = new HashMap<>();
+    private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private Ruins ruins;
-    private ArrayList<Work> works;
+    private ArrayList<Work> works;  // shouldn't this be a field?
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
     public Tile(TerrainType terrainType, Civilization civilization,
-            HashMap<Resources, Integer> resources, Ruins ruins) {
+            HashMap<Resource, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
@@ -35,17 +35,20 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public TileHistory createTileHistory() {
+        // TODO : doesn't save works in history
         TileHistory history = new TileHistory();
-        Tile tile = new Tile(terrainType, civilization, new HashMap<Resources, Integer>(resources), ruins);
+        Tile tile = new Tile(terrainType, civilization, new HashMap<Resource, Integer>(resources), null);
+        tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
+        tile.ruins = this.ruins.createImage();
+        for (Improvement improvement : improvements) {
+            tile.improvements.add(improvement.createImage());
+        }
         history.setTile(tile);
         ArrayList<Unit> units = GameController.getGameController().getUnitsInTile(this);
         for (Unit unit : units) {
             history.getUnits().add(unit.createImage());
         }
-        for (Improvement improvement : improvements) {
-            history.getImprovements().add(improvement.createImage());
-        }
-        City city = GameController.getGameController().getCityInTile(this);
+        City city = GameController.getGameController().getCityCenteredInTile(this);
         if (city == null) {
             history.setCity(null);
         } else {
@@ -160,7 +163,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.civilization;
     }
 
-    public HashMap<Resources, Integer> getResources() {
+    public HashMap<Resource, Integer> getResources() {
         return this.resources;
     }
 

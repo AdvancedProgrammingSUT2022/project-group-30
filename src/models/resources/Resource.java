@@ -12,12 +12,14 @@ public abstract class Resource {
     private Output output;
     private ArrayList<TerrainProperty> allowedTerrains;
     private ImprovementType prerequisiteImprovement;
+    private String name;
 
     public Resource(Output output, ImprovementType prerequisiteImprovement,
-            ArrayList<TerrainProperty> allowedTerrains) {
+            ArrayList<TerrainProperty> allowedTerrains, String name) {
         this.output = output;
         this.prerequisiteImprovement = prerequisiteImprovement;
         this.allowedTerrains = allowedTerrains;
+        this.name = name;
     }
 
     public boolean isTileValid(Tile tile) {
@@ -45,4 +47,7 @@ public abstract class Resource {
         return output;
     }
 
+    public String getName() {
+        return name;
+    }
 }
