@@ -2,8 +2,8 @@ package models;
 
 import java.util.ArrayList;
 
-import controllers.diplomacy.Diplomacy;
-import controllers.diplomacy.WarInfo;
+import models.diplomacy.Diplomacy;
+import models.diplomacy.WarInfo;
 import models.interfaces.Selectable;
 import models.units.Unit;
 
