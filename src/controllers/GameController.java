@@ -12,7 +12,6 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.technology.Technology;
-import models.technology.TechnologyMap;
 import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
@@ -70,11 +69,20 @@ public class GameController {
     }
 
     public boolean hasCommonRoadOrRailRoad(Tile tile1, Tile tile2) {
-        if ((tile1.getImprovements().contains(ImprovementType.ROAD)
-                && tile2.getImprovements().contains(ImprovementType.ROAD))
-                || (tile1.getImprovements().contains(ImprovementType.RAILROAD)
-                        && tile2.getImprovements().contains(ImprovementType.RAILROAD))) {
-            return true;
+        boolean hasRoad = false;
+        boolean hasRailRoad = false;
+        for (Improvement improvement : tile1.getImprovements()) {
+            if (improvement.getType().equals(ImprovementType.ROAD))
+                hasRoad = true;
+            if (improvement.getType().equals(ImprovementType.RAILROAD))
+                hasRailRoad = true;
+        }
+
+        for (Improvement improvement : tile2.getImprovements()) {
+            if (hasRoad && improvement.getType().equals(ImprovementType.ROAD))
+                return true;
+            if (hasRailRoad && improvement.getType().equals(ImprovementType.RAILROAD))
+                return true;
         }
         return false;
     }
@@ -90,6 +98,16 @@ public class GameController {
         return false;
     }
 
+    // public Diplomacy findDiplomacy(CivilizationPair pair, Diplomacy
+    // diplomacyType){
+    // for(Diplomacy diplomacy2:
+    // GameDataBase.getGameDataBase().getAllDiplomaticRelations()){
+    // if(diplomacy2 instanceof Diplomacy && diplomacy2.getPair().equals(pair))
+    // return diplomacy2;
+    // }
+    // return null;
+    // }
+
     public MPCostInterface calculateRequiredMps(Unit unit, Tile destinationTile) {
         int MPs = 0;
         Tile sourceTile = unit.getLocation();
@@ -103,7 +121,7 @@ public class GameController {
                 || destinationTile.getFeatures().contains(Feature.ICE)) {
             return MPCost.IMPASSABLE;
         }
-        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile))// MINETODO relation
+        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile))// MINETODO add relation effects
             hasCommonRoadOrRailRoad = true;
         if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad
                 && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
@@ -116,7 +134,7 @@ public class GameController {
             MPs += feature.getMovementCost();
         }
         if (hasCommonRoadOrRailRoad)
-            MPs = (int)Math.max(MPs * 0.5, 1);
+            MPs = (int) Math.max(MPs * 0.5, 1);
         return new MPCostClass(MPs);
     }
 }

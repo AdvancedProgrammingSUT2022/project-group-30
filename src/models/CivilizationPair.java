@@ -15,4 +15,8 @@ public class CivilizationPair {
             return true;
         return false;
     }
+
+    public Set<Civilization> getCivilizations(){
+        return this.civilizations;
+    }
 }
