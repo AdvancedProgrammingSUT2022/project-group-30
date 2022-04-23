@@ -1,10 +1,6 @@
-import java.util.Scanner;
 
-import controllers.SceneController;
 import models.GameMap;
-import utilities.MyScanner;
 import views.GameView;
-import views.LoginPageView;
 
 public class Main {
     public static void main(String[] args)  {
