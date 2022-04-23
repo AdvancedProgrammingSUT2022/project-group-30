@@ -3,12 +3,9 @@ package controllers;
 import java.util.ArrayList;
 
 import models.City;
-import models.Civilization;
 import models.GameDataBase;
 import models.Tile;
 import models.TileVisibility;
-import models.interfaces.Selectable;
-import models.units.CombatType;
 import models.units.Unit;
 import models.works.Work;
 
@@ -47,26 +44,6 @@ public class GameController {
         return database.getCurrentPlayer().getTileVisibility(tile);
     }
 
-    public Unit getMilitaryUnitInTile(Tile tile) {
-        ArrayList<Unit> units = database.getUnits();
-        for (Unit unit : units) {
-            if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
-                return unit;
-            }
-        }
-        return null;
-    }
-    
-    public Unit getMilitaryUnitInTile(Tile tile, Civilization owner) {
-        ArrayList<Unit> units = database.getUnits();
-        for (Unit unit : units) {
-            if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN && unit.getOwner() == owner) {
-                return unit;
-            }
-        }
-        return null;
-    }
-
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         // TODO
         return null;
@@ -79,17 +56,5 @@ public class GameController {
             }
         }
         return null;
-    }
-
-    public void setSelectedEntity(Selectable selectable) {
-        database.getSelectedEntity();
-    }
-
-    public Selectable getSelectedEntity() {
-        return database.getSelectedEntity();
-    }
-
-    public Civilization getCurrentPlayer() {
-        return database.getCurrentPlayer();
     }
 }

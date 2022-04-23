@@ -114,13 +114,6 @@ public class Unit implements Selectable, TurnHandler, Producible {
         hasBeenInactive = false;
     }
 
-    public boolean hasMP() {
-        if (movePointsLeft > 0) {
-            return true;
-        }
-        return false;
-    }
-
     public Civilization getOwner() {
         return this.owner;
     }
@@ -173,8 +166,6 @@ public class Unit implements Selectable, TurnHandler, Producible {
         this.destination = destination;
     }
 
-    public UnitType getType() {
-        return type;
-    }
+    
 
 }

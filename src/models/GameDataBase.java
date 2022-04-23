@@ -15,7 +15,7 @@ public class GameDataBase {
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
-    private ArrayList<CivilizationPair> civilizationPairs = new ArrayList<>();
+    private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
     private Civilization currentPlayer;
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
 
@@ -27,10 +27,6 @@ public class GameDataBase {
 
     public Selectable getSelectedEntity() {
         return this.selectedEntity;
-    }
-
-    public void setSelectedEntity(Selectable entity) {
-        this.selectedEntity = entity;
     }
 
     public ArrayList<Civilization> getCivilizations() {
@@ -82,7 +78,6 @@ public class GameDataBase {
     public Civilization getCurrentPlayer() {
         return currentPlayer;
     }
-
     public void setCurrentPlayer(Civilization currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
