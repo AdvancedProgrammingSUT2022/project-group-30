@@ -145,8 +145,8 @@ public class GameView implements View{
         printableCharacters[i+1][j+1].setCharacter((char) (tileYCoordinate / 10 + 48));
         printableCharacters[i+1][j+2].setCharacter((char) (tileYCoordinate % 10 + 48));
         printableCharacters[i+1][j+3].setCharacter(',');
-        printableCharacters[i+1][j+4].setCharacter((char) (tileYCoordinate / 10 + 48));
-        printableCharacters[i+1][j+5].setCharacter((char) (tileYCoordinate % 10 + 48));
+        printableCharacters[i+1][j+4].setCharacter((char) (tileXCoordinate / 10 + 48));
+        printableCharacters[i+1][j+5].setCharacter((char) (tileXCoordinate % 10 + 48));
 
         printableCharacters[i][j].setCharacter('/');
         printableCharacters[i+1][j-1].setCharacter('/');
