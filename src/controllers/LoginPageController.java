@@ -20,7 +20,7 @@ public class LoginPageController {
     }
 
     public boolean checkUsernameValidity(String username) {
-        Matcher matcher = Pattern.compile("[a-zA-Z0-9]{1}\\s*[a-zA-Z0-9]*").matcher(username);
+        Matcher matcher = Pattern.compile("[a-zA-Z0-9]+").matcher(username);
         return matcher.matches() ? true : false;
     }
 

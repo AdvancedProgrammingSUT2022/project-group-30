@@ -15,11 +15,12 @@ public class GameDataBase {
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
-    private ArrayList<CivilizationPair> civilizationPairs= new ArrayList<>();
+    private ArrayList<CivilizationPair> civilizationPairs = new ArrayList<>();
     private Civilization currentPlayer;
+    private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
 
-    private GameDataBase()  {
+    private GameDataBase() {
         map = GameMap.getGameMap();
     }
 
@@ -82,7 +83,20 @@ public class GameDataBase {
     public Civilization getCurrentPlayer() {
         return currentPlayer;
     }
+
     public void setCurrentPlayer(Civilization currentPlayer) {
         this.currentPlayer = currentPlayer;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void addPlayers(User[] players) {
+        for (User player : players) {
+            if (player != null) {
+                this.players.add(new Player(player));
+            }
+        }
     }
 }

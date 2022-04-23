@@ -114,7 +114,7 @@ public class LoginPageView implements View{
         String nickname = matcher.group("nickname");
         String password = matcher.group("password");
         if(!this.controller.checkUsernameValidity(username)){
-            System.out.println("Username can only contain uppercase and lowercase English letters, numbers, and whiteSpace (if there is at least one other character).");
+            System.out.println("Username can only contain uppercase and lowercase English letters, numbers.");
             return;
         }
         if(!this.controller.checkPasswordSize(password)){

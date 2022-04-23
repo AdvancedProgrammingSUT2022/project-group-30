@@ -1,10 +1,16 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import models.City;
+import models.Civilization;
 import models.Feature;
 import models.GameDataBase;
+import models.GameMap;
 import models.ProgramDatabase;
 import models.MPCost;
 import models.MPCostClass;
@@ -12,6 +18,7 @@ import models.RiverSegment;
 import models.TerrainType;
 import models.Tile;
 import models.TileVisibility;
+import models.User;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
@@ -26,10 +33,11 @@ public class GameController {
     private static GameController gameController;
 
     private GameDataBase gameDataBase = GameDataBase.getGameDataBase();
+
     private ProgramDatabase programDatabase;
 
     private GameController() {
-        database = GameDataBase.getGameDataBase();
+        gameDataBase = GameDataBase.getGameDataBase();
     }
 
     public static GameController getGameController() {
@@ -39,10 +47,46 @@ public class GameController {
         return gameController;
     }
 
-    private GameDataBase database;
+    public void initializeGame() {
+        GameMap.getGameMap();
+        assignCivsToPlayersAndInitializePrimaryUnits();
+        gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+    }
 
-    public void startGame() {
+    private void assignCivsToPlayersAndInitializePrimaryUnits() {
+        File civilizationsFile = new File("resources", "civilizations.txt");
+        try {
+            Scanner scanner = new Scanner(civilizationsFile);
+            ArrayList<String> fileLines = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                fileLines.add(scanner.nextLine());
+            }
+            Random rand = new Random();
+            for (int i = 0; i < this.gameDataBase.getPlayers().size(); i++) {
+                int fileLineIndex = rand.nextInt(fileLines.size());
+                String tokens[] = fileLines.get(fileLineIndex).split("-");
+                Civilization civilization = new Civilization(tokens[2]);
+                this.gameDataBase.getPlayers().get(i).setCivilization(civilization);
+                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]),
+                        Integer.parseInt(tokens[0]));
+                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1,
+                        Integer.parseInt(tokens[0]));
+                createUnit(UnitType.SETTLER, civilization, settlerTile);
+                createUnit(UnitType.WARRIOR, civilization, warriorTile);
+                civilization.setFrameBase(
+                        GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3, Integer.parseInt(tokens[0]) - 1));
+                fileLines.remove(fileLineIndex);
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void createUnit(UnitType type, Civilization owner, Tile location) {
+        Unit newUnit = new Unit(owner, type, location);
+        gameDataBase.getUnits().add(newUnit);
+        // TODO TOROKKKHOOODAAA : update visibility for owner tile
     }
 
     public Tile findWorksLocation(Work work) { // gets a work and finds the tile that owns it
@@ -50,48 +94,57 @@ public class GameController {
         return null;
     }
 
+    public void addPlayers(User[] players) {
+        gameDataBase.addPlayers(players);
+    }
+
     public boolean areCoordinatesValid(int x, int y) {
-        return database.getMap().areCoordinatesValid(x, y);
+        return gameDataBase.getMap().areCoordinatesValid(x, y);
     }
 
     public Tile getTileByCoordinates(int x, int y) {
-        return database.getMap().getTile(x, y);
+        return gameDataBase.getMap().getTile(x, y);
     }
 
     public TileVisibility getTileVisibilityForPlayer(Tile tile) { // returns Visible, Fog of War, or Revealed
-        return database.getCurrentPlayer().getTileVisibility(tile);
+        return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
 
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
-        // TODO
-        return null;
+        ArrayList<Unit> units = new ArrayList<>();
+        for (Unit unit : gameDataBase.getUnits()) {
+            if (unit.getLocation() == tile) {
+                units.add(unit);
+            }
+        }
+        return units;
     }
 
-    public void setProgramDatabase(){
+    public void setProgramDatabase() {
         this.programDatabase = ProgramDatabase.getProgramDatabase();
     }
 
-    public ProgramDatabase getProgramDatabase(){
+    public ProgramDatabase getProgramDatabase() {
         return this.programDatabase;
     }
 
-    public void setGameDataBase()  {
+    public void setGameDataBase() {
         this.gameDataBase = GameDataBase.getGameDataBase();
     }
 
-    public GameDataBase getGameDataBase(){
+    public GameDataBase getGameDataBase() {
         return this.gameDataBase;
     }
 
     public City getCityInTile(Tile tile) {
-        for (City city : database.getCities()) {
+        for (City city : gameDataBase.getCities()) {
             if (city.getCentralTile() == tile) {
                 return city;
             }
         }
         return null;
     }
-    
+
     public boolean areTwoTilesAdjacent(Tile tile1, Tile tile2) {
         // TODO
         return true;
@@ -133,6 +186,10 @@ public class GameController {
                 return true;
         }
         return false;
+    }
+
+    public Civilization getCurrentPlayer() {
+        return gameDataBase.getCurrentPlayer();
     }
 
     // public Diplomacy findDiplomacy(CivilizationPair pair, Diplomacy

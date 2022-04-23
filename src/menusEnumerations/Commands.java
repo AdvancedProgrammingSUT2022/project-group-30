@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Commands {
-    private String regex;
+    protected String regex;
 
     protected Commands(String regex) {
         this.regex = regex;

@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import models.interfaces.Producible;
@@ -11,8 +12,7 @@ import models.resources.StrategicResource;
 import models.technology.Technology;
 import utilities.Debugger;
 
-public class Civilization implements TurnHandler{
-    private final User user;
+public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private HashMap<LuxuryResource, Integer> luxuryResources;
@@ -27,9 +27,9 @@ public class Civilization implements TurnHandler{
     private double score;
     private City capital;
     private final City originCapital;
+    private Tile frameBase;
 
-    public Civilization(User user, String name, City originCapital) {
-        this.user = user;
+    public Civilization(String name) {
         this.name = name;
         this.goldCount = 0;
         this.beakerCount = 0;
@@ -38,12 +38,13 @@ public class Civilization implements TurnHandler{
         // 20??
         this.diplomaticCredit = 20;
         this.score = 0;
-        this.capital = originCapital;
-        this.originCapital = originCapital;
+        this.capital = null;
+        this.originCapital = null;
         mapImage = new HashMap<>();
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
             mapImage.put(tile, null);
         }
+        this.frameBase = GameMap.getGameMap().getTile(0, 0);
     }
 
     public TileImage getTileImage(Tile tile) {
@@ -234,4 +235,15 @@ public class Civilization implements TurnHandler{
         return originCapital;
     }
 
+    public void setFrameBase(Tile tile) {
+        this.frameBase = tile;
+    }
+
+    public Tile getFrameBase() {
+        return this.frameBase;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
