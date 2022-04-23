@@ -93,7 +93,6 @@ public class Tile {
             }
         }
         return -1;
-
     }
 
     public void goToNextTurn() {

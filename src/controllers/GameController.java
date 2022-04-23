@@ -5,7 +5,6 @@ import models.ProgramDatabase;
 import models.GameDataBase;
 import models.Tile;
 import models.works.Work;
-import views.PrintableCharacters;
 
 public class GameController {
     private static GameController gameController;

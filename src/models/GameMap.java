@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class GameMap {
     private static GameMap gameMap;
 
-    //public static final int NUMBER_OF_TILES = 100;
     private Tile[][] map;
     private ArrayList<RiverSegment> rivers;
     private Tile frameBase;
@@ -18,8 +17,6 @@ public class GameMap {
         this.rivers = new ArrayList<>();
         this.initializeRivers();
         this.frameBase = null;
-        //map = new Tile[NUMBER_OF_TILES][NUMBER_OF_TILES];
-        //rivers = new ArrayList<>();
     }
 
     public static GameMap getGameMap(){
@@ -31,7 +28,7 @@ public class GameMap {
     }
 
     private void initializeMap(){
-        File mapFile = new File("utilities","map1.txt");
+        File mapFile = new File("resources","map1.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(mapFile);
@@ -60,7 +57,7 @@ public class GameMap {
     }
 
     private void initializeRivers(){
-        File riversFile = new File("utilities","map1Rivers.txt");
+        File riversFile = new File("resources","map1Rivers.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(riversFile);

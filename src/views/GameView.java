@@ -6,6 +6,7 @@ import controllers.GameController;
 import models.GameMap;
 import models.RiverSegment;
 import models.Tile;
+import utilities.PrintableCharacters;
 
 public class GameView implements View{
 
@@ -35,7 +36,7 @@ public class GameView implements View{
     }
 
 
-    public PrintableCharacters[][] makeMapReadyToPrint()  {
+    private PrintableCharacters[][] makeMapReadyToPrint()  {
         Tile tiles[][] = this.controller.getGameDataBase().getMap().findTilesToPrint();
         PrintableCharacters printableCharacters[][] = new PrintableCharacters[21][52];
         for(int i = 0; i < 21; i++){

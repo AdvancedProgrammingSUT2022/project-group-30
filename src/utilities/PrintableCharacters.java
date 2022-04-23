@@ -1,4 +1,4 @@
-package views;
+package utilities;
 
 import models.TerrainType;
 import models.Tile;
