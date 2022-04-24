@@ -180,6 +180,10 @@ public class GameController {
         return null;
     }
 
+    public ArrayList<Tile> findPath(Unit unit, Tile destinationTile) {
+        return null;
+    }
+
     public void setProgramDatabase() {
         this.programDatabase = ProgramDatabase.getProgramDatabase();
     }
@@ -281,6 +285,43 @@ public class GameController {
 
     public Civilization getCurrentPlayer() {
         return gameDataBase.getCurrentPlayer();
+    }
+
+    public boolean isTileImpassabe(Tile tile) {
+        if (tile.getTerrainType().equals(TerrainType.OCEAN)
+                || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
+                || tile.getFeatures().contains(Feature.ICE)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void moveUnitAlongItsPath(Unit unit) {
+        ArrayList<Tile> path = unit.getPath();
+        Tile farthest = findFarthesestTileByMPCost(unit);
+        int index = path.indexOf(farthest);
+        Tile destination = null;
+        for (int i = index; i > 0; i--) {
+            ArrayList<Unit> units = getUnitsInTile(path.get(i));
+            Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
+            if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
+                if (unit.isCivilian() == false && i == path.size() - 1) {
+                    // HERE
+                }
+                continue;
+            } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
+                if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
+                    continue;
+                }
+            }
+            destination = path.get(i);
+            break;
+        }
+    }
+
+    private Tile findFarthesestTileByMPCost(Unit unit) {
+
+        return null;
     }
 
     public MPCostInterface calculateRequiredMps(Unit unit, Tile destinationTile) {
