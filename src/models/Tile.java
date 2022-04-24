@@ -10,7 +10,7 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
-import models.resources.Resources;
+import models.resources.Resource;
 import models.units.Unit;
 import models.works.Work;
 import utilities.Debugger;
@@ -18,7 +18,7 @@ import utilities.Debugger;
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
     private Civilization civilization;
-    private HashMap<Resources, Integer> resources = new HashMap<>();
+    private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private Ruins ruins;
     private ArrayList<Work> works;
@@ -26,7 +26,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private ArrayList<Feature> features = new ArrayList<>();
 
     public Tile(TerrainType terrainType, Civilization civilization,
-            HashMap<Resources, Integer> resources, Ruins ruins) {
+            HashMap<Resource, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
@@ -37,7 +37,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public TileHistory createTileHistory() {
         TileHistory history = new TileHistory();
-        Tile tile = new Tile(terrainType, civilization, new HashMap<Resources, Integer>(resources), ruins);
+        Tile tile = new Tile(terrainType, civilization, new HashMap<Resource, Integer>(resources), ruins);
         history.setTile(tile);
         ArrayList<Unit> units = GameController.getGameController().getUnitsInTile(this);
         for (Unit unit : units) {
@@ -171,7 +171,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.civilization;
     }
 
-    public HashMap<Resources, Integer> getResources() {
+    public HashMap<Resource, Integer> getResources() {
         return this.resources;
     }
 
