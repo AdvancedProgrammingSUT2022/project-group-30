@@ -3,6 +3,7 @@ package models;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import models.interfaces.TileImage;
@@ -49,7 +50,7 @@ public class GameMap {
             this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
-                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, null, null);
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, new HashMap(), null);
                 }
             }
             scanner.close();

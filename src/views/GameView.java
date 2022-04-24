@@ -5,24 +5,30 @@ import java.util.HashMap;
 
 import controllers.GameController;
 import models.City;
+import models.Civilization;
 import models.Feature;
 import models.GameMap;
+import models.MPCost;
+import models.MPCostClass;
 import models.ProgramDatabase;
 import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
 import utilities.PrintableCharacters;
+import utilities.Printer;
+
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import menusEnumerations.GameMainPageCommands;
-import models.TileVisibility;
+import menusEnumerations.UnitCommands;
 import models.User;
-import models.buildings.Building;
 import models.improvements.Improvement;
+import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.resources.Resource;
+import models.units.CombatType;
 import models.units.Unit;
 import utilities.MyScanner;
 
@@ -30,10 +36,12 @@ public class GameView implements View {
 
     private static GameView gameView;
     private GameController controller = GameController.getGameController();
+    private Printer printer;
 
     private GameView() {
         scanner = MyScanner.getScanner();
         controller = GameController.getGameController();
+        printer = Printer.getPrinter();
     }
 
     public static GameView getGameView() {
@@ -48,35 +56,211 @@ public class GameView implements View {
 
         showMap();
 
+
         String command;
         Matcher matcher;
         while (true) {
+            if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof Unit) {
+                runUnitActionsTab();
+                continue;
+            }
+
             command = scanner.nextLine().trim();
+            
             if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
                 showMap();
             } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
                 printTileInfo(matcher);
+            } else if ((matcher = GameMainPageCommands.SELECT_UNIT.getCommandMatcher(command)) != null) {
+                selectUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.SELECT_CIVILIAN_UNIT.getCommandMatcher(command)) != null) {
+                selectCivilianUnit(matcher);
             } else {
                 System.out.println("Invalid Command!");
             }
         }
     }
 
-    private void printTileInfo(Matcher matcher) {
-        // TODO : needs to handle fog of war
+    private void runUnitActionsTab() {
+        Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        String command;
+        Matcher matcher;
+
+        while (true) {
+            HashMap<UnitCommands, Boolean> allowedCommands = calculateAllowedCommands(unit);
+
+            printer.printlnRed("***********************************");
+            printer.println("Unit Actions for " + controller.getCurrentPlayer().getName() + "'s " + unit.getType().getName() + ":");
+            printer.printlnBlue("Allowed commands:");
+            for (UnitCommands commandType : allowedCommands.keySet()) {
+                if (allowedCommands.get(commandType)) {
+                    printer.println(" -" + commandType.getName());
+                }
+            }
+
+            command = scanner.nextLine().trim();
+            if ((matcher = UnitCommands.DESELECT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DESELECT)) {
+                unit.getOwner().setSelectedEntity(null);
+                printer.println("unit deselected");
+                break;
+            } else if ((matcher = UnitCommands.MOVE_TO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MOVE_TO)) {
+                moveTo(matcher);
+            } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
+                showUnitInfo(unit);
+            } else {
+                printer.printlnError("Invalid Unit Command!");
+            }
+        }
+    }
+
+    private HashMap<UnitCommands,Boolean> calculateAllowedCommands(Unit unit) {
+        HashMap<UnitCommands,Boolean> result = new HashMap<>();
+        for (UnitCommands command : UnitCommands.getAllCommands()) {
+            result.put(command, true);
+        }
+
+        result.put(UnitCommands.DESELECT, true);
+        result.put(UnitCommands.SHOW_INFO, true);
+        if (controller.canUnitMove(unit)) {
+            result.put(UnitCommands.MOVE_TO, true);
+        }
+
+        // TODO : consider all commands
+
+        return result;
+    }
+
+    private void showUnitInfo(Unit unit) {
+        printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
+        printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
+        printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
+        printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
+        // TODO : show state and xp
+    }
+
+    private void moveTo(Matcher matcher) {
+        int destY = Integer.parseInt(matcher.group("y"));
+        int destX = Integer.parseInt(matcher.group("x"));
+        if (controller.areCoordinatesValid(destX, destY) == false) {
+            printer.printlnError("Destination is invalid!");
+            return;
+        }
+
+        Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        Tile destination = controller.getTileByCoordinates(destX, destY);
+
+        // CHECK ADJACENCY
+        if (controller.areTwoTilesAdjacent(destination, unit.getLocation()) == false) {
+            printer.printlnError("You can only request to go to adjacent tiles!");
+            return;
+        }
+        
+        // CHECK PACKING
+        Unit destTileMilitaryUnit;
+        Unit destTileCivUnit;
+        if ((destTileMilitaryUnit = controller.getMilitaryUnitInTile(destination)) != null) {
+            if (destTileMilitaryUnit.getOwner() != unit.getOwner()) {
+                printer.printlnRed("There is a hostile military unit in your detination! attack it!");
+                // TODO : call attack method
+                return;
+            } else if (unit.getType().getCombatType() != CombatType.CIVILIAN) {
+                printer.printlnRed("You can't place more than one military unit on the same tile!");
+                return;
+            }
+        }
+        if ((destTileCivUnit = controller.getCivilianUnitInTile(destination)) != null) {
+            if (destTileCivUnit.getOwner() != unit.getOwner()) {
+                if (unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                    printer.printlnRed("There can't be more than one civilian unit in the same tile!");
+                    return;
+                } else {
+                    printer.printlnRed("There is a hostile civilian unit in your destination, attack them if you wish to move!");
+                    // TODO : call the attack method
+                    return;
+                }
+            } else {
+                if (unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                    printer.printlnRed("There can't be more than one civilian unit in the same tile!");
+                    return;
+                }
+            }
+        }
+
+        // CHECK MP
+        MPCostInterface moveCost = controller.calculateRequiredMps(unit, destination);
+        if (unit.getMovePointsLeft() == 0) {
+            printer.printlnError("You don't have any MP's to move!");
+            return;
+        }
+        if (moveCost == MPCost.IMPASSABLE) {
+            printer.printlnError("The destination you have picked is impassable!");
+            return;
+        }
+
+        // EXPEND MPS
+        if (moveCost == MPCost.EXPENSIVE) {
+            unit.setMovePointsLeft(0);
+        }
+        if (moveCost instanceof MPCostClass) {
+            int cost = ((MPCostClass) moveCost).getCost();
+            unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - cost));
+        }
+
+        // MOVE AND UPDATE FOG OF WAR
+        controller.moveUnit(unit, destination);
+    }
+
+    private void selectUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
-        System.out.println("printing info for tile : x, y");
         if (controller.areCoordinatesValid(x, y) == false) {
-            System.out.println("Invalid coordinates");
+            printer.printlnError("Invalid coordinates");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        Civilization civilization = controller.getCurrentPlayer();
+        Unit unit = controller.getCivsUnitInTile(tile, civilization);
+        if (unit == null) {
+            printer.printlnError("You don't have a unit in this tile!");
+            return;
+        }
+        civilization.setSelectedEntity(unit);
+        printer.println(civilization.getName() + "'s " + unit.getType().getName() + " was selected");
+    }
+    
+    private void selectCivilianUnit(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (controller.areCoordinatesValid(x, y) == false) {
+            printer.printlnError("Invalid coordinates");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        Civilization civilization = controller.getCurrentPlayer();
+        Unit unit = controller.getCivsCivilianUnitInTile(tile, civilization);
+        if (unit == null) {
+            printer.printlnError("You don't have a civilian unit in this tile!");
+            return;
+        }
+        civilization.setSelectedEntity(unit);
+        printer.println(civilization.getName() + "'s " + unit.getType().getName() + " was selected");
+    }
+
+    private void printTileInfo(Matcher matcher) {
+        // TODO : show city territory for revealed tiles, show works
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        printer.println("printing info for tile : " + x + ", " + y);
+        if (controller.areCoordinatesValid(x, y) == false) {
+            printer.printlnError("Invalid coordinates");
             return;
         }
 
         TileImage image = controller.getCurrentPlayer().getTileImage(controller.getTileByCoordinates(x, y));
-        System.out.println("x : " + x + ", y : " + y);
+        printer.println("x : " + x + ", y : " + y);
 
         if (image == null) {
-            System.out.println("This tile is not visible!");
+            printer.printlnRed("This tile is not visible!");
             return;
         }
 
@@ -90,7 +274,7 @@ public class GameView implements View {
             cityCentral = controller.getCityCenteredInTile(tile);
             city = controller.whoseTerritoryIsTileIn(tile);
         } else if (image instanceof TileHistory) {
-            System.out.println("This tile is only revealed, the information contained may be out of date");
+            printer.printlnBlue("This tile is only revealed, the information contained may be out of date");
             TileHistory history = (TileHistory) image;
 
             tile = history.getTile();
@@ -99,49 +283,57 @@ public class GameView implements View {
             city = cityCentral;
         }
 
-        System.out.println("Terrain Type : " + tile.getTerrainType().getName());
-        System.out.println("Features:");
+        printer.printBlue("Terrain Type:");
+        printer.println(" " + tile.getTerrainType().getName());
+        
+        printer.printlnBlue("Features:");
+        if (tile.getFeatures().isEmpty()) {
+            printer.println("no features!");
+        }
         for (Feature feature : tile.getFeatures()) {
-            System.out.println(feature.getName());
-        }
-        System.out.println();
+            printer.println(feature.getName());
+        }        
+
         if (cityCentral != null) {
-            System.out.println(city.getOwner().getName() + "'s city is located here");
+            printer.println();
+            printer.printlnGreen(city.getOwner().getName() + "'s city is located here");
         } else if (city != null) {
-            System.out.println("This tile is located in the territory of a city owned by " + city.getOwner().getName());
+            printer.println();
+            printer.printlnGreen("This tile is located in the territory of a city owned by " + city.getOwner().getName());
         }
 
-        System.out.println("Units:");
+        printer.printlnBlue("Units:");
         for (Unit unit : units) {
-            System.out.println(unit.getOwner().getName() + "'s " + unit.getType().getName());
+            printer.println(unit.getOwner().getName() + "'s " + unit.getType().getName());
         }
 
-        System.out.println("Resources:");
+        printer.printlnBlue("Resources:");
         HashMap<Resource, Integer> resources = tile.getResources();
         for (Resource resource : resources.keySet()) {
             if (resources.get(resource) > 0 && resource.isDiscoverable(controller.getCurrentPlayer())) {
-                System.out.println(resource);
+                printer.println(resource.getName());
             }
         }
 
-        System.out.println("Improvements:");
+        printer.printlnBlue("Imrovements");
         for (Improvement improvement : tile.getImprovements()) {
-            System.out.print(improvement.getType().getName());
+            printer.print(improvement.getType().getName());
             if (improvement.isPillaged()) {
-                System.out.print(" (pillaged)");
+                printer.printRed(" (pillaged)");
             }
-            System.out.println();
+            printer.println();
         }
     }
 
     public void showMap() {
+        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s Turn!");
         PrintableCharacters printableCharacters[][] = this.makeMapReadyToPrint();
         for (int i = 0; i < printableCharacters.length; i++) {
             for (int j = 0; j < printableCharacters[i].length; j++) {
                 System.out.print(printableCharacters[i][j].getANSI_COLOR() + printableCharacters[i][j].getCharacter()
                         + PrintableCharacters.ANSI_RESET);
             }
-            System.out.println();
+            printer.println();
         }
     }
 

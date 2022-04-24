@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 import models.diplomacy.Diplomacy;
 import models.diplomacy.WarInfo;
-import models.interfaces.Selectable;
 import models.units.Unit;
 
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;
-    private Selectable selectedEntity;
     private ArrayList<Civilization> civilizations = new ArrayList<>();
     private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
@@ -28,10 +26,6 @@ public class GameDataBase {
         if (gameDataBase == null)
             gameDataBase = new GameDataBase();
         return gameDataBase;
-    }
-
-    public Selectable getSelectedEntity() {
-        return this.selectedEntity;
     }
 
     public ArrayList<Civilization> getCivilizations() {

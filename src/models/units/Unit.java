@@ -122,6 +122,10 @@ public class Unit implements Selectable, TurnHandler, Producible {
         return this.location;
     }
 
+    public void setLocation(Tile location) {
+        this.location = location;
+    }
+
     public int getHitPointsLeft() {
         return this.hitPointsLeft;
     }

@@ -115,6 +115,11 @@ public class GameController {
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
 
+    public void moveUnit(Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
+        unit.setLocation(destination);
+        setMapImageOfCivilization(unit.getOwner());
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
@@ -123,6 +128,56 @@ public class GameController {
             }
         }
         return units;
+    }
+   
+    public Unit getMilitaryUnitInTile(Tile tile) {
+        for (Unit unit : gameDataBase.getUnits()) {
+            if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+   
+    public Unit getCivilianUnitInTile(Tile tile) {
+        for (Unit unit : gameDataBase.getUnits()) {
+            if (unit.getLocation() == tile && unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    public Unit getCivsUnitInTile(Tile tile, Civilization civilization) {  // returns null if civ doesn't have units in the tile, and returns the military unit if both a military and a civilian unit of the civ are in the tile
+        Unit militaryUnit = getCivsMilitaryUnitInTile(tile, civilization);
+        Unit civilianUnit = getCivsCivilianUnitInTile(tile, civilization);
+        if (militaryUnit != null) {
+            return militaryUnit;
+        } else if (civilianUnit != null) {
+            return civilianUnit;
+        } else {
+            return null;
+        }
+    }
+    
+    public Unit getCivsMilitaryUnitInTile(Tile tile, Civilization civilization) {  
+        ArrayList<Unit> units = getUnitsInTile(tile);
+        for (Unit unit : units) {
+            if (unit.getOwner() == civilization && unit.getType().getCombatType() != CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+    
+    public Unit getCivsCivilianUnitInTile(Tile tile, Civilization civilization) {  
+        ArrayList<Unit> units = getUnitsInTile(tile);
+        for (Unit unit : units) {
+            if (unit.getOwner() == civilization && unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
     }
 
     public void setProgramDatabase() {
@@ -148,6 +203,14 @@ public class GameController {
             }
         }
         return null;
+    }
+
+    public boolean canUnitMove(Unit unit) {
+        if (unit.getMovePointsLeft() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)

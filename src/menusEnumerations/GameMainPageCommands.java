@@ -5,11 +5,14 @@ import java.util.regex.Pattern;
 
 public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands SHOW_MAP = new GameMainPageCommands("show map");
-    public static GameMainPageCommands GET_TILE_INFO = new GameMainPageCommands("(info )?(?<y>\\d+)\\s*[:,]\\s*(?<x>\\d+)");
-    public static GameMainPageCommands SELECT_UNIT = new GameMainPageCommands("select unit (?<y>\\d+)\\s*[:,](?<x>\\d+)");
+    public static GameMainPageCommands GET_TILE_INFO = new GameMainPageCommands("(info )?(?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
+    public static GameMainPageCommands SELECT_UNIT = new GameMainPageCommands("select (unit )?(?<y>\\d+)\\s*[:, ](?<x>\\d+)");
     public static GameMainPageCommands SELECT_CIVILIAN_UNIT = new GameMainPageCommands(
-            "select civ(ilian unit)?\\s*(?<y>\\d+)\\s*[:,](?<x>\\d+)");
+            "select civ(ilian( unit)?)?\\s*(?<y>\\d+)\\s*[:, ](?<x>\\d+)");
 
+    // move frame
+    // pass the turn
+    // show info about civ
 
     GameMainPageCommands(String regex) {
         super(regex);

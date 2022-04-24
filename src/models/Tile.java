@@ -39,7 +39,9 @@ public class Tile implements Workable, TileImage, TurnHandler {
         TileHistory history = new TileHistory();
         Tile tile = new Tile(terrainType, civilization, new HashMap<Resource, Integer>(resources), null);
         tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
-        tile.ruins = this.ruins.createImage();
+        if (this.ruins != null) {
+            tile.ruins = this.ruins.createImage();
+        }
         for (Improvement improvement : improvements) {
             tile.improvements.add(improvement.createImage());
         }
