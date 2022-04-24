@@ -20,7 +20,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private HashMap<Resources, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private Ruins ruins;
-    private ArrayList<Work> works;
+    private Work work;
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;
-        this.works = new ArrayList<>();
+        // TODO add "this.works = new Work();"
     }
 
     public TileHistory createTileHistory() {
@@ -51,7 +51,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         } else {
             history.setCity(city.createImage());
         }
-        
+
         return history;
     }
 
@@ -65,6 +65,19 @@ public class Tile implements Workable, TileImage, TurnHandler {
         for (Feature feature : features) {
             this.getOutput().add(feature.getOutput());
         }
+        int numberOfRivers = 0;
+        for (int i = 0; i < numberOfRivers; i++) {
+            this.getOutput().add(new Output(1, 0, 0));
+        }
+    }
+
+    public int numberOfRivers() {
+        int count = 0;
+        for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
+            if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
+                count++;
+        }
+        return count;
     }
 
     public Output calculateOutput(Output output) {
@@ -72,7 +85,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
-    public City getCityOfTile()   {
+    public City getCityOfTile() {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (city.getTerritories().contains(this))
                 return city;
@@ -80,7 +93,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
-    public boolean isNearTheRiver()   {
+    public boolean isNearTheRiver() {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
             if (river.getFirstTile().equals(this) || river.getSecondTile().equals(this))
                 return true;
@@ -113,11 +126,11 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     // returns -1 if the Tile is not in the map
-    public int findTileXCoordinateInMap()  {
+    public int findTileXCoordinateInMap() {
         GameMap map = GameMap.getGameMap();
-        for(int i = 0; i < map.getMap().length; i++){
-            for(int j = 0; j < map.getMap()[i].length; j++){
-                if(map.getMap()[i][j] == this){
+        for (int i = 0; i < map.getMap().length; i++) {
+            for (int j = 0; j < map.getMap()[i].length; j++) {
+                if (map.getMap()[i][j] == this) {
                     return j;
                 }
             }
@@ -125,17 +138,18 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public int findTileYCoordinateInMap()  {
+    public int findTileYCoordinateInMap() {
         GameMap map = GameMap.getGameMap();
-        for(int i = 0; i < map.getMap().length; i++){
-            for(int j = 0; j < map.getMap()[i].length; j++){
-                if(map.getMap()[i][j] == this){
+        for (int i = 0; i < map.getMap().length; i++) {
+            for (int j = 0; j < map.getMap()[i].length; j++) {
+                if (map.getMap()[i][j] == this) {
                     return i;
                 }
             }
         }
         return -1;
     }
+
     public void addImprovement(Improvement improvement) {
         // TODO
     }
@@ -172,8 +186,8 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.ruins;
     }
 
-    public ArrayList<Work> getWorks() {
-        return this.works;
+    public Work getWork() {
+        return this.work;
     }
 
     public Output getOutput() {
