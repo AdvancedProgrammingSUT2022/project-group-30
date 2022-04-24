@@ -20,7 +20,7 @@ public class Unit implements Selectable, TurnHandler, Producible {
     private boolean hasBeenInactive;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
-    private ArrayList<Tile> path;
+    private ArrayList<Tile> path;   // should be NULL when unit has no destination
     private boolean hasReceivedCommand;
 
     public Unit(Civilization owner, UnitType type, Tile location) {
@@ -35,6 +35,7 @@ public class Unit implements Selectable, TurnHandler, Producible {
         inactivityDuration = 0;
         stateDuration = 0;
         hasReceivedCommand = false;
+        path = null;
         if (this.type.needsAssmbly()) {
             isAssembled = false;
         } else {
@@ -168,7 +169,7 @@ public class Unit implements Selectable, TurnHandler, Producible {
     }
 
     public ArrayList<Tile> getPath() {
-        return new ArrayList<>(path);
+        return new ArrayList<>();
     }
 
     public UnitType getType(){

@@ -120,6 +120,73 @@ public class GameController {
         setMapImageOfCivilization(unit.getOwner());
     }
 
+    public void moveUnitAlongItsPath(Unit unit) {
+        ArrayList<Tile> path = unit.getPath();
+        if (path == null || path.size() < 2) {
+            return;
+        }
+        Tile farthest = findFarthesestTileByMPCost(unit);
+        int index = path.indexOf(farthest);
+        Tile destination = null;
+        for (int i = index; i > 0; i--) {
+            ArrayList<Unit> units = getUnitsInTile(path.get(i));
+            Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
+            if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
+                if (unit.isCivilian() == false && i == path.size() - 1) { 
+                    // TODO : attack that tile
+                }
+                continue;
+            } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
+                if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
+                    continue;
+                }
+            }
+            destination = path.get(i);
+            break;
+        }
+
+        if (destination != null) {
+            moveUnit(unit, destination);
+            ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
+            for (Tile tile : unit.getPath()) {
+                if (tile == destination) {
+                    break;
+                }
+                newPath.remove(tile);
+            }
+            if (newPath.size() == 1) {
+                unit.setPath(null);
+            } else {
+                unit.setPath(newPath);
+            }
+        } else {
+            unit.setPath(null);
+        }
+    }
+
+    private Tile findFarthesestTileByMPCost(Unit unit) {
+        int totalMP = 0;
+        for (int i = 1; i < unit.getPath().size(); i++) {
+            MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+            if (cost == MPCost.IMPASSABLE) {
+                return unit.getPath().get(i - 1);
+            } else if (cost == MPCost.EXPENSIVE) {
+                return unit.getPath().get(i);
+            } else {
+                totalMP += ((MPCostClass) cost).getCost();
+            }
+
+            if (totalMP >= unit.getMovePointsLeft()) {
+                return unit.getPath().get(i);
+            }
+        }
+        if (unit.getPath().size() == 0) {
+            return null;
+        } else {
+            return unit.getPath().get(0);
+        }
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
@@ -296,37 +363,10 @@ public class GameController {
         return false;
     }
 
-    public void moveUnitAlongItsPath(Unit unit) {
-        ArrayList<Tile> path = unit.getPath();
-        Tile farthest = findFarthesestTileByMPCost(unit);
-        int index = path.indexOf(farthest);
-        Tile destination = null;
-        for (int i = index; i > 0; i--) {
-            ArrayList<Unit> units = getUnitsInTile(path.get(i));
-            Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
-            if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
-                if (unit.isCivilian() == false && i == path.size() - 1) {
-                    // HERE
-                }
-                continue;
-            } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
-                if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
-                    continue;
-                }
-            }
-            destination = path.get(i);
-            break;
-        }
-    }
 
-    private Tile findFarthesestTileByMPCost(Unit unit) {
-
-        return null;
-    }
-
-    public MPCostInterface calculateRequiredMps(Unit unit, Tile destinationTile) {
+    public MPCostInterface calculateRequiredMps(Unit unit, Tile sourceTile, Tile destinationTile) {
         int MPs = 0;
-        Tile sourceTile = unit.getLocation();
+        //Tile sourceTile = unit.getLocation();
         boolean hasCommonRoadOrRailRoad = false;
         if (!areTwoTilesAdjacent(destinationTile, sourceTile)) {
             Debugger.debug("Two tile are not adjacent!");

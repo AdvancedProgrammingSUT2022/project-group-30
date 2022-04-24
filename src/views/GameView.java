@@ -14,6 +14,7 @@ import models.ProgramDatabase;
 import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
+import models.TileVisibility;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
@@ -139,7 +140,7 @@ public class GameView implements View {
         // TODO : show state and xp
     }
 
-    private void moveTo(Matcher matcher) {
+    private void moveTo(Matcher matcher) {  // you can only move to visible tiles!
         int destY = Integer.parseInt(matcher.group("y"));
         int destX = Integer.parseInt(matcher.group("x"));
         if (controller.areCoordinatesValid(destX, destY) == false) {
@@ -149,6 +150,10 @@ public class GameView implements View {
 
         Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
         Tile destination = controller.getTileByCoordinates(destX, destY);
+
+        if (controller.getTileVisibilityForPlayer(destination) != TileVisibility.VISIBLE) {
+            printer.printlnError("You can only choose visible tiles as destination!");
+        }
 
         if (controller.isTileImpassabe(destination)) {
             printer.printlnError("The destination you have entered is impassable!");
@@ -161,82 +166,11 @@ public class GameView implements View {
             return;
         }
 
+        // SET UNITS PATH
         unit.setPath(controller.findPath(unit, destination));
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
     }
-
-    // private void moveTo(Matcher matcher) {
-    //     int destY = Integer.parseInt(matcher.group("y"));
-    //     int destX = Integer.parseInt(matcher.group("x"));
-    //     if (controller.areCoordinatesValid(destX, destY) == false) {
-    //         printer.printlnError("Destination is invalid!");
-    //         return;
-    //     }
-
-    //     Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
-    //     Tile destination = controller.getTileByCoordinates(destX, destY);
-
-    //     // CHECK ADJACENCY
-    //     if (controller.areTwoTilesAdjacent(destination, unit.getLocation()) == false) {
-    //         printer.printlnError("You can only request to go to adjacent tiles!");
-    //         return;
-    //     }
-
-    //     // CHECK PACKING
-    //     Unit destTileMilitaryUnit;
-    //     Unit destTileCivUnit;
-    //     if ((destTileMilitaryUnit = controller.getMilitaryUnitInTile(destination)) != null) {
-    //         if (destTileMilitaryUnit.getOwner() != unit.getOwner()) {
-    //             printer.printlnRed("There is a hostile military unit in your detination! attack it!");
-    //             // TODO : call attack method
-    //             return;
-    //         } else if (unit.getType().getCombatType() != CombatType.CIVILIAN) {
-    //             printer.printlnRed("You can't place more than one military unit on the same tile!");
-    //             return;
-    //         }
-    //     }
-    //     if ((destTileCivUnit = controller.getCivilianUnitInTile(destination)) != null) {
-    //         if (destTileCivUnit.getOwner() != unit.getOwner()) {
-    //             if (unit.getType().getCombatType() == CombatType.CIVILIAN) {
-    //                 printer.printlnRed("There can't be more than one civilian unit in the same tile!");
-    //                 return;
-    //             } else {
-    //                 printer.printlnRed("There is a hostile civilian unit in your destination, attack them if you wish to move!");
-    //                 // TODO : call the attack method
-    //                 return;
-    //             }
-    //         } else {
-    //             if (unit.getType().getCombatType() == CombatType.CIVILIAN) {
-    //                 printer.printlnRed("There can't be more than one civilian unit in the same tile!");
-    //                 return;
-    //             }
-    //         }
-    //     }
-
-    //     // CHECK MP
-    //     MPCostInterface moveCost = controller.calculateRequiredMps(unit, destination);
-    //     if (unit.getMovePointsLeft() == 0) {
-    //         printer.printlnError("You don't have any MP's to move!");
-    //         return;
-    //     }
-    //     if (moveCost == MPCost.IMPASSABLE) {
-    //         printer.printlnError("The destination you have picked is impassable!");
-    //         return;
-    //     }
-
-    //     // EXPEND MPS
-    //     if (moveCost == MPCost.EXPENSIVE) {
-    //         unit.setMovePointsLeft(0);
-    //     }
-    //     if (moveCost instanceof MPCostClass) {
-    //         int cost = ((MPCostClass) moveCost).getCost();
-    //         unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - cost));
-    //     }
-
-    //     // MOVE AND UPDATE FOG OF WAR
-    //     controller.moveUnit(unit, destination);
-    // }
 
     private void selectUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
