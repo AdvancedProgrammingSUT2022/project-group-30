@@ -7,8 +7,9 @@ import models.Tile;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
+import models.interfaces.combative;
 
-public class Unit implements Selectable, TurnHandler, Producible {
+public class Unit implements Selectable, TurnHandler, Producible, combative {
     private final Civilization owner;
     private final UnitType type;
     private Tile location;
@@ -82,6 +83,14 @@ public class Unit implements Selectable, TurnHandler, Producible {
         } else {
             return true;
         }
+    }
+
+    public void attack(Unit target){
+        //TODO
+    }
+
+    public void defend(Unit attacker){
+        //TODO
     }
 
     public double calculateEffectiveCombatStrength() {

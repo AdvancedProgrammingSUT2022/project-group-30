@@ -15,7 +15,7 @@ import models.Feature;
 import models.GameDataBase;
 import models.GameMap;
 import models.ProgramDatabase;
-import models.MPCost;
+import models.MPCostEnum;
 import models.MPCostClass;
 import models.RiverSegment;
 import models.TerrainType;
@@ -168,9 +168,9 @@ public class GameController {
         int totalMP = 0;
         for (int i = 1; i < unit.getPath().size(); i++) {
             MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
-            if (cost == MPCost.IMPASSABLE) {
+            if (cost == MPCostEnum.IMPASSABLE) {
                 return unit.getPath().get(i - 1);
-            } else if (cost == MPCost.EXPENSIVE) {
+            } else if (cost == MPCostEnum.EXPENSIVE) {
                 return unit.getPath().get(i);
             } else {
                 totalMP += ((MPCostClass) cost).getCost();
@@ -375,19 +375,19 @@ public class GameController {
         if (destinationTile.getTerrainType().equals(TerrainType.OCEAN)
                 || destinationTile.getTerrainType().equals(TerrainType.MOUNTAIN)
                 || destinationTile.getFeatures().contains(Feature.ICE)) {
-            return MPCost.IMPASSABLE;
+            return MPCostEnum.IMPASSABLE;
         }
         if (hasCommonRoadOrRailRoad(sourceTile, destinationTile)) // MINETODO add relation effects
             hasCommonRoadOrRailRoad = true;
         if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad
                 && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
-            return MPCost.EXPENSIVE;
+            return MPCostEnum.EXPENSIVE;
         if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile))
-            return MPCost.EXPENSIVE;
+            return MPCostEnum.EXPENSIVE;
         if (!unit.getType().equals(UnitType.SCOUT))
-            MPs += destinationTile.getTerrainType().getMovementCost();
+            MPs += ((MPCostClass) destinationTile.getTerrainType().getMovementCost()).getCost();
         for (Feature feature : destinationTile.getFeatures()) {
-            MPs += feature.getMovementCost();
+            MPs += ((MPCostClass) feature.getMovementCost()).getCost();
         }
         if (hasCommonRoadOrRailRoad)
             MPs = (int) Math.max(MPs * 0.5, 1);
@@ -441,7 +441,7 @@ public class GameController {
             return finalTiles;
         }
         int size = finalTiles.size();
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             finalTiles.addAll(getAdjacentTiles(finalTiles.get(i)));
         }
         finalTiles.addAll(waitingTiles);
@@ -510,5 +510,33 @@ public class GameController {
     
     public int getMapHeight() {
         return GameMap.getGameMap().getMap().length;
+    }
+    
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
+        ArrayList<Tile> finalTiles = new ArrayList<>();
+        ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
+        for (Tile tile : adjacentTiles) {
+            MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
+            if (mp.equals(MPCostEnum.IMPASSABLE))
+                continue;
+            if (areTwoTilesAdjacent(tile, destinationTile)) {
+                finalTiles.add(tile);
+                finalTiles.add(destinationTile);
+                return finalTiles;
+            }
+            ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
+            for (Tile tile2 : adjacentTiles2) {
+                MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
+                if (mp2.equals(MPCostEnum.IMPASSABLE))
+                    continue;
+                if (areTwoTilesAdjacent(tile2, destinationTile)) {
+                    finalTiles.add(tile);
+                    finalTiles.add(tile2);
+                    finalTiles.add(destinationTile);
+                    return finalTiles;
+                }
+            }
+        }
+        return null;
     }
 }
