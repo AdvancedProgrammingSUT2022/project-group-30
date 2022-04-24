@@ -178,7 +178,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     }
 
     public ArrayList<Tile> getPath() {
-        return new ArrayList<>();
+        return path;
     }
 
     public UnitType getType(){

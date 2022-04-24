@@ -203,7 +203,7 @@ public class GameView implements View {
     private HashMap<UnitCommands,Boolean> calculateAllowedCommands(Unit unit) {
         HashMap<UnitCommands,Boolean> result = new HashMap<>();
         for (UnitCommands command : UnitCommands.getAllCommands()) {
-            result.put(command, true);
+            result.put(command, false);
         }
 
         result.put(UnitCommands.DESELECT, true);
@@ -245,14 +245,14 @@ public class GameView implements View {
             return;
         }
 
-        ArrayList<Tile> path = controller.findPath(unit, destination);
+        ArrayList<Tile> path = controller.findPath(unit, unit.getLocation(), destination);
         if (path == null) {
             printer.printlnError("No path was found to the destination you have entered");
             return;
         }
 
         // SET UNITS PATH
-        unit.setPath(controller.findPath(unit, destination));
+        unit.setPath(path);
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
     }

@@ -147,6 +147,20 @@ public class GameController {
 
         if (destination != null) {
             moveUnit(unit, destination);
+
+            int costInt = 0;
+            for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
+                MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+                if (cost == MPCostEnum.EXPENSIVE) {
+                    unit.setMovePointsLeft(0);
+                    costInt = 0;
+                    break;
+                } else {
+                    costInt += ((MPCostClass) cost).getCost();
+                }
+            }
+            unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
+
             ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
             for (Tile tile : unit.getPath()) {
                 if (tile == destination) {
@@ -244,10 +258,6 @@ public class GameController {
                 return unit;
             }
         }
-        return null;
-    }
-
-    public ArrayList<Tile> findPath(Unit unit, Tile destinationTile) {
         return null;
     }
 
@@ -366,7 +376,6 @@ public class GameController {
 
     public MPCostInterface calculateRequiredMps(Unit unit, Tile sourceTile, Tile destinationTile) {
         int MPs = 0;
-        //Tile sourceTile = unit.getLocation();
         boolean hasCommonRoadOrRailRoad = false;
         if (!areTwoTilesAdjacent(destinationTile, sourceTile)) {
             Debugger.debug("Two tile are not adjacent!");
@@ -514,21 +523,24 @@ public class GameController {
     
     public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         ArrayList<Tile> finalTiles = new ArrayList<>();
+        finalTiles.add(sourceTile);
         ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
+        if (areTwoTilesAdjacent(sourceTile, destinationTile)) {
+            finalTiles.add(destinationTile);
+            return finalTiles;
+        }
+
         for (Tile tile : adjacentTiles) {
-            MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
-            if (mp.equals(MPCostEnum.IMPASSABLE))
-                continue;
             if (areTwoTilesAdjacent(tile, destinationTile)) {
                 finalTiles.add(tile);
                 finalTiles.add(destinationTile);
                 return finalTiles;
             }
+        }
+
+        for (Tile tile : adjacentTiles) {
             ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
             for (Tile tile2 : adjacentTiles2) {
-                MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
-                if (mp2.equals(MPCostEnum.IMPASSABLE))
-                    continue;
                 if (areTwoTilesAdjacent(tile2, destinationTile)) {
                     finalTiles.add(tile);
                     finalTiles.add(tile2);
@@ -538,5 +550,33 @@ public class GameController {
             }
         }
         return null;
-    }
+    }    
+    // public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
+    //     ArrayList<Tile> finalTiles = new ArrayList<>();
+    //     finalTiles.add(sourceTile);
+    //     ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
+    //     for (Tile tile : adjacentTiles) {
+    //         MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
+    //         if (mp.equals(MPCostEnum.IMPASSABLE))
+    //             continue;
+    //         if (areTwoTilesAdjacent(tile, destinationTile)) {
+    //             finalTiles.add(tile);
+    //             finalTiles.add(destinationTile);
+    //             return finalTiles;
+    //         }
+    //         ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
+    //         for (Tile tile2 : adjacentTiles2) {
+    //             MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
+    //             if (mp2.equals(MPCostEnum.IMPASSABLE))
+    //                 continue;
+    //             if (areTwoTilesAdjacent(tile2, destinationTile)) {
+    //                 finalTiles.add(tile);
+    //                 finalTiles.add(tile2);
+    //                 finalTiles.add(destinationTile);
+    //                 return finalTiles;
+    //             }
+    //         }
+    //     }
+    //     return null;
+    // }
 }
