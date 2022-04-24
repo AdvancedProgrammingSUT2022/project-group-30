@@ -3,6 +3,7 @@ package views;
 import java.util.ArrayList;
 
 import controllers.GameController;
+import models.Feature;
 import models.GameMap;
 import models.ProgramDatabase;
 import models.RiverSegment;
@@ -171,6 +172,24 @@ public class GameView implements View {
                         printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1]
                                 .setANSI_COLOR(color);
                     }
+                    for(int k = 0 ; k < tile.getFeatures().size(); k++){
+                        String name = this.findFeatureCharacters(tile.getFeatures().get(k));
+                        if(k == 0){
+                            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex].setCharacter(name.charAt(0));
+                            if(name.length() == 2){
+                                printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 1].setCharacter(name.charAt(1));
+                            }
+                        }
+                        if(k == 1){
+                            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex = 3].setCharacter(name.charAt(0));
+                            if(name.length() == 2){
+                                printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 4].setCharacter(name.charAt(1));
+                            }
+                        }
+                        if(k == 2){
+                            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 6].setCharacter(name.charAt(0));
+                        }
+                    }
                 }
             }
         }
@@ -236,6 +255,28 @@ public class GameView implements View {
         this.colorTiles(tilesImage, printableCharacters);
         this.colorRiverSegments(tiles, printableCharacters);
         return printableCharacters;
+    }
+
+    private String findFeatureCharacters(Feature feature){
+        if(feature == Feature.FLOOD_PLAINS){
+            return "FL";
+        }
+        else if(feature == Feature.FOREST){
+            return "FO";
+        }
+        else if(feature == Feature.ICE){
+            return "I";
+        }
+        else if(feature == Feature.JUNGLE){
+            return "J";
+        }
+        else if(feature == Feature.MARSH){
+            return "M";
+        }
+        else if(feature == Feature.OASIS){
+            return "O";
+        }
+        return null;
     }
 
     private void askUserForPlayers() {

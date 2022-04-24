@@ -3,6 +3,7 @@ package models;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 import models.interfaces.TileImage;
@@ -15,12 +16,16 @@ public class GameMap {
     public static final int EXPENSIVE_MOVEMENT_COST = 10000;
 
     private Tile[][] map;
-    private ArrayList<RiverSegment> rivers;
+    private ArrayList<RiverSegment> rivers = new ArrayList<>();
 
     private GameMap() {
+
+    }
+
+    public void loadMapFromFile(){
         this.initializeMap();
-        this.rivers = new ArrayList<>();
         this.initializeRivers();
+        this.initializeFeatures();
     }
 
     public static GameMap getGameMap() {
@@ -94,6 +99,53 @@ public class GameMap {
             e.printStackTrace();
         }
 
+    }
+
+    private void initializeFeatures(){
+        Random rand = new Random();
+        ArrayList<Tile> compatiblTiles = new ArrayList<>();
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.FLOOD_PLAINS);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 8 && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.FLOOD_PLAINS);
+            }
+        }
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.FOREST);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.FOREST);
+            }
+        }
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.ICE);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 3 && (compatiblTiles.get(i).getTerrainType() == TerrainType.SNOW || compatiblTiles.get(i).getTerrainType() == TerrainType.TUNDRA) && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.ICE);
+            }
+        }
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.JUNGLE);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.JUNGLE);
+            }
+        }
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.MARSH);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.MARSH);
+            }
+        }
+        compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.OASIS);
+        for(int i = 0; i < compatiblTiles.size(); i++){
+            int chance = rand.nextInt(10);
+            if(chance < 4 && compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT && compatiblTiles.get(i).getFeatures().size() < 3){
+                compatiblTiles.get(i).addFeature(Feature.OASIS);
+            }
+        }
     }
 
     private TerrainType findTileTerrainTypeFromFile(String terrainType) {
@@ -193,6 +245,18 @@ public class GameMap {
 
     public ArrayList<RiverSegment> getRivers() {
         return this.rivers;
+    }
+
+    private ArrayList<Tile> findAllCompatibleTilesForAFeature(Feature feature){
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for(int i = 0; i < this.map.length; i++){
+            for(int j = 0; j < this.map[i].length; j++){
+                if(Feature.isTileCompatibleWithFeature(feature, this.map[i][j])){
+                    tiles.add(this.map[i][j]);
+                }
+            }
+        }
+        return tiles;
     }
 
     public ArrayList<Tile> getAllMapTiles() {
