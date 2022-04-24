@@ -8,8 +8,6 @@ import models.City;
 import models.Civilization;
 import models.Feature;
 import models.GameMap;
-import models.MPCost;
-import models.MPCostClass;
 import models.ProgramDatabase;
 import models.RiverSegment;
 import models.Tile;
@@ -27,10 +25,8 @@ import menusEnumerations.GameMainPageCommands;
 import menusEnumerations.UnitCommands;
 import models.User;
 import models.improvements.Improvement;
-import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.resources.Resource;
-import models.units.CombatType;
 import models.units.Unit;
 import utilities.MyScanner;
 
@@ -77,11 +73,100 @@ public class GameView implements View {
                 selectUnit(matcher);
             } else if ((matcher = GameMainPageCommands.SELECT_CIVILIAN_UNIT.getCommandMatcher(command)) != null) {
                 selectCivilianUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.RIGHT.getCommandMatcher(command)) != null) {
+                goRight(matcher);
+            } else if ((matcher = GameMainPageCommands.LEFT.getCommandMatcher(command)) != null) {
+                goLeft(matcher);
+            } else if ((matcher = GameMainPageCommands.UP.getCommandMatcher(command)) != null) {
+                goUp(matcher);
+            } else if ((matcher = GameMainPageCommands.DOWN.getCommandMatcher(command)) != null) {
+                goDown(matcher);
+            } else if ((matcher = GameMainPageCommands.MOVE_FRAME_TO.getCommandMatcher(command)) != null) {
+                moveFrameTo(matcher);  
             } else {
                 System.out.println("Invalid Command!");
             }
         }
     }
+
+    private void moveFrameTo(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (controller.areCoordinatesValid(x, y) == false || x > controller.getMapWidth() - 6 || y > controller.getMapHeight() - 3) {
+            printer.printlnError("Invalid destination for frame!");
+            return;
+        }
+        Tile dest = controller.getTileByCoordinates(x, y);
+        controller.getCurrentPlayer().setFrameBase(dest);
+        showMap();
+    }
+
+    private void goRight(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        System.out.println("width " + controller.getMapWidth());
+        int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
+        
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+    
+    private void goLeft(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destX = Math.max(currentX - count, 0);
+        
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+    
+    private void goUp(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.max(currentY - count, 0);
+        
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
+    }
+    
+    private void goDown(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
+        
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
+    }
+    
+
 
     private void runUnitActionsTab() {
         Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();

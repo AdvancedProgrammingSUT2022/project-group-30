@@ -9,8 +9,13 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands SELECT_UNIT = new GameMainPageCommands("select (unit )?(?<y>\\d+)\\s*[:, ](?<x>\\d+)");
     public static GameMainPageCommands SELECT_CIVILIAN_UNIT = new GameMainPageCommands(
             "select civ(ilian( unit)?)?\\s*(?<y>\\d+)\\s*[:, ](?<x>\\d+)");
+    public static GameMainPageCommands RIGHT = new GameMainPageCommands("r(ight)?(?<count> \\d+)?");
+    public static GameMainPageCommands LEFT = new GameMainPageCommands("l(eft)?(?<count> \\d+)?");
+    public static GameMainPageCommands UP = new GameMainPageCommands("u(p)?(?<count> \\d+)?");
+    public static GameMainPageCommands DOWN = new GameMainPageCommands("d(own)?(?<count> \\d+)?");
+    public static GameMainPageCommands MOVE_FRAME_TO = new GameMainPageCommands("move frame to (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
 
-    // move frame
+    // move frame to x,y
     // pass the turn
     // show info about civ
 

@@ -503,4 +503,12 @@ public class GameController {
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
     }
+
+    public int getMapWidth() {
+        return GameMap.getGameMap().getMap()[0].length;
+    }
+    
+    public int getMapHeight() {
+        return GameMap.getGameMap().getMap().length;
+    }
 }
