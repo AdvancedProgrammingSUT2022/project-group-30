@@ -8,9 +8,10 @@ import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
+import models.interfaces.combative;
 import models.units.Unit;
 
-public class City implements Selectable, TurnHandler {
+public class City implements Selectable, TurnHandler, combative{
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??

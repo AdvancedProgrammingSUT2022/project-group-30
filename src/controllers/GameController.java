@@ -15,7 +15,7 @@ import models.Feature;
 import models.GameDataBase;
 import models.GameMap;
 import models.ProgramDatabase;
-import models.MPCost;
+import models.MPCostEnum;
 import models.MPCostClass;
 import models.RiverSegment;
 import models.TerrainType;
@@ -53,7 +53,7 @@ public class GameController {
     }
 
     public void initializeGame() {
-        GameMap.getGameMap().loadMapFromFile();
+        GameMap.getGameMap();
         assignCivsToPlayersAndInitializePrimaryUnits();
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
@@ -156,21 +156,18 @@ public class GameController {
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if(Math.abs(x-x2) > 1 || Math.abs(y-y2) > 1){
+        if (x == x2 && Math.abs(y - y2) == 1)
+            return true;
+        if (y == y2 && Math.abs(x - x2) == 1)
+            return true;
+        if (x % 2 == 0) {
+            if (Math.abs(x - x2) == 1 && (y2 - y == 1))
+                return true;
             return false;
         }
-        if(x%2 == 0){
-            if(y2-y == 1 && x != x2){
-                return false;
-            }
+        if ((y - y2 == 1) && Math.abs(x - x2) == 1)
             return true;
-        }
-        else{
-            if(y-y2 == 1 && x != x2){
-                return false;
-            }
-            return true;
-        }
+        return false;
     }
 
     public boolean hasCommonRiver(Tile tile1, Tile tile2) {
@@ -215,9 +212,8 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
-    public MPCostInterface calculateRequiredMps(Unit unit, Tile destinationTile) {
+    public MPCostInterface calculateRequiredMps(Unit unit, Tile sourceTile, Tile destinationTile) {
         int MPs = 0;
-        Tile sourceTile = unit.getLocation();
         boolean hasCommonRoadOrRailRoad = false;
         if (!areTwoTilesAdjacent(destinationTile, sourceTile)) {
             Debugger.debug("Two tile are not adjacent!");
@@ -226,19 +222,19 @@ public class GameController {
         if (destinationTile.getTerrainType().equals(TerrainType.OCEAN)
                 || destinationTile.getTerrainType().equals(TerrainType.MOUNTAIN)
                 || destinationTile.getFeatures().contains(Feature.ICE)) {
-            return MPCost.IMPASSABLE;
+            return MPCostEnum.IMPASSABLE;
         }
         if (hasCommonRoadOrRailRoad(sourceTile, destinationTile)) // MINETODO add relation effects
             hasCommonRoadOrRailRoad = true;
         if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad
                 && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
-            return MPCost.EXPENSIVE;
+            return MPCostEnum.EXPENSIVE;
         if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile))
-            return MPCost.EXPENSIVE;
+            return MPCostEnum.EXPENSIVE;
         if (!unit.getType().equals(UnitType.SCOUT))
-            MPs += destinationTile.getTerrainType().getMovementCost();
+            MPs += ((MPCostClass) destinationTile.getTerrainType().getMovementCost()).getCost();
         for (Feature feature : destinationTile.getFeatures()) {
-            MPs += feature.getMovementCost();
+            MPs += ((MPCostClass) feature.getMovementCost()).getCost();
         }
         if (hasCommonRoadOrRailRoad)
             MPs = (int) Math.max(MPs * 0.5, 1);
@@ -249,32 +245,16 @@ public class GameController {
         int x = tile.findTileXCoordinateInMap();
         int y = tile.findTileYCoordinateInMap();
         ArrayList<Tile> tiles = new ArrayList<>();
-        if(GameMap.getGameMap().areCoordinatesValid(x, y-1)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
-        }
-        if(GameMap.getGameMap().areCoordinatesValid(x, y+1)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
-        }
-        if(GameMap.getGameMap().areCoordinatesValid(x-1, y)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y));
-        }
-        if(GameMap.getGameMap().areCoordinatesValid(x+1, y)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y));
-        }
-        if (x % 2 == 1) {
-            if(GameMap.getGameMap().areCoordinatesValid(x-1, y+1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y + 1));
-            }
-            if(GameMap.getGameMap().areCoordinatesValid(x+1, y+1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y + 1));
-            }
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y));
+        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y));
+        if (x % 2 == 0) {
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y + 1));
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y + 1));
         } else {
-            if(GameMap.getGameMap().areCoordinatesValid(x-1, y-1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y - 1));
-            }
-            if(GameMap.getGameMap().areCoordinatesValid(x+1, y-1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y - 1));
-            }
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y - 1));
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y - 1));
         }
         return tiles;
     }
@@ -308,7 +288,7 @@ public class GameController {
             return finalTiles;
         }
         int size = finalTiles.size();
-        for (int i=0; i<size; i++) {
+        for (int i = 0; i < size; i++) {
             finalTiles.addAll(getAdjacentTiles(finalTiles.get(i)));
         }
         finalTiles.addAll(waitingTiles);
@@ -369,5 +349,33 @@ public class GameController {
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
+    }
+
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
+        ArrayList<Tile> finalTiles = new ArrayList<>();
+        ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
+        for (Tile tile : adjacentTiles) {
+            MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
+            if (mp.equals(MPCostEnum.IMPASSABLE))
+                continue;
+            if (areTwoTilesAdjacent(tile, destinationTile)) {
+                finalTiles.add(tile);
+                finalTiles.add(destinationTile);
+                return finalTiles;
+            }
+            ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
+            for (Tile tile2 : adjacentTiles2) {
+                MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
+                if (mp2.equals(MPCostEnum.IMPASSABLE))
+                    continue;
+                if (areTwoTilesAdjacent(tile2, destinationTile)) {
+                    finalTiles.add(tile);
+                    finalTiles.add(tile2);
+                    finalTiles.add(destinationTile);
+                    return finalTiles;
+                }
+            }
+        }
+        return null;
     }
 }

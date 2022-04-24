@@ -3,33 +3,37 @@ package models;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import models.interfaces.MPCostInterface;
 import models.interfaces.TerrainProperty;
 
 public enum Feature implements TerrainProperty {
-    FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, 1),
+    FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33,
+            new MPCostClass(1)),
     FOREST(new Output(0, 1, 1),
             new ArrayList<TerrainType>(
                     Arrays.asList(TerrainType.GRASSLAND, TerrainType.HILLS, TerrainType.PLAINS, TerrainType.TUNDRA)),
-            25, 2),
-    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, GameMap.EXPENSIVE_MOVEMENT_COST),
+            25, new MPCostClass(2)),
+    ICE(new Output(0, 0, 0), new ArrayList<TerrainType>(), 0, MPCostEnum.IMPASSABLE),
     JUNGLE(new Output(0, 1, -1), new ArrayList<TerrainType>(Arrays.asList(TerrainType.HILLS, TerrainType.PLAINS)), 25,
-            2),
-    MARSH(new Output(0, -1, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.GRASSLAND)), -33, 2),
-    OASIS(new Output(1, 3, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, 1);
+            new MPCostClass(2)),
+    MARSH(new Output(0, -1, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.GRASSLAND)), -33,
+            new MPCostClass(2)),
+    OASIS(new Output(1, 3, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33, new MPCostClass(1));
 
     private Output output;
     private ArrayList<TerrainType> terrainTypes;
     private int combatModifier;
-    private int movementCost;
+    private MPCostInterface movementCost;
 
-    private Feature(Output output, ArrayList<TerrainType> terrainTypes, int combatModifier, int movementCost) {
+    private Feature(Output output, ArrayList<TerrainType> terrainTypes, int combatModifier,
+            MPCostInterface movementCost) {
         this.output = output;
         this.terrainTypes = terrainTypes;
         this.combatModifier = combatModifier;
         this.movementCost = movementCost;
     }
 
-    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile)   {
+    public static boolean isTileCompatibleWithFeature(Feature feature, Tile tile) {
         if (feature == Feature.FLOOD_PLAINS && feature.getTerrainTypes().contains(tile.getTerrainType())) {
             if (tile.isNearTheRiver())
                 return true;
@@ -52,11 +56,11 @@ public enum Feature implements TerrainProperty {
         return this.combatModifier;
     }
 
-    public void setMovementCost(int movementCost) {
+    public void setMovementCost(MPCostInterface movementCost) {
         this.movementCost = movementCost;
     }
 
-    public int getMovementCost() {
+    public MPCostInterface getMovementCost() {
         return this.movementCost;
     }
 

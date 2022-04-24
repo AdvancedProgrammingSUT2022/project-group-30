@@ -2,7 +2,7 @@ package models;
 
 import models.interfaces.MPCostInterface;
 
-public enum MPCost implements  MPCostInterface{
+public enum MPCostEnum implements  MPCostInterface{
     IMPASSABLE(),
     EXPENSIVE();
 }
