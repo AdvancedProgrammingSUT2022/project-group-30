@@ -181,7 +181,7 @@ public class GameView implements View {
                             }
                         }
                         if(k == 1){
-                            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex = 3].setCharacter(name.charAt(0));
+                            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 3].setCharacter(name.charAt(0));
                             if(name.length() == 2){
                                 printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 4].setCharacter(name.charAt(1));
                             }

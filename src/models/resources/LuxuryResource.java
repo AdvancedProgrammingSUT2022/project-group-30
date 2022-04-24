@@ -10,44 +10,44 @@ import models.TerrainType;
 import models.improvements.ImprovementType;
 
 public class LuxuryResource extends Resource {
-        LuxuryResource COTTON = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource COTTON = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND)));
-        LuxuryResource DYE = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource DYE = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(Arrays.asList(Feature.JUNGLE, Feature.FOREST)));
-        LuxuryResource FUR = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource FUR = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.CAMP,
                         new ArrayList<TerrainProperty>(Arrays.asList(TerrainType.TUNDRA, Feature.FOREST)));
-        LuxuryResource GEM = new LuxuryResource(new Output(3, 0, 0),
+        public static LuxuryResource GEM = new LuxuryResource(new Output(3, 0, 0),
                         ImprovementType.MINE,
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(Feature.JUNGLE, TerrainType.GRASSLAND, TerrainType.PLAINS,
                                                         TerrainType.DESERT, TerrainType.TUNDRA, TerrainType.HILLS)));
-        LuxuryResource GOLD = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource GOLD = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.MINE,
                         new ArrayList<TerrainProperty>(Arrays.asList(TerrainType.GRASSLAND, TerrainType.PLAINS,
                                         TerrainType.DESERT, TerrainType.HILLS)));
-        LuxuryResource INCENSE = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource INCENSE = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT)));
-        LuxuryResource IVORY = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource IVORY = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.CAMP,
                         new ArrayList<TerrainProperty>(Arrays.asList(TerrainType.PLAINS)));
-        LuxuryResource MARBLE = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource MARBLE = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.QUARRY,
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(TerrainType.GRASSLAND, TerrainType.PLAINS, TerrainType.DESERT,
                                                         TerrainType.TUNDRA, TerrainType.HILLS)));
-        LuxuryResource SILK = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource SILK = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(Arrays.asList(Feature.FOREST)));
-        LuxuryResource SILVER = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource SILVER = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.MINE,
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(TerrainType.TUNDRA, TerrainType.DESERT, TerrainType.HILLS)));
-        LuxuryResource SUGAR = new LuxuryResource(new Output(2, 0, 0),
+        public static LuxuryResource SUGAR = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(Feature.FLOOD_PLAINS, Feature.MARSH, TerrainType.HILLS)));
