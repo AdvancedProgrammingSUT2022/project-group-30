@@ -73,22 +73,21 @@ public class City implements Selectable, TurnHandler, combative{
         return null;
     }
 
-    public double calculateFoodProduction() {
-        // TODO
-        return 0;
+    public Output calculateOutput() {
+        Output output = new Output(0, 0, 0);
+        for(Tile tile : this.territories){
+            output.add(tile.getOutput());
+        }
+        for(Citizen citizen : this.citizens){
+            if(!citizen.isWorkless()){
+                output.add(new Output(0, 0, 1));
+            }
+        }
+        //MINETODO  add Buildings' output
+        return output;
     }
 
-    public double calculateGoldProduction() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateProduction() {
-        // TODO
-        return 0;
-    }
-
-    public double getScienceProduction() {
+        public double getScienceProduction() {
         // TODO
         return 0;
     }

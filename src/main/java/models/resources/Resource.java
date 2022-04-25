@@ -50,4 +50,8 @@ public abstract class Resource {
     public String getName() {
         return name;
     }
+
+    public ImprovementType getPrerequisiteImprovement() {
+        return prerequisiteImprovement;
+    }
 }

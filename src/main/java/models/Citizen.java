@@ -17,6 +17,12 @@ public class Citizen {
         return workPlace;
     }
 
+    public boolean isWorkless(){
+        if(workPlace == null)
+            return false;
+        return true;
+    }
+
     public void setWorkPlace(Workable workPlace) {
         this.workPlace = workPlace;
     }

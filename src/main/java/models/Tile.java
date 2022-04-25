@@ -86,9 +86,21 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return count;
     }
 
-    public Output calculateOutput(Output output) {
-        // TODO
-        return null;
+    public Output calculateOutput() {
+        Output output = new Output(0, 0, 0);
+        if(!this.hasCitizen())
+            return output;
+        output.add(this.output);
+        for(Resource resource : this.resources.keySet()){
+            if(this.containsImprovment(resource.getPrerequisiteImprovement())){
+                for(int i=0 ; i< this.resources.get(resource); i++)
+                  output.add(resource.getOutput());
+            }
+        }
+        for(Improvement improvement : this.getImprovements()){
+            output.add(improvement.getType().getOutput());
+        }
+        return output;
     }
 
     public City getCityOfTile() {
@@ -177,6 +189,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public void goToNextTurn() {
         // TODO
+    }
+
+    public boolean hasCitizen(){
+        City city = this.getCityOfTile();
+        for(Citizen citizen : city.getCitizens()){
+            if(this == citizen.getWorkPlace()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public TerrainType getTerrainType() {
