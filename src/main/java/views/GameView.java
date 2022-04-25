@@ -64,7 +64,7 @@ public class GameView implements View {
             }
 
             command = scanner.nextLine().trim();
-            
+
             if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
                 showMap();
             } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
@@ -82,11 +82,25 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.DOWN.getCommandMatcher(command)) != null) {
                 goDown(matcher);
             } else if ((matcher = GameMainPageCommands.MOVE_FRAME_TO.getCommandMatcher(command)) != null) {
-                moveFrameTo(matcher);  
+                moveFrameTo(matcher);
+            } else if ((matcher = GameMainPageCommands.GO_TO_NEXT_TURN.getCommandMatcher(command)) != null)  {
+                passTurn();
             } else {
                 System.out.println("Invalid Command!");
             }
         }
+    }
+
+    private void passTurn() {
+        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+        if (idleUnits.isEmpty() == false) {
+            printer.printlnError("Some units are waiting for a command!");
+            controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
+            return;
+        }
+        // TODO : if a city can start a new production, make the player choose it!
+
+        controller.goToNextPlayer();
     }
 
     private void moveFrameTo(Matcher matcher) {
@@ -113,11 +127,11 @@ public class GameView implements View {
         int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
         System.out.println("width " + controller.getMapWidth());
         int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
-        
+
         controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
         showMap();
     }
-    
+
     private void goLeft(Matcher matcher) {
         int count;
         if (matcher.group("count") == null) {
@@ -129,11 +143,11 @@ public class GameView implements View {
         int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
         int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
         int destX = Math.max(currentX - count, 0);
-        
+
         controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
         showMap();
     }
-    
+
     private void goUp(Matcher matcher) {
         int count;
         if (matcher.group("count") == null) {
@@ -145,11 +159,11 @@ public class GameView implements View {
         int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
         int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
         int destY = Math.max(currentY - count, 0);
-        
+
         controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
         showMap();
     }
-    
+
     private void goDown(Matcher matcher) {
         int count;
         if (matcher.group("count") == null) {
@@ -161,11 +175,10 @@ public class GameView implements View {
         int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
         int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
         int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
-        
+
         controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
         showMap();
     }
-    
 
 
     private void runUnitActionsTab() {
@@ -200,8 +213,8 @@ public class GameView implements View {
         }
     }
 
-    private HashMap<UnitCommands,Boolean> calculateAllowedCommands(Unit unit) {
-        HashMap<UnitCommands,Boolean> result = new HashMap<>();
+    private HashMap<UnitCommands, Boolean> calculateAllowedCommands(Unit unit) {
+        HashMap<UnitCommands, Boolean> result = new HashMap<>();
         for (UnitCommands command : UnitCommands.getAllCommands()) {
             result.put(command, false);
         }
@@ -274,7 +287,7 @@ public class GameView implements View {
         civilization.setSelectedEntity(unit);
         printer.println(civilization.getName() + "'s " + unit.getType().getName() + " was selected");
     }
-    
+
     private void selectCivilianUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
@@ -332,14 +345,14 @@ public class GameView implements View {
 
         printer.printBlue("Terrain Type:");
         printer.println(" " + tile.getTerrainType().getName());
-        
+
         printer.printlnBlue("Features:");
         if (tile.getFeatures().isEmpty()) {
             printer.println("no features!");
         }
         for (Feature feature : tile.getFeatures()) {
             printer.println(feature.getName());
-        }        
+        }
 
         if (cityCentral != null) {
             printer.println();
@@ -397,7 +410,7 @@ public class GameView implements View {
     }
 
     private void colorATileRiverSegment(String riverDirection, PrintableCharacters printableCharacters[][], int XIndex,
-            int YIndex) {
+                                        int YIndex) {
         int tileStartingVerticalIndex = (XIndex % 2) * 3 + 6 * YIndex;
         int tileStartingHorizontalIndex = 2 + XIndex * 8;
         if (riverDirection.equals("RU")) {
@@ -462,21 +475,21 @@ public class GameView implements View {
                         printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1]
                                 .setANSI_COLOR(color);
                     }
-                    for(int k = 0 ; k < tile.getFeatures().size(); k++){
+                    for (int k = 0; k < tile.getFeatures().size(); k++) {
                         String name = this.findFeatureCharacters(tile.getFeatures().get(k));
-                        if(k == 0){
+                        if (k == 0) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex].setCharacter(name.charAt(0));
-                            if(name.length() == 2){
+                            if (name.length() == 2) {
                                 printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 1].setCharacter(name.charAt(1));
                             }
                         }
-                        if(k == 1){
+                        if (k == 1) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 3].setCharacter(name.charAt(0));
-                            if(name.length() == 2){
+                            if (name.length() == 2) {
                                 printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 4].setCharacter(name.charAt(1));
                             }
                         }
-                        if(k == 2){
+                        if (k == 2) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 6].setCharacter(name.charAt(0));
                         }
                     }
@@ -486,23 +499,18 @@ public class GameView implements View {
     }
 
 
-    private String findFeatureCharacters(Feature feature){
-        if(feature == Feature.FLOOD_PLAINS){
+    private String findFeatureCharacters(Feature feature) {
+        if (feature == Feature.FLOOD_PLAINS) {
             return "FL";
-        }
-        else if(feature == Feature.FOREST){
+        } else if (feature == Feature.FOREST) {
             return "FO";
-        }
-        else if(feature == Feature.ICE){
+        } else if (feature == Feature.ICE) {
             return "I";
-        }
-        else if(feature == Feature.JUNGLE){
+        } else if (feature == Feature.JUNGLE) {
             return "J";
-        }
-        else if(feature == Feature.MARSH){
+        } else if (feature == Feature.MARSH) {
             return "M";
-        }
-        else if(feature == Feature.OASIS){
+        } else if (feature == Feature.OASIS) {
             return "O";
         }
         return null;
@@ -510,7 +518,7 @@ public class GameView implements View {
 
 
     private void drawATile(PrintableCharacters printableCharacters[][], int tileStartingVerticalIndex,
-            int tileStartingHorizontalIndex, int i, int j) {
+                           int tileStartingHorizontalIndex, int i, int j) {
         Tile frameBase = controller.getCurrentPlayer().getFrameBase();
         int frameBaseXCoordinate = frameBase.findTileXCoordinateInMap();
         int frameBaseYCoordinate = frameBase.findTileYCoordinateInMap();

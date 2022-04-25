@@ -14,8 +14,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands UP = new GameMainPageCommands("u(p)?(?<count> \\d+)?");
     public static GameMainPageCommands DOWN = new GameMainPageCommands("d(own)?(?<count> \\d+)?");
     public static GameMainPageCommands MOVE_FRAME_TO = new GameMainPageCommands("move frame to (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
-
-    // move frame to x,y
+    public static GameMainPageCommands GO_TO_NEXT_TURN = new GameMainPageCommands("(go to )?next( turn)?");
     // pass the turn
     // show info about civ
 

@@ -10,6 +10,7 @@ import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.units.Unit;
 import utilities.Debugger;
 
 public class Civilization implements TurnHandler {
@@ -144,6 +145,17 @@ public class Civilization implements TurnHandler {
         return true;
     }
 
+    public ArrayList<Unit> getUnits() {
+        ArrayList<Unit> allUnits = GameDataBase.getGameDataBase().getUnits();
+        ArrayList<Unit> myUnits = new ArrayList<>();
+        for (Unit unit : allUnits) {
+            if (unit.getOwner() == this) {
+                myUnits.add(unit);
+            }
+        }
+        return myUnits;
+    }
+
     public double getGoldCount() {
         return this.goldCount;
     }
@@ -257,5 +269,14 @@ public class Civilization implements TurnHandler {
 
     public void setSelectedEntity(Selectable selectedEntity) {
         this.selectedEntity = selectedEntity;
+    }
+
+    public Player getPlayer() {
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        for (Player player : players) {
+            if (player.getCivilization() == this) {
+                return player;
+            }
+        }
     }
 }

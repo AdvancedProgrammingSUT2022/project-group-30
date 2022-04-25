@@ -8,7 +8,6 @@ import models.units.Unit;
 
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;
-    private ArrayList<Civilization> civilizations = new ArrayList<>();
     private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
@@ -26,10 +25,6 @@ public class GameDataBase {
         if (gameDataBase == null)
             gameDataBase = new GameDataBase();
         return gameDataBase;
-    }
-
-    public ArrayList<Civilization> getCivilizations() {
-        return this.civilizations;
     }
 
     public GameMap getMap() {

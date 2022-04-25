@@ -22,7 +22,6 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
-    private boolean hasReceivedCommand;
 
     public Unit(Civilization owner, UnitType type, Tile location) {
         this.owner = owner;
@@ -35,7 +34,6 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         hasBeenInactive = true;
         inactivityDuration = 0;
         stateDuration = 0;
-        hasReceivedCommand = false;
         path = null;
         if (this.type.needsAssmbly()) {
             isAssembled = false;
@@ -53,7 +51,6 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         image.hasBeenInactive = hasBeenInactive;
         image.inactivityDuration = inactivityDuration;
         image.stateDuration = stateDuration;
-        image.hasReceivedCommand = hasReceivedCommand;
         image.isAssembled = isAssembled;
         return image;
     }
@@ -61,7 +58,6 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     public void goToNextTurn() {
         // TODO : very much incomplete
 
-        hasReceivedCommand = false;
         movePointsLeft = type.getMovementSpeed();
         stateDuration++;
         if (hasBeenInactive) {
@@ -113,7 +109,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         if (state.waitsForCommand == false) { // if it is in an inactive state like fortified or sleeping, return false
             return false;
         }
-        if (movePointsLeft > 0 && hasReceivedCommand == false) {
+        if (movePointsLeft > 0) {
             return true;
         } else {
             return false;

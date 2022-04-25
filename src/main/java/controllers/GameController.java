@@ -9,20 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import models.City;
-import models.Civilization;
-import models.Feature;
-import models.GameDataBase;
-import models.GameMap;
-import models.ProgramDatabase;
-import models.MPCostEnum;
-import models.MPCostClass;
-import models.RiverSegment;
-import models.TerrainType;
-import models.Tile;
-import models.TileHistory;
-import models.TileVisibility;
-import models.User;
+import models.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
@@ -271,6 +258,30 @@ public class GameController {
             }
         }
         return null;
+    }
+
+    public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
+        ArrayList<Unit> result = new ArrayList<>();
+        Civilization player = getCurrentPlayer();
+        ArrayList<Unit> playersUnits = player.getUnits();
+        for (Unit unit : playersUnits) {
+            if (unit.isWaitingForCommand()) {
+                result.add(unit);
+            }
+        }
+        return result;
+    }
+
+    public void goToNextPlayer() {
+        ArrayList<Player> players = gameDataBase.getPlayers();
+        Player currentPlayer = getCurrentPlayer().getPlayer();
+
+        int currentIndex = gameDataBase.getPlayers().indexOf(currentPlayer);
+        if (currentIndex < players.size() - 1) {
+
+        } else {
+
+        }
     }
 
     public void setProgramDatabase() {
