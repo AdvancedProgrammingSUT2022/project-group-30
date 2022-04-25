@@ -36,9 +36,7 @@ public class City implements Selectable, TurnHandler, combative{
     private double populationShrinkageLimit;
     private ArrayList<Citizen> citizens = new ArrayList<>();
 
-    // MINETODO where is the appropriate place to initialze combatStrength and
-    // rangedCombatStrength...(Maybe instead of get, you should calculate them)
-    public City(Civilization founder, Tile tile, double combatStrength, double rangedCombatStrength) {  // WARNING : if you change this, apply the same changes to the createImage method, he makes copies :)
+    public City(Civilization founder, Tile tile) { 
         this.founder = founder;
         this.owner = founder;
         this.isPuppet = false;
@@ -46,14 +44,14 @@ public class City implements Selectable, TurnHandler, combative{
         this.territories.add(tile);
         this.hammerCount = 0;
         this.foodCount = 0;
-        this.combatStrength = combatStrength;
-        this.rangedCombatStrength = rangedCombatStrength;
+        this.combatStrength = 8;
+        this.rangedCombatStrength = 5;
         this.hitPoints = 20;
         this.range = 2;
     }
 
     public City createImage() {
-        City image = new City(founder, centralTile, combatStrength, rangedCombatStrength);
+        City image = new City(founder, centralTile);
         image.setOwner(owner);
         image.setIsPuppet(isPuppet);
         image.territories = new ArrayList<>(territories);
