@@ -131,6 +131,7 @@ public class GameController {
         for (int i = index; i > 0; i--) {
             ArrayList<Unit> units = getUnitsInTile(path.get(i));
             Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
+            City city = getCityCenteredInTile(path.get(i));
             if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
                 if (unit.isCivilian() == false && i == path.size() - 1) { 
                     // TODO : attack that tile
@@ -140,6 +141,14 @@ public class GameController {
                 if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
                     continue;
                 }
+            }
+
+            
+            if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
+                if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
+                    // TODO : attack that tile
+                }
+                continue;
             }
             destination = path.get(i);
             break;
