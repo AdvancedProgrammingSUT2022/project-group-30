@@ -570,32 +570,4 @@ public class GameController {
         }
         return null;
     }    
-    // public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
-    //     ArrayList<Tile> finalTiles = new ArrayList<>();
-    //     finalTiles.add(sourceTile);
-    //     ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
-    //     for (Tile tile : adjacentTiles) {
-    //         MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
-    //         if (mp.equals(MPCostEnum.IMPASSABLE))
-    //             continue;
-    //         if (areTwoTilesAdjacent(tile, destinationTile)) {
-    //             finalTiles.add(tile);
-    //             finalTiles.add(destinationTile);
-    //             return finalTiles;
-    //         }
-    //         ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
-    //         for (Tile tile2 : adjacentTiles2) {
-    //             MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
-    //             if (mp2.equals(MPCostEnum.IMPASSABLE))
-    //                 continue;
-    //             if (areTwoTilesAdjacent(tile2, destinationTile)) {
-    //                 finalTiles.add(tile);
-    //                 finalTiles.add(tile2);
-    //                 finalTiles.add(destinationTile);
-    //                 return finalTiles;
-    //             }
-    //         }
-    //     }
-    //     return null;
-    // }
 }
