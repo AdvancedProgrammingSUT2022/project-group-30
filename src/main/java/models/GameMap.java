@@ -45,7 +45,10 @@ public class GameMap {
     }
 
     private void initializeMap() {
-        File mapFile = new File("resources", "map1.txt");
+        File main = new File("src", "main");
+        File java = new File(main, "java");
+        File resources = new File(java, "resources");
+        File mapFile = new File(resources, "map1.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(mapFile);
@@ -74,7 +77,10 @@ public class GameMap {
     }
 
     private void initializeRivers() {
-        File riversFile = new File("resources", "map1Rivers.txt");
+        File main = new File("src", "main");
+        File java = new File(main, "java");
+        File resources = new File(java, "resources");
+        File riversFile = new File(resources, "map1Rivers.txt");
         Scanner scanner;
         try {
             scanner = new Scanner(riversFile);
