@@ -1,8 +1,18 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import models.ProgramDatabase;
 import models.User;
 
@@ -55,6 +65,7 @@ public class LoginPageController {
 
     public void addUser(User user) {
         this.programDatabase.getUsers().add(user);
+        LoginPageController.writeUsersListToFile();
     }
 
     // returns true if there was an error and false otherwise
@@ -82,8 +93,38 @@ public class LoginPageController {
         this.programDatabase.setLoggedInUser(user);
     }
 
+    public static void readUsersListFromFile(){
+        try {
+            String input = new String(Files.readAllBytes(Paths.get("src","main","java","resources","Users.json")));
+            ArrayList<User> users = new Gson().fromJson(input, new TypeToken<List<User>>(){}.getType());
+            if(users == null){
+                users = new ArrayList<>();
+            }
+            ProgramDatabase.getProgramDatabase().setUsers(users);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void writeUsersListToFile(){
+        File main = new File("src", "main");
+        File java = new File(main, "java");
+        File resources = new File(java, "resources");
+        File usersFile = new File(resources, "Users.json");
+        try {
+            FileWriter userWriter = new FileWriter(usersFile);
+            userWriter.write(new Gson().toJson(ProgramDatabase.getProgramDatabase().getUsers()));
+            userWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
     public void setProgramDatabase() {
         this.programDatabase = ProgramDatabase.getProgramDatabase();
+        LoginPageController.readUsersListFromFile();
     }
 
     public ProgramDatabase getProgramDatabase() {

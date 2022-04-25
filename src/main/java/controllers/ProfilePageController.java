@@ -22,10 +22,12 @@ public class ProfilePageController {
 
     public void changeLoggedInUserNickname(String nickname) {
         this.programDatabase.getLoggedInUser().setNickname(nickname);
+        LoginPageController.writeUsersListToFile();
     }
 
     public void changeLoggedInUserPassword(String newPassword) {
         this.programDatabase.getLoggedInUser().setPassword(newPassword);
+        LoginPageController.writeUsersListToFile();
     }
 
     public boolean checkNewPasswordAndCurrentPasswordEquality(String currentPassword, String newPassword) {
