@@ -13,6 +13,7 @@ import models.interfaces.Workable;
 import models.resources.Resource;
 import models.units.Unit;
 import models.works.Work;
+import utilities.Debugger;
 
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
@@ -142,6 +143,17 @@ public class Tile implements Workable, TileImage, TurnHandler {
         }
         return -1;
     }
+
+    public void addFeature(Feature feature){
+        if(this.features.contains(feature)){
+            Debugger.debug("feature already exists");
+            return;
+        }
+        ArrayList<Feature> featuresCopy = new ArrayList<>(features);
+        featuresCopy.add(feature);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
+    }
+
 
     public int findTileYCoordinateInMap() {
         GameMap map = GameMap.getGameMap();

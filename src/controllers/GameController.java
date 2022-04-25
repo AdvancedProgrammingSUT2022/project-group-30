@@ -53,7 +53,7 @@ public class GameController {
     }
 
     public void initializeGame() {
-        GameMap.getGameMap();
+        GameMap.getGameMap().loadMapFromFile();
         assignCivsToPlayersAndInitializePrimaryUnits();
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
@@ -308,18 +308,21 @@ public class GameController {
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if (x == x2 && Math.abs(y - y2) == 1)
-            return true;
-        if (y == y2 && Math.abs(x - x2) == 1)
-            return true;
-        if (x % 2 == 0) {
-            if (Math.abs(x - x2) == 1 && (y2 - y == 1))
-                return true;
+        if(Math.abs(x-x2) > 1 || Math.abs(y-y2) > 1){
             return false;
         }
-        if ((y - y2 == 1) && Math.abs(x - x2) == 1)
+        if(x%2 == 0){
+            if(y2-y == 1 && x != x2){
+                return false;
+            }
             return true;
-        return false;
+        }
+        else{
+            if(y-y2 == 1 && x != x2){
+                return false;
+            }
+            return true;
+        }
     }
 
     public boolean hasCommonRiver(Tile tile1, Tile tile2) {
