@@ -18,22 +18,22 @@ public class StrategicResource extends Resource {
             ImprovementType.MINE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.HILLS, TerrainType.GRASSLAND)),
-            Technology.SCIENTIFIC_THEORY);
+            Technology.SCIENTIFIC_THEORY, "Coal");
     public static StrategicResource HORSE = new StrategicResource(new Output(0, 0, 1),
             ImprovementType.PASTURE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.TUNDRA, TerrainType.PLAINS, TerrainType.GRASSLAND)),
-            Technology.ANIMAL_HUSBANDRY);
+            Technology.ANIMAL_HUSBANDRY, "Horse");
     public static StrategicResource IRON = new StrategicResource(new Output(0, 0, 1),
             ImprovementType.MINE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.TUNDRA, TerrainType.PLAINS, TerrainType.GRASSLAND, TerrainType.DESERT,
                             TerrainType.SNOW, TerrainType.HILLS)),
-            Technology.IRON_WORKING);
+            Technology.IRON_WORKING, "Iron");
 
     public StrategicResource(Output output, ImprovementType prerequisiteImprovement,
-            ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology) {
-        super(output, prerequisiteImprovement, allowedTerrains);
+            ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
+        super(output, prerequisiteImprovement, allowedTerrains, name);
         this.prerequisiteTechnology = prerequisTechnology;
     }
 

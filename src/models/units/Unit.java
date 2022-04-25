@@ -1,5 +1,7 @@
 package models.units;
 
+import java.util.ArrayList;
+
 import models.Civilization;
 import models.Tile;
 import models.interfaces.Producible;
@@ -19,7 +21,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     private boolean hasBeenInactive;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
-    private Tile destination; // Depending on how we implement schedualed movement, might turn into a path
+    private ArrayList<Tile> path;   // should be NULL when unit has no destination
     private boolean hasReceivedCommand;
 
     public Unit(Civilization owner, UnitType type, Tile location) {
@@ -33,8 +35,8 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         hasBeenInactive = true;
         inactivityDuration = 0;
         stateDuration = 0;
-        destination = null;
         hasReceivedCommand = false;
+        path = null;
         if (this.type.needsAssmbly()) {
             isAssembled = false;
         } else {
@@ -131,6 +133,10 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         return this.location;
     }
 
+    public void setLocation(Tile location) {
+        this.location = location;
+    }
+
     public int getHitPointsLeft() {
         return this.hitPointsLeft;
     }
@@ -167,16 +173,20 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         return this.stateDuration;
     }
 
-    public Tile getDestination() {
-        return this.destination;
+    public void setPath(ArrayList<Tile> path) {
+        this.path = path;
     }
 
-    public void setDestination(Tile destination) {
-        this.destination = destination;
+    public ArrayList<Tile> getPath() {
+        return path;
     }
 
     public UnitType getType(){
         return this.type;
+    }
+
+    public boolean isCivilian() {
+        return (type.getCombatType() == CombatType.CIVILIAN);
     }
 
 }

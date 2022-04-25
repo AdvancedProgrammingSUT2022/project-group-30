@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.interfaces.Producible;
+import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
@@ -27,6 +28,7 @@ public class Civilization implements TurnHandler {
     private City capital;
     private final City originCapital;
     private Tile frameBase;
+    private Selectable selectedEntity;
 
     public Civilization(String name) {
         this.name = name;
@@ -249,4 +251,11 @@ public class Civilization implements TurnHandler {
         return this.mapImage;
     }
 
+    public Selectable getSelectedEntity() {
+        return selectedEntity;
+    }
+
+    public void setSelectedEntity(Selectable selectedEntity) {
+        this.selectedEntity = selectedEntity;
+    }
 }

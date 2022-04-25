@@ -53,7 +53,7 @@ public class GameController {
     }
 
     public void initializeGame() {
-        GameMap.getGameMap();
+        GameMap.getGameMap().loadMapFromFile();
         assignCivsToPlayersAndInitializePrimaryUnits();
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
@@ -92,7 +92,6 @@ public class GameController {
         Unit newUnit = new Unit(owner, type, location);
         gameDataBase.getUnits().add(newUnit);
         setMapImageOfCivilization(owner);
-        // TODO TOROKKKHOOODAAA : update visibility for owner tile
     }
 
     public Tile findWorksLocation(Work work) { // gets a work and finds the tile that owns it
@@ -116,6 +115,92 @@ public class GameController {
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
 
+    public void moveUnit(Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
+        unit.setLocation(destination);
+        setMapImageOfCivilization(unit.getOwner());
+    }
+
+    public void moveUnitAlongItsPath(Unit unit) {
+        ArrayList<Tile> path = unit.getPath();
+        if (path == null || path.size() < 2) {
+            return;
+        }
+        Tile farthest = findFarthesestTileByMPCost(unit);
+        int index = path.indexOf(farthest);
+        Tile destination = null;
+        for (int i = index; i > 0; i--) {
+            ArrayList<Unit> units = getUnitsInTile(path.get(i));
+            Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
+            if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
+                if (unit.isCivilian() == false && i == path.size() - 1) { 
+                    // TODO : attack that tile
+                }
+                continue;
+            } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
+                if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
+                    continue;
+                }
+            }
+            destination = path.get(i);
+            break;
+        }
+
+        if (destination != null) {
+            moveUnit(unit, destination);
+
+            int costInt = 0;
+            for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
+                MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+                if (cost == MPCostEnum.EXPENSIVE) {
+                    unit.setMovePointsLeft(0);
+                    costInt = 0;
+                    break;
+                } else {
+                    costInt += ((MPCostClass) cost).getCost();
+                }
+            }
+            unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
+
+            ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
+            for (Tile tile : unit.getPath()) {
+                if (tile == destination) {
+                    break;
+                }
+                newPath.remove(tile);
+            }
+            if (newPath.size() == 1) {
+                unit.setPath(null);
+            } else {
+                unit.setPath(newPath);
+            }
+        } else {
+            unit.setPath(null);
+        }
+    }
+
+    private Tile findFarthesestTileByMPCost(Unit unit) {
+        int totalMP = 0;
+        for (int i = 1; i < unit.getPath().size(); i++) {
+            MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+            if (cost == MPCostEnum.IMPASSABLE) {
+                return unit.getPath().get(i - 1);
+            } else if (cost == MPCostEnum.EXPENSIVE) {
+                return unit.getPath().get(i);
+            } else {
+                totalMP += ((MPCostClass) cost).getCost();
+            }
+
+            if (totalMP >= unit.getMovePointsLeft()) {
+                return unit.getPath().get(i);
+            }
+        }
+        if (unit.getPath().size() == 0) {
+            return null;
+        } else {
+            return unit.getPath().get(0);
+        }
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
@@ -124,6 +209,56 @@ public class GameController {
             }
         }
         return units;
+    }
+   
+    public Unit getMilitaryUnitInTile(Tile tile) {
+        for (Unit unit : gameDataBase.getUnits()) {
+            if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+   
+    public Unit getCivilianUnitInTile(Tile tile) {
+        for (Unit unit : gameDataBase.getUnits()) {
+            if (unit.getLocation() == tile && unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    public Unit getCivsUnitInTile(Tile tile, Civilization civilization) {  // returns null if civ doesn't have units in the tile, and returns the military unit if both a military and a civilian unit of the civ are in the tile
+        Unit militaryUnit = getCivsMilitaryUnitInTile(tile, civilization);
+        Unit civilianUnit = getCivsCivilianUnitInTile(tile, civilization);
+        if (militaryUnit != null) {
+            return militaryUnit;
+        } else if (civilianUnit != null) {
+            return civilianUnit;
+        } else {
+            return null;
+        }
+    }
+    
+    public Unit getCivsMilitaryUnitInTile(Tile tile, Civilization civilization) {  
+        ArrayList<Unit> units = getUnitsInTile(tile);
+        for (Unit unit : units) {
+            if (unit.getOwner() == civilization && unit.getType().getCombatType() != CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
+    }
+    
+    public Unit getCivsCivilianUnitInTile(Tile tile, Civilization civilization) {  
+        ArrayList<Unit> units = getUnitsInTile(tile);
+        for (Unit unit : units) {
+            if (unit.getOwner() == civilization && unit.getType().getCombatType() == CombatType.CIVILIAN) {
+                return unit;
+            }
+        }
+        return null;
     }
 
     public void setProgramDatabase() {
@@ -142,9 +277,26 @@ public class GameController {
         return this.gameDataBase;
     }
 
-    public City getCityInTile(Tile tile) {
+    public City getCityCenteredInTile(Tile tile) {
         for (City city : gameDataBase.getCities()) {
             if (city.getCentralTile() == tile) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public boolean canUnitMove(Unit unit) {
+        if (unit.getMovePointsLeft() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)
+        for (City city : gameDataBase.getCities()) {
+            if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {
                 return city;
             }
         }
@@ -156,18 +308,21 @@ public class GameController {
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if (x == x2 && Math.abs(y - y2) == 1)
-            return true;
-        if (y == y2 && Math.abs(x - x2) == 1)
-            return true;
-        if (x % 2 == 0) {
-            if (Math.abs(x - x2) == 1 && (y2 - y == 1))
-                return true;
+        if(Math.abs(x-x2) > 1 || Math.abs(y-y2) > 1){
             return false;
         }
-        if ((y - y2 == 1) && Math.abs(x - x2) == 1)
+        if(x%2 == 0){
+            if(y2-y == 1 && x != x2){
+                return false;
+            }
             return true;
-        return false;
+        }
+        else{
+            if(y-y2 == 1 && x != x2){
+                return false;
+            }
+            return true;
+        }
     }
 
     public boolean hasCommonRiver(Tile tile1, Tile tile2) {
@@ -212,6 +367,16 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
+    public boolean isTileImpassabe(Tile tile) {
+        if (tile.getTerrainType().equals(TerrainType.OCEAN)
+                || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
+                || tile.getFeatures().contains(Feature.ICE)) {
+            return true;
+        }
+        return false;
+    }
+
+
     public MPCostInterface calculateRequiredMps(Unit unit, Tile sourceTile, Tile destinationTile) {
         int MPs = 0;
         boolean hasCommonRoadOrRailRoad = false;
@@ -245,16 +410,32 @@ public class GameController {
         int x = tile.findTileXCoordinateInMap();
         int y = tile.findTileYCoordinateInMap();
         ArrayList<Tile> tiles = new ArrayList<>();
-        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
-        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
-        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y));
-        tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y));
-        if (x % 2 == 0) {
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y + 1));
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y + 1));
+        if(GameMap.getGameMap().areCoordinatesValid(x, y-1)){
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
+        }
+        if(GameMap.getGameMap().areCoordinatesValid(x, y+1)){
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
+        }
+        if(GameMap.getGameMap().areCoordinatesValid(x-1, y)){
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y));
+        }
+        if(GameMap.getGameMap().areCoordinatesValid(x+1, y)){
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y));
+        }
+        if (x % 2 == 1) {
+            if(GameMap.getGameMap().areCoordinatesValid(x-1, y+1)){
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y + 1));
+            }
+            if(GameMap.getGameMap().areCoordinatesValid(x+1, y+1)){
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y + 1));
+            }
         } else {
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y - 1));
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y - 1));
+            if(GameMap.getGameMap().areCoordinatesValid(x-1, y-1)){
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y - 1));
+            }
+            if(GameMap.getGameMap().areCoordinatesValid(x+1, y-1)){
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y - 1));
+            }
         }
         return tiles;
     }
@@ -351,23 +532,34 @@ public class GameController {
         civilization.getMapImage().putAll(newMapImage);
     }
 
+    public int getMapWidth() {
+        return GameMap.getGameMap().getMap()[0].length;
+    }
+    
+    public int getMapHeight() {
+        return GameMap.getGameMap().getMap().length;
+    }
+    
     public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         ArrayList<Tile> finalTiles = new ArrayList<>();
+        finalTiles.add(sourceTile);
         ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
+        if (areTwoTilesAdjacent(sourceTile, destinationTile)) {
+            finalTiles.add(destinationTile);
+            return finalTiles;
+        }
+
         for (Tile tile : adjacentTiles) {
-            MPCostInterface mp = calculateRequiredMps(unit, sourceTile, destinationTile);
-            if (mp.equals(MPCostEnum.IMPASSABLE))
-                continue;
             if (areTwoTilesAdjacent(tile, destinationTile)) {
                 finalTiles.add(tile);
                 finalTiles.add(destinationTile);
                 return finalTiles;
             }
+        }
+
+        for (Tile tile : adjacentTiles) {
             ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
             for (Tile tile2 : adjacentTiles2) {
-                MPCostInterface mp2 = calculateRequiredMps(unit, tile, tile2);
-                if (mp2.equals(MPCostEnum.IMPASSABLE))
-                    continue;
                 if (areTwoTilesAdjacent(tile2, destinationTile)) {
                     finalTiles.add(tile);
                     finalTiles.add(tile2);

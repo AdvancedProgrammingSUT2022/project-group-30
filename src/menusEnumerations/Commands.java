@@ -12,6 +12,9 @@ public class Commands {
     
     public Matcher getCommandMatcher(String command) {
         Matcher matcher = Pattern.compile(regex).matcher(command);
-        return matcher;
+        if (matcher.matches()) {
+            return matcher;
+        }
+        return null;
     }
 }
