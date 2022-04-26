@@ -84,21 +84,6 @@ public class Civilization implements TurnHandler {
         // TODO
     }
 
-    public double calculateNetFoodProduction() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateNetFoodConsumption() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateNetProduction() {
-        // TODO
-        return 0;
-    }
-
     public double calculateNetGoldProduction() {
         // TODO
         return 0;
@@ -106,11 +91,6 @@ public class Civilization implements TurnHandler {
 
     public double calculateTotalCosts() {
         // TODO
-        return 0;
-    }
-
-    public double calculateNetScienceProduction() {
-        // MINETODO
         return 0;
     }
 

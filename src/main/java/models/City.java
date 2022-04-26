@@ -87,9 +87,30 @@ public class City implements Selectable, TurnHandler, combative{
         return output;
     }
 
-        public double getScienceProduction() {
-        // TODO
-        return 0;
+    public double calculateRequiredFood() {
+        return this.citizens.size() * 2;
+    }
+
+    public double calculateFoodConsumption() {
+        double amount = this.calculateOutput().getFood();
+        amount -= calculateRequiredFood();
+        if(this.owner.getHappiness() < 0)
+            amount = amount * 33.0 / 100;
+        return amount;
+    }
+
+    public double calculateProductionConsumption() {
+        return this.calculateOutput().getProduction();
+    }
+
+    public double calculateTotalGoldCost(){
+        //MINETODO .. add buildings cost
+        double maintenanceCost = 0;
+        for(Building building : this.buildings) {
+            maintenanceCost += building.getCost() * 0.1;
+        }
+
+
     }
 
     public void attack(Unit target) {
@@ -143,6 +164,15 @@ public class City implements Selectable, TurnHandler, combative{
         if (!owner.equals(founder))
             return true;
         return false;
+    }
+
+    public ArrayList<Unit> getUnits(){
+        ArrayList<Unit> units = new ArrayList<>();
+        for(Unit unit : GameDataBase.getGameDataBase().getUnits()){
+            if(unit.getOwner() == this.owner)
+                units.add(unit);
+        }
+        return units;
     }
 
     public Civilization getFounder() {
