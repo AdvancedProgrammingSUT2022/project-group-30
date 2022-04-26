@@ -13,6 +13,8 @@ import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
 import models.TileVisibility;
+import models.units.UnitType;
+import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
@@ -454,10 +456,21 @@ public class GameView implements View {
                 int tileStartingHorizontalIndex = 2 + j * 8;
                 Tile tile = null;
                 if (tilesImage[i][j] != null) {
+                    ArrayList<Unit> units = new ArrayList<>();
                     if (tilesImage[i][j] instanceof Tile) {
                         tile = (Tile) tilesImage[i][j];
+                        units  = this.controller.getUnitsInTile(tile);
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
+                        units = ((TileHistory) tilesImage[i][j]).getUnits();
+                    }
+                    if(units.size() > 2){
+                        Debugger.debug("there are more than one units in this tile!");
+                    }
+                    else{
+                        for(int k = 0 ; k < units.size(); k++){
+                            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 2 * k + 2].setCharacter(this.findUnitPrintableCharacter(units.get(k)));
+                        }
                     }
                     String color = PrintableCharacters.findTilesColor(tile);
                     for (int k = 0; k < 5; k++) {
@@ -499,6 +512,16 @@ public class GameView implements View {
                 }
             }
         }
+    }
+
+    private char findUnitPrintableCharacter(Unit unit){
+        if(unit.getType() == UnitType.WORKER){
+            return 'W';
+        }
+        if(unit.getType() == UnitType.SETTLER){
+            return 'S';
+        }
+        return 'U';
     }
 
 
