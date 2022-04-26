@@ -169,7 +169,10 @@ public class GameView implements View {
             printer.printlnError("Settler has no movepoints!");
             return;
         }
-
+        if (controller.isTileTooNearCity(unit.getLocation())) {
+            printer.printlnError("You can't found a city within a 3-tile distance of another city");
+            return;
+        }
 
     }
 

@@ -268,6 +268,15 @@ public class GameController {
         return null;
     }
 
+    public boolean isTileTooNearCity(Tile tile) {
+        for (City city : gameDataBase.getCities()) {
+            if (city.getCentralTile().calculateDistance(tile) < 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
         ArrayList<Unit> result = new ArrayList<>();
         Civilization player = getCurrentPlayer();

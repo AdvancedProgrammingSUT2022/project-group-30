@@ -215,6 +215,29 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.terrainType = terrainType;
     }
 
+    public int calculateDistance(Tile tile) {
+        ArrayList<Tile> checkedTiles = new ArrayList<>();
+        ArrayList<Tile> outerLayer = new ArrayList();
+        outerLayer.add(tile);
+        int distance = 0;
+        while (true) {
+            if (outerLayer.contains(tile)) {
+                return distance;
+            } else {
+                checkedTiles.addAll(outerLayer);
+                for (Tile outerTile : outerLayer) {
+                    outerLayer.addAll(GameController.getGameController().getAdjacentTiles(outerTile));
+                }
+                for (Tile checkedTile : checkedTiles) {
+                    while (outerLayer.contains(checkedTile)) {
+                        outerLayer.remove(checkedTile);
+                    }
+                }
+                distance++;
+            }
+        }
+    }
+
     public String getInfo() {
         String result = "Y: " + findTileYCoordinateInMap() + ", X: " + findTileXCoordinateInMap();
         result += "\n" + terrainType.getName();
