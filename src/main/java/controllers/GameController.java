@@ -1,13 +1,8 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import models.*;
 import models.improvements.Improvement;
@@ -591,6 +586,7 @@ public class GameController {
         return GameMap.getGameMap().getMap().length;
     }
     
+/*
     public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         ArrayList<Tile> finalTiles = new ArrayList<>();
         finalTiles.add(sourceTile);
@@ -620,5 +616,91 @@ public class GameController {
             }
         }
         return null;
-    } 
+    }
+*/
+
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
+        ArrayList<Tile> pathTiles = new ArrayList<>();
+        TileGraph graph = this.makeTilesGraph(unit, sourceTile, destinationTile);
+        GraphNode destinationNode = graph.getNodeByTile(destinationTile);
+        for (GraphNode graphNode : destinationNode.getShortestPath()) {
+            pathTiles.add(graphNode.getTile());
+        }
+        return pathTiles;
+    }
+
+    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source){
+        source.setDistance(0);
+        HashSet<GraphNode> settledNodes = new HashSet<>();
+        HashSet<GraphNode> unsettledNodes = new HashSet<>();
+        unsettledNodes.add(source);
+        while(!unsettledNodes.isEmpty()){
+            GraphNode currentNode = this.getLowestDistanceNode(unsettledNodes);
+            unsettledNodes.remove(currentNode);
+            for(Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()){
+                if(!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()){
+                    adjacencyPair.getKey().setDistance(currentNode.getDistance() + adjacencyPair.getValue());
+                    List<GraphNode> shortestPath = new LinkedList<>(currentNode.getShortestPath());
+                    shortestPath.add(currentNode);
+                    adjacencyPair.getKey().setShortestPath(shortestPath);
+                    unsettledNodes.add(adjacencyPair.getKey());
+                }
+            }
+            settledNodes.add(currentNode);
+        }
+        return graph;
+    }
+
+    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes){
+        GraphNode lowestDistanceNode = null;
+        int lowestDistance = Integer.MAX_VALUE;
+        for (GraphNode unsettledNode : unsettledNodes) {
+            if(unsettledNode.getDistance() < lowestDistance){
+                lowestDistance = unsettledNode.getDistance();
+                lowestDistanceNode = unsettledNode;
+            }
+        }
+        return lowestDistanceNode;
+    }
+
+    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
+        TileGraph graph = new TileGraph();
+        GraphNode sourceNode = new GraphNode(origin);
+        while(!graph.isTileAddedToGraph(destination)){
+            for (GraphNode node : graph.getNodes()) {
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    MPCostInterface mpCost;
+                    if((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE){
+                        GraphNode newNode = new GraphNode(adjacentTile);
+                        int requiredMp = 2;
+                        if(mpCost instanceof MPCostClass) {
+                            requiredMp = ((MPCostClass) mpCost).getCost();
+                        }
+                        node.addDestination(newNode, requiredMp);
+                        graph.addNode(newNode);
+                    }
+                }
+            }
+        }
+        for(int i = 0; i < 2; i++){
+            for (GraphNode node : graph.getNodes()) {
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    MPCostInterface mpCost;
+                    if((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE){
+                        GraphNode newNode = new GraphNode(adjacentTile);
+                        int requiredMp = 2;
+                        if(mpCost instanceof MPCostClass) {
+                            requiredMp = ((MPCostClass) mpCost).getCost();
+                        }
+                        node.addDestination(newNode, requiredMp);
+                        graph.addNode(newNode);
+                    }
+                }
+            }
+        }
+        graph = this.calculateShortestPathFromSourceTile(graph, sourceNode);
+        return graph;
+    }
 }
