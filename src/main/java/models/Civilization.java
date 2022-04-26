@@ -278,5 +278,6 @@ public class Civilization implements TurnHandler {
                 return player;
             }
         }
+        return null;
     }
 }

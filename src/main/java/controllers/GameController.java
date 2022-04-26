@@ -19,6 +19,7 @@ import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
+import org.jetbrains.annotations.NotNull;
 import utilities.Debugger;
 
 public class GameController {
@@ -105,12 +106,12 @@ public class GameController {
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
 
-    public void moveUnit(Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
+    public void moveUnit(@NotNull Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
     }
 
-    public void moveUnitAlongItsPath(Unit unit) {
+    public void moveUnitAlongItsPath(@NotNull Unit unit) {
         ArrayList<Tile> path = unit.getPath();
         if (path == null || path.size() < 2) {
             return;
@@ -277,6 +278,9 @@ public class GameController {
         getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
 
         // TODO : call all goToNextTurn functions
+        for (Unit unit : gameDataBase.getUnits()) {
+            unit.goToNextTurn();
+        }
     }
 
     public void goToNextPlayer() {

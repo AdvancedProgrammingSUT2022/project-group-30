@@ -54,7 +54,6 @@ public class GameView implements View {
 
         showMap();
 
-
         String command;
         Matcher matcher;
         while (true) {
@@ -102,84 +101,6 @@ public class GameView implements View {
 
         controller.goToNextPlayer();
     }
-
-    private void moveFrameTo(Matcher matcher) {
-        int x = Integer.parseInt(matcher.group("x"));
-        int y = Integer.parseInt(matcher.group("y"));
-        if (controller.areCoordinatesValid(x, y) == false || x > controller.getMapWidth() - 6 || y > controller.getMapHeight() - 3) {
-            printer.printlnError("Invalid destination for frame!");
-            return;
-        }
-        Tile dest = controller.getTileByCoordinates(x, y);
-        controller.getCurrentPlayer().setFrameBase(dest);
-        showMap();
-    }
-
-    private void goRight(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        System.out.println("width " + controller.getMapWidth());
-        int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
-
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
-        showMap();
-    }
-
-    private void goLeft(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destX = Math.max(currentX - count, 0);
-
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
-        showMap();
-    }
-
-    private void goUp(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destY = Math.max(currentY - count, 0);
-
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
-        showMap();
-    }
-
-    private void goDown(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
-
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
-        showMap();
-    }
-
 
     private void runUnitActionsTab() {
         Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
@@ -395,6 +316,84 @@ public class GameView implements View {
             }
             printer.println();
         }
+    }
+
+
+    private void moveFrameTo(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (controller.areCoordinatesValid(x, y) == false || x > controller.getMapWidth() - 6 || y > controller.getMapHeight() - 3) {
+            printer.printlnError("Invalid destination for frame!");
+            return;
+        }
+        Tile dest = controller.getTileByCoordinates(x, y);
+        controller.getCurrentPlayer().setFrameBase(dest);
+        showMap();
+    }
+
+    private void goRight(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        System.out.println("width " + controller.getMapWidth());
+        int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+
+    private void goLeft(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destX = Math.max(currentX - count, 0);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+
+    private void goUp(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.max(currentY - count, 0);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
+    }
+
+    private void goDown(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
     }
 
     private void colorRiverSegments(Tile tiles[][], PrintableCharacters printableCharacters[][]) {
