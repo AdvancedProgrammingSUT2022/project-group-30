@@ -10,6 +10,7 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.Resource;
 import models.units.Unit;
 
 public class City implements Selectable, TurnHandler, combative {
@@ -135,6 +136,16 @@ public class City implements Selectable, TurnHandler, combative {
         for(Tile tile : this.getTerritories()){
             if(tile.isNearTheRiver())
                 return true;
+        }
+        return false;
+    }
+
+    public boolean hasResourceByName(String name){
+        for(Tile tile : this.territories){
+            for(Resource resource : tile.getResources().keySet()){
+                if(resource.getName().equals(name))
+                    return true;
+            }
         }
         return false;
     }
