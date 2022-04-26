@@ -75,6 +75,39 @@ public class City implements Selectable, TurnHandler, combative {
         return null;
     }
 
+    public Output calculateOutputOfBuildings() {
+        Output output = new Output(0, 0, 0);
+        if (this.hasBuildingType(BuildingType.GRANARY))
+            output.add(new Output(0, 2, 0));
+        if (this.hasBuildingType(BuildingType.WATER_MILL))
+            output.add(new Output(0, 2, 0));
+        if(this.hasBuildingType(BuildingType.MINT))
+        {
+            if(this.hasResourceByName("Gold"))
+                output.add(new Output((int)(3 * this.findNumberOfResourceByName("Gold")), 0, 0));
+            if(this.hasResourceByName("Silver"))
+                output.add(new Output((int)(3 * this.findNumberOfResourceByName("Silver")), 0, 0));
+        }
+        return output;
+    }
+
+    public Output calculatePercentageOfBuildingsEffectsOnOutput() {
+        Output output = new Output(0, 0, 0);
+        if(this.hasBuildingType(BuildingType.MARKET))
+            output.add(new Output(25, 0, 0));
+        if(this.hasBuildingType(BuildingType.BANK))
+            output.add(new Output(25, 0, 0));
+        if(this.hasBuildingType(BuildingType.SATRAPS_COURT))
+            output.add(new Output(25, 0, 0));
+        if(this.hasBuildingType(BuildingType.WINDMILL))
+            output.add(new Output(0, 0, 15));
+        if(this.hasBuildingType(BuildingType.FACTORY))
+            output.add(new Output(0, 0, 50));
+        if(this.hasBuildingType(BuildingType.STOCK_EXCHANGE))
+            output.add(new Output(33, 0, 0));
+        return output;
+    }
+
     public Output calculateOutput() {
         Output output = new Output(0, 0, 0);
         for (Tile tile : this.territories) {
@@ -85,6 +118,7 @@ public class City implements Selectable, TurnHandler, combative {
                 output.add(new Output(0, 0, 1));
             }
         }
+        output.add(this.calculateOutputOfBuildings());
         //MINETODO  add Buildings' output
         return output;
     }
@@ -107,7 +141,7 @@ public class City implements Selectable, TurnHandler, combative {
 
     public double calculateBeakerConsumption() {
         double count = 3;//3 beakers per turn for capital
-        for(City city : this.founder.getCities()){
+        for (City city : this.founder.getCities()) {
             count += city.getCitizens().size();
         }
         //MINETODO page 37 trade...
@@ -124,30 +158,41 @@ public class City implements Selectable, TurnHandler, combative {
         return maintenanceCost;
     }
 
-    public boolean hasBuildingType(BuildingType type){
-        for(Building building : this.buildings){
-            if(building.getType() == type)
+    public boolean hasBuildingType(BuildingType type) {
+        for (Building building : this.buildings) {
+            if (building.getType() == type)
                 return true;
         }
         return false;
     }
 
-    public boolean isNearTheRiver(){
-        for(Tile tile : this.getTerritories()){
-            if(tile.isNearTheRiver())
+    public boolean isNearTheRiver() {
+        for (Tile tile : this.getTerritories()) {
+            if (tile.isNearTheRiver())
                 return true;
         }
         return false;
     }
 
-    public boolean hasResourceByName(String name){
-        for(Tile tile : this.territories){
-            for(Resource resource : tile.getResources().keySet()){
-                if(resource.getName().equals(name))
+    public boolean hasResourceByName(String name) {
+        for (Tile tile : this.territories) {
+            for (Resource resource : tile.getResources().keySet()) {
+                if (resource.getName().equals(name))
                     return true;
             }
         }
         return false;
+    }
+
+    public double findNumberOfResourceByName(String name) {
+        double count =0;
+        for (Tile tile : this.territories) {
+            for (Resource resource : tile.getResources().keySet()) {
+                if (resource.getName().equals(name))
+                    count += tile.getResources().get(resource);
+            }
+        }
+        return count;
     }
 
     public void attack(Unit target) {

@@ -112,7 +112,7 @@ public class Civilization implements TurnHandler {
     }
 
     public void setNextResearchProject(Technology technology) {
-        // MINETODO
+        //TODO
     }
 
     private void updateStrategicResources() {

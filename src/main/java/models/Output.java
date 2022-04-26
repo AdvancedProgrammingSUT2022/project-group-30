@@ -23,6 +23,12 @@ public class Output {
         production -= other.getProduction();
     }
 
+    public void times(Output other){
+        food *= (100 + other.getFood()) / 100.0;
+        gold *= (100 + other.getGold()) / 100.0;
+        production *= (100 + other.getProduction()) / 100.0;
+    }
+
     public void setEqualTo(Output other) {
         food = other.getFood();
         gold = other.getGold();

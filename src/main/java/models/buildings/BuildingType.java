@@ -49,16 +49,12 @@ public enum BuildingType {
     private final double cost;
     private final double maintenanceCost;
     private final Technology prerequisiteTechnology;
-  /*  private  ArrayList<Resource> prerequisiteResources = new ArrayList<>();
-    private  ArrayList<BuildingType> prerequisiteBuildings = new ArrayList<>();*/
     private final double happiness;
 
-    public BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology,  double happiness){
+    public BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, double happiness){
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;
-/*        this.prerequisiteResources = prerequisiteResources;
-        this.prerequisiteBuildings = prerequisiteBuildings;*/
         this.happiness = happiness;
     }
 
