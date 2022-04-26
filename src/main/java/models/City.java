@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.buildings.Building;
+import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
@@ -11,7 +12,7 @@ import models.interfaces.Workable;
 import models.interfaces.combative;
 import models.units.Unit;
 
-public class City implements Selectable, TurnHandler, combative{
+public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??
@@ -36,7 +37,7 @@ public class City implements Selectable, TurnHandler, combative{
     private double populationShrinkageLimit;
     private ArrayList<Citizen> citizens = new ArrayList<>();
 
-    public City(Civilization founder, Tile tile) { 
+    public City(Civilization founder, Tile tile) {
         this.founder = founder;
         this.owner = founder;
         this.isPuppet = false;
@@ -75,11 +76,11 @@ public class City implements Selectable, TurnHandler, combative{
 
     public Output calculateOutput() {
         Output output = new Output(0, 0, 0);
-        for(Tile tile : this.territories){
+        for (Tile tile : this.territories) {
             output.add(tile.getOutput());
         }
-        for(Citizen citizen : this.citizens){
-            if(!citizen.isWorkless()){
+        for (Citizen citizen : this.citizens) {
+            if (!citizen.isWorkless()) {
                 output.add(new Output(0, 0, 1));
             }
         }
@@ -94,7 +95,7 @@ public class City implements Selectable, TurnHandler, combative{
     public double calculateFoodConsumption() {
         double amount = this.calculateOutput().getFood();
         amount -= calculateRequiredFood();
-        if(this.owner.getHappiness() < 0)
+        if (this.owner.getHappiness() < 0)
             amount = amount * 33.0 / 100;
         return amount;
     }
@@ -103,14 +104,39 @@ public class City implements Selectable, TurnHandler, combative{
         return this.calculateOutput().getProduction();
     }
 
-    public double calculateTotalGoldCost(){
+    public double calculateBeakerConsumption() {
+        double count = 3;//3 beakers per turn for capital
+        for(City city : this.founder.getCities()){
+            count += city.getCitizens().size();
+        }
+        //MINETODO page 37 trade...
+        //MINETODO buildings
+        return count;
+    }
+
+    public double calculateTotalGoldCosts() {
         //MINETODO .. add buildings cost
         double maintenanceCost = 0;
-        for(Building building : this.buildings) {
+/*        for (Building building : this.buildings) {
             maintenanceCost += building.getCost() * 0.1;
+        }*/
+        return maintenanceCost;
+    }
+
+    public boolean hasBuildingType(BuildingType type){
+        for(Building building : this.buildings){
+            if(building.getType() == type)
+                return true;
         }
+        return false;
+    }
 
-
+    public boolean isNearTheRiver(){
+        for(Tile tile : this.getTerritories()){
+            if(tile.isNearTheRiver())
+                return true;
+        }
+        return false;
     }
 
     public void attack(Unit target) {
@@ -164,15 +190,6 @@ public class City implements Selectable, TurnHandler, combative{
         if (!owner.equals(founder))
             return true;
         return false;
-    }
-
-    public ArrayList<Unit> getUnits(){
-        ArrayList<Unit> units = new ArrayList<>();
-        for(Unit unit : GameDataBase.getGameDataBase().getUnits()){
-            if(unit.getOwner() == this.owner)
-                units.add(unit);
-        }
-        return units;
     }
 
     public Civilization getFounder() {

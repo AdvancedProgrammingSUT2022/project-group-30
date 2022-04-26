@@ -3,6 +3,8 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import models.improvements.Improvement;
+import models.improvements.ImprovementType;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TileImage;
@@ -10,6 +12,7 @@ import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.units.Unit;
 import utilities.Debugger;
 
 public class Civilization implements TurnHandler {
@@ -72,6 +75,38 @@ public class Civilization implements TurnHandler {
         }
     }
 
+    public ArrayList<Unit> getUnits() {
+        ArrayList<Unit> units = new ArrayList<>();
+        for (Unit unit : GameDataBase.getGameDataBase().getUnits()) {
+            if (unit.getOwner() == this)
+                units.add(unit);
+        }
+        return units;
+    }
+
+    public ArrayList<City> getCities() {
+        ArrayList<City> cities = new ArrayList<>();
+        for (City city : GameDataBase.getGameDataBase().getCities()) {
+            if (city.getOwner() == this) {
+                cities.add(city);
+            }
+        }
+        return cities;
+    }
+
+    public double numberOfRoads() {
+        double count = 0;
+        for (City city : this.getCities()) {
+            for (Tile tile : city.getTerritories()) {
+                if (tile.containsImprovment(ImprovementType.ROAD))
+                    count++;
+                if (tile.containsImprovment(ImprovementType.RAILROAD))
+                    count++;
+            }
+        }
+        return count;
+    }
+
     public void goToNextTurn() {
         // TODO
     }
@@ -85,13 +120,28 @@ public class Civilization implements TurnHandler {
     }
 
     public double calculateNetGoldProduction() {
-        // TODO
+        double gold = 0;
+        for (City city : this.getCities()) {
+            gold += city.calculateOutput().getGold();
+        }
         return 0;
     }
 
     public double calculateTotalCosts() {
-        // TODO
-        return 0;
+        double cost = 0;
+        for (City city : this.getCities()) {
+            cost += city.calculateTotalGoldCosts();
+        }
+        for (Unit unit : this.getUnits()) {
+            cost += unit.getType().getCost() * 0.1;
+        }
+        cost += this.numberOfRoads() * 1;
+        //MINETODO ... add "stepwisegold..." effects
+        return cost;
+    }
+
+    public double calculateGoldConsumption() {
+        return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
     public ArrayList<Producible> findUnlockeProducibles() {
@@ -227,7 +277,8 @@ public class Civilization implements TurnHandler {
     public String getName() {
         return name;
     }
-    public HashMap<Tile, TileImage> getMapImage(){
+
+    public HashMap<Tile, TileImage> getMapImage() {
         return this.mapImage;
     }
 
