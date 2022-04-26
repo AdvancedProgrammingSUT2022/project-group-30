@@ -1,6 +1,5 @@
 import java.util.Scanner;
 
-import com.google.gson.Gson;
 import controllers.SceneController;
 import utilities.MyScanner;
 import views.LoginPageView;
