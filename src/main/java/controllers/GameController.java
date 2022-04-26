@@ -288,6 +288,9 @@ public class GameController {
 
     public void foundCityWithSettler(Unit unit) {
         City newCity = new City(unit.getOwner(), unit.getLocation());
+        // TODO : how many citizens should I add?
+        // TODO : initialize city's territory
+        newCity.addCitizen();
         gameDataBase.getCities().add(newCity);
 
         deleteUnit(unit);
@@ -320,6 +323,9 @@ public class GameController {
         for (Unit unit : gameDataBase.getUnits()) {
             unit.goToNextTurn();
         }
+        for (City city : gameDataBase.getCities()) {
+            city.goToNextTurn();
+        }
     }
 
     public void goToNextPlayer() {
@@ -329,7 +335,6 @@ public class GameController {
         } else {
             gameDataBase.setCurrentPlayer(nextPlayer);
         }
-
     }
 
     public Civilization getNextPlayer() {   // returns the next player, return null if it is currently the last player's turn

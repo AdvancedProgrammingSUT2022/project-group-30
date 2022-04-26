@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class CityCommands extends Commands {
     public static final CityCommands SHOW_INFO = new CityCommands("(show )?info", "show info");
+    public static final CityCommands DESELECT = new CityCommands("deselect", "deselect");
+    public static final CityCommands SHOW_COMMANDS = new CityCommands("(show )?commands", "show commands");
 
 
-    private String name;
+    private final String name;
     private static ArrayList<CityCommands> allCommands;
 
     private CityCommands(String regex, String name) {
@@ -19,7 +21,11 @@ public class CityCommands extends Commands {
         allCommands.add(this);
     }
 
-    public ArrayList<CityCommands> getAllCommands() {
+    public static ArrayList<CityCommands> getAllCommands() {
         return new ArrayList<>(allCommands);
+    }
+
+    public String getName() {
+        return name;
     }
 }

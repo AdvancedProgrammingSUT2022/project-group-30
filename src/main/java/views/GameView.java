@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import controllers.GameController;
+import menusEnumerations.CityCommands;
 import models.City;
 import models.Civilization;
 import models.Feature;
@@ -101,7 +102,56 @@ public class GameView implements View {
 
     private void runCityActionsTab() {
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
+        String command;
+        Matcher matcher;
+        while (true) {
+            printer.printlnRed("*****************************************");
+            printer.println("City Actions Menu");
+            printer.println("enter \"show commands\" to see all commands");
 
+            command = scanner.nextLine();
+            if ((matcher = CityCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null) {
+                showCityCommands();
+            } else if ((matcher = CityCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showCityInfo();
+            } else if ((matcher = CityCommands.DESELECT.getCommandMatcher(command)) != null) {
+                  deselectCity(city);
+                  break;
+            } else {
+                printer.printlnError("Invalid command for city!");
+            }
+        }
+    }
+
+    private void showCityCommands() {
+        printer.printlnPurple("City Actions:");
+        for (CityCommands command : CityCommands.getAllCommands()) {
+            printer.println(" -" + command.getName());
+        }
+    }
+
+    private void showCityInfo() {
+        // TODO
+        City city = (City) controller.getCurrentPlayer().getSelectedEntity();
+        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s City");
+        printer.println("Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
+        printer.println("The following tiles comprise this city's territory:");
+        for (Tile tile : city.getTerritories()) {
+            if (tile != city.getCentralTile()) {
+                printer.print("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+                if (city.isTileBeingWorked(tile)) {
+                    printer.printlnBlue(" (worked)");
+                } else {
+                    printer.printlnRed(" (not worked)");
+                }
+            }
+        }
+    }
+
+    private void deselectCity(City city) {
+        city.getOwner().setSelectedEntity(null);
+        printer.println("City deselected");
+        showMap();
     }
 
     private void passTurn() {

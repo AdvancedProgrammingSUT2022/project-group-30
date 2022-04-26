@@ -68,6 +68,15 @@ public class City implements Selectable, TurnHandler, combative{
         // TODO
     }
 
+    public boolean isTileBeingWorked(Tile tile) {
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() == tile) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Unit getGarrisoningUnit() {      // return null if city is not garrisoned, return the garrisoning unit otherwise
         // TODO
         return null;
