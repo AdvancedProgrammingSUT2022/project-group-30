@@ -397,12 +397,16 @@ public class GameView implements View {
     }
 
     private void colorRiverSegments(Tile tiles[][], PrintableCharacters printableCharacters[][]) {
+        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap()
+                .getCivilizationsImage(controller.getCurrentPlayer());
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
-                for (int k = 0; k < riverSegments.size(); k++) {
-                    String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
-                    this.colorATileRiverSegment(riverDirection, printableCharacters, j, i, tiles);
+                if(tilesImage[i][j] != null) {
+                    ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
+                    for (int k = 0; k < riverSegments.size(); k++) {
+                        String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
+                        this.colorATileRiverSegment(riverDirection, printableCharacters, j, i, tiles);
+                    }
                 }
             }
         }
