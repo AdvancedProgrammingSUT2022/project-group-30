@@ -150,10 +150,15 @@ public class Civilization implements TurnHandler {
         return cost;
     }
 
-/*    public double calculateHappiness(){
+    public double calculateHappiness(){
         double happiness = 0;
-
-    }*/
+        for(City city : this.getCities()){
+            happiness += city.calculateHappiness();
+        }
+        happiness += this.getLuxuryResources().keySet().size() * 4;
+        happiness -= this.getCities().size() * 0.5;
+        return happiness;
+    }
 
     public double calculateGoldConsumption() {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();
