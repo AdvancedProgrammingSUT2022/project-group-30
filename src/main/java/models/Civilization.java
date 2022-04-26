@@ -135,7 +135,7 @@ public class Civilization implements TurnHandler {
         for (Unit unit : this.getUnits()) {
             cost += unit.getType().getCost() * 0.1;
         }
-        cost += this.numberOfRoads() * 1;
+        cost += this.numberOfRoads() * 1;/*1 gold per turn for each unit*/
         //MINETODO ... add "stepwisegold..." effects
         return cost;
     }
