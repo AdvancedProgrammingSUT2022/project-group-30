@@ -87,7 +87,7 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.GO_TO_NEXT_TURN.getCommandMatcher(command)) != null)  {
                 passTurn();
             } else {
-                System.out.println("Invalid Command!");
+                printer.printlnError("Invalid Command!");
             }
         }
     }
@@ -102,6 +102,7 @@ public class GameView implements View {
         // TODO : if a city can start a new production, make the player choose it!
 
         controller.goToNextPlayer();
+        showMap();
     }
 
     private void runUnitActionsTab() {
@@ -123,11 +124,13 @@ public class GameView implements View {
 
             command = scanner.nextLine().trim();
             if ((matcher = UnitCommands.DESELECT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DESELECT)) {
-                unit.getOwner().setSelectedEntity(null);
-                printer.println("unit deselected");
+                deselectUnit(unit);
                 break;
             } else if ((matcher = UnitCommands.MOVE_TO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MOVE_TO)) {
                 moveTo(matcher);
+                if (unit.getOwner().getSelectedEntity() == null) {
+                    break;
+                }
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else {
@@ -153,11 +156,23 @@ public class GameView implements View {
         return result;
     }
 
+    private void deselectUnit(Unit unit) {
+        unit.getOwner().setSelectedEntity(null);
+        printer.println("unit deselected");
+        showMap();
+    }
+
     private void showUnitInfo(Unit unit) {
         printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
+        if (unit.getPath() != null) {
+            printer.printlnBlue("Path:");
+            for (Tile tile : unit.getPath()) {
+                printer.println("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+            }
+        }
         // TODO : show state and xp
     }
 
@@ -174,6 +189,7 @@ public class GameView implements View {
 
         if (controller.getTileVisibilityForPlayer(destination) != TileVisibility.VISIBLE) {
             printer.printlnError("You can only choose visible tiles as destination!");
+            return;
         }
 
         if (controller.isTileImpassabe(destination)) {
@@ -191,6 +207,9 @@ public class GameView implements View {
         unit.setPath(path);
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
+        if (unit.getMovePointsLeft() == 0) {
+            deselectUnit(unit);
+        }
     }
 
     private void selectUnit(Matcher matcher) {

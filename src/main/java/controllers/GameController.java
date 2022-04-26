@@ -117,6 +117,9 @@ public class GameController {
             return;
         }
         Tile farthest = findFarthesestTileByMPCost(unit);
+        if (farthest == null) {
+            return;
+        }
         int index = path.indexOf(farthest);
         Tile destination = null;
         for (int i = index; i > 0; i--) {
@@ -124,7 +127,7 @@ public class GameController {
             Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
             City city = getCityCenteredInTile(path.get(i));
             if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
-                if (unit.isCivilian() == false && i == path.size() - 1) { 
+                if (unit.isCivilian() == false && i == path.size() - 1) {
                     // TODO : attack that tile
                 }
                 continue;
@@ -133,8 +136,6 @@ public class GameController {
                     continue;
                 }
             }
-
-            
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
                 if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
                     // TODO : attack that tile
@@ -147,39 +148,49 @@ public class GameController {
 
         if (destination != null) {
             moveUnit(unit, destination);
-
-            int costInt = 0;
-            for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
-                MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
-                if (cost == MPCostEnum.EXPENSIVE) {
-                    unit.setMovePointsLeft(0);
-                    costInt = 0;
-                    break;
-                } else {
-                    costInt += ((MPCostClass) cost).getCost();
-                }
-            }
-            unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
-
-            ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
-            for (Tile tile : unit.getPath()) {
-                if (tile == destination) {
-                    break;
-                }
-                newPath.remove(tile);
-            }
-            if (newPath.size() == 1) {
-                unit.setPath(null);
-            } else {
-                unit.setPath(newPath);
-            }
+            expendMPForMovementAlongPath(unit, destination);
+            updateUnitPath(unit, destination);
         } else {
             unit.setPath(null);
         }
     }
 
+    private void updateUnitPath(Unit unit, Tile destination) {
+        ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
+        for (Tile tile : unit.getPath()) {
+            if (tile == destination) {
+                break;
+            }
+            newPath.remove(tile);
+        }
+        if (newPath.size() == 1) {
+            unit.setPath(null);
+        } else {
+            unit.setPath(newPath);
+        }
+    }
+
+    private void expendMPForMovementAlongPath(Unit unit, Tile destination) {
+        int costInt = 0;
+        for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
+            MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+            if (cost == MPCostEnum.EXPENSIVE) {
+                unit.setMovePointsLeft(0);
+                costInt = 0;
+                break;
+            } else {
+                costInt += ((MPCostClass) cost).getCost();
+            }
+        }
+        unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
+    }
+
     private Tile findFarthesestTileByMPCost(Unit unit) {
-        int totalMP = 0;
+        int MPsLeft = unit.getMovePointsLeft();
+        if (MPsLeft <= 0 || unit.getPath() == null || unit.getPath().size() < 2) {
+            return null;
+        }
+
         for (int i = 1; i < unit.getPath().size(); i++) {
             MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
             if (cost == MPCostEnum.IMPASSABLE) {
@@ -187,18 +198,14 @@ public class GameController {
             } else if (cost == MPCostEnum.EXPENSIVE) {
                 return unit.getPath().get(i);
             } else {
-                totalMP += ((MPCostClass) cost).getCost();
-            }
-
-            if (totalMP >= unit.getMovePointsLeft()) {
-                return unit.getPath().get(i);
+                MPsLeft -= ((MPCostClass) cost).getCost();
+                if (MPsLeft <= 0 || i == unit.getPath().size() - 1) {
+                    return unit.getPath().get(i);
+                }
             }
         }
-        if (unit.getPath().size() == 0) {
-            return null;
-        } else {
-            return unit.getPath().get(0);
-        }
+        Debugger.debug("find Farthest path is faulty!");
+        return null;
     }
 
     public ArrayList<Unit> getUnitsInTile(Tile tile) {

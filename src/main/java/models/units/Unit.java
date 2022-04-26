@@ -2,6 +2,7 @@ package models.units;
 
 import java.util.ArrayList;
 
+import controllers.GameController;
 import models.Civilization;
 import models.Tile;
 import models.interfaces.Producible;
@@ -57,15 +58,9 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
 
     public void goToNextTurn() {
         // TODO : very much incomplete
-
         movePointsLeft = type.getMovementSpeed();
-        stateDuration++;
-        if (hasBeenInactive) {
-            inactivityDuration++;
-        }
-        if (true /* you can heal */) {
-            heal();
-        }
+        GameController.getGameController().moveUnitAlongItsPath(this);
+        // TODO : handle state duration, inactivity time, and healing
     }
 
     public void assemble() {
