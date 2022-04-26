@@ -84,8 +84,10 @@ public class GameView implements View {
                 goDown(matcher);
             } else if ((matcher = GameMainPageCommands.MOVE_FRAME_TO.getCommandMatcher(command)) != null) {
                 moveFrameTo(matcher);
-            } else if ((matcher = GameMainPageCommands.GO_TO_NEXT_TURN.getCommandMatcher(command)) != null)  {
+            } else if ((matcher = GameMainPageCommands.GO_TO_NEXT_TURN.getCommandMatcher(command)) != null) {
                 passTurn();
+            } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
+                showUnits();
             } else {
                 printer.printlnError("Invalid Command!");
             }
@@ -212,6 +214,15 @@ public class GameView implements View {
         }
     }
 
+    private void showUnits() {
+        printer.printlnBlue(controller.getCurrentPlayer().getName() + "'s Units:");
+        ArrayList<Unit> units = controller.getCurrentPlayer().getUnits();
+        for (Unit unit : units) {
+            printer.println(unit.getType().getName() + " at Y: " + unit.getLocation().findTileYCoordinateInMap() +
+                    ", X: " + unit.getLocation().findTileXCoordinateInMap());
+        }
+    }
+
     private void selectUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
@@ -332,8 +343,7 @@ public class GameView implements View {
         PrintableCharacters printableCharacters[][] = this.makeMapReadyToPrint();
         for (int i = 0; i < printableCharacters.length; i++) {
             for (int j = 0; j < printableCharacters[i].length; j++) {
-                System.out.print(printableCharacters[i][j].getANSI_COLOR() + printableCharacters[i][j].getCharacter()
-                        + PrintableCharacters.ANSI_RESET);
+                System.out.print(printableCharacters[i][j].getANSI_COLOR() + printableCharacters[i][j].getCharacter() + PrintableCharacters.ANSI_RESET);
             }
             printer.println();
         }
@@ -438,33 +448,21 @@ public class GameView implements View {
         int tileStartingVerticalIndex = ((XIndex+tiles[0][0].findTileXCoordinateInMap()%2) % 2) * 3 + 6 * YIndex;
         int tileStartingHorizontalIndex = 2 + XIndex * 8;
         if (riverDirection.equals("RU")) {
-            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 8]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 7]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 6]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("RD")) {
-            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + 6]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 7]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 8]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + 6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("LU")) {
-            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex - 2]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex - 2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("LD")) {
-            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex - 2]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex - 1]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex - 2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex - 1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         }
     }
 
@@ -493,22 +491,16 @@ public class GameView implements View {
                     }
                     String color = PrintableCharacters.findTilesColor(tile);
                     for (int k = 0; k < 5; k++) {
-                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + k + 1]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + k + 1]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + k + 1].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + k + 1].setANSI_COLOR(color);
                     }
                     for (int k = 0; k < 7; k++) {
-                        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + k]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + k]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + k].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + k].setANSI_COLOR(color);
                     }
                     for (int k = 0; k < 9; k++) {
-                        printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + k - 1]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + k - 1].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1].setANSI_COLOR(color);
                     }
                     for (int k = 0; k < tile.getFeatures().size(); k++) {
                         String name = this.findFeatureCharacters(tile.getFeatures().get(k));
@@ -562,23 +554,18 @@ public class GameView implements View {
     }
 
 
-    private void drawATile(PrintableCharacters printableCharacters[][], int tileStartingVerticalIndex,
-                           int tileStartingHorizontalIndex, int i, int j) {
+    private void drawATile(PrintableCharacters printableCharacters[][], int tileStartingVerticalIndex, int tileStartingHorizontalIndex, int i, int j) {
         Tile frameBase = controller.getCurrentPlayer().getFrameBase();
         int frameBaseXCoordinate = frameBase.findTileXCoordinateInMap();
         int frameBaseYCoordinate = frameBase.findTileYCoordinateInMap();
 
         int tileXCoordinate = frameBaseXCoordinate + j;
         int tileYCoordinate = frameBaseYCoordinate + i;
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 1]
-                .setCharacter((char) (tileYCoordinate / 10 + 48));
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 2]
-                .setCharacter((char) (tileYCoordinate % 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 1].setCharacter((char) (tileYCoordinate / 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 2].setCharacter((char) (tileYCoordinate % 10 + 48));
         printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 3].setCharacter(',');
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 4]
-                .setCharacter((char) (tileXCoordinate / 10 + 48));
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 5]
-                .setCharacter((char) (tileXCoordinate % 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 4].setCharacter((char) (tileXCoordinate / 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 5].setCharacter((char) (tileXCoordinate % 10 + 48));
 
         printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex].setCharacter('/');
         printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1].setCharacter('/');
@@ -601,8 +588,7 @@ public class GameView implements View {
 
     private PrintableCharacters[][] makeMapReadyToPrint() {
         Tile tiles[][] = this.controller.getGameDataBase().getMap().findTilesToPrint(controller.getCurrentPlayer());
-        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap()
-                .getCivilizationsImage(controller.getCurrentPlayer());
+        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap().getCivilizationsImage(controller.getCurrentPlayer());
         PrintableCharacters printableCharacters[][] = new PrintableCharacters[21][52];
         for (int i = 0; i < 21; i++) {
             for (int j = 0; j < 52; j++) {
