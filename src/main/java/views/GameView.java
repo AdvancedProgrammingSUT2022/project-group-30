@@ -62,6 +62,9 @@ public class GameView implements View {
             if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof Unit) {
                 runUnitActionsTab();
                 continue;
+            } else if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof  City) {
+                runCityActionsTab();
+                continue;
             }
 
             command = scanner.nextLine().trim();
@@ -74,7 +77,9 @@ public class GameView implements View {
                 selectUnit(matcher);
             } else if ((matcher = GameMainPageCommands.SELECT_CIVILIAN_UNIT.getCommandMatcher(command)) != null) {
                 selectCivilianUnit(matcher);
-            } else if ((matcher = GameMainPageCommands.RIGHT.getCommandMatcher(command)) != null) {
+            } else if ((matcher = GameMainPageCommands.SELECT_CITY.getCommandMatcher(command)) != null) {
+                selectCity(matcher);
+            }else if ((matcher = GameMainPageCommands.RIGHT.getCommandMatcher(command)) != null) {
                 goRight(matcher);
             } else if ((matcher = GameMainPageCommands.LEFT.getCommandMatcher(command)) != null) {
                 goLeft(matcher);
@@ -92,6 +97,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void runCityActionsTab() {
+        City city = (City) controller.getCurrentPlayer().getSelectedEntity();
+
     }
 
     private void passTurn() {
@@ -245,6 +255,25 @@ public class GameView implements View {
         }
     }
 
+    private void selectCity(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (controller.areCoordinatesValid(x, y) == false) {
+            printer.printlnError("Invalid coordinates");
+            return;
+        }
+
+        Tile tile = controller.getTileByCoordinates(x, y);
+        Civilization civilization = controller.getCurrentPlayer();
+        City city = controller.getCivsCityInTile(tile, civilization);
+        if (city == null) {
+            printer.printlnError("You don't have a city in this tile!");
+            return;
+        }
+        civilization.setSelectedEntity(city);
+        printer.println(civilization.getName() + "'s city was selected");
+    }
+
     private void selectUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
@@ -330,8 +359,7 @@ public class GameView implements View {
         }
 
         if (cityCentral != null) {
-            printer.println();
-            printer.printlnGreen(cityCentral.getOwner().getName() + "'s city is located here");
+            printer.printlnPurple(cityCentral.getOwner().getName() + "'s city is located here");
         } else if (city != null) {
             printer.println();
             printer.printlnGreen("This tile is located in the territory of a city owned by " + city.getOwner().getName());

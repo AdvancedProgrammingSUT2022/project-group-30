@@ -208,6 +208,15 @@ public class GameController {
         return null;
     }
 
+    public City getCivsCityInTile(Tile tile, Civilization civilization) {
+        for (City city : gameDataBase.getCities()) {
+            if (city.getCentralTile() == tile & city.getOwner() == civilization) {
+                return city;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
