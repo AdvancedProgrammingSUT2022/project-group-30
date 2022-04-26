@@ -277,6 +277,20 @@ public class GameController {
         return false;
     }
 
+    public void foundCityWithSettler(Unit unit) {
+        City newCity = new City(unit.getOwner(), unit.getLocation());
+        gameDataBase.getCities().add(newCity);
+
+        deleteUnit(unit);
+    }
+
+    private void deleteUnit(Unit unit) {
+        if (unit.getOwner().getSelectedEntity() == unit) {
+            unit.getOwner().setSelectedEntity(null);
+        }
+        gameDataBase.getUnits().remove(unit);
+    }
+
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
         ArrayList<Unit> result = new ArrayList<>();
         Civilization player = getCurrentPlayer();

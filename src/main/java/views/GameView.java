@@ -136,7 +136,10 @@ public class GameView implements View {
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else if ((matcher = UnitCommands.FOUND_CITY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FOUND_CITY)) {
-                foundCity(unit);
+                if (foundCity(unit)) {
+                    showMap();
+                    break;
+                }
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -164,16 +167,17 @@ public class GameView implements View {
         return result;
     }
 
-    private void foundCity(Unit unit) {
+    private boolean foundCity(Unit unit) {
         if (unit.getMovePointsLeft() == 0) {
             printer.printlnError("Settler has no movepoints!");
-            return;
+            return false;
         }
         if (controller.isTileTooNearCity(unit.getLocation())) {
             printer.printlnError("You can't found a city within a 3-tile distance of another city");
-            return;
+            return false;
         }
-
+        controller.foundCityWithSettler(unit);
+        return true;
     }
 
     private void deselectUnit(Unit unit) {
@@ -327,7 +331,7 @@ public class GameView implements View {
 
         if (cityCentral != null) {
             printer.println();
-            printer.printlnGreen(city.getOwner().getName() + "'s city is located here");
+            printer.printlnGreen(cityCentral.getOwner().getName() + "'s city is located here");
         } else if (city != null) {
             printer.println();
             printer.printlnGreen("This tile is located in the territory of a city owned by " + city.getOwner().getName());
