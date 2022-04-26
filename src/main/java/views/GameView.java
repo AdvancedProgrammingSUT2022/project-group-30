@@ -135,6 +135,8 @@ public class GameView implements View {
                 }
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
+            } else if ((matcher = UnitCommands.FOUND_CITY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FOUND_CITY)) {
+                foundCity(unit);
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -153,9 +155,22 @@ public class GameView implements View {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
+        if (unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+            result.put(UnitCommands.FOUND_CITY, true);
+        }
+
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void foundCity(Unit unit) {
+        if (unit.getMovePointsLeft() == 0) {
+            printer.printlnError("Settler has no movepoints!");
+            return;
+        }
+
+
     }
 
     private void deselectUnit(Unit unit) {

@@ -179,5 +179,4 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     public boolean isCivilian() {
         return (type.getCombatType() == CombatType.CIVILIAN);
     }
-
 }
