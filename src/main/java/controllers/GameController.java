@@ -272,15 +272,32 @@ public class GameController {
         return result;
     }
 
+    public void goToNextTurn() {
+        gameDataBase.setTurnNumber(gameDataBase.getTurnNumber() + 1);
+        getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+
+        // TODO : call all goToNextTurn functions
+    }
+
     public void goToNextPlayer() {
+        Civilization nextPlayer = getNextPlayer();
+        if (nextPlayer == null) {
+            goToNextTurn();
+        } else {
+            gameDataBase.setCurrentPlayer(nextPlayer);
+        }
+
+    }
+
+    public Civilization getNextPlayer() {   // returns the next player, return null if it is currently the last player's turn
         ArrayList<Player> players = gameDataBase.getPlayers();
         Player currentPlayer = getCurrentPlayer().getPlayer();
 
         int currentIndex = gameDataBase.getPlayers().indexOf(currentPlayer);
         if (currentIndex < players.size() - 1) {
-
+            return players.get(currentIndex + 1).getCivilization();
         } else {
-
+            return null;
         }
     }
 

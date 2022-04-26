@@ -17,6 +17,8 @@ public class GameDataBase {
     private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
 
+    private int turnNumber = 0;
+
     private GameDataBase() {
         map = GameMap.getGameMap();
     }
@@ -87,5 +89,13 @@ public class GameDataBase {
                 this.players.add(new Player(player));
             }
         }
+    }
+
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
     }
 }
