@@ -94,13 +94,22 @@ public class Civilization implements TurnHandler {
         return cities;
     }
 
-    public double numberOfRoads() {
+    public double getNumberOfRoads() {
         double count = 0;
-        for (City city : this.getCities()) {
-            for (Tile tile : city.getTerritories()) {
-                if (tile.containsImprovment(ImprovementType.ROAD))
+        for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
+            for (Improvement improvement : tile.getImprovements()) {
+                if (improvement.getType() == ImprovementType.ROAD && improvement.getFounder() == this)
                     count++;
-                if (tile.containsImprovment(ImprovementType.RAILROAD))
+            }
+        }
+        return count;
+    }
+
+    public double getNumberOfRailRoads() {
+        double count = 0;
+        for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
+            for (Improvement improvement : tile.getImprovements()) {
+                if (improvement.getType() == ImprovementType.RAILROAD && improvement.getFounder() == this)
                     count++;
             }
         }
@@ -135,10 +144,16 @@ public class Civilization implements TurnHandler {
         for (Unit unit : this.getUnits()) {
             cost += unit.getType().getCost() * 0.1;
         }
-        cost += this.numberOfRoads() * 1;/*1 gold per turn for each unit*/
+        cost += this.getNumberOfRoads() * 1;/*1 gold per turn for each unit*/
+        cost += this.getNumberOfRailRoads();
         //MINETODO ... add "stepwisegold..." effects
         return cost;
     }
+
+/*    public double calculateHappiness(){
+        double happiness = 0;
+
+    }*/
 
     public double calculateGoldConsumption() {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();

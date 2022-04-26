@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -25,5 +26,10 @@ public class CivilizationPair {
 
     public Set<Civilization> getCivilizations() {
         return this.civilizations;
+    }
+
+    public ArrayList<Civilization> getCivilizationsArray(){
+        ArrayList<Civilization> civilizations = new ArrayList<Civilization>(this.civilizations);
+        return civilizations;
     }
 }

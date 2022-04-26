@@ -5,11 +5,11 @@ import models.Output;
 
 public class Palace {
     private Civilization owner;
-    private Output output;
+    private final Output output;
 
-    public Palace(Civilization owner, Output output) {
+    public Palace(Civilization owner) {
         this.owner = owner;
-        this.output = output;
+        this.output = new Output(2, 0,2);
     }
 
     public Civilization getOwner() {
@@ -23,9 +23,4 @@ public class Palace {
     public Output getOutput() {
         return output;
     }
-
-    public void setOutput(Output output) {
-        this.output = output;
-    }
-
 }

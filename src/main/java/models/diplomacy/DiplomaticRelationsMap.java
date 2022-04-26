@@ -2,6 +2,9 @@ package models.diplomacy;
 
 import models.Civilization;
 import models.CivilizationPair;
+import models.GameDataBase;
+
+import javax.xml.crypto.Data;
 
 public class DiplomaticRelationsMap extends Diplomacy {
     double friendliness;

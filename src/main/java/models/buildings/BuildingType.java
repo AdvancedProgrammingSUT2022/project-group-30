@@ -44,14 +44,15 @@ public enum BuildingType {
     FACTORY(300, 3, Technology.STEAM_POWER, 0),
     HOSPITAL(400, 2, Technology.BIOLOGY, 0),
     MILITARY_BASE(450, 4, Technology.TELEGRAPH, 0),
-    STOCK_EXCHANGE(650, 0, Technology.ELECTRICITY, 0);
+    STOCK_EXCHANGE(650, 0, Technology.ELECTRICITY, 0),
+    PALACE(0, 0, null, 0);
 
     private final double cost;
     private final double maintenanceCost;
     private final Technology prerequisiteTechnology;
     private final double happiness;
 
-    public BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, double happiness){
+    private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, double happiness){
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;

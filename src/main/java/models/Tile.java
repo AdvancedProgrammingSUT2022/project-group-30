@@ -179,8 +179,25 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
+    public Improvement getRoadOfTile(){
+        for(Improvement improvement : this.improvements){
+            if(improvement.getType() == ImprovementType.ROAD)
+                return improvement;
+        }
+        return null;
+    }
+
+    public Improvement getRailRoadOfTile(){
+        for(Improvement improvement : this.improvements){
+            if(improvement.getType() == ImprovementType.RAILROAD)
+                return improvement;
+        }
+        return null;
+    }
+
     public void addImprovement(Improvement improvement) {
-        // TODO
+        // TODO ... what else?
+        this.improvements.add(improvement);
     }
 
     public void removeWork() {

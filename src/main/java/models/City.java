@@ -12,6 +12,7 @@ import models.interfaces.Workable;
 import models.interfaces.combative;
 import models.resources.Resource;
 import models.units.Unit;
+import models.works.BuildImprovement;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -77,33 +78,26 @@ public class City implements Selectable, TurnHandler, combative {
 
     public Output calculateOutputOfBuildings() {
         Output output = new Output(0, 0, 0);
-        if (this.hasBuildingType(BuildingType.GRANARY))
-            output.add(new Output(0, 2, 0));
-        if (this.hasBuildingType(BuildingType.WATER_MILL))
-            output.add(new Output(0, 2, 0));
+        if (this.hasBuildingType(BuildingType.GRANARY)) output.add(new Output(0, 2, 0));
+        if (this.hasBuildingType(BuildingType.WATER_MILL)) output.add(new Output(0, 2, 0));
         if (this.hasBuildingType(BuildingType.MINT)) {
             if (this.hasResourceByName("Gold"))
                 output.add(new Output((int) (3 * this.findNumberOfResourceByName("Gold")), 0, 0));
             if (this.hasResourceByName("Silver"))
                 output.add(new Output((int) (3 * this.findNumberOfResourceByName("Silver")), 0, 0));
         }
+        if (this.hasBuildingType(BuildingType.PALACE)) output.add(new Output(2, 0, 2));
         return output;
     }
 
     public Output calculateBuildingsEffectsOnPercentageOfCityOutput() {
         Output output = new Output(0, 0, 0);
-        if (this.hasBuildingType(BuildingType.MARKET))
-            output.add(new Output(25, 0, 0));
-        if (this.hasBuildingType(BuildingType.BANK))
-            output.add(new Output(25, 0, 0));
-        if (this.hasBuildingType(BuildingType.SATRAPS_COURT))
-            output.add(new Output(25, 0, 0));
-        if (this.hasBuildingType(BuildingType.WINDMILL))
-            output.add(new Output(0, 0, 15));
-        if (this.hasBuildingType(BuildingType.FACTORY))
-            output.add(new Output(0, 0, 50));
-        if (this.hasBuildingType(BuildingType.STOCK_EXCHANGE))
-            output.add(new Output(33, 0, 0));
+        if (this.hasBuildingType(BuildingType.MARKET)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.BANK)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.SATRAPS_COURT)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.WINDMILL)) output.add(new Output(0, 0, 15));
+        if (this.hasBuildingType(BuildingType.FACTORY)) output.add(new Output(0, 0, 50));
+        if (this.hasBuildingType(BuildingType.STOCK_EXCHANGE)) output.add(new Output(33, 0, 0));
         return output;
     }
 
@@ -123,16 +117,14 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public double calculateRequiredFood() {
-        if (this.hasBuildingType(BuildingType.HOSPITAL))
-            return this.citizens.size() * 1;
+        if (this.hasBuildingType(BuildingType.HOSPITAL)) return this.citizens.size() * 1;
         return this.citizens.size() * 2;
     }
 
     public double calculateFoodConsumption() {
         double amount = this.calculateOutput().getFood();
         amount -= calculateRequiredFood();
-        if (this.owner.getHappiness() < 0)
-            amount = amount * 33.0 / 100;
+        if (this.owner.getHappiness() < 0) amount = amount * 33.0 / 100;
         return amount;
     }
 
@@ -141,17 +133,14 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public double calculateBeakerConsumption() {
-        double count = 3;//3 beakers per turn for capital
+        double count = 3;//3 beakers per turn for capital(palace)
         double percentage = 100;
         for (City city : this.founder.getCities()) {
             count += city.getCitizens().size();
         }
-        if (this.hasBuildingType(BuildingType.LIBRARY))
-            count += 2;
-        if (this.hasBuildingType(BuildingType.UNIVERSITY))
-            percentage += 50;
-        if (this.hasBuildingType((BuildingType.PUBLIC_SCHOOL)))
-            percentage += 50;
+        if (this.hasBuildingType(BuildingType.LIBRARY)) count += 2;
+        if (this.hasBuildingType(BuildingType.UNIVERSITY)) percentage += 50;
+        if (this.hasBuildingType((BuildingType.PUBLIC_SCHOOL))) percentage += 50;
         //MINETODO page 37 trade...
         return count * percentage;
     }
@@ -164,18 +153,27 @@ public class City implements Selectable, TurnHandler, combative {
         return maintenanceCost;
     }
 
+    public double calculateHappiness(){
+        double happiness = 0;
+        for(Building building : this.buildings){
+            happiness+= building.getType().getHappiness();
+        }
+        happiness -= this.citizens.size() * 0.33;
+        if(this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
+            happiness = 0;
+        return happiness;
+    }
+
     public boolean hasBuildingType(BuildingType type) {
         for (Building building : this.buildings) {
-            if (building.getType() == type)
-                return true;
+            if (building.getType() == type) return true;
         }
         return false;
     }
 
     public boolean isNearTheRiver() {
         for (Tile tile : this.getTerritories()) {
-            if (tile.isNearTheRiver())
-                return true;
+            if (tile.isNearTheRiver()) return true;
         }
         return false;
     }
@@ -183,8 +181,7 @@ public class City implements Selectable, TurnHandler, combative {
     public boolean hasResourceByName(String name) {
         for (Tile tile : this.territories) {
             for (Resource resource : tile.getResources().keySet()) {
-                if (resource.getName().equals(name))
-                    return true;
+                if (resource.getName().equals(name)) return true;
             }
         }
         return false;
@@ -194,8 +191,7 @@ public class City implements Selectable, TurnHandler, combative {
         double count = 0;
         for (Tile tile : this.territories) {
             for (Resource resource : tile.getResources().keySet()) {
-                if (resource.getName().equals(name))
-                    count += tile.getResources().get(resource);
+                if (resource.getName().equals(name)) count += tile.getResources().get(resource);
             }
         }
         return count;
@@ -253,8 +249,7 @@ public class City implements Selectable, TurnHandler, combative {
 
     public boolean isDestructible() {
         // MINETODO check it
-        if (!owner.equals(founder))
-            return true;
+        if (!owner.equals(founder)) return true;
         return false;
     }
 
