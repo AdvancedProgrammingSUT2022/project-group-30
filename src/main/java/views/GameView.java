@@ -194,7 +194,7 @@ public class GameView implements View {
             return;
         }
 
-        if (controller.isTileImpassabe(destination)) {
+        if (controller.isTileImpassable(destination)) {
             printer.printlnError("The destination you have entered is impassable!");
             return;
         }

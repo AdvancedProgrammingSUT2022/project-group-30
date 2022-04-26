@@ -418,7 +418,7 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
-    public boolean isTileImpassabe(Tile tile) {
+    public boolean isTileImpassable(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.OCEAN)
                 || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
                 || tile.getFeatures().contains(Feature.ICE)) {
@@ -536,7 +536,7 @@ public class GameController {
         return tiles;
     }
 
-    public ArrayList<Tile> getVisiblTilesByCities(Civilization civilization) {
+    public ArrayList<Tile> getVisibleTilesByCities(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (!city.getOwner().equals(civilization))
@@ -561,7 +561,7 @@ public class GameController {
 
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        tiles.addAll(getVisiblTilesByCities(civilization));
+        tiles.addAll(getVisibleTilesByCities(civilization));
         tiles.addAll(getVisibleTilesByUnits(civilization));
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
