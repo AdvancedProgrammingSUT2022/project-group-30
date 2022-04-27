@@ -8,7 +8,6 @@ public class StepWiseGoldTransferContract extends Diplomacy implements TurnHandl
     private final Civilization recipient;
     private final Civilization payer;
     private final double totalAmount;
-    private double amountPaid;
     private final double totalTurns;
     private double turnsPast;
 
@@ -19,7 +18,6 @@ public class StepWiseGoldTransferContract extends Diplomacy implements TurnHandl
         this.payer = payer;
         this.totalAmount = totalAmount;
         this.totalTurns = totalTurns;
-        this.amountPaid = 0;
         this.turnsPast = 0;
     }
 
@@ -33,14 +31,6 @@ public class StepWiseGoldTransferContract extends Diplomacy implements TurnHandl
 
     public double getTotalAmount() {
         return this.totalAmount;
-    }
-
-    public double getAmountPaid() {
-        return this.amountPaid;
-    }
-
-    public void setAmountPaid(double amountPaid) {
-        this.amountPaid = amountPaid;
     }
 
     public double getTotalTurns() {

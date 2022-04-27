@@ -149,7 +149,7 @@ public class Civilization implements TurnHandler {
         cost += this.getNumberOfRoads() * 1;/*1 gold per turn for each unit*/
         cost += this.getNumberOfRailRoads();
         //MINETODO ... add "stepwisegold..." effects
-        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractOfCivilization(this);
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilization(this);
         //MINETODO fields of StepWiseGoldTransferContract...
         /*        for(StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts){
             cost += stepWiseGoldTransferContract
@@ -172,7 +172,7 @@ public class Civilization implements TurnHandler {
         for(City city : this.getCities()){
             count += city.calculateBeakerConsumption();
         }
-        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatyOfCivilization(this).size();
+        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
         count += count * 15 * numberOfScientificTreaty / 100.0;
         return  count;
     }

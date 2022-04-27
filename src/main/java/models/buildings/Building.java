@@ -24,8 +24,7 @@ public class Building implements Producible, Workable {
         return type;
     }
 
-
-    public static boolean isTileCompatibleWithBuildingType(City city, BuildingType type) {
+    public static boolean isCityCompatibleWithBuildingType(City city, BuildingType type) {
         if (!((type.getPrerequisiteTechnology() == null) || city.getOwner().getTechnologies().contains(type.getPrerequisiteTechnology())))
             return false;
         if (type == BuildingType.WATER_MILL) {
