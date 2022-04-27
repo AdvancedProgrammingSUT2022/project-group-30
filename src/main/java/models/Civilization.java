@@ -3,6 +3,8 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.GameController;
+import models.diplomacy.StepWiseGoldTransferContract;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
@@ -147,6 +149,11 @@ public class Civilization implements TurnHandler {
         cost += this.getNumberOfRoads() * 1;/*1 gold per turn for each unit*/
         cost += this.getNumberOfRailRoads();
         //MINETODO ... add "stepwisegold..." effects
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractOfCivilization(this);
+        //MINETODO fields of StepWiseGoldTransferContract...
+        /*        for(StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts){
+            cost += stepWiseGoldTransferContract
+        }*/
         return cost;
     }
 
@@ -158,6 +165,16 @@ public class Civilization implements TurnHandler {
         happiness += this.getLuxuryResources().keySet().size() * 4;
         happiness -= this.getCities().size() * 0.5;
         return happiness;
+    }
+
+    public double calculateTotalBeakers(){
+        double count = 0;
+        for(City city : this.getCities()){
+            count += city.calculateBeakerConsumption();
+        }
+        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatyOfCivilization(this).size();
+        count += count * 15 * numberOfScientificTreaty / 100.0;
+        return  count;
     }
 
     public double calculateGoldConsumption() {
