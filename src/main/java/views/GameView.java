@@ -88,6 +88,9 @@ public class GameView implements View {
                 passTurn();
             } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
                 showUnits();
+            } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
+                controller.makeEverythingVisible();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
