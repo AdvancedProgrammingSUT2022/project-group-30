@@ -152,11 +152,9 @@ public class GameController {
 
     private void updateUnitPath(Unit unit, Tile destination) {
         ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
-        for (Tile tile : unit.getPath()) {
-            if (tile == destination) {
-                break;
-            }
-            newPath.remove(tile);
+        int index = newPath.indexOf(destination);
+        for(int i = 0; i < index; i++){
+            newPath.remove(0);
         }
         if (newPath.size() == 1) {
             unit.setPath(null);
@@ -596,39 +594,6 @@ public class GameController {
     public int getMapHeight() {
         return GameMap.getGameMap().getMap().length;
     }
-    
-/*
-    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
-        ArrayList<Tile> finalTiles = new ArrayList<>();
-        finalTiles.add(sourceTile);
-        ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
-        if (areTwoTilesAdjacent(sourceTile, destinationTile)) {
-            finalTiles.add(destinationTile);
-            return finalTiles;
-        }
-
-        for (Tile tile : adjacentTiles) {
-            if (areTwoTilesAdjacent(tile, destinationTile)) {
-                finalTiles.add(tile);
-                finalTiles.add(destinationTile);
-                return finalTiles;
-            }
-        }
-
-        for (Tile tile : adjacentTiles) {
-            ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
-            for (Tile tile2 : adjacentTiles2) {
-                if (areTwoTilesAdjacent(tile2, destinationTile)) {
-                    finalTiles.add(tile);
-                    finalTiles.add(tile2);
-                    finalTiles.add(destinationTile);
-                    return finalTiles;
-                }
-            }
-        }
-        return null;
-    }
-*/
 
     public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
         ArrayList<Tile> pathTiles = new ArrayList<>();
@@ -637,6 +602,7 @@ public class GameController {
         for (GraphNode graphNode : destinationNode.getShortestPath()) {
             pathTiles.add(graphNode.getTile());
         }
+        pathTiles.add(destinationTile);
         return pathTiles;
     }
 
@@ -677,36 +643,45 @@ public class GameController {
     private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
         TileGraph graph = new TileGraph();
         GraphNode sourceNode = new GraphNode(origin);
+        graph.addNode(sourceNode);
         while(!graph.isTileAddedToGraph(destination)){
-            for (GraphNode node : graph.getNodes()) {
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int i = 0 ; i < nodes.size(); i++) {
+                GraphNode node = nodes.get(i);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    MPCostInterface mpCost;
-                    if((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE){
-                        GraphNode newNode = new GraphNode(adjacentTile);
-                        int requiredMp = 2;
-                        if(mpCost instanceof MPCostClass) {
-                            requiredMp = ((MPCostClass) mpCost).getCost();
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
                         }
-                        node.addDestination(newNode, requiredMp);
-                        graph.addNode(newNode);
                     }
                 }
             }
         }
         for(int i = 0; i < 2; i++){
-            for (GraphNode node : graph.getNodes()) {
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int j = 0 ; j < nodes.size(); j++) {
+                GraphNode node = nodes.get(j);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    MPCostInterface mpCost;
-                    if((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE){
-                        GraphNode newNode = new GraphNode(adjacentTile);
-                        int requiredMp = 2;
-                        if(mpCost instanceof MPCostClass) {
-                            requiredMp = ((MPCostClass) mpCost).getCost();
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
                         }
-                        node.addDestination(newNode, requiredMp);
-                        graph.addNode(newNode);
                     }
                 }
             }
