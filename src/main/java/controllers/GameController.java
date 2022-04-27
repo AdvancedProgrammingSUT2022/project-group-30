@@ -598,4 +598,48 @@ public class GameController {
         }
         return null;
     }
+
+    public ArrayList<DiplomaticRelationsMap> getDiplomaticRelationsMapOfCivilization(Civilization civilization){
+        ArrayList<DiplomaticRelationsMap> diplomaticRelationsMaps = new ArrayList<>();
+        for(Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()){
+            if(diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civilization))
+                diplomaticRelationsMaps.add((DiplomaticRelationsMap) diplomacy);
+        }
+        if(diplomaticRelationsMaps.size() == 0)
+            return null;
+        return diplomaticRelationsMaps;
+    }
+
+    public ArrayList<ScientificTreaty> getScientificTreatyOfCivilization(Civilization civilization){
+        ArrayList<ScientificTreaty> scientificTreaties = new ArrayList<>();
+        for(Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()){
+            if(diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civilization))
+                scientificTreaties.add((ScientificTreaty) diplomacy);
+        }
+        if(scientificTreaties.size() == 0)
+            return null;
+        return scientificTreaties;
+    }
+
+    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractOfCivilization(Civilization civilization){
+        ArrayList<StepWiseGoldTransferContract>  stepWiseGoldTransferContracts= new ArrayList<>();
+        for(Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()){
+            if(diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civilization))
+                stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
+        }
+        if(stepWiseGoldTransferContracts.size() == 0)
+            return null;
+        return stepWiseGoldTransferContracts;
+    }
+
+    public ArrayList<WarInfo> getWarInfoMapOfCivilization(Civilization civilization){
+        ArrayList<WarInfo> warInfos = new ArrayList<>();
+        for(Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()){
+            if(diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civilization))
+                warInfos.add((WarInfo) diplomacy);
+        }
+        if(warInfos.size() == 0)
+            return null;
+        return warInfos;
+    }
 }
