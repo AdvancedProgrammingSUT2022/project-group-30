@@ -16,6 +16,7 @@ import utilities.Debugger;
 public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
+    private boolean isEverythingVisibleCheatCodeInEffect = false;
     private HashMap<LuxuryResource, Integer> luxuryResources;
     private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
     private ArrayList<Technology> technologies = new ArrayList<>();
@@ -265,6 +266,14 @@ public class Civilization implements TurnHandler {
 
     public Selectable getSelectedEntity() {
         return selectedEntity;
+    }
+
+    public boolean isEverythingVisibleCheatCodeInEffect() {
+        return isEverythingVisibleCheatCodeInEffect;
+    }
+
+    public void setEverythingVisibleCheatCodeInEffect(boolean everythingVisibleCheatCodeInEffect) {
+        isEverythingVisibleCheatCodeInEffect = everythingVisibleCheatCodeInEffect;
     }
 
     public void setSelectedEntity(Selectable selectedEntity) {

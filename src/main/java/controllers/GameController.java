@@ -562,6 +562,9 @@ public class GameController {
     }
 
     public void setMapImageOfCivilization(Civilization civilization) {
+        if (civilization.isEverythingVisibleCheatCodeInEffect()) {
+            return;
+        }
         HashMap<Tile, TileImage> newMapImage = new HashMap<>();
         ArrayList<Tile> visibleTiles = getVisibleTilesByCivilization(civilization);
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
@@ -576,6 +579,14 @@ public class GameController {
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
+    }
+
+    public void makeEverythingVisible() {
+        Civilization player = getCurrentPlayer();
+        for (Tile tile : player.getMapImage().keySet()) {
+            player.getMapImage().put(tile, tile);
+        }
+        player.setEverythingVisibleCheatCodeInEffect(true);
     }
 
     public int getMapWidth() {
