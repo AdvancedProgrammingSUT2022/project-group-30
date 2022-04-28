@@ -51,6 +51,8 @@ public class City implements Selectable, TurnHandler, combative {
         this.rangedCombatStrength = 5;
         this.hitPoints = 20;
         this.range = 2;
+        this.populationGrowthLimit = 10;
+        this.populationShrinkageLimit = -10;
     }
 
     public City createImage() {
@@ -69,7 +71,15 @@ public class City implements Selectable, TurnHandler, combative {
 
     public void goToNextTurn() {
         // TODO FOR MAHYAR : get this city's production output and spend it on its production(be it a Unit or a building)
-
+        foodCount += calculateFoodChange();
+        if (foodCount <= populationShrinkageLimit) {
+            killACitizen();
+            foodCount = 0;
+        }
+        if (foodCount >= populationGrowthLimit) {
+            addCitizen();
+            foodCount = 0;
+        }
     }
 
     public boolean isTileBeingWorked(Tile tile) {
