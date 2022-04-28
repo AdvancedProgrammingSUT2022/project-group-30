@@ -17,7 +17,6 @@ import utilities.Debugger;
 
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
-    private Civilization civilization;
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private Ruins ruins;
@@ -25,11 +24,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
-    public Tile(TerrainType terrainType, Civilization civilization,
+    public Tile(TerrainType terrainType,
             HashMap<Resource, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
-        this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;
         // TODO add "this.works = new Work();"
@@ -38,7 +36,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
     public TileHistory createTileHistory() {
         // TODO : doesn't save works in history
         TileHistory history = new TileHistory();
-        Tile tile = new Tile(terrainType, civilization, new HashMap<Resource, Integer>(resources), null);
+        Tile tile = new Tile(terrainType, new HashMap<Resource, Integer>(resources), null);
         tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
         if (this.ruins != null) {
             tile.ruins = this.ruins.createImage();
@@ -227,7 +225,12 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public Civilization getCivilization() {
-        return this.civilization;
+        for (City city : GameDataBase.getGameDataBase().getCities()) {
+            if (city.getTerritories().contains(this)) {
+                return city.getOwner();
+            }
+        }
+        return null;
     }
 
     public HashMap<Resource, Integer> getResources() {
