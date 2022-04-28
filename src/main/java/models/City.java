@@ -68,10 +68,8 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO
-        for (Tile territory : territories) {
+        // TODO FOR MAHYAR : get this city's production output and spend it on its production(be it a Unit or a building)
 
-        }
     }
 
     public boolean isTileBeingWorked(Tile tile) {

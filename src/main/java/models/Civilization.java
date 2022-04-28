@@ -25,7 +25,7 @@ public class Civilization implements TurnHandler {
     private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
     private ArrayList<Technology> technologies = new ArrayList<>();
     private double goldCount;
-    private double beakerCount;
+    private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
     private HashMap<Technology, Integer> researchReserve = new HashMap<>();
     private double happiness;
@@ -121,7 +121,15 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
-        int goldConsumption = (int)calculateGoldConsumption();
+        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
+
+        int goldChange = (int) calculateGoldChange();
+        goldCount += goldChange;
+        if (goldCount < 0) {
+            beakerCount += goldCount;
+            beakerCount = Math.max(0, beakerCount);
+            goldCount = 0;
+        }
     }
 
     public void setNextResearchProject(Technology technology) {
@@ -179,7 +187,7 @@ public class Civilization implements TurnHandler {
         return cost;
     }
 
-    public double calculateGoldConsumption() {
+    public double calculateGoldChange() {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
