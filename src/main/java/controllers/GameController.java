@@ -307,6 +307,9 @@ public class GameController {
         // TODO : Create palace in city
         newCity.getBuildings().add(new Building(BuildingType.PALACE));
         gameDataBase.getCities().add(newCity);
+        if (unit.getOwner().getOriginCapital() == null) {
+            unit.getOwner().setCapital(newCity);
+        }
 
         deleteUnit(unit);
     }

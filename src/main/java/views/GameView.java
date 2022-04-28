@@ -157,6 +157,7 @@ public class GameView implements View {
     }
 
     private void runCitizenManagementPanel(City city) {
+        showCitizenInfo(city);
         String command;
         Matcher matcher;
         while (true) {
@@ -169,7 +170,9 @@ public class GameView implements View {
             } else if ((matcher = CitizenManagementPanelCommands.BACK.getCommandMatcher(command)) != null) {
                 break;
             } else if ((matcher = CitizenManagementPanelCommands.WORK_TILE.getCommandMatcher(command)) != null) {
-                work_tile(matcher, city);
+                workTile(matcher, city);
+            } else if ((matcher = CitizenManagementPanelCommands.FREE_TILE.getCommandMatcher(command)) != null) {
+                freeTile(matcher, city);
             } else if (command.matches("(show )?commands")) {
                 showCitizenManagementCommands();
                 waitForClick();
@@ -179,7 +182,28 @@ public class GameView implements View {
         }
     }
 
-    private void work_tile(Matcher matcher, City city) {
+    private void freeTile(Matcher matcher, City city) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnRed("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (!city.getTerritories().contains(tile)) {
+            printer.printlnRed("The tile you have entered is not in this city's territory!");
+            return;
+        }
+        if (!city.isTileBeingWorked(tile)) {
+            printer.printlnRed("This tile is not being worked!");
+            return;
+        }
+        Citizen citizen = city.getCitizenAssignedToTile(tile);
+        citizen.setWorkPlace(null);
+        printer.printlnBlue("Tile at Y: " + y + ", X: " + x + " freed! A citizen is out of work!");
+    }
+
+    private void workTile(Matcher matcher, City city) {
         int y = Integer.parseInt(matcher.group("y"));
         int x = Integer.parseInt(matcher.group("x"));
         if (!controller.areCoordinatesValid(x, y)) {

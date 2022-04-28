@@ -306,6 +306,15 @@ public class City implements Selectable, TurnHandler, combative {
         citizen.setWorkPlace(workPlace);
     }
 
+    public Citizen getCitizenAssignedToTile(Tile tile) {
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() == tile) {
+                return citizen;
+            }
+        }
+        return null;
+    }
+
     private void expandSelf() {
         // TODO
     }

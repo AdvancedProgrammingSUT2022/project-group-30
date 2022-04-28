@@ -32,7 +32,7 @@ public class Civilization implements TurnHandler {
     private double diplomaticCredit;
     private double score;
     private City capital;
-    private final City originCapital;
+    private City originCapital;
     private Tile frameBase;
     private Selectable selectedEntity;
 
@@ -297,6 +297,9 @@ public class Civilization implements TurnHandler {
     }
 
     public void setCapital(City capital) {
+        if (originCapital == null) {
+            this.originCapital = capital;
+        }
         this.capital = capital;
     }
 
