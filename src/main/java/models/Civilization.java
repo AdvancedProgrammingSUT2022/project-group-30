@@ -3,6 +3,10 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.GameController;
+import models.diplomacy.StepWiseGoldTransferContract;
+import models.improvements.Improvement;
+import models.improvements.ImprovementType;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TileImage;
@@ -16,6 +20,7 @@ import utilities.Debugger;
 public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
+    private boolean isEverythingVisibleCheatCodeInEffect = false;
     private HashMap<LuxuryResource, Integer> luxuryResources;
     private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
     private ArrayList<Technology> technologies = new ArrayList<>();
@@ -73,46 +78,108 @@ public class Civilization implements TurnHandler {
         }
     }
 
+    public ArrayList<Unit> getUnits() {
+        ArrayList<Unit> units = new ArrayList<>();
+        for (Unit unit : GameDataBase.getGameDataBase().getUnits()) {
+            if (unit.getOwner() == this)
+                units.add(unit);
+        }
+        return units;
+    }
+
+    public ArrayList<City> getCities() {
+        ArrayList<City> cities = new ArrayList<>();
+        for (City city : GameDataBase.getGameDataBase().getCities()) {
+            if (city.getOwner() == this) {
+                cities.add(city);
+            }
+        }
+        return cities;
+    }
+
+    public double getNumberOfRoads() {
+        double count = 0;
+        for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
+            for (Improvement improvement : tile.getImprovements()) {
+                if (improvement.getType() == ImprovementType.ROAD && improvement.getFounder() == this)
+                    count++;
+            }
+        }
+        return count;
+    }
+
+    public double getNumberOfRailRoads() {
+        double count = 0;
+        for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
+            for (Improvement improvement : tile.getImprovements()) {
+                if (improvement.getType() == ImprovementType.RAILROAD && improvement.getFounder() == this)
+                    count++;
+            }
+        }
+        return count;
+    }
+
     public void goToNextTurn() {
         // TODO
     }
 
     public void setNextResearchProject(Technology technology) {
-        // MINETODO
+        //TODO
     }
 
     private void updateStrategicResources() {
         // TODO
     }
 
-    public double calculateNetFoodProduction() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateNetFoodConsumption() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateNetProduction() {
-        // TODO
-        return 0;
-    }
-
     public double calculateNetGoldProduction() {
-        // TODO
+        double gold = 0;
+        for (City city : this.getCities()) {
+            gold += city.calculateOutput().getGold();
+        }
         return 0;
     }
 
     public double calculateTotalCosts() {
-        // TODO
-        return 0;
+        double cost = 0;
+        for (City city : this.getCities()) {
+            cost += city.calculateTotalGoldCosts();
+        }
+        for (Unit unit : this.getUnits()) {
+            cost += unit.getType().getCost() * 0.1;
+        }
+        cost += this.getNumberOfRoads() * 1;/*1 gold per turn for each unit*/
+        cost += this.getNumberOfRailRoads();
+        //MINETODO ... add "stepwisegold..." effects
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilization(this);
+        //MINETODO fields of StepWiseGoldTransferContract...
+        /*        for(StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts){
+            cost += stepWiseGoldTransferContract
+        }*/
+        return cost;
     }
 
-    public double calculateNetScienceProduction() {
-        // MINETODO
-        return 0;
+    public double calculateHappiness(){
+        double happiness = 0;
+        for(City city : this.getCities()){
+            happiness += city.calculateHappiness();
+        }
+        happiness += this.getLuxuryResources().keySet().size() * 4;
+        happiness -= this.getCities().size() * 0.5;
+        return happiness;
+    }
+
+    public double calculateTotalBeakers(){
+        double count = 0;
+        for(City city : this.getCities()){
+            count += city.calculateBeakerConsumption();
+        }
+        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
+        count += count * 15 * numberOfScientificTreaty / 100.0;
+        return  count;
+    }
+
+    public double calculateGoldConsumption() {
+        return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
     public ArrayList<Producible> findUnlockeProducibles() {
@@ -143,17 +210,6 @@ public class Civilization implements TurnHandler {
     public boolean hasTechnology(Technology technology) {
         // TODO
         return true;
-    }
-
-    public ArrayList<Unit> getUnits() {
-        ArrayList<Unit> allUnits = GameDataBase.getGameDataBase().getUnits();
-        ArrayList<Unit> myUnits = new ArrayList<>();
-        for (Unit unit : allUnits) {
-            if (unit.getOwner() == this) {
-                myUnits.add(unit);
-            }
-        }
-        return myUnits;
     }
 
     public double getGoldCount() {
@@ -259,12 +315,21 @@ public class Civilization implements TurnHandler {
     public String getName() {
         return name;
     }
-    public HashMap<Tile, TileImage> getMapImage(){
+
+    public HashMap<Tile, TileImage> getMapImage() {
         return this.mapImage;
     }
 
     public Selectable getSelectedEntity() {
         return selectedEntity;
+    }
+
+    public boolean isEverythingVisibleCheatCodeInEffect() {
+        return isEverythingVisibleCheatCodeInEffect;
+    }
+
+    public void setEverythingVisibleCheatCodeInEffect(boolean everythingVisibleCheatCodeInEffect) {
+        isEverythingVisibleCheatCodeInEffect = everythingVisibleCheatCodeInEffect;
     }
 
     public void setSelectedEntity(Selectable selectedEntity) {

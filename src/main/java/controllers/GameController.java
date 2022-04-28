@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Map;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,8 +10,11 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import models.*;
+import models.diplomacy.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
@@ -19,7 +24,6 @@ import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
-import org.jetbrains.annotations.NotNull;
 import utilities.Debugger;
 
 public class GameController {
@@ -46,6 +50,14 @@ public class GameController {
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
 
+    public void addCivilization(Civilization newCivilization) {
+        for (Civilization civilization : getGameDataBase().getCivilizations()) {
+            gameDataBase.getCivilizationPairs().add(new CivilizationPair(civilization, newCivilization));
+            gameDataBase.getAllDiplomaticRelations().add(new DiplomaticRelationsMap(civilization, newCivilization));
+        }
+        GameDataBase.getGameDataBase().getCivilizations().add(newCivilization);
+    }
+
     private void assignCivsToPlayersAndInitializePrimaryUnits() {
         File main = new File("src", "main");
         File java = new File(main, "java");
@@ -63,14 +75,11 @@ public class GameController {
                 String tokens[] = fileLines.get(fileLineIndex).split("-");
                 Civilization civilization = new Civilization(tokens[2]);
                 this.gameDataBase.getPlayers().get(i).setCivilization(civilization);
-                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]),
-                        Integer.parseInt(tokens[0]));
-                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1,
-                        Integer.parseInt(tokens[0]));
+                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[0]));
+                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1, Integer.parseInt(tokens[0]));
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
-                civilization.setFrameBase(
-                        GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3, Integer.parseInt(tokens[0]) - 1));
+                civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3, Integer.parseInt(tokens[0]) - 1));
                 fileLines.remove(fileLineIndex);
             }
             scanner.close();
@@ -106,12 +115,12 @@ public class GameController {
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
 
-    public void moveUnit(@NotNull Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
+    public void moveUnit(Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
     }
 
-    public void moveUnitAlongItsPath(@NotNull Unit unit) {
+    public void moveUnitAlongItsPath(Unit unit) {
         ArrayList<Tile> path = unit.getPath();
         if (path == null || path.size() < 2) {
             return;
@@ -136,6 +145,8 @@ public class GameController {
                     continue;
                 }
             }
+
+
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
                 if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
                     // TODO : attack that tile
@@ -157,11 +168,9 @@ public class GameController {
 
     private void updateUnitPath(Unit unit, Tile destination) {
         ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
-        for (Tile tile : unit.getPath()) {
-            if (tile == destination) {
-                break;
-            }
-            newPath.remove(tile);
+        int index = newPath.indexOf(destination);
+        for(int i = 0; i < index; i++){
+            newPath.remove(0);
         }
         if (newPath.size() == 1) {
             unit.setPath(null);
@@ -226,7 +235,7 @@ public class GameController {
         }
         return units;
     }
-   
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         for (Unit unit : gameDataBase.getUnits()) {
             if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
@@ -235,7 +244,7 @@ public class GameController {
         }
         return null;
     }
-   
+
     public Unit getCivilianUnitInTile(Tile tile) {
         for (Unit unit : gameDataBase.getUnits()) {
             if (unit.getLocation() == tile && unit.getType().getCombatType() == CombatType.CIVILIAN) {
@@ -256,8 +265,8 @@ public class GameController {
             return null;
         }
     }
-    
-    public Unit getCivsMilitaryUnitInTile(Tile tile, Civilization civilization) {  
+
+    public Unit getCivsMilitaryUnitInTile(Tile tile, Civilization civilization) {
         ArrayList<Unit> units = getUnitsInTile(tile);
         for (Unit unit : units) {
             if (unit.getOwner() == civilization && unit.getType().getCombatType() != CombatType.CIVILIAN) {
@@ -266,8 +275,8 @@ public class GameController {
         }
         return null;
     }
-    
-    public Unit getCivsCivilianUnitInTile(Tile tile, Civilization civilization) {  
+
+    public Unit getCivsCivilianUnitInTile(Tile tile, Civilization civilization) {
         ArrayList<Unit> units = getUnitsInTile(tile);
         for (Unit unit : units) {
             if (unit.getOwner() == civilization && unit.getType().getCombatType() == CombatType.CIVILIAN) {
@@ -396,17 +405,16 @@ public class GameController {
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if(Math.abs(x-x2) > 1 || Math.abs(y-y2) > 1){
+        if (Math.abs(x - x2) > 1 || Math.abs(y - y2) > 1) {
             return false;
         }
-        if(x%2 == 0){
-            if(y2-y == 1 && x != x2){
+        if (x % 2 == 0) {
+            if (y2 - y == 1 && x != x2) {
                 return false;
             }
             return true;
-        }
-        else{
-            if(y-y2 == 1 && x != x2){
+        } else {
+            if (y - y2 == 1 && x != x2) {
                 return false;
             }
             return true;
@@ -415,8 +423,7 @@ public class GameController {
 
     public boolean hasCommonRiver(Tile tile1, Tile tile2) {
         for (RiverSegment river : GameDataBase.getGameDataBase().getMap().getRivers()) {
-            if ((river.getFirstTile().equals(tile1) && river.getSecondTile().equals(tile2))
-                    || (river.getFirstTile().equals(tile2) && river.getSecondTile().equals(tile1)))
+            if ((river.getFirstTile().equals(tile1) && river.getSecondTile().equals(tile2)) || (river.getFirstTile().equals(tile2) && river.getSecondTile().equals(tile1)))
                 return true;
         }
         return false;
@@ -426,26 +433,20 @@ public class GameController {
         boolean hasRoad = false;
         boolean hasRailRoad = false;
         for (Improvement improvement : tile1.getImprovements()) {
-            if (improvement.getType().equals(ImprovementType.ROAD))
-                hasRoad = true;
-            if (improvement.getType().equals(ImprovementType.RAILROAD))
-                hasRailRoad = true;
+            if (improvement.getType().equals(ImprovementType.ROAD)) hasRoad = true;
+            if (improvement.getType().equals(ImprovementType.RAILROAD)) hasRailRoad = true;
         }
 
         for (Improvement improvement : tile2.getImprovements()) {
-            if (hasRoad && improvement.getType().equals(ImprovementType.ROAD))
-                return true;
-            if (hasRailRoad && improvement.getType().equals(ImprovementType.RAILROAD))
-                return true;
+            if (hasRoad && improvement.getType().equals(ImprovementType.ROAD)) return true;
+            if (hasRailRoad && improvement.getType().equals(ImprovementType.RAILROAD)) return true;
         }
         return false;
     }
 
     public boolean isInZOC(Unit unit, Tile tile) {
         for (Unit unit2 : GameDataBase.getGameDataBase().getUnits()) {
-            if (areTwoTilesAdjacent(tile, unit2.getLocation())
-                    && !unit.getOwner().equals(unit2.getOwner()) &&
-                    unit2.getType().getCombatType() != CombatType.CIVILIAN)
+            if (areTwoTilesAdjacent(tile, unit2.getLocation()) && !unit.getOwner().equals(unit2.getOwner()) && unit2.getType().getCombatType() != CombatType.CIVILIAN)
                 return true;
         }
         return false;
@@ -455,7 +456,7 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
-    public boolean isTileImpassabe(Tile tile) {
+    public boolean isTileImpassable(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.OCEAN)
                 || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
                 || tile.getFeatures().contains(Feature.ICE)) {
@@ -472,25 +473,18 @@ public class GameController {
             Debugger.debug("Two tile are not adjacent!");
             return null;
         }
-        if (destinationTile.getTerrainType().equals(TerrainType.OCEAN)
-                || destinationTile.getTerrainType().equals(TerrainType.MOUNTAIN)
-                || destinationTile.getFeatures().contains(Feature.ICE)) {
+        if (destinationTile.getTerrainType().equals(TerrainType.OCEAN) || destinationTile.getTerrainType().equals(TerrainType.MOUNTAIN) || destinationTile.getFeatures().contains(Feature.ICE))
             return MPCostEnum.IMPASSABLE;
-        }
-        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile)) // MINETODO add relation effects
+        if (hasCommonRoadOrRailRoad(sourceTile, destinationTile) && ((getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRoadOfTile().getFounder())).getFriendliness() >= 0) || (getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0)))
             hasCommonRoadOrRailRoad = true;
-        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad
-                && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
+        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
             return MPCostEnum.EXPENSIVE;
-        if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile))
-            return MPCostEnum.EXPENSIVE;
+        if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile)) return MPCostEnum.EXPENSIVE;
         if (!unit.getType().equals(UnitType.SCOUT))
             MPs += ((MPCostClass) destinationTile.getTerrainType().getMovementCost()).getCost();
-        for (Feature feature : destinationTile.getFeatures()) {
+        for (Feature feature : destinationTile.getFeatures())
             MPs += ((MPCostClass) feature.getMovementCost()).getCost();
-        }
-        if (hasCommonRoadOrRailRoad)
-            MPs = (int) Math.max(MPs * 0.5, 1);
+        if (hasCommonRoadOrRailRoad) MPs = (int) Math.max(MPs * 0.5, 1);
         return new MPCostClass(MPs);
     }
 
@@ -498,40 +492,38 @@ public class GameController {
         int x = tile.findTileXCoordinateInMap();
         int y = tile.findTileYCoordinateInMap();
         ArrayList<Tile> tiles = new ArrayList<>();
-        if(GameMap.getGameMap().areCoordinatesValid(x, y-1)){
+        if (GameMap.getGameMap().areCoordinatesValid(x, y - 1)) {
             tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y - 1));
         }
-        if(GameMap.getGameMap().areCoordinatesValid(x, y+1)){
+        if (GameMap.getGameMap().areCoordinatesValid(x, y + 1)) {
             tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x, y + 1));
         }
-        if(GameMap.getGameMap().areCoordinatesValid(x-1, y)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y));
+        if (GameMap.getGameMap().areCoordinatesValid(x - 1, y)) {
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y));
         }
-        if(GameMap.getGameMap().areCoordinatesValid(x+1, y)){
-            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y));
+        if (GameMap.getGameMap().areCoordinatesValid(x + 1, y)) {
+            tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y));
         }
         if (x % 2 == 1) {
-            if(GameMap.getGameMap().areCoordinatesValid(x-1, y+1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y + 1));
+            if (GameMap.getGameMap().areCoordinatesValid(x - 1, y + 1)) {
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y + 1));
             }
-            if(GameMap.getGameMap().areCoordinatesValid(x+1, y+1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y + 1));
+            if (GameMap.getGameMap().areCoordinatesValid(x + 1, y + 1)) {
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y + 1));
             }
         } else {
-            if(GameMap.getGameMap().areCoordinatesValid(x-1, y-1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x-1, y - 1));
+            if (GameMap.getGameMap().areCoordinatesValid(x - 1, y - 1)) {
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x - 1, y - 1));
             }
-            if(GameMap.getGameMap().areCoordinatesValid(x+1, y-1)){
-                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x+1, y - 1));
+            if (GameMap.getGameMap().areCoordinatesValid(x + 1, y - 1)) {
+                tiles.add(GameDataBase.getGameDataBase().getMap().getTile(x + 1, y - 1));
             }
         }
         return tiles;
     }
 
     public boolean isTileBlocker(Tile tile) {
-        if (tile.getTerrainType().equals(TerrainType.HILLS)
-                || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
-                || tile.getFeatures().contains(Feature.FOREST))
+        if (tile.getTerrainType().equals(TerrainType.HILLS) || tile.getTerrainType().equals(TerrainType.MOUNTAIN) || tile.getFeatures().contains(Feature.FOREST))
             return true;
         return false;
     }
@@ -546,10 +538,8 @@ public class GameController {
         ArrayList<Tile> finalTiles = new ArrayList<>();
         tempTiles = getAdjacentTiles(tile);
         for (Tile tile2 : tempTiles) {
-            if (isTileBlocker(tile2) && !tile.getTerrainType().equals(TerrainType.HILLS))
-                waitingTiles.add(tile2);
-            else
-                finalTiles.add(tile2);
+            if (isTileBlocker(tile2) && !tile.getTerrainType().equals(TerrainType.HILLS)) waitingTiles.add(tile2);
+            else finalTiles.add(tile2);
         }
 
         if (distance == 1) {
@@ -573,11 +563,10 @@ public class GameController {
         return tiles;
     }
 
-    public ArrayList<Tile> getVisiblTilesByCities(Civilization civilization) {
+    public ArrayList<Tile> getVisibleTilesByCities(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (City city : GameDataBase.getGameDataBase().getCities()) {
-            if (!city.getOwner().equals(civilization))
-                continue;
+            if (!city.getOwner().equals(civilization)) continue;
             for (Tile tile : city.getTerritories()) {
                 tiles.addAll(getVisibleTilesFromTile(tile, 1));
             }
@@ -590,20 +579,22 @@ public class GameController {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (Unit unit : GameDataBase.getGameDataBase().getUnits()) {
             if (unit.getOwner().equals(civilization))
-                tiles.addAll(getVisibleTilesFromTile(unit.getLocation(),
-                        unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2));
+                tiles.addAll(getVisibleTilesFromTile(unit.getLocation(), unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2));
         }
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
 
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        tiles.addAll(getVisiblTilesByCities(civilization));
+        tiles.addAll(getVisibleTilesByCities(civilization));
         tiles.addAll(getVisibleTilesByUnits(civilization));
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
 
     public void setMapImageOfCivilization(Civilization civilization) {
+        if (civilization.isEverythingVisibleCheatCodeInEffect()) {
+            return;
+        }
         HashMap<Tile, TileImage> newMapImage = new HashMap<>();
         ArrayList<Tile> visibleTiles = getVisibleTilesByCivilization(civilization);
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
@@ -613,49 +604,213 @@ public class GameController {
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());
-            else
-                newMapImage.put(tile, tile);
+            else newMapImage.put(tile, tile);
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
     }
 
+    public void makeEverythingVisible() {
+        Civilization player = getCurrentPlayer();
+        for (Tile tile : player.getMapImage().keySet()) {
+            player.getMapImage().put(tile, tile);
+        }
+        player.setEverythingVisibleCheatCodeInEffect(true);
+    }
+
     public int getMapWidth() {
         return GameMap.getGameMap().getMap()[0].length;
     }
-    
+
     public int getMapHeight() {
         return GameMap.getGameMap().getMap().length;
     }
-    
-    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
-        ArrayList<Tile> finalTiles = new ArrayList<>();
-        finalTiles.add(sourceTile);
-        ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
-        if (areTwoTilesAdjacent(sourceTile, destinationTile)) {
-            finalTiles.add(destinationTile);
-            return finalTiles;
-        }
 
-        for (Tile tile : adjacentTiles) {
-            if (areTwoTilesAdjacent(tile, destinationTile)) {
-                finalTiles.add(tile);
-                finalTiles.add(destinationTile);
-                return finalTiles;
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
+        ArrayList<Tile> pathTiles = new ArrayList<>();
+        TileGraph graph = this.makeTilesGraph(unit, sourceTile, destinationTile);
+        GraphNode destinationNode = graph.getNodeByTile(destinationTile);
+        for (GraphNode graphNode : destinationNode.getShortestPath()) {
+            pathTiles.add(graphNode.getTile());
+        }
+        pathTiles.add(destinationTile);
+        return pathTiles;
+    }
+
+    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source){
+        source.setDistance(0);
+        HashSet<GraphNode> settledNodes = new HashSet<>();
+        HashSet<GraphNode> unsettledNodes = new HashSet<>();
+        unsettledNodes.add(source);
+        while(!unsettledNodes.isEmpty()){
+            GraphNode currentNode = this.getLowestDistanceNode(unsettledNodes);
+            unsettledNodes.remove(currentNode);
+            for(Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()){
+                if(!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()){
+                    adjacencyPair.getKey().setDistance(currentNode.getDistance() + adjacencyPair.getValue());
+                    List<GraphNode> shortestPath = new LinkedList<>(currentNode.getShortestPath());
+                    shortestPath.add(currentNode);
+                    adjacencyPair.getKey().setShortestPath(shortestPath);
+                    unsettledNodes.add(adjacencyPair.getKey());
+                }
+            }
+            settledNodes.add(currentNode);
+        }
+        return graph;
+    }
+
+    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes){
+        GraphNode lowestDistanceNode = null;
+        int lowestDistance = Integer.MAX_VALUE;
+        for (GraphNode unsettledNode : unsettledNodes) {
+            if(unsettledNode.getDistance() < lowestDistance){
+                lowestDistance = unsettledNode.getDistance();
+                lowestDistanceNode = unsettledNode;
             }
         }
+        return lowestDistanceNode;
+    }
 
-        for (Tile tile : adjacentTiles) {
-            ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
-            for (Tile tile2 : adjacentTiles2) {
-                if (areTwoTilesAdjacent(tile2, destinationTile)) {
-                    finalTiles.add(tile);
-                    finalTiles.add(tile2);
-                    finalTiles.add(destinationTile);
-                    return finalTiles;
+    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
+        TileGraph graph = new TileGraph();
+        GraphNode sourceNode = new GraphNode(origin);
+        graph.addNode(sourceNode);
+        while(!graph.isTileAddedToGraph(destination)){
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int i = 0 ; i < nodes.size(); i++) {
+                GraphNode node = nodes.get(i);
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
+                        }
+                    }
                 }
             }
         }
+        for(int i = 0; i < 2; i++){
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int j = 0 ; j < nodes.size(); j++) {
+                GraphNode node = nodes.get(j);
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
+                        }
+                    }
+                }
+            }
+        }
+        graph = this.calculateShortestPathFromSourceTile(graph, sourceNode);
+        return graph;
+    }
+
+    /*Diplomacy functions*/
+    public DiplomaticRelationsMap getDiplomaticRelationsMap(CivilizationPair pair) {
+        ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
+        Civilization civ1 = civilizations.get(0);
+        Civilization civ2 = civilizations.get(1);
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
+                return (DiplomaticRelationsMap) diplomacy;
+        }
         return null;
-    } 
+    }
+
+    public ArrayList<ScientificTreaty> getScientificTreaties(CivilizationPair pair) {
+        ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
+        Civilization civ1 = civilizations.get(0);
+        Civilization civ2 = civilizations.get(1);
+        ArrayList<ScientificTreaty> scientificTreaties = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
+                scientificTreaties.add((ScientificTreaty) diplomacy);
+        }
+        if (scientificTreaties.size() == 0) return null;
+        return scientificTreaties;
+    }
+
+    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContracts(CivilizationPair pair) {
+        ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
+        Civilization civ1 = civilizations.get(0);
+        Civilization civ2 = civilizations.get(1);
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
+                stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
+        }
+        if (stepWiseGoldTransferContracts.size() == 0) return null;
+        return stepWiseGoldTransferContracts;
+    }
+
+    public WarInfo getWarInfos(CivilizationPair pair) {
+        ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
+        Civilization civ1 = civilizations.get(0);
+        Civilization civ2 = civilizations.get(1);
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
+                return (WarInfo) diplomacy;
+        }
+        return null;
+    }
+
+    public ArrayList<DiplomaticRelationsMap> getDiplomaticRelationsMapOfCivilization(Civilization civilization) {
+        ArrayList<DiplomaticRelationsMap> diplomaticRelationsMaps = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civilization))
+                diplomaticRelationsMaps.add((DiplomaticRelationsMap) diplomacy);
+        }
+        if (diplomaticRelationsMaps.size() == 0)
+            return null;
+        return diplomaticRelationsMaps;
+    }
+
+    public ArrayList<ScientificTreaty> getScientificTreatiesOfCivilization(Civilization civilization) {
+        ArrayList<ScientificTreaty> scientificTreaties = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civilization))
+                scientificTreaties.add((ScientificTreaty) diplomacy);
+        }
+        if (scientificTreaties.size() == 0)
+            return null;
+        return scientificTreaties;
+    }
+
+    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilization(Civilization civilization) {
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civilization))
+                stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
+        }
+        if (stepWiseGoldTransferContracts.size() == 0)
+            return null;
+        return stepWiseGoldTransferContracts;
+    }
+
+    public ArrayList<WarInfo> getWarInfoMapOfCivilization(Civilization civilization) {
+        ArrayList<WarInfo> warInfos = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civilization))
+                warInfos.add((WarInfo) diplomacy);
+        }
+        if (warInfos.size() == 0)
+            return null;
+        return warInfos;
+    }
 }

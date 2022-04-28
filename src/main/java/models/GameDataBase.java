@@ -53,16 +53,6 @@ public class GameDataBase {
             this.wars.add(war);
     }
 
-    // ??
-    // public void initializeDiplomaticRelationMap(ArrayList<CivilizationPair>
-    // civilizationPairs) {
-    // for(CivilizationPair civilizationPair : civilizationPairs){
-    // //MINETODO .. create Diplomatic class and fill the following () with
-    // "civilizationPair, 0"
-    // this.diplomaticRelations.add(new DiplomaticRelation());
-    // }
-    // }
-
     public ArrayList<CivilizationPair> getCivilizationPairs() {
         return this.civilizationPairs;
     }
@@ -97,5 +87,13 @@ public class GameDataBase {
 
     public void setTurnNumber(int turnNumber) {
         this.turnNumber = turnNumber;
+    }
+
+    public ArrayList<Civilization> getCivilizations(){
+        ArrayList<Civilization> civilizations = new ArrayList<>();
+        for(Player player : this.players){
+            civilizations.add(player.getCivilization());
+        }
+        return civilizations;
     }
 }

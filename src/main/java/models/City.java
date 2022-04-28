@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import models.buildings.Building;
+import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.Resource;
 import models.units.Unit;
+import models.works.BuildImprovement;
 
-public class City implements Selectable, TurnHandler, combative{
+public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??
@@ -36,7 +39,7 @@ public class City implements Selectable, TurnHandler, combative{
     private double populationShrinkageLimit;
     private ArrayList<Citizen> citizens = new ArrayList<>();
 
-    public City(Civilization founder, Tile tile) { 
+    public City(Civilization founder, Tile tile) {
         this.founder = founder;
         this.owner = founder;
         this.isPuppet = false;
@@ -82,24 +85,125 @@ public class City implements Selectable, TurnHandler, combative{
         return null;
     }
 
-    public double calculateFoodProduction() {
-        // TODO
-        return 0;
+    public Output calculateOutputOfBuildings() {
+        Output output = new Output(0, 0, 0);
+        if (this.hasBuildingType(BuildingType.GRANARY)) output.add(new Output(0, 2, 0));
+        if (this.hasBuildingType(BuildingType.WATER_MILL)) output.add(new Output(0, 2, 0));
+        if (this.hasBuildingType(BuildingType.MINT)) {
+            if (this.hasResourceByName("Gold"))
+                output.add(new Output((int) (3 * this.findNumberOfResourceByName("Gold")), 0, 0));
+            if (this.hasResourceByName("Silver"))
+                output.add(new Output((int) (3 * this.findNumberOfResourceByName("Silver")), 0, 0));
+        }
+        if (this.hasBuildingType(BuildingType.PALACE)) output.add(new Output(2, 0, 2));
+        return output;
     }
 
-    public double calculateGoldProduction() {
-        // TODO
-        return 0;
+    public Output calculateBuildingsEffectsOnPercentageOfCityOutput() {
+        Output output = new Output(0, 0, 0);
+        if (this.hasBuildingType(BuildingType.MARKET)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.BANK)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.SATRAPS_COURT)) output.add(new Output(25, 0, 0));
+        if (this.hasBuildingType(BuildingType.WINDMILL)) output.add(new Output(0, 0, 15));
+        if (this.hasBuildingType(BuildingType.FACTORY)) output.add(new Output(0, 0, 50));
+        if (this.hasBuildingType(BuildingType.STOCK_EXCHANGE)) output.add(new Output(33, 0, 0));
+        return output;
     }
 
-    public double calculateProduction() {
-        // TODO
-        return 0;
+    public Output calculateOutput() {
+        Output output = new Output(0, 0, 0);
+        for (Tile tile : this.territories) {
+            output.add(tile.getOutput());
+        }
+        for (Citizen citizen : this.citizens) {
+            if (!citizen.isWorkless()) {
+                output.add(new Output(0, 0, 1));
+            }
+        }
+        output.add(this.calculateOutputOfBuildings());
+        output.times(this.calculateBuildingsEffectsOnPercentageOfCityOutput());
+        return output;
     }
 
-    public double getScienceProduction() {
-        // TODO
-        return 0;
+    public double calculateRequiredFood() {
+        if (this.hasBuildingType(BuildingType.HOSPITAL)) return this.citizens.size() * 1;
+        return this.citizens.size() * 2;
+    }
+
+    public double calculateFoodConsumption() {
+        double amount = this.calculateOutput().getFood();
+        amount -= calculateRequiredFood();
+        if (this.owner.getHappiness() < 0) amount = amount * 33.0 / 100;
+        return amount;
+    }
+
+    public double calculateProductionConsumption() {
+        return this.calculateOutput().getProduction();
+    }
+
+    public double calculateBeakerConsumption() {
+        double count = 3;//3 beakers per turn for capital(palace)
+        double percentage = 100;
+        for (City city : this.founder.getCities()) {
+            count += city.getCitizens().size();
+        }
+        if (this.hasBuildingType(BuildingType.LIBRARY)) count += 2;
+        if (this.hasBuildingType(BuildingType.UNIVERSITY)) percentage += 50;
+        if (this.hasBuildingType((BuildingType.PUBLIC_SCHOOL))) percentage += 50;
+        //MINETODO page 37 trade...
+        return count * percentage;
+    }
+
+    public double calculateTotalGoldCosts() {
+        double maintenanceCost = 0;
+        for (Building building : this.buildings) {
+            maintenanceCost += building.getType().getMaintenanceCost();
+        }
+        return maintenanceCost;
+    }
+
+    public double calculateHappiness(){
+        double happiness = 0;
+        for(Building building : this.buildings){
+            happiness+= building.getType().getHappiness();
+        }
+        happiness -= this.citizens.size() * 0.33;
+        if(this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
+            happiness = 0;
+        return happiness;
+    }
+
+    public boolean hasBuildingType(BuildingType type) {
+        for (Building building : this.buildings) {
+            if (building.getType() == type) return true;
+        }
+        return false;
+    }
+
+    public boolean isNearTheRiver() {
+        for (Tile tile : this.getTerritories()) {
+            if (tile.isNearTheRiver()) return true;
+        }
+        return false;
+    }
+
+    public boolean hasResourceByName(String name) {
+        for (Tile tile : this.territories) {
+            for (Resource resource : tile.getResources().keySet()) {
+                if (resource.getName().equals(name)) return true;
+            }
+        }
+        return false;
+    }
+
+    public double findNumberOfResourceByName(String name) {
+        double count = 0;
+        for (Tile tile : this.territories) {
+            for (Resource resource : tile.getResources().keySet()) {
+                if (resource.getName().equals(name)) count += tile.getResources().get(resource);
+            }
+        }
+        return count;
     }
 
     public void attack(Unit target) {
@@ -112,6 +216,8 @@ public class City implements Selectable, TurnHandler, combative{
 
     public double calculateEffectiveCombatStrength() {
         // TODO
+        //TODO +5 Defense if the city has Walls  -> you can use "if(this.hasBuildingType(BuildingType.WALLS))"
+        //TODO +7.5 Defense if the city has Castle
         return 0;
     }
 
@@ -122,12 +228,14 @@ public class City implements Selectable, TurnHandler, combative{
 
     public void addCitizen() {
         // MINETODO check it
+        //TODO
         this.citizens.add(new Citizen());
     }
 
     public void killACitizen() {
         // MINETODO check it
         // which one??
+        //TODO
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
@@ -150,8 +258,7 @@ public class City implements Selectable, TurnHandler, combative{
 
     public boolean isDestructible() {
         // MINETODO check it
-        if (!owner.equals(founder))
-            return true;
+        if (!owner.equals(founder)) return true;
         return false;
     }
 

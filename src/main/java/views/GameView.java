@@ -94,6 +94,9 @@ public class GameView implements View {
                 passTurn();
             } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
                 showUnits();
+            } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
+                controller.makeEverythingVisible();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
@@ -276,7 +279,7 @@ public class GameView implements View {
             return;
         }
 
-        if (controller.isTileImpassabe(destination)) {
+        if (controller.isTileImpassable(destination)) {
             printer.printlnError("The destination you have entered is impassable!");
             return;
         }
