@@ -121,6 +121,39 @@ public class GameView implements View {
         }
     }
 
+    private void showCityCommands() {
+        printer.printlnPurple("City Actions:");
+        for (CityCommands command : CityCommands.getAllCommands()) {
+            printer.println(" -" + command.getName());
+        }
+    }
+
+    private void showCityInfo() {
+        // TODO
+        City city = (City) controller.getCurrentPlayer().getSelectedEntity();
+        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s City");
+        printer.println("Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
+        printer.println("The following tiles comprise this city's territory:");
+        for (Tile tile : city.getTerritories()) {
+            if (tile != city.getCentralTile()) {
+                printer.print("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " ");
+                if (city.isTileBeingWorked(tile)) {
+                    printer.printlnBlue("(worked)");
+                } else {
+                    printer.printlnRed("(not worked)");
+                }
+            }
+        }
+        printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
+                + " of them are workless.");
+    }
+
+    private void deselectCity(City city) {
+        city.getOwner().setSelectedEntity(null);
+        printer.println("City deselected");
+        showMap();
+    }
+
     private void runCitizenManagementPanel(City city) {
         String command;
         Matcher matcher;
@@ -132,12 +165,39 @@ public class GameView implements View {
                 showCitizenInfo(city);
             } else if ((matcher = CitizenManagementPanelCommands.BACK.getCommandMatcher(command)) != null) {
                 break;
+            } else if ((matcher = CitizenManagementPanelCommands.WORK_TILE.getCommandMatcher(command)) != null) {
+                work_tile(matcher, city);
             } else if (command.matches("(show )?commands")) {
                 showCitizenManagementCommands();
             } else {
                 printer.printlnError("Invalid command for Citizen Management Panel!");
             }
         }
+    }
+
+    private void work_tile(Matcher matcher, City city) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (controller.areCoordinatesValid(x, y) == false) {
+            printer.printlnRed("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (city.getTerritories().contains(tile) == false) {
+            printer.printlnRed("The tile you have entered is not in this city's territory!");
+            return;
+        }
+        if (city.isTileBeingWorked(tile) == true) {
+            printer.printlnRed("This tile is already being worked!");
+            return;
+        }
+        if (city.calculateWorklessCitizenCount() == 0) {
+            printer.printlnRed("There are no workless citizens to assign to this tile! Free a citizen and try again.");
+            return;
+        }
+        Citizen citizen = city.getWorklessCitizen();
+        city.assignCitizenToWorkplace(tile, citizen);
+        printer.printlnBlue("Citizen assigned to tile at Y: " + y + ", X: " + x);
     }
 
     private void showCitizenInfo(City city) {
@@ -172,39 +232,6 @@ public class GameView implements View {
         for (CitizenManagementPanelCommands command : CitizenManagementPanelCommands.getAllCommands()) {
             printer.println(command.getName());
         }
-    }
-
-    private void showCityCommands() {
-        printer.printlnPurple("City Actions:");
-        for (CityCommands command : CityCommands.getAllCommands()) {
-            printer.println(" -" + command.getName());
-        }
-    }
-
-    private void showCityInfo() {
-        // TODO
-        City city = (City) controller.getCurrentPlayer().getSelectedEntity();
-        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s City");
-        printer.println("Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
-        printer.println("The following tiles comprise this city's territory:");
-        for (Tile tile : city.getTerritories()) {
-            if (tile != city.getCentralTile()) {
-                printer.print("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
-                if (city.isTileBeingWorked(tile)) {
-                    printer.printlnBlue(" (worked)");
-                } else {
-                    printer.printlnRed(" (not worked)");
-                }
-            }
-        }
-        printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
-                + " of them are workless.");
-    }
-
-    private void deselectCity(City city) {
-        city.getOwner().setSelectedEntity(null);
-        printer.println("City deselected");
-        showMap();
     }
 
     private void passTurn() {

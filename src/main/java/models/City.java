@@ -216,6 +216,15 @@ public class City implements Selectable, TurnHandler, combative {
         return count;
     }
 
+    public Citizen getWorklessCitizen() {
+        for (Citizen citizen : citizens) {
+            if (citizen.isWorkless()) {
+                return citizen;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<Tile> getUnworkedTiles() {
         ArrayList<Tile> unworkedTiles = new ArrayList<>();
         for (Tile tile : territories) {
@@ -293,7 +302,7 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void assignCitizenToWorkplace(Workable workPlace, Citizen citizen) {
-        // MINETODO check it check errors...
+        // MINETODO check it check errors...    Amir: errors have been checked in view: the citizen passed is guaranteed to be workless and the tile is guaranteed to be unworked
         citizen.setWorkPlace(workPlace);
     }
 

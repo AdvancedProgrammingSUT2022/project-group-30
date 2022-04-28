@@ -14,6 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import models.*;
+import models.buildings.Building;
+import models.buildings.BuildingType;
 import models.diplomacy.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -302,7 +304,8 @@ public class GameController {
         for (Tile tile : territory) {
             newCity.addTileToTerritory(tile);
         }
-
+        // TODO : Create palace in city
+        newCity.getBuildings().add(new Building(BuildingType.PALACE));
         gameDataBase.getCities().add(newCity);
 
         deleteUnit(unit);
