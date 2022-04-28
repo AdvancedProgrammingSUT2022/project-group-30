@@ -301,6 +301,11 @@ public class City implements Selectable, TurnHandler, combative {
         // MINETODO check it
         // which one??
         //TODO
+
+        if (citizens.isEmpty()) {
+            return;
+        }
+        citizens.remove(0);
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
