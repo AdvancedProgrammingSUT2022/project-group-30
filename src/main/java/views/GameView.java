@@ -108,8 +108,10 @@ public class GameView implements View {
             command = scanner.nextLine();
             if ((matcher = CityCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null) {
                 showCityCommands();
+                waitForClick();
             } else if ((matcher = CityCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
                 showCityInfo();
+                waitForClick();
             } else if ((matcher = CityCommands.DESELECT.getCommandMatcher(command)) != null) {
                 deselectCity(city);
                 break;
@@ -126,7 +128,6 @@ public class GameView implements View {
         for (CityCommands command : CityCommands.getAllCommands()) {
             printer.println(" -" + command.getName());
         }
-        waitForClick();
     }
 
     private void showCityInfo() {
@@ -147,7 +148,6 @@ public class GameView implements View {
         }
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
-        waitForClick();
     }
 
     private void deselectCity(City city) {
@@ -165,12 +165,14 @@ public class GameView implements View {
             command = scanner.nextLine();
             if ((matcher = CitizenManagementPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
                 showCitizenInfo(city);
+                waitForClick();
             } else if ((matcher = CitizenManagementPanelCommands.BACK.getCommandMatcher(command)) != null) {
                 break;
             } else if ((matcher = CitizenManagementPanelCommands.WORK_TILE.getCommandMatcher(command)) != null) {
                 work_tile(matcher, city);
             } else if (command.matches("(show )?commands")) {
                 showCitizenManagementCommands();
+                waitForClick();
             } else {
                 printer.printlnError("Invalid command for Citizen Management Panel!");
             }
@@ -180,7 +182,7 @@ public class GameView implements View {
     private void work_tile(Matcher matcher, City city) {
         int y = Integer.parseInt(matcher.group("y"));
         int x = Integer.parseInt(matcher.group("x"));
-        if (controller.areCoordinatesValid(x, y) == false) {
+        if (!controller.areCoordinatesValid(x, y)) {
             printer.printlnRed("Invalid coordinates!");
             return;
         }
@@ -227,8 +229,6 @@ public class GameView implements View {
         for (Building unworkedBuilding : city.getUnworkedBuildings()) {
             printer.println(unworkedBuilding.getType().getName());
         }
-        printer.println("enter anything to proceed...");
-        scanner.nextLine();
     }
 
     private void showCitizenManagementCommands() {
@@ -291,7 +291,7 @@ public class GameView implements View {
     }
 
     private void waitForClick() {
-        printer.println("enter anything to continue");
+        printer.printlnPurple("enter anything to continue...");
         scanner.nextLine();
     }
 
