@@ -224,6 +224,15 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.features;
     }
 
+    public Civilization getCivilization() {
+        for (City city : GameDataBase.getGameDataBase().getCities()) {
+            if (city.getTerritories().contains(this)) {
+                return city.getOwner();
+            }
+        }
+        return null;
+    }
+
     public HashMap<Resource, Integer> getResources() {
         return this.resources;
     }

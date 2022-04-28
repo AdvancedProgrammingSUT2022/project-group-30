@@ -665,10 +665,12 @@ public class GameView implements View {
                     ArrayList<Unit> units = new ArrayList<>();
                     if (tilesImage[i][j] instanceof Tile) {
                         tile = (Tile) tilesImage[i][j];
-                        units = this.controller.getUnitsInTile(tile);
+                        units  = this.controller.getUnitsInTile(tile);
+                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 1].setCharacter('V');
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
                         units = ((TileHistory) tilesImage[i][j]).getUnits();
+                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 1].setCharacter('R');
                     }
                     if (units.size() > 2) {
                         Debugger.debug("there are more than one units in this tile!");
@@ -708,9 +710,26 @@ public class GameView implements View {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 6].setCharacter(name.charAt(0));
                         }
                     }
+                    this.printCitiesAndTheirTerritoriesInMap(tile, tileStartingVerticalIndex, tileStartingHorizontalIndex, printableCharacters);
                 }
             }
         }
+    }
+
+    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters){
+        if(tile.getCityOfTile() !=  null){
+            if(tile.getCityOfTile().getCentralTile().equals(tile)){
+                printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('C');
+            }
+            else{
+                printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('T');
+            }
+            if(tile.getCivilization() != null) {
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
+            }
+        }
+
     }
 
     private char findUnitPrintableCharacter(Unit unit) {
