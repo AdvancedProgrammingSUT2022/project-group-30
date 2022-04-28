@@ -126,6 +126,7 @@ public class GameView implements View {
         for (CityCommands command : CityCommands.getAllCommands()) {
             printer.println(" -" + command.getName());
         }
+        waitForClick();
     }
 
     private void showCityInfo() {
@@ -146,6 +147,7 @@ public class GameView implements View {
         }
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
+        waitForClick();
     }
 
     private void deselectCity(City city) {
@@ -183,11 +185,11 @@ public class GameView implements View {
             return;
         }
         Tile tile = controller.getTileByCoordinates(x, y);
-        if (city.getTerritories().contains(tile) == false) {
+        if (!city.getTerritories().contains(tile)) {
             printer.printlnRed("The tile you have entered is not in this city's territory!");
             return;
         }
-        if (city.isTileBeingWorked(tile) == true) {
+        if (city.isTileBeingWorked(tile)) {
             printer.printlnRed("This tile is already being worked!");
             return;
         }
@@ -225,6 +227,8 @@ public class GameView implements View {
         for (Building unworkedBuilding : city.getUnworkedBuildings()) {
             printer.println(unworkedBuilding.getType().getName());
         }
+        printer.println("enter anything to proceed...");
+        scanner.nextLine();
     }
 
     private void showCitizenManagementCommands() {
@@ -284,6 +288,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Unit Command!");
             }
         }
+    }
+
+    private void waitForClick() {
+        printer.println("enter anything to continue");
+        scanner.nextLine();
     }
 
     private HashMap<UnitCommands, Boolean> calculateAllowedCommands(Unit unit) {
