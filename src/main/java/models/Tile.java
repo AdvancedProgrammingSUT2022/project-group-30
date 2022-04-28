@@ -26,7 +26,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private ArrayList<Feature> features = new ArrayList<>();
 
     public Tile(TerrainType terrainType, Civilization civilization,
-            HashMap<Resource, Integer> resources, Ruins ruins) {
+                HashMap<Resource, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.civilization = civilization;
@@ -88,16 +88,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public Output calculateOutput() {
         Output output = new Output(0, 0, 0);
-        if(!this.hasCitizen())
+        if (!this.hasCitizen())
             return output;
         output.add(this.output);
-        for(Resource resource : this.resources.keySet()){
-            if(this.containsImprovment(resource.getPrerequisiteImprovement())){
-                for(int i=0 ; i< this.resources.get(resource); i++)
-                  output.add(resource.getOutput());
+        for (Resource resource : this.resources.keySet()) {
+            if (this.containsImprovment(resource.getPrerequisiteImprovement())) {
+                for (int i = 0; i < this.resources.get(resource); i++)
+                    output.add(resource.getOutput());
             }
         }
-        for(Improvement improvement : this.getImprovements()){
+        for (Improvement improvement : this.getImprovements()) {
             output.add(improvement.getType().getOutput());
         }
         return output;
@@ -156,8 +156,8 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public void addFeature(Feature feature){
-        if(this.features.contains(feature)){
+    public void addFeature(Feature feature) {
+        if (this.features.contains(feature)) {
             Debugger.debug("feature already exists");
             return;
         }
@@ -179,17 +179,17 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public Improvement getRoadOfTile(){
-        for(Improvement improvement : this.improvements){
-            if(improvement.getType() == ImprovementType.ROAD)
+    public Improvement getRoadOfTile() {
+        for (Improvement improvement : this.improvements) {
+            if (improvement.getType() == ImprovementType.ROAD)
                 return improvement;
         }
         return null;
     }
 
-    public Improvement getRailRoadOfTile(){
-        for(Improvement improvement : this.improvements){
-            if(improvement.getType() == ImprovementType.RAILROAD)
+    public Improvement getRailRoadOfTile() {
+        for (Improvement improvement : this.improvements) {
+            if (improvement.getType() == ImprovementType.RAILROAD)
                 return improvement;
         }
         return null;
@@ -208,10 +208,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         // TODO
     }
 
-    public boolean hasCitizen(){
+    public boolean hasCitizen() {
         City city = this.getCityOfTile();
-        for(Citizen citizen : city.getCitizens()){
-            if(this == citizen.getWorkPlace()){
+        for (Citizen citizen : city.getCitizens()) {
+            if (this == citizen.getWorkPlace()) {
                 return true;
             }
         }

@@ -216,6 +216,35 @@ public class City implements Selectable, TurnHandler, combative {
         return count;
     }
 
+    public ArrayList<Tile> getUnworkedTiles() {
+        ArrayList<Tile> unworkedTiles = new ArrayList<>();
+        for (Tile tile : territories) {
+            if (!isWorkableWorked(tile)) {
+                unworkedTiles.add(tile);
+            }
+        }
+        return unworkedTiles;
+    }
+
+    public ArrayList<Building> getUnworkedBuildings() {
+        ArrayList<Building> unworkedBuildings = new ArrayList<>();
+        for (Building building : buildings) {
+            if (!isWorkableWorked(building)) {
+                unworkedBuildings.add(building);
+            }
+        }
+        return unworkedBuildings;
+    }
+
+    public boolean isWorkableWorked(Workable workable) {
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() == workable) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addTileToTerritory(Tile tile) {
         if (!territories.contains(tile)) {
             territories.add(tile);

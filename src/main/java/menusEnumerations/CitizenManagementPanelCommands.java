@@ -5,6 +5,10 @@ import java.util.ArrayList;
 public class CitizenManagementPanelCommands extends Commands {
     public static final CitizenManagementPanelCommands SHOW_INFO = new CitizenManagementPanelCommands("(show )?info", "show info");
     public static final CitizenManagementPanelCommands BACK = new CitizenManagementPanelCommands("b(ack)?", "back");
+    public static final CitizenManagementPanelCommands WORK_TILE = new CitizenManagementPanelCommands("work tile (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)",
+            "work tile y, x");
+    public static final CitizenManagementPanelCommands WORK_BUILDING = new CitizenManagementPanelCommands("work building (?<name>.*)",
+            "work building <building name>");
 
     private final String name;
     private static ArrayList<CitizenManagementPanelCommands> allCommands;
