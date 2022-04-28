@@ -666,7 +666,6 @@ public class GameView implements View {
                     if (tilesImage[i][j] instanceof Tile) {
                         tile = (Tile) tilesImage[i][j];
                         units  = this.controller.getUnitsInTile(tile);
-                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 1].setCharacter('V');
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
                         units = ((TileHistory) tilesImage[i][j]).getUnits();
@@ -720,13 +719,11 @@ public class GameView implements View {
         if(tile.getCityOfTile() !=  null){
             if(tile.getCityOfTile().getCentralTile().equals(tile)){
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('C');
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
             }
             else{
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('T');
-            }
-            if(tile.getCivilization() != null) {
-                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
-                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
             }
         }
 
