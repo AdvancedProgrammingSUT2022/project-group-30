@@ -21,7 +21,7 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
-    private HashMap<LuxuryResource, Integer> luxuryResources;
+    private HashMap<LuxuryResource, Integer> luxuryResources = new HashMap<>();
     private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
     private ArrayList<Technology> technologies = new ArrayList<>();
     private double goldCount;

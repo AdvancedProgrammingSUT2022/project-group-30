@@ -53,17 +53,26 @@ public class Printer {
     public void printlnRed(int text) {
         System.out.println(PrintableCharacters.ANSI_RED_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
+    public void printlnRed(double text) {
+        System.out.println(PrintableCharacters.ANSI_RED_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
     public void printRed(String text) {
         System.out.print(PrintableCharacters.ANSI_RED_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
     public void printRed(int text) {
         System.out.print(PrintableCharacters.ANSI_RED_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
-    
+    public void printRed(double text) {
+        System.out.print(PrintableCharacters.ANSI_RED_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+
     public void printlnBlue(String text) {
         System.out.println(PrintableCharacters.ANSI_BLUE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
     public void printlnBlue(int text) {
+        System.out.println(PrintableCharacters.ANSI_BLUE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+    public void printlnBlue(double text) {
         System.out.println(PrintableCharacters.ANSI_BLUE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
     public void printBlue(String text) {
@@ -72,7 +81,10 @@ public class Printer {
     public void printBlue(int text) {
         System.out.print(PrintableCharacters.ANSI_BLUE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
-    
+    public void printBlue(double text) {
+        System.out.print(PrintableCharacters.ANSI_BLUE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+
     public void printlnGreen(String text) {
         System.out.println(PrintableCharacters.ANSI_GREEN_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
