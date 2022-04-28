@@ -137,15 +137,11 @@ public class City implements Selectable, TurnHandler, combative {
         return this.citizens.size() * 2;
     }
 
-    public double calculateFoodConsumption() {
+    public double calculateFoodChange() {
         double amount = this.calculateOutput().getFood();
         amount -= calculateRequiredFood();
         if (this.owner.getHappiness() < 0) amount = amount * 33.0 / 100;
         return amount;
-    }
-
-    public double calculateProductionConsumption() {
-        return this.calculateOutput().getProduction();
     }
 
     public double calculateBeakerProduction() {
@@ -331,6 +327,8 @@ public class City implements Selectable, TurnHandler, combative {
         if (!owner.equals(founder)) return true;
         return false;
     }
+
+
 
     public Civilization getFounder() {
         return founder;
