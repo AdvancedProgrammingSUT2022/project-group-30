@@ -12,7 +12,7 @@ import models.interfaces.Workable;
 import models.interfaces.combative;
 import models.resources.Resource;
 import models.units.Unit;
-import models.works.BuildImprovement;
+import models.units.UnitState;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -68,8 +68,10 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        
         // TODO
+        for (Tile territory : territories) {
+
+        }
     }
 
     public boolean isTileBeingWorked(Tile tile) {
@@ -82,7 +84,11 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public Unit getGarrisoningUnit() {      // return null if city is not garrisoned, return the garrisoning unit otherwise
-        // TODO
+        for (Unit unit : GameDataBase.getGameDataBase().getUnits()) {
+            if (unit.getLocation() == centralTile && unit.getOwner() == owner && unit.getState() == UnitState.GARRISON) {
+                return unit;
+            }
+        }
         return null;
     }
 
@@ -142,7 +148,7 @@ public class City implements Selectable, TurnHandler, combative {
         return this.calculateOutput().getProduction();
     }
 
-    public double calculateBeakerConsumption() {
+    public double calculateBeakerProduction() {
         double count = 3;//3 beakers per turn for capital(palace)
         double percentage = 100;
         for (City city : this.founder.getCities()) {

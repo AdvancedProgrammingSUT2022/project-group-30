@@ -121,6 +121,7 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
+        int goldConsumption = (int)calculateGoldConsumption();
     }
 
     public void setNextResearchProject(Technology technology) {
@@ -158,9 +159,9 @@ public class Civilization implements TurnHandler {
         return cost;
     }
 
-    public double calculateHappiness(){
+    public double calculateHappiness() {
         double happiness = 0;
-        for(City city : this.getCities()){
+        for (City city : this.getCities()) {
             happiness += city.calculateHappiness();
         }
         happiness += this.getLuxuryResources().keySet().size() * 4;
@@ -168,14 +169,14 @@ public class Civilization implements TurnHandler {
         return happiness;
     }
 
-    public double calculateTotalBeakers(){
+    public double calculateTotalBeakers() {
         double count = 0;
-        for(City city : this.getCities()){
-            count += city.calculateBeakerConsumption();
+        for (City city : this.getCities()) {
+            count += city.calculateBeakerProduction();
         }
         double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
         count += count * 15 * numberOfScientificTreaty / 100.0;
-        return  count;
+        return count;
     }
 
     public double calculateGoldConsumption() {
