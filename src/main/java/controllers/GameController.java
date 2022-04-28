@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.Map;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import models.*;
 import models.diplomacy.*;
@@ -21,8 +25,6 @@ import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
-
-import javax.xml.crypto.Data;
 
 public class GameController {
     private static GameController gameController;
@@ -124,6 +126,9 @@ public class GameController {
             return;
         }
         Tile farthest = findFarthesestTileByMPCost(unit);
+        if (farthest == null) {
+            return;
+        }
         int index = path.indexOf(farthest);
         Tile destination = null;
         for (int i = index; i > 0; i--) {
@@ -154,39 +159,47 @@ public class GameController {
 
         if (destination != null) {
             moveUnit(unit, destination);
-
-            int costInt = 0;
-            for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
-                MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
-                if (cost == MPCostEnum.EXPENSIVE) {
-                    unit.setMovePointsLeft(0);
-                    costInt = 0;
-                    break;
-                } else {
-                    costInt += ((MPCostClass) cost).getCost();
-                }
-            }
-            unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
-
-            ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
-            for (Tile tile : unit.getPath()) {
-                if (tile == destination) {
-                    break;
-                }
-                newPath.remove(tile);
-            }
-            if (newPath.size() == 1) {
-                unit.setPath(null);
-            } else {
-                unit.setPath(newPath);
-            }
+            expendMPForMovementAlongPath(unit, destination);
+            updateUnitPath(unit, destination);
         } else {
             unit.setPath(null);
         }
     }
 
+    private void updateUnitPath(Unit unit, Tile destination) {
+        ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
+        int index = newPath.indexOf(destination);
+        for(int i = 0; i < index; i++){
+            newPath.remove(0);
+        }
+        if (newPath.size() == 1) {
+            unit.setPath(null);
+        } else {
+            unit.setPath(newPath);
+        }
+    }
+
+    private void expendMPForMovementAlongPath(Unit unit, Tile destination) {
+        int costInt = 0;
+        for (int i = 1; i <= unit.getPath().indexOf(destination); i++) {
+            MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
+            if (cost == MPCostEnum.EXPENSIVE) {
+                unit.setMovePointsLeft(0);
+                costInt = 0;
+                break;
+            } else {
+                costInt += ((MPCostClass) cost).getCost();
+            }
+        }
+        unit.setMovePointsLeft(Math.max(0, unit.getMovePointsLeft() - costInt));
+    }
+
     private Tile findFarthesestTileByMPCost(Unit unit) {
-        int totalMP = 0;
+        int MPsLeft = unit.getMovePointsLeft();
+        if (MPsLeft <= 0 || unit.getPath() == null || unit.getPath().size() < 2) {
+            return null;
+        }
+
         for (int i = 1; i < unit.getPath().size(); i++) {
             MPCostInterface cost = calculateRequiredMps(unit, unit.getPath().get(i - 1), unit.getPath().get(i));
             if (cost == MPCostEnum.IMPASSABLE) {
@@ -194,18 +207,14 @@ public class GameController {
             } else if (cost == MPCostEnum.EXPENSIVE) {
                 return unit.getPath().get(i);
             } else {
-                totalMP += ((MPCostClass) cost).getCost();
-            }
-
-            if (totalMP >= unit.getMovePointsLeft()) {
-                return unit.getPath().get(i);
+                MPsLeft -= ((MPCostClass) cost).getCost();
+                if (MPsLeft <= 0 || i == unit.getPath().size() - 1) {
+                    return unit.getPath().get(i);
+                }
             }
         }
-        if (unit.getPath().size() == 0) {
-            return null;
-        } else {
-            return unit.getPath().get(0);
-        }
+        Debugger.debug("find Farthest path is faulty!");
+        return null;
     }
 
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
@@ -266,6 +275,50 @@ public class GameController {
             }
         }
         return null;
+    }
+
+    public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
+        ArrayList<Unit> result = new ArrayList<>();
+        Civilization player = getCurrentPlayer();
+        ArrayList<Unit> playersUnits = player.getUnits();
+        for (Unit unit : playersUnits) {
+            if (unit.isWaitingForCommand()) {
+                result.add(unit);
+            }
+        }
+        return result;
+    }
+
+    public void goToNextTurn() {
+        gameDataBase.setTurnNumber(gameDataBase.getTurnNumber() + 1);
+        getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+
+        // TODO : call all goToNextTurn functions
+        for (Unit unit : gameDataBase.getUnits()) {
+            unit.goToNextTurn();
+        }
+    }
+
+    public void goToNextPlayer() {
+        Civilization nextPlayer = getNextPlayer();
+        if (nextPlayer == null) {
+            goToNextTurn();
+        } else {
+            gameDataBase.setCurrentPlayer(nextPlayer);
+        }
+
+    }
+
+    public Civilization getNextPlayer() {   // returns the next player, return null if it is currently the last player's turn
+        ArrayList<Player> players = gameDataBase.getPlayers();
+        Player currentPlayer = getCurrentPlayer().getPlayer();
+
+        int currentIndex = gameDataBase.getPlayers().indexOf(currentPlayer);
+        if (currentIndex < players.size() - 1) {
+            return players.get(currentIndex + 1).getCivilization();
+        } else {
+            return null;
+        }
     }
 
     public void setProgramDatabase() {
@@ -366,8 +419,10 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
-    public boolean isTileImpassabe(Tile tile) {
-        if (tile.getTerrainType().equals(TerrainType.OCEAN) || tile.getTerrainType().equals(TerrainType.MOUNTAIN) || tile.getFeatures().contains(Feature.ICE)) {
+    public boolean isTileImpassable(Tile tile) {
+        if (tile.getTerrainType().equals(TerrainType.OCEAN)
+                || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
+                || tile.getFeatures().contains(Feature.ICE)) {
             return true;
         }
         return false;
@@ -471,7 +526,7 @@ public class GameController {
         return tiles;
     }
 
-    public ArrayList<Tile> getVisiblTilesByCities(Civilization civilization) {
+    public ArrayList<Tile> getVisibleTilesByCities(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (!city.getOwner().equals(civilization)) continue;
@@ -494,12 +549,15 @@ public class GameController {
 
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        tiles.addAll(getVisiblTilesByCities(civilization));
+        tiles.addAll(getVisibleTilesByCities(civilization));
         tiles.addAll(getVisibleTilesByUnits(civilization));
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
 
     public void setMapImageOfCivilization(Civilization civilization) {
+        if (civilization.isEverythingVisibleCheatCodeInEffect()) {
+            return;
+        }
         HashMap<Tile, TileImage> newMapImage = new HashMap<>();
         ArrayList<Tile> visibleTiles = getVisibleTilesByCivilization(civilization);
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
@@ -515,6 +573,14 @@ public class GameController {
         civilization.getMapImage().putAll(newMapImage);
     }
 
+    public void makeEverythingVisible() {
+        Civilization player = getCurrentPlayer();
+        for (Tile tile : player.getMapImage().keySet()) {
+            player.getMapImage().put(tile, tile);
+        }
+        player.setEverythingVisibleCheatCodeInEffect(true);
+    }
+
     public int getMapWidth() {
         return GameMap.getGameMap().getMap()[0].length;
     }
@@ -523,35 +589,99 @@ public class GameController {
         return GameMap.getGameMap().getMap().length;
     }
 
-    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
-        ArrayList<Tile> finalTiles = new ArrayList<>();
-        finalTiles.add(sourceTile);
-        ArrayList<Tile> adjacentTiles = getAdjacentTiles(sourceTile);
-        if (areTwoTilesAdjacent(sourceTile, destinationTile)) {
-            finalTiles.add(destinationTile);
-            return finalTiles;
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
+        ArrayList<Tile> pathTiles = new ArrayList<>();
+        TileGraph graph = this.makeTilesGraph(unit, sourceTile, destinationTile);
+        GraphNode destinationNode = graph.getNodeByTile(destinationTile);
+        for (GraphNode graphNode : destinationNode.getShortestPath()) {
+            pathTiles.add(graphNode.getTile());
         }
+        pathTiles.add(destinationTile);
+        return pathTiles;
+    }
 
-        for (Tile tile : adjacentTiles) {
-            if (areTwoTilesAdjacent(tile, destinationTile)) {
-                finalTiles.add(tile);
-                finalTiles.add(destinationTile);
-                return finalTiles;
+    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source){
+        source.setDistance(0);
+        HashSet<GraphNode> settledNodes = new HashSet<>();
+        HashSet<GraphNode> unsettledNodes = new HashSet<>();
+        unsettledNodes.add(source);
+        while(!unsettledNodes.isEmpty()){
+            GraphNode currentNode = this.getLowestDistanceNode(unsettledNodes);
+            unsettledNodes.remove(currentNode);
+            for(Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()){
+                if(!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()){
+                    adjacencyPair.getKey().setDistance(currentNode.getDistance() + adjacencyPair.getValue());
+                    List<GraphNode> shortestPath = new LinkedList<>(currentNode.getShortestPath());
+                    shortestPath.add(currentNode);
+                    adjacencyPair.getKey().setShortestPath(shortestPath);
+                    unsettledNodes.add(adjacencyPair.getKey());
+                }
+            }
+            settledNodes.add(currentNode);
+        }
+        return graph;
+    }
+
+    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes){
+        GraphNode lowestDistanceNode = null;
+        int lowestDistance = Integer.MAX_VALUE;
+        for (GraphNode unsettledNode : unsettledNodes) {
+            if(unsettledNode.getDistance() < lowestDistance){
+                lowestDistance = unsettledNode.getDistance();
+                lowestDistanceNode = unsettledNode;
             }
         }
+        return lowestDistanceNode;
+    }
 
-        for (Tile tile : adjacentTiles) {
-            ArrayList<Tile> adjacentTiles2 = getAdjacentTiles(tile);
-            for (Tile tile2 : adjacentTiles2) {
-                if (areTwoTilesAdjacent(tile2, destinationTile)) {
-                    finalTiles.add(tile);
-                    finalTiles.add(tile2);
-                    finalTiles.add(destinationTile);
-                    return finalTiles;
+    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
+        TileGraph graph = new TileGraph();
+        GraphNode sourceNode = new GraphNode(origin);
+        graph.addNode(sourceNode);
+        while(!graph.isTileAddedToGraph(destination)){
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int i = 0 ; i < nodes.size(); i++) {
+                GraphNode node = nodes.get(i);
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
+                        }
+                    }
                 }
             }
         }
-        return null;
+        for(int i = 0; i < 2; i++){
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+            for (int j = 0 ; j < nodes.size(); j++) {
+                GraphNode node = nodes.get(j);
+                ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
+                for (Tile adjacentTile : adjacentTiles) {
+                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                        MPCostInterface mpCost;
+                        if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
+                            GraphNode newNode = new GraphNode(adjacentTile);
+                            int requiredMp = 2;
+                            if (mpCost instanceof MPCostClass) {
+                                requiredMp = ((MPCostClass) mpCost).getCost();
+                            }
+                            node.addDestination(newNode, requiredMp);
+                            graph.addNode(newNode);
+                        }
+                    }
+                }
+            }
+        }
+        graph = this.calculateShortestPathFromSourceTile(graph, sourceNode);
+        return graph;
     }
 
     /*Diplomacy functions*/

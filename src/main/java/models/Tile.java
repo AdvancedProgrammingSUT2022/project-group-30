@@ -253,4 +253,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
     public void setTerrainType(TerrainType terrainType) {
         this.terrainType = terrainType;
     }
+
+    public String getInfo() {
+        String result = "Y: " + findTileYCoordinateInMap() + ", X: " + findTileXCoordinateInMap();
+        result += "\n" + terrainType.getName();
+        return result;
+    }
 }

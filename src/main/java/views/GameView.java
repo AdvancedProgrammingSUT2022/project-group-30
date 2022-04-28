@@ -13,6 +13,8 @@ import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
 import models.TileVisibility;
+import models.units.UnitType;
+import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
@@ -54,7 +56,6 @@ public class GameView implements View {
 
         showMap();
 
-
         String command;
         Matcher matcher;
         while (true) {
@@ -64,7 +65,7 @@ public class GameView implements View {
             }
 
             command = scanner.nextLine().trim();
-            
+
             if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
                 showMap();
             } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
@@ -82,91 +83,32 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.DOWN.getCommandMatcher(command)) != null) {
                 goDown(matcher);
             } else if ((matcher = GameMainPageCommands.MOVE_FRAME_TO.getCommandMatcher(command)) != null) {
-                moveFrameTo(matcher);  
+                moveFrameTo(matcher);
+            } else if ((matcher = GameMainPageCommands.GO_TO_NEXT_TURN.getCommandMatcher(command)) != null) {
+                passTurn();
+            } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
+                showUnits();
+            } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
+                controller.makeEverythingVisible();
+                showMap();
             } else {
-                System.out.println("Invalid Command!");
+                printer.printlnError("Invalid Command!");
             }
         }
     }
 
-    private void moveFrameTo(Matcher matcher) {
-        int x = Integer.parseInt(matcher.group("x"));
-        int y = Integer.parseInt(matcher.group("y"));
-        if (controller.areCoordinatesValid(x, y) == false || x > controller.getMapWidth() - 6 || y > controller.getMapHeight() - 3) {
-            printer.printlnError("Invalid destination for frame!");
+    private void passTurn() {
+        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+        if (idleUnits.isEmpty() == false) {
+            printer.printlnError("Some units are waiting for a command!");
+            controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
         }
-        Tile dest = controller.getTileByCoordinates(x, y);
-        controller.getCurrentPlayer().setFrameBase(dest);
+        // TODO : if a city can start a new production, make the player choose it!
+
+        controller.goToNextPlayer();
         showMap();
     }
-
-    private void goRight(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        System.out.println("width " + controller.getMapWidth());
-        int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
-        
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
-        showMap();
-    }
-    
-    private void goLeft(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destX = Math.max(currentX - count, 0);
-        
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
-        showMap();
-    }
-    
-    private void goUp(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destY = Math.max(currentY - count, 0);
-        
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
-        showMap();
-    }
-    
-    private void goDown(Matcher matcher) {
-        int count;
-        if (matcher.group("count") == null) {
-            count = 1;
-        } else {
-            count = Integer.parseInt(matcher.group("count").trim());
-        }
-
-        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-        int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
-        
-        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
-        showMap();
-    }
-    
-
 
     private void runUnitActionsTab() {
         Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
@@ -187,11 +129,13 @@ public class GameView implements View {
 
             command = scanner.nextLine().trim();
             if ((matcher = UnitCommands.DESELECT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DESELECT)) {
-                unit.getOwner().setSelectedEntity(null);
-                printer.println("unit deselected");
+                deselectUnit(unit);
                 break;
             } else if ((matcher = UnitCommands.MOVE_TO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MOVE_TO)) {
                 moveTo(matcher);
+                if (unit.getOwner().getSelectedEntity() == null) {
+                    break;
+                }
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else {
@@ -200,8 +144,8 @@ public class GameView implements View {
         }
     }
 
-    private HashMap<UnitCommands,Boolean> calculateAllowedCommands(Unit unit) {
-        HashMap<UnitCommands,Boolean> result = new HashMap<>();
+    private HashMap<UnitCommands, Boolean> calculateAllowedCommands(Unit unit) {
+        HashMap<UnitCommands, Boolean> result = new HashMap<>();
         for (UnitCommands command : UnitCommands.getAllCommands()) {
             result.put(command, false);
         }
@@ -217,11 +161,23 @@ public class GameView implements View {
         return result;
     }
 
+    private void deselectUnit(Unit unit) {
+        unit.getOwner().setSelectedEntity(null);
+        printer.println("unit deselected");
+        showMap();
+    }
+
     private void showUnitInfo(Unit unit) {
         printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
+        if (unit.getPath() != null) {
+            printer.printlnBlue("Path:");
+            for (Tile tile : unit.getPath()) {
+                printer.println("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+            }
+        }
         // TODO : show state and xp
     }
 
@@ -238,9 +194,10 @@ public class GameView implements View {
 
         if (controller.getTileVisibilityForPlayer(destination) != TileVisibility.VISIBLE) {
             printer.printlnError("You can only choose visible tiles as destination!");
+            return;
         }
 
-        if (controller.isTileImpassabe(destination)) {
+        if (controller.isTileImpassable(destination)) {
             printer.printlnError("The destination you have entered is impassable!");
             return;
         }
@@ -255,6 +212,18 @@ public class GameView implements View {
         unit.setPath(path);
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
+        if (unit.getMovePointsLeft() == 0) {
+            deselectUnit(unit);
+        }
+    }
+
+    private void showUnits() {
+        printer.printlnBlue(controller.getCurrentPlayer().getName() + "'s Units:");
+        ArrayList<Unit> units = controller.getCurrentPlayer().getUnits();
+        for (Unit unit : units) {
+            printer.println(unit.getType().getName() + " at Y: " + unit.getLocation().findTileYCoordinateInMap() +
+                    ", X: " + unit.getLocation().findTileXCoordinateInMap());
+        }
     }
 
     private void selectUnit(Matcher matcher) {
@@ -274,7 +243,7 @@ public class GameView implements View {
         civilization.setSelectedEntity(unit);
         printer.println(civilization.getName() + "'s " + unit.getType().getName() + " was selected");
     }
-    
+
     private void selectCivilianUnit(Matcher matcher) {
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
@@ -332,14 +301,14 @@ public class GameView implements View {
 
         printer.printBlue("Terrain Type:");
         printer.println(" " + tile.getTerrainType().getName());
-        
+
         printer.printlnBlue("Features:");
         if (tile.getFeatures().isEmpty()) {
             printer.println("no features!");
         }
         for (Feature feature : tile.getFeatures()) {
             printer.println(feature.getName());
-        }        
+        }
 
         if (cityCentral != null) {
             printer.println();
@@ -377,106 +346,180 @@ public class GameView implements View {
         PrintableCharacters printableCharacters[][] = this.makeMapReadyToPrint();
         for (int i = 0; i < printableCharacters.length; i++) {
             for (int j = 0; j < printableCharacters[i].length; j++) {
-                System.out.print(printableCharacters[i][j].getANSI_COLOR() + printableCharacters[i][j].getCharacter()
-                        + PrintableCharacters.ANSI_RESET);
+                System.out.print(printableCharacters[i][j].getANSI_COLOR() + printableCharacters[i][j].getCharacter() + PrintableCharacters.ANSI_RESET);
             }
             printer.println();
         }
     }
 
+
+    private void moveFrameTo(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (controller.areCoordinatesValid(x, y) == false || x > controller.getMapWidth() - 6 || y > controller.getMapHeight() - 3) {
+            printer.printlnError("Invalid destination for frame!");
+            return;
+        }
+        Tile dest = controller.getTileByCoordinates(x, y);
+        controller.getCurrentPlayer().setFrameBase(dest);
+        showMap();
+    }
+
+    private void goRight(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        System.out.println("width " + controller.getMapWidth());
+        int destX = Math.min(currentX + count, (controller.getMapWidth() - 6));
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+
+    private void goLeft(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destX = Math.max(currentX - count, 0);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(destX, currentY));
+        showMap();
+    }
+
+    private void goUp(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.max(currentY - count, 0);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
+    }
+
+    private void goDown(Matcher matcher) {
+        int count;
+        if (matcher.group("count") == null) {
+            count = 1;
+        } else {
+            count = Integer.parseInt(matcher.group("count").trim());
+        }
+
+        int currentX = controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+        int currentY = controller.getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+        int destY = Math.min(currentY + count, controller.getMapHeight() - 3);
+
+        controller.getCurrentPlayer().setFrameBase(controller.getTileByCoordinates(currentX, destY));
+        showMap();
+    }
+
     private void colorRiverSegments(Tile tiles[][], PrintableCharacters printableCharacters[][]) {
+        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap()
+                .getCivilizationsImage(controller.getCurrentPlayer());
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
-                for (int k = 0; k < riverSegments.size(); k++) {
-                    String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
-                    this.colorATileRiverSegment(riverDirection, printableCharacters, j, i);
+                if(tilesImage[i][j] != null) {
+                    ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
+                    for (int k = 0; k < riverSegments.size(); k++) {
+                        String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
+                        this.colorATileRiverSegment(riverDirection, printableCharacters, j, i, tiles);
+                    }
                 }
             }
         }
     }
 
     private void colorATileRiverSegment(String riverDirection, PrintableCharacters printableCharacters[][], int XIndex,
-            int YIndex) {
-        int tileStartingVerticalIndex = (XIndex % 2) * 3 + 6 * YIndex;
+                                        int YIndex, Tile[][] tiles) {
+        int tileStartingVerticalIndex = ((XIndex+tiles[0][0].findTileXCoordinateInMap()%2) % 2) * 3 + 6 * YIndex;
         int tileStartingHorizontalIndex = 2 + XIndex * 8;
         if (riverDirection.equals("RU")) {
-            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 8]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 7]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 6]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("RD")) {
-            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + 6]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 7]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 8]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + 6].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 7].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("LU")) {
-            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex - 2]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex - 2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         } else if (riverDirection.equals("LD")) {
-            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex - 2]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex - 1]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
-            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex]
-                    .setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex - 2].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex - 1].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
+            printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
         }
     }
 
-    private void colorTiles(TileImage tiles[][], PrintableCharacters printableCharacters[][]) {
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                int tileStartingVerticalIndex = (j % 2) * 3 + 6 * i;
+    private void colorTiles(TileImage tilesImage[][], PrintableCharacters printableCharacters[][], Tile[][] tiles) {
+        for (int i = 0; i < tilesImage.length; i++) {
+            for (int j = 0; j < tilesImage[i].length; j++) {
+                int tileStartingVerticalIndex = ((j +tiles[0][0].findTileXCoordinateInMap() % 2)  % 2) * 3 + 6 * i;
                 int tileStartingHorizontalIndex = 2 + j * 8;
                 Tile tile = null;
-                if (tiles[i][j] != null) {
-                    if (tiles[i][j] instanceof Tile) {
-                        tile = (Tile) tiles[i][j];
-                    } else if (tiles[i][j] instanceof TileHistory) {
-                        tile = ((TileHistory) tiles[i][j]).getTile();
+                if (tilesImage[i][j] != null) {
+                    ArrayList<Unit> units = new ArrayList<>();
+                    if (tilesImage[i][j] instanceof Tile) {
+                        tile = (Tile) tilesImage[i][j];
+                        units  = this.controller.getUnitsInTile(tile);
+                    } else if (tilesImage[i][j] instanceof TileHistory) {
+                        tile = ((TileHistory) tilesImage[i][j]).getTile();
+                        units = ((TileHistory) tilesImage[i][j]).getUnits();
+                    }
+                    if(units.size() > 2){
+                        Debugger.debug("there are more than one units in this tile!");
+                    }
+                    else{
+                        for(int k = 0 ; k < units.size(); k++){
+                            printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 2 * k + 2].setCharacter(this.findUnitPrintableCharacter(units.get(k)));
+                        }
                     }
                     String color = PrintableCharacters.findTilesColor(tile);
                     for (int k = 0; k < 5; k++) {
-                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + k + 1]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + k + 1]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + k + 1].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 5][tileStartingHorizontalIndex + k + 1].setANSI_COLOR(color);
                     }
                     for (int k = 0; k < 7; k++) {
-                        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + k]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + k]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + k].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + k].setANSI_COLOR(color);
                     }
                     for (int k = 0; k < 9; k++) {
-                        printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + k - 1]
-                                .setANSI_COLOR(color);
-                        printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1]
-                                .setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + k - 1].setANSI_COLOR(color);
+                        printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + k - 1].setANSI_COLOR(color);
                     }
-                    for(int k = 0 ; k < tile.getFeatures().size(); k++){
+                    for (int k = 0; k < tile.getFeatures().size(); k++) {
                         String name = this.findFeatureCharacters(tile.getFeatures().get(k));
-                        if(k == 0){
+                        if (k == 0) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex].setCharacter(name.charAt(0));
-                            if(name.length() == 2){
+                            if (name.length() == 2) {
                                 printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 1].setCharacter(name.charAt(1));
                             }
                         }
-                        if(k == 1){
+                        if (k == 1) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 3].setCharacter(name.charAt(0));
-                            if(name.length() == 2){
+                            if (name.length() == 2) {
                                 printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 4].setCharacter(name.charAt(1));
                             }
                         }
-                        if(k == 2){
+                        if (k == 2) {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 6].setCharacter(name.charAt(0));
                         }
                     }
@@ -485,47 +528,47 @@ public class GameView implements View {
         }
     }
 
+    private char findUnitPrintableCharacter(Unit unit){
+        if(unit.getType() == UnitType.WORKER){
+            return 'W';
+        }
+        if(unit.getType() == UnitType.SETTLER){
+            return 'S';
+        }
+        return 'U';
+    }
 
-    private String findFeatureCharacters(Feature feature){
-        if(feature == Feature.FLOOD_PLAINS){
+
+    private String findFeatureCharacters(Feature feature) {
+        if (feature == Feature.FLOOD_PLAINS) {
             return "FL";
-        }
-        else if(feature == Feature.FOREST){
+        } else if (feature == Feature.FOREST) {
             return "FO";
-        }
-        else if(feature == Feature.ICE){
+        } else if (feature == Feature.ICE) {
             return "I";
-        }
-        else if(feature == Feature.JUNGLE){
+        } else if (feature == Feature.JUNGLE) {
             return "J";
-        }
-        else if(feature == Feature.MARSH){
+        } else if (feature == Feature.MARSH) {
             return "M";
-        }
-        else if(feature == Feature.OASIS){
+        } else if (feature == Feature.OASIS) {
             return "O";
         }
         return null;
     }
 
 
-    private void drawATile(PrintableCharacters printableCharacters[][], int tileStartingVerticalIndex,
-            int tileStartingHorizontalIndex, int i, int j) {
+    private void drawATile(PrintableCharacters printableCharacters[][], int tileStartingVerticalIndex, int tileStartingHorizontalIndex, int i, int j) {
         Tile frameBase = controller.getCurrentPlayer().getFrameBase();
         int frameBaseXCoordinate = frameBase.findTileXCoordinateInMap();
         int frameBaseYCoordinate = frameBase.findTileYCoordinateInMap();
 
         int tileXCoordinate = frameBaseXCoordinate + j;
         int tileYCoordinate = frameBaseYCoordinate + i;
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 1]
-                .setCharacter((char) (tileYCoordinate / 10 + 48));
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 2]
-                .setCharacter((char) (tileYCoordinate % 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 1].setCharacter((char) (tileYCoordinate / 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 2].setCharacter((char) (tileYCoordinate % 10 + 48));
         printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 3].setCharacter(',');
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 4]
-                .setCharacter((char) (tileXCoordinate / 10 + 48));
-        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 5]
-                .setCharacter((char) (tileXCoordinate % 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 4].setCharacter((char) (tileXCoordinate / 10 + 48));
+        printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex + 5].setCharacter((char) (tileXCoordinate % 10 + 48));
 
         printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex].setCharacter('/');
         printableCharacters[tileStartingVerticalIndex + 1][tileStartingHorizontalIndex - 1].setCharacter('/');
@@ -548,25 +591,26 @@ public class GameView implements View {
 
     private PrintableCharacters[][] makeMapReadyToPrint() {
         Tile tiles[][] = this.controller.getGameDataBase().getMap().findTilesToPrint(controller.getCurrentPlayer());
-        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap()
-                .getCivilizationsImage(controller.getCurrentPlayer());
+        TileImage tilesImage[][] = this.controller.getGameDataBase().getMap().getCivilizationsImage(controller.getCurrentPlayer());
         PrintableCharacters printableCharacters[][] = new PrintableCharacters[21][52];
         for (int i = 0; i < 21; i++) {
             for (int j = 0; j < 52; j++) {
                 printableCharacters[i][j] = new PrintableCharacters();
-                if (i == 2 && j % 16 >= 11 && j < 48) {
-                    printableCharacters[i][j].setCharacter('_');
+                if (i == 2 &&  j < 48) {
+                    if((tiles[0][0].findTileXCoordinateInMap() % 2 == 0 && j%16 >= 11) || (tiles[0][0].findTileXCoordinateInMap() % 2 == 1 && j%16 >= 3 && j%16 <= 7)) {
+                        printableCharacters[i][j].setCharacter('_');
+                    }
                 }
             }
         }
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                int tileStartingVerticalIndex = (j % 2) * 3 + 6 * i;
+                int tileStartingVerticalIndex = ((j +tiles[0][0].findTileXCoordinateInMap() % 2)  % 2) * 3 + 6 * i;
                 int tileStartingHorizontalIndex = 2 + j * 8;
                 this.drawATile(printableCharacters, tileStartingVerticalIndex, tileStartingHorizontalIndex, i, j);
             }
         }
-        this.colorTiles(tilesImage, printableCharacters);
+        this.colorTiles(tilesImage, printableCharacters, tiles);
         this.colorRiverSegments(tiles, printableCharacters);
         return printableCharacters;
     }

@@ -8,7 +8,6 @@ import models.units.Unit;
 
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;
-    private ArrayList<Civilization> civilizations = new ArrayList<>();
     private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
@@ -18,6 +17,8 @@ public class GameDataBase {
     private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
 
+    private int turnNumber = 0;
+
     private GameDataBase() {
         map = GameMap.getGameMap();
     }
@@ -26,10 +27,6 @@ public class GameDataBase {
         if (gameDataBase == null)
             gameDataBase = new GameDataBase();
         return gameDataBase;
-    }
-
-    public ArrayList<Civilization> getCivilizations() {
-        return this.civilizations;
     }
 
     public GameMap getMap() {
@@ -82,5 +79,21 @@ public class GameDataBase {
                 this.players.add(new Player(player));
             }
         }
+    }
+
+    public int getTurnNumber() {
+        return turnNumber;
+    }
+
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
+
+    public ArrayList<Civilization> getCivilizations(){
+        ArrayList<Civilization> civilizations = new ArrayList<>();
+        for(Player player : this.players){
+            civilizations.add(player.getCivilization());
+        }
+        return civilizations;
     }
 }
