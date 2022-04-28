@@ -206,6 +206,16 @@ public class City implements Selectable, TurnHandler, combative {
         return count;
     }
 
+    public int calculateWorklessCitizenCount() {
+        int count = 0;
+        for (Citizen citizen : citizens) {
+            if (citizen.isWorkless()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     public void addTileToTerritory(Tile tile) {
         if (!territories.contains(tile)) {
             territories.add(tile);

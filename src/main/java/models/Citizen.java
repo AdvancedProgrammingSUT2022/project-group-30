@@ -18,9 +18,9 @@ public class Citizen {
     }
 
     public boolean isWorkless(){
-        if(workPlace == null)
-            return false;
-        return true;
+        if (workPlace == null)
+            return true;
+        return false;
     }
 
     public void setWorkPlace(Workable workPlace) {
