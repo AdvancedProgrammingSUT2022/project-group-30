@@ -206,6 +206,12 @@ public class City implements Selectable, TurnHandler, combative {
         return count;
     }
 
+    public void addTileToTerritory(Tile tile) {
+        if (!territories.contains(tile)) {
+            territories.add(tile);
+        }
+    }
+
     public void attack(Unit target) {
         // TODO
     }

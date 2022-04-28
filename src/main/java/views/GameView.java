@@ -374,7 +374,7 @@ public class GameView implements View {
         }
 
         TileImage image = controller.getCurrentPlayer().getTileImage(controller.getTileByCoordinates(x, y));
-        printer.println("x : " + x + ", y : " + y);
+        printer.println("Y: " + y + ", X: " + x);
 
         if (image == null) {
             printer.printlnRed("This tile is not visible!");

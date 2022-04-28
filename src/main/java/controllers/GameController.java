@@ -297,9 +297,12 @@ public class GameController {
 
     public void foundCityWithSettler(Unit unit) {
         City newCity = new City(unit.getOwner(), unit.getLocation());
-        // TODO : how many citizens should I add?
-        // TODO : initialize city's territory
         newCity.addCitizen();
+        ArrayList<Tile> territory = getAdjacentTiles(newCity.getCentralTile());
+        for (Tile tile : territory) {
+            newCity.addTileToTerritory(tile);
+        }
+
         gameDataBase.getCities().add(newCity);
 
         deleteUnit(unit);
