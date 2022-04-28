@@ -21,6 +21,7 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
+import models.interfaces.TurnHandler;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
@@ -337,12 +338,22 @@ public class GameController {
         gameDataBase.setTurnNumber(gameDataBase.getTurnNumber() + 1);
         getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
 
-        // TODO : call all goToNextTurn functions
         for (Unit unit : gameDataBase.getUnits()) {
             unit.goToNextTurn();
         }
         for (City city : gameDataBase.getCities()) {
             city.goToNextTurn();
+        }
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            civilization.goToNextTurn();
+        }
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            tile.goToNextTurn();
+        }
+        for (Diplomacy diplomaticRelation : gameDataBase.getAllDiplomaticRelations()) {
+            if (diplomaticRelation instanceof TurnHandler) {
+                ((TurnHandler) diplomaticRelation).goToNextTurn();
+            }
         }
     }
 

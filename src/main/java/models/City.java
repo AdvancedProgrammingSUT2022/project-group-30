@@ -68,6 +68,7 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
+        
         // TODO
     }
 

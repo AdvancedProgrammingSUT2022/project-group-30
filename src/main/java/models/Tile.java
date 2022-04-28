@@ -203,6 +203,9 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public void goToNextTurn() {
+        if (work != null) {
+            work.goToNextTurn();
+        }
         // TODO
     }
 
