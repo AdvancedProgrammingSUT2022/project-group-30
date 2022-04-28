@@ -122,11 +122,11 @@ public class GameView implements View {
     }
 
     private void runCitizenManagementPanel(City city) {
-        printer.printlnPurple("********************* Citizen Management Panel *********************");
-        printer.println("For a list of commands, enter \"show commands\"");
         String command;
         Matcher matcher;
         while (true) {
+            printer.printlnPurple("********************* Citizen Management Panel *********************");
+            printer.println("For a list of commands, enter \"show commands\"");
             command = scanner.nextLine();
             if ((matcher = CitizenManagementPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
                 showCitizenInfo(city);
@@ -147,13 +147,13 @@ public class GameView implements View {
         printer.printlnPurple("Tiles being worked:");
         for (Citizen citizen : citizens) {
             if (citizen.getWorkPlace() instanceof  Tile) {
-                printer.println("Y: " + ((Tile)citizen.getWorkPlace()).findTileYCoordinateInMap() + "X: " +
+                printer.println("Y: " + ((Tile)citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
                         ((Tile)citizen.getWorkPlace()).findTileXCoordinateInMap());
             }
         }
         printer.printlnRed("Tile not being worked:");
         for (Tile unworkedTile : city.getUnworkedTiles()) {
-            printer.println("Y: " + unworkedTile.findTileYCoordinateInMap() + "X: " + unworkedTile.findTileXCoordinateInMap());
+            printer.println("Y: " + unworkedTile.findTileYCoordinateInMap() + " X: " + unworkedTile.findTileXCoordinateInMap());
         }
         printer.printlnPurple("Buildings being worked:");
         for (Citizen citizen : citizens) {
