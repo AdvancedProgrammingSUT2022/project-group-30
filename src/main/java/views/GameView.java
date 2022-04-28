@@ -219,16 +219,6 @@ public class GameView implements View {
         for (Tile unworkedTile : city.getUnworkedTiles()) {
             printer.println("Y: " + unworkedTile.findTileYCoordinateInMap() + " X: " + unworkedTile.findTileXCoordinateInMap());
         }
-        printer.printlnPurple("Buildings being worked:");
-        for (Citizen citizen : citizens) {
-            if (citizen.getWorkPlace() instanceof Building) {
-                printer.println(((Building)citizen.getWorkPlace()).getType().getName());
-            }
-        }
-        printer.printlnRed("Buildings not being worked:");
-        for (Building unworkedBuilding : city.getUnworkedBuildings()) {
-            printer.println(unworkedBuilding.getType().getName());
-        }
     }
 
     private void showCitizenManagementCommands() {

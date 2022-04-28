@@ -7,8 +7,8 @@ public class CitizenManagementPanelCommands extends Commands {
     public static final CitizenManagementPanelCommands BACK = new CitizenManagementPanelCommands("b(ack)?", "back");
     public static final CitizenManagementPanelCommands WORK_TILE = new CitizenManagementPanelCommands("work tile (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)",
             "work tile y, x");
-    public static final CitizenManagementPanelCommands WORK_BUILDING = new CitizenManagementPanelCommands("work building (?<name>.*)",
-            "work building <building name>");
+    public static final CitizenManagementPanelCommands FREE_TILE = new CitizenManagementPanelCommands("free tile (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)",
+            "free tile y, x");
 
     private final String name;
     private static ArrayList<CitizenManagementPanelCommands> allCommands;
