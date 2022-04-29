@@ -216,7 +216,7 @@ public class Civilization implements TurnHandler {
         return this.goldCount;
     }
 
-    public void setGoldCount(int goldCount) {
+    public void setGoldCount(double goldCount) {
         this.goldCount = goldCount;
     }
 

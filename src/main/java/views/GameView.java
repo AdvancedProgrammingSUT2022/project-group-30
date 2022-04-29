@@ -5,15 +5,7 @@ import java.util.HashMap;
 
 import controllers.GameController;
 import menusEnumerations.CityCommands;
-import models.City;
-import models.Civilization;
-import models.Feature;
-import models.GameMap;
-import models.ProgramDatabase;
-import models.RiverSegment;
-import models.Tile;
-import models.TileHistory;
-import models.TileVisibility;
+import models.*;
 import models.units.UnitState;
 import models.units.UnitType;
 import utilities.Debugger;
@@ -27,7 +19,6 @@ import java.util.regex.Pattern;
 
 import menusEnumerations.GameMainPageCommands;
 import menusEnumerations.UnitCommands;
-import models.User;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -228,6 +219,10 @@ public class GameView implements View {
             else if((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)){
                 awakeAUnit(unit);
             }
+            else if((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)){
+                deleteAUnit(unit);
+                break;
+            }
             else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -242,6 +237,7 @@ public class GameView implements View {
 
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
+        result.put(UnitCommands.DELETE, true);
         if (unit.getState().waitsForCommand  && controller.canUnitMove(unit)) {
             result.put(UnitCommands.MOVE_TO, true);
         }
@@ -267,6 +263,13 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void deleteAUnit(Unit unit){
+        unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
+        GameDataBase.getGameDataBase().getUnits().remove(unit);
+        printer.println("this unit is now deleted");
+        showMap();
     }
 
     private void awakeAUnit(Unit unit){
