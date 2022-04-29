@@ -132,11 +132,9 @@ public class GameView implements View {
             }
             else if((matcher = ResearchCommands.STOP_RESEARCH.getCommandMatcher(command)) != null){
                 stopResearch(civilization);
-                waitForClick();
             }
             else if((matcher = ResearchCommands.START_RESEARCH.getCommandMatcher(command)) != null){
                 startResearch(civilization);
-                waitForClick();
             }
             else if((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null){
                 printer.println("You exited research tab");
@@ -144,7 +142,6 @@ public class GameView implements View {
             }
             else if((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null){
                 changeResearch(civilization);
-                waitForClick();
             }
             else if((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null){
                 showCurrentResearchInfo(civilization);
@@ -172,7 +169,9 @@ public class GameView implements View {
         }
         printer.printlnBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
         int turnsLeft = (int) Math.ceil((civilization.getResearchProject().getCost() - civilization.getBeakerCount()) / civilization.calculateTotalBeakers());
-        printer.println("turns left to finish researching : " + turnsLeft);
+        printer.println("Turns left to finish researching : " + turnsLeft);
+        printer.println("Cost : " + civilization.getResearchProject().getCost());
+        printer.println("Beaker Count : " + civilization.getBeakerCount());
     }
 
     private void changeResearch(Civilization civilization){
@@ -226,7 +225,7 @@ public class GameView implements View {
         civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
         civilization.setResearchProject(null);
         civilization.setBeakerCount(0);
-        printer.println("research " + researchProject.getName() + "has stopped!");
+        printer.println("research " + researchProject.getName() + " has stopped!");
     }
 
     private void showReservedResearches(Civilization civilization){
@@ -454,11 +453,11 @@ public class GameView implements View {
 
     private void passTurn() {
         ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-/*        if (idleUnits.isEmpty() == false) {
+        if (idleUnits.isEmpty() == false) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
-        }*/
+        }
         if(!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null){
             printer.printlnError("You should start a research project!");
             // TODO : FOR MY SELF
