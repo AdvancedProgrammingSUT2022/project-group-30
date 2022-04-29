@@ -505,7 +505,13 @@ public class GameView implements View {
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
         }
-        // TODO : if a city can start a new production, make the player choose it!
+
+        ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
+        if (citiesWaitingForProduction.isEmpty() == false) {
+            printer.printlnError("Some cities are waiting for their next production!");
+            controller.getCurrentPlayer().setSelectedEntity(citiesWaitingForProduction.get(0));
+            return;
+        }
 
         controller.goToNextPlayer();
         showMap();

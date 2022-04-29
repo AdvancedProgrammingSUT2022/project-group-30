@@ -99,6 +99,16 @@ public class Civilization implements TurnHandler {
         return cities;
     }
 
+    public ArrayList<City> getCitiesWaitingForProduction() {
+        ArrayList<City> result = new ArrayList<>();
+        for (City city : getCities()) {
+            if (city.getEntityInProduction() == null) {
+                result.add(city);
+            }
+        }
+        return result;
+    }
+
     public double getNumberOfRoads() {
         double count = 0;
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
