@@ -266,6 +266,7 @@ public class GameView implements View {
     }
 
     private void deleteAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
         GameDataBase.getGameDataBase().getUnits().remove(unit);
         printer.println("this unit is now deleted");
@@ -279,30 +280,35 @@ public class GameView implements View {
     }
 
     private void garrisonAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.GARRISON);
         printer.println("unit state changed to garrison");
         showMap();
     }
 
     private void fortifyAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFY);
         printer.println("unit state changed to fortify");
         showMap();
     }
 
     private void fortifyAUnitUntilHealed(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFYUNTILHEALED);
         printer.println("unit state changed to fortify until healed");
         showMap();
     }
 
     private void alertAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ALERT);
         printer.println("unit state changed to alert");
         showMap();
     }
 
     private void sleepUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ASLEEP);
         printer.println("unit state changed to asleep");
         showMap();

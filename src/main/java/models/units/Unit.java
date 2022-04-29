@@ -59,7 +59,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
 
     public boolean isUnitInItsCivilizationCities(){
         City city = this.location.getCityOfTile();
-        if(city != null && city.getOwner().equals(this.getOwner())){
+        if(city != null && city.getOwner().equals(this.getOwner()) && city.getCentralTile().equals(this.location)){
             return true;
         }
         return false;
