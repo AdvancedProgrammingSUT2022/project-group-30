@@ -305,6 +305,10 @@ public class GameView implements View {
             boolean isCommandValid = false;
             for (Producible producible : allProducibles) {
                 if (choice.equalsIgnoreCase(producible.getName())) {
+                    if (producible instanceof  UnitType && !city.getCentralTile().doesPackingLetUnitEnter((UnitType) producible)) {
+                        printer.printlnError("There is already a unit in the city. You need to move it to make room!");
+                        return;
+                    }
                     city.changeProduction(producible);
                     printer.printlnBlue("Set city's production to " + producible.getName());
                     isCommandValid = true;
