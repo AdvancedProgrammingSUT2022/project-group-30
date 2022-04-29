@@ -122,12 +122,64 @@ public class GameView implements View {
                 showReservedResearches(civilization);
                 waitForClick();
             }
+            else if((matcher = ResearchCommands.STOP_RESEARCH.getCommandMatcher(command)) != null){
+                stopResearch(civilization);
+                waitForClick();
+            }
+            else if((matcher = ResearchCommands.START_RESEARCH.getCommandMatcher(command)) != null){
+                startResearch(civilization);
+                waitForClick();
+            }
+            else if((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null){
+                printer.println("You exited research tab");
+                break;
+            }
             else{
                 printer.println("Invalid command for Research tab!");
             }
 
         }
 
+    }
+
+    private void startResearch(Civilization civilization){
+        if(civilization.getResearchProject() != null){
+            printer.printlnError("You have already started a research project");
+            return;
+        }
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        if(technologies.isEmpty()){
+            printer.printlnError("There is no technology to research");
+            return;
+        }
+        printer.printBlue("Enter the number of the technology in order to start a research project:");
+        for(int i = 0; i < technologies.size(); i++){
+            printer.println(" " + (i + 1) + "-" + technologies.get(i).getName());
+        }
+        String input;
+        Matcher matcher;
+        while(true){
+            input = scanner.nextLine();
+            if((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size()){
+                civilization.setResearchProject(technologies.get(Integer.parseInt(input) - 1));
+                break;
+            }
+            else{
+                printer.printlnError("Please enter a number between 1 and " + technologies.size());
+            }
+        }
+    }
+
+    private void stopResearch(Civilization civilization){
+        if(civilization.getResearchProject() == null){
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        Technology researchProject = civilization.getResearchProject();
+        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
+        civilization.setResearchProject(null);
+        civilization.setBeakerCount(0);
+        printer.println("research " + researchProject.getName() + "has stopped!");
     }
 
     private void showReservedResearches(Civilization civilization){

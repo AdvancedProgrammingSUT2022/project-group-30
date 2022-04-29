@@ -29,7 +29,7 @@ public class Civilization implements TurnHandler {
     private double goldCount;
     private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
-    private HashMap<Technology, Integer> researchReserve = new HashMap<>();
+    private HashMap<Technology, Double> researchReserve = new HashMap<>();
     private double happiness;
     private double diplomaticCredit;
     private double score;
@@ -286,11 +286,11 @@ public class Civilization implements TurnHandler {
         this.researchProject = researchProject;
     }
 
-    public HashMap<Technology, Integer> getResearchReserve() {
+    public HashMap<Technology, Double> getResearchReserve() {
         return researchReserve;
     }
 
-    public void setResearchReserve(HashMap<Technology, Integer> researchReserve) {
+    public void setResearchReserve(HashMap<Technology, Double> researchReserve) {
         this.researchReserve = researchReserve;
     }
 

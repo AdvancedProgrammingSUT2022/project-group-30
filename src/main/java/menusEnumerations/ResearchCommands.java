@@ -10,6 +10,8 @@ public class ResearchCommands extends Commands{
     public static ResearchCommands STOP_RESEARCH = new ResearchCommands("stop researching", "stop research");
     public static ResearchCommands CHANGE_RESEARCH = new ResearchCommands("change research( project)?", "change research");
     public static ResearchCommands RESERVED_RESEARCHES = new ResearchCommands("(show )?reserved researches", "reserved researches");
+    public static ResearchCommands BACK = new ResearchCommands("back", "back");
+    public static ResearchCommands SHOW_CURRENT_INFO = new ResearchCommands("(show )?(current )?research info", "show current research info");
 
     private static ArrayList<ResearchCommands> allCommands;
     private  String name;
