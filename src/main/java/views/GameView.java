@@ -200,7 +200,16 @@ public class GameView implements View {
             printer.println(producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost());
         }
 
+        printer.printlnPurple("Production-Ready Units:");
+        for (UnitType type : city.calculateProductionReadyUnitTypes()) {
+            printer.println(type.getName());
+        }
+        printer.println();
 
+        printer.printlnPurple("Production-Ready Building:");
+        for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
+            printer.println(type.getName());
+        }
     }
 
     private void showProductionPanelCommands() {

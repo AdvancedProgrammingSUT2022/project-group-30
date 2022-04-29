@@ -234,6 +234,15 @@ public class Civilization implements TurnHandler {
         return true;
     }
 
+    public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
+        for (StrategicResource resource : resources.keySet()) {
+                if (strategicResources.get(resource) < resources.get(resource)) {
+                    return false;
+                }
+        }
+        return true;
+    }
+
 
 
     public double getGoldCount() {

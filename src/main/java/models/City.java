@@ -1,5 +1,6 @@
 package models;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import models.interfaces.combative;
 import models.resources.Resource;
 import models.units.Unit;
 import models.units.UnitState;
+import models.units.UnitType;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -102,6 +104,26 @@ public class City implements Selectable, TurnHandler, combative {
         }
 
         return collectibleResources;
+    }
+
+    public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
+        ArrayList<UnitType> result = new ArrayList<>();
+        for (UnitType type : UnitType.values()) {
+            if (owner.hasTechnology(type.getPrerequisitTechnology()) && owner.hasStrategicResources(type.getPrerequisiteResources())) {
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
+        ArrayList<BuildingType> result = new ArrayList<BuildingType>();
+        for (BuildingType type : BuildingType.values()) {
+            if (owner.hasTechnology(type.getPrerequisiteTechnology())) {
+                result.add(type);
+            }
+        }
+        return result;
     }
 
     private void growTerritory() {
