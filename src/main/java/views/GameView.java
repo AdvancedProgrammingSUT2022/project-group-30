@@ -6,6 +6,7 @@ import java.util.HashMap;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
+import models.interfaces.Producible;
 import models.units.UnitState;
 import models.*;
 import models.buildings.Building;
@@ -171,11 +172,20 @@ public class GameView implements View {
                 waitForClick();
             } else if ((matcher = ProductionPanelCommands.BACK.getCommandMatcher(command)) != null) {
                 break;
+            } else if ((matcher = ProductionPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showProductionInfo(city);
+                waitForClick();
             } else {
                 printer.printlnError("Invalid command for Production Panel");
             }
         }
 
+    }
+
+    private void showProductionInfo(City city) {
+        printer.printlnPurple("########### City Production Info ###########");
+        Producible currentProduction = city.getEntityInProduction();
+        printer.println("Currently producing: ");
     }
 
     private void showProductionPanelCommands() {
