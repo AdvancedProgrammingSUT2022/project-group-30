@@ -135,6 +135,8 @@ public class City implements Selectable, TurnHandler, combative {
         } else {
             productionReserve.put(entityInProduction, (int) hammerCount);
             hammerCount = 0;
+            entityInProduction = null;
+            changeProduction(producible);
         }
         entityInProduction = producible;
     }

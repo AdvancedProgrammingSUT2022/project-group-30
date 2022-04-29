@@ -197,8 +197,8 @@ public class GameView implements View {
         printer.println("Units:");
         for (UnitType producibleUnit : producibleUnits) {
             int hammerCost = producibleUnit.calculateHammerCost();
-            int turnsRequired = hammerCost / city.calculateOutput().getProduction();
-            printer.println(producibleUnit.getName() + ", " + hammerCost + "\tHammers, " + turnsRequired + " turns");
+            int turnsRequired = Math.max(1, hammerCost / city.calculateOutput().getProduction());
+            printer.println(producibleUnit.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsRequired + " turns");
             HashMap<StrategicResource, Integer> resources = producibleUnit.getPrerequisiteResources();
             for (StrategicResource resource : resources.keySet()) {
                 printer.println("\t" + resource.getName() + ": " + resources.get(resource));
@@ -208,8 +208,8 @@ public class GameView implements View {
         printer.println("Buildings:");
         for (BuildingType producibleBuilding : producibleBuildings) {
             int hammerCost = producibleBuilding.calculateHammerCost();
-            int turnsReuquired = hammerCost / city.calculateOutput().getProduction();
-            printer.println(producibleBuilding.getName() + hammerCost + "\tHammers, " + turnsReuquired + " turns");
+            int turnsReuquired = Math.max(1, hammerCost / city.calculateOutput().getProduction());
+            printer.println(producibleBuilding.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsReuquired + " turns");
         }
 
         while (true) {
@@ -220,14 +220,21 @@ public class GameView implements View {
             }
             ArrayList<Producible> allProducibles = new ArrayList<Producible>(producibleBuildings);
             allProducibles.addAll(producibleUnits);
+
+            boolean isCommandValid = false;
             for (Producible producible : allProducibles) {
                 if (choice.equalsIgnoreCase(producible.getName())) {
                     city.changeProduction(producible);
                     printer.printlnBlue("Set city's production to " + producible.getName());
+                    isCommandValid = true;
                     break;
                 }
             }
-            printer.printlnRed("Item was not found on the list, try again.");
+            if (isCommandValid == false) {
+                printer.printlnRed("Item was not found on the list, try again.");
+            } else {
+                break;
+            }
         }
     }
 
