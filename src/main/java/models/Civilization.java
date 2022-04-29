@@ -146,10 +146,10 @@ public class Civilization implements TurnHandler {
         for (City city : getCities()) {
             ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
             for (Resource resource : collectibleResourcesInput) {
-                if (resource instanceof  LuxuryResource) {
+                if (resource instanceof LuxuryResource) {
                     luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
                 }
-                if (resource instanceof  StrategicResource) {
+                if (resource instanceof StrategicResource) {
                     strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
                 }
             }
@@ -179,8 +179,9 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             count += city.calculateBeakerProduction();
         }
-        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
-        count += count * 15 * numberOfScientificTreaty / 100.0;
+        int numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
+        if (numberOfScientificTreaty != 0)
+            count += count * 15 * numberOfScientificTreaty / 100.0;
         return count;
     }
 
@@ -189,11 +190,10 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             gold += city.calculateOutput().getGold();
         }
-        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES:
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationRecipient(this);
-//        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
-//            gold += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
-//        }
+        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+            gold += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
+        }
         return gold;
     }
 
@@ -206,10 +206,9 @@ public class Civilization implements TurnHandler {
         cost += this.getNumberOfRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
         cost += this.getNumberOfRailRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationPayer(this);
-        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES
-//        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
-//            cost += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
-//        }
+        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+            cost += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
+        }
         return cost;
     }
 
@@ -252,13 +251,12 @@ public class Civilization implements TurnHandler {
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
         for (StrategicResource resource : resources.keySet()) {
-                if (strategicResources.get(resource) < resources.get(resource)) {
-                    return false;
-                }
+            if (strategicResources.get(resource) < resources.get(resource)) {
+                return false;
+            }
         }
         return true;
     }
-
 
 
     public double getGoldCount() {
