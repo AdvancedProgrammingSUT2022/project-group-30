@@ -192,12 +192,15 @@ public class GameView implements View {
             printer.println("Nothing!");
         } else {
             printer.println(currentProduction.getName());
+            printer.println(city.getHammerCount() + " out of " + currentProduction.calculateHammerCost());
         }
 
         printer.println("Halted Productions:");
         for (Producible producible : city.getProductionReserve().keySet()) {
             printer.println(producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost());
         }
+
+
     }
 
     private void showProductionPanelCommands() {
