@@ -2,10 +2,11 @@ package models.units;
 
 import java.util.HashMap;
 
+import models.interfaces.Producible;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 
-public enum UnitType {
+public enum UnitType implements Producible {
         ARCHER("Archer", 70, CombatType.ARCHERY,
                         4, 6, 2, 2,
                         StrategicResource.getRequiredResourceHashMap(), Technology.ARCHERY),

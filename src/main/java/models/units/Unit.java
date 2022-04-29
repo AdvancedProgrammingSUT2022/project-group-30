@@ -11,7 +11,7 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.combative;
 
-public class Unit implements Selectable, TurnHandler, Producible, combative {
+public class Unit implements Selectable, TurnHandler, combative {
     private final Civilization owner;
     private final UnitType type;
     private Tile location;

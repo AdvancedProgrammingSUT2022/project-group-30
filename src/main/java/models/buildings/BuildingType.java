@@ -2,6 +2,7 @@ package models.buildings;
 
 import models.Feature;
 import models.Output;
+import models.interfaces.Producible;
 import models.resources.Resource;
 import models.technology.Technology;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 
-public enum BuildingType {
+public enum BuildingType implements Producible {
     BARRACKS(80, 1, Technology.BRONZE_WORKING, 0, "Barracks"),
     GRANARY(100, 1, Technology.POTTERY, 0, "Granary"),
     LIBRARY(80, 1, Technology.WRITING, 0, "Library"),

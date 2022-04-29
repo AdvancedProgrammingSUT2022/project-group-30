@@ -8,7 +8,7 @@ import models.interfaces.Workable;
 import models.resources.Resource;
 import models.technology.Technology;
 
-public class Building implements Producible, Workable {
+public class Building implements Workable {
     private final BuildingType type;
 
     public Building(BuildingType type) {
