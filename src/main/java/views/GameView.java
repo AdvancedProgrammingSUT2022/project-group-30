@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import controllers.GameController;
-import menusEnumerations.CitizenManagementPanelCommands;
-import menusEnumerations.CityCommands;
+import menusEnumerations.*;
 import models.*;
+import models.technology.Technology;
 import models.units.UnitState;
 import models.*;
 import models.buildings.Building;
@@ -22,8 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import menusEnumerations.GameMainPageCommands;
-import menusEnumerations.UnitCommands;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -112,10 +110,34 @@ public class GameView implements View {
         Matcher matcher;
         while(true){
             command = scanner.nextLine();
-
+            if((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
+                showLearnedTechnologies(civilization);
+            }
+            else if((matcher = ResearchCommands.UNLOCKED_TECHNOLOGIES.getCommandMatcher(command)) != null){
+                showUnlockedTechnologies(civilization);
+            }
+            else{
+                printer.println("Invalid command for Research tab!");
+            }
 
         }
 
+    }
+
+    private void showUnlockedTechnologies(Civilization civilization){
+        printer.printBlue(civilization.getName() + "'s unlocked technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        for (Technology technology : technologies) {
+            printer.println(" -" + technology.getName());
+        }
+    }
+
+    private void showLearnedTechnologies(Civilization civilization){
+        printer.printBlue(civilization.getName() + "'s learned technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getLearnedTechnologies();
+        for (Technology technology : technologies) {
+            printer.print(" -" + technology.getName());
+        }
     }
 
     private void showCivInfo() {
