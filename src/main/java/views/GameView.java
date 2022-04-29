@@ -280,9 +280,9 @@ public class GameView implements View {
         printer.println(citizens.size() + " citizens. " + city.calculateWorklessCitizenCount() + " of them are workless.");
         printer.printlnPurple("Tiles being worked:");
         for (Citizen citizen : citizens) {
-            if (citizen.getWorkPlace() instanceof  Tile) {
-                printer.println("Y: " + ((Tile)citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
-                        ((Tile)citizen.getWorkPlace()).findTileXCoordinateInMap());
+            if (citizen.getWorkPlace() instanceof Tile) {
+                printer.println("Y: " + ((Tile) citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
+                        ((Tile) citizen.getWorkPlace()).findTileXCoordinateInMap());
             }
         }
         printer.printlnRed("Tile not being worked:");
@@ -344,35 +344,27 @@ public class GameView implements View {
                     showMap();
                     break;
                 }
-            }
-            else if((matcher = UnitCommands.SLEEP.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SLEEP)){
+            } else if ((matcher = UnitCommands.SLEEP.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SLEEP)) {
                 sleepUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)){
+            } else if ((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)) {
                 alertAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)){
+            } else if ((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)) {
                 fortifyAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)){
+            } else if ((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)) {
                 fortifyAUnitUntilHealed(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.GARRISON.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.GARRISON)){
+            } else if ((matcher = UnitCommands.GARRISON.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.GARRISON)) {
                 garrisonAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)){
+            } else if ((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)) {
                 awakeAUnit(unit);
-            }
-            else if((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)){
+            } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
-            }
-            else {
+            } else {
                 printer.printlnError("Invalid Unit Command!");
             }
         }
@@ -392,25 +384,30 @@ public class GameView implements View {
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);
-        if (unit.getState().waitsForCommand  && controller.canUnitMove(unit)) {
+        if (unit.getState().waitsForCommand && controller.canUnitMove(unit)) {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
-        if (unit.getState().waitsForCommand  && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+        if (unit.getState().waitsForCommand && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
             result.put(UnitCommands.FOUND_CITY, true);
         }
 
-        if(unit.getState() == UnitState.AWAKE){
+        if (unit.getState() == UnitState.AWAKE) {
+            if (unit.getType().getCombatType().isStateAllowed(UnitState.FORTIFY)) {
+                result.put(UnitCommands.FORTIFY, true);
+                if (unit.getHitPointsLeft() < unit.getType().getHitPoints()) {
+                    result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
+                }
+            }
             result.put(UnitCommands.SLEEP, true);
             result.put(UnitCommands.ALERT, true);
-            result.put(UnitCommands.FORTIFY, true);
-            result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
-        }
-        else{
+        } else {
             result.put(UnitCommands.AWAKE, true);
         }
 
-        if(unit.getState().waitsForCommand && unit.isUnitInItsCivilizationCities()){
+        if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
+                controller.getCityCenteredInTile(unit.getLocation()) != null &&
+                controller.getCityCenteredInTile(unit.getLocation()).getOwner() == unit.getOwner()) {
             result.put(UnitCommands.GARRISON, true);
         }
 
@@ -419,7 +416,7 @@ public class GameView implements View {
         return result;
     }
 
-    private void deleteAUnit(Unit unit){
+    private void deleteAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
         GameDataBase.getGameDataBase().getUnits().remove(unit);
@@ -427,41 +424,41 @@ public class GameView implements View {
         showMap();
     }
 
-    private void awakeAUnit(Unit unit){
+    private void awakeAUnit(Unit unit) {
         unit.setState(UnitState.AWAKE);
         printer.println("this unit is now awake and ready to order");
         showMap();
     }
 
-    private void garrisonAUnit(Unit unit){
+    private void garrisonAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.GARRISON);
         printer.println("unit state changed to garrison");
         showMap();
     }
 
-    private void fortifyAUnit(Unit unit){
+    private void fortifyAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFY);
         printer.println("unit state changed to fortify");
         showMap();
     }
 
-    private void fortifyAUnitUntilHealed(Unit unit){
+    private void fortifyAUnitUntilHealed(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFYUNTILHEALED);
         printer.println("unit state changed to fortify until healed");
         showMap();
     }
 
-    private void alertAUnit(Unit unit){
+    private void alertAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ALERT);
         printer.println("unit state changed to alert");
         showMap();
     }
 
-    private void sleepUnit(Unit unit){
+    private void sleepUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ASLEEP);
         printer.println("unit state changed to asleep");
@@ -819,7 +816,7 @@ public class GameView implements View {
                     ArrayList<Unit> units = new ArrayList<>();
                     if (tilesImage[i][j] instanceof Tile) {
                         tile = (Tile) tilesImage[i][j];
-                        units  = this.controller.getUnitsInTile(tile);
+                        units = this.controller.getUnitsInTile(tile);
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
                         units = ((TileHistory) tilesImage[i][j]).getUnits();
@@ -869,14 +866,13 @@ public class GameView implements View {
         }
     }
 
-    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters){
-        if(tile.getCityOfTile() !=  null){
-            if(tile.getCityOfTile().getCentralTile().equals(tile)){
+    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters) {
+        if (tile.getCityOfTile() != null) {
+            if (tile.getCityOfTile().getCentralTile().equals(tile)) {
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('C');
                 printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
                 printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
-            }
-            else{
+            } else {
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('T');
             }
         }
