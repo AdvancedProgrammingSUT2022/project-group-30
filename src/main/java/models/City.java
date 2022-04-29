@@ -109,6 +109,11 @@ public class City implements Selectable, TurnHandler, combative {
     public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
+            if (type == UnitType.SETTLER) {
+                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                    continue;
+                }
+            }
             if (owner.hasTechnology(type.getPrerequisitTechnology()) && owner.hasStrategicResources(type.getPrerequisiteResources())) {
                 result.add(type);
             }

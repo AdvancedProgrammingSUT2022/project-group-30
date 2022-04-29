@@ -46,7 +46,7 @@ public enum BuildingType implements Producible {
     HOSPITAL(400, 2, Technology.BIOLOGY, 0, "Hospital"),
     MILITARY_BASE(450, 4, Technology.TELEGRAPH, 0, "Military Base"),
     STOCK_EXCHANGE(650, 0, Technology.ELECTRICITY, 0, "Stock Exchange"),
-    PALACE(0, 0, null, 0, "Palace");
+    PALACE(0, 0, Technology.AGRICULTURE, 0, "Palace");
 
     private final double cost;
     private final double maintenanceCost;

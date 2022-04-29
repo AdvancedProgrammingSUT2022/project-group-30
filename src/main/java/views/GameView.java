@@ -247,7 +247,12 @@ public class GameView implements View {
             printer.println("Nothing!");
         } else {
             printer.println(currentProduction.getName());
-            printer.println(city.getHammerCount() + " out of " + currentProduction.calculateHammerCost());
+            int hammerCost = currentProduction.calculateHammerCost();
+            int productionOutput = city.calculateOutput().getProduction();
+            int hammerCount = (int) city.getHammerCount();
+            int turnsRemaining = Math.max(1, (hammerCost - hammerCount) / productionOutput);
+            printer.println(hammerCount + " out of " + hammerCost);
+            printer.println(turnsRemaining + " turns remaining");
         }
 
         printer.println("Halted Productions:");
@@ -259,7 +264,6 @@ public class GameView implements View {
         for (UnitType type : city.calculateProductionReadyUnitTypes()) {
             printer.println(type.getName());
         }
-        printer.println();
 
         printer.printlnPurple("Production-Ready Buildings:");
         for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
