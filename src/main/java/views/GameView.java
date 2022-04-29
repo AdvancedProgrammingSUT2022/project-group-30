@@ -155,8 +155,52 @@ public class GameView implements View {
                 runCitizenManagementPanel(city);
             } else if ((matcher = CityCommands.SHOW_PRODUCTION_PANEL.getCommandMatcher(command)) != null) {
                 runProductionPanel(city);
+            } else if ((matcher = CityCommands.PURCHASE_TILE.getCommandMatcher(command)) != null) {
+                purchaseTile(city);
             } else {
                 printer.printlnError("Invalid command for city!");
+            }
+        }
+    }
+
+    private void purchaseTile(City city) {
+        printer.printlnPurple("Enter the coordinates (Y, X) of an adjacent tile you wish to buy for " + city.calculateNextTilePrice() + " Gold.");
+        printer.println("Available Tiles:");
+        ArrayList<Tile> purchasableTiles = city.findPurchasableTiles();
+        for (Tile tile : purchasableTiles) {
+            printer.println("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+        }
+        printer.printlnError("enter cancel to cancel the purchase");
+
+        Pattern inputPattern = Pattern.compile("(?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
+        Matcher matcher;
+        int x, y;
+
+        while (true) {
+            String input = scanner.nextLine();
+            if ((matcher = inputPattern.matcher(input)).matches()) {
+                y = Integer.parseInt(matcher.group("y"));
+                x = Integer.parseInt(matcher.group("x"));
+                if (!controller.areCoordinatesValid(x, y)) {
+                    printer.printlnError("Invalid coordinates, try again.");
+                    continue;
+                }
+                Tile tile = controller.getTileByCoordinates(x, y);
+                if (!purchasableTiles.contains(tile)) {
+                    printer.printlnError("You can only choose from the presented list. Try again.");
+                    continue;
+                }
+                int cost = city.calculateNextTilePrice();
+                if (cost > city.getOwner().getGoldCount()) {
+                    printer.printlnError("You don't have enough gold to buy this tile!");
+                    break;
+                }
+                break;
+            } else if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
+                printer.printlnRed("purchase canceled.");
+                break;
+            } else {
+                printer.printlnError("Invalid input, try again.");
             }
         }
     }
@@ -305,7 +349,7 @@ public class GameView implements View {
             boolean isCommandValid = false;
             for (Producible producible : allProducibles) {
                 if (choice.equalsIgnoreCase(producible.getName())) {
-                    if (producible instanceof  UnitType && !city.getCentralTile().doesPackingLetUnitEnter((UnitType) producible)) {
+                    if (producible instanceof UnitType && !city.getCentralTile().doesPackingLetUnitEnter((UnitType) producible)) {
                         printer.printlnError("There is already a unit in the city. You need to move it to make room!");
                         return;
                     }

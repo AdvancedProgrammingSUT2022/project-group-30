@@ -309,6 +309,24 @@ public class City implements Selectable, TurnHandler, combative {
         }
     }
 
+    public int calculateNextTilePrice() {
+        int price = 50;
+        price *= territories.size();
+        return price;
+    }
+
+    public ArrayList<Tile> findPurchasableTiles() {
+        ArrayList<Tile> result = new ArrayList<>();
+        for (Tile territory : territories) {
+            for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
+                if (!territories.contains(adjacentTile)) {
+                    result.add(adjacentTile);
+                }
+            }
+        }
+        return result;
+    }
+
     public boolean hasExploitableResourceNearby(Resource resource) {    // check if a tile in the territory has the resource and the required improvement to use it
         for (Tile territory : territories) {
             if (territory.hasExploitableResource(resource)) {
