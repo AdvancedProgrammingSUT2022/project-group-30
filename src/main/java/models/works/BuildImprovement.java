@@ -10,7 +10,7 @@ public class BuildImprovement extends Work {
     @Override
     public void applyChange() {
         // TODO
-        Tile myLocation = GameController.getGameController().findWorksLocation(this);
+        Tile myLocation = this.findLocation();
         myLocation.addImprovement(improvement);
         myLocation.removeWork();
     }

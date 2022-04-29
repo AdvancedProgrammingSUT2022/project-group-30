@@ -434,7 +434,7 @@ public class GameView implements View {
         printer.printlnBlue("Imrovements");
         for (Improvement improvement : tile.getImprovements()) {
             printer.print(improvement.getType().getName());
-            if (improvement.isPillaged()) {
+            if (improvement.getIsPillaged()) {
                 printer.printRed(" (pillaged)");
             }
             printer.println();
