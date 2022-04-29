@@ -112,9 +112,15 @@ public class GameView implements View {
             command = scanner.nextLine();
             if((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
                 showLearnedTechnologies(civilization);
+                waitForClick();
             }
             else if((matcher = ResearchCommands.UNLOCKED_TECHNOLOGIES.getCommandMatcher(command)) != null){
                 showUnlockedTechnologies(civilization);
+                waitForClick();
+            }
+            else if((matcher = ResearchCommands.RESERVED_RESEARCHES.getCommandMatcher(command)) != null){
+                showReservedResearches(civilization);
+                waitForClick();
             }
             else{
                 printer.println("Invalid command for Research tab!");
@@ -122,6 +128,13 @@ public class GameView implements View {
 
         }
 
+    }
+
+    private void showReservedResearches(Civilization civilization){
+        printer.printBlue(civilization.getName() + "'s reserved technologies:");
+        for(Technology technology : civilization.getResearchReserve().keySet()){
+            printer.println(" -" + technology.getName() + ", beakers spent: " + civilization.getResearchReserve().get(technology));
+        }
     }
 
     private void showUnlockedTechnologies(Civilization civilization){
@@ -341,6 +354,11 @@ public class GameView implements View {
         if (idleUnits.isEmpty() == false) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
+            return;
+        }
+        if(!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null){
+            printer.printlnError("You should start a research project!");
+            // TODO : FOR MY SELF
             return;
         }
         // TODO : if a city can start a new production, make the player choose it!

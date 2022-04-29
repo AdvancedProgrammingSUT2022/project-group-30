@@ -123,7 +123,8 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
-        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
+
+        beakerCount += this.calculateTotalBeakers();
 
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
