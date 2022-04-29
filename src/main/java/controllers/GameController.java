@@ -22,6 +22,7 @@ import models.interfaces.TileImage;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
+import models.units.UnitState;
 import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
@@ -118,6 +119,20 @@ public class GameController {
     public void moveUnit(Unit unit, Tile destination) { // doesn't check packing and mp conditions, doesn't cost mp. updates fog of war
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
+        awakeAllNearAlertedUnits(unit);
+    }
+
+    private void awakeAllNearAlertedUnits(Unit unit){
+        Tile tile = unit.getLocation();
+        ArrayList<Tile> adjacetTiles = this.getAdjacentTiles(tile);
+        for(int i = 0; i < adjacetTiles.size(); i++){
+            ArrayList<Unit> units = this.getUnitsInTile(adjacetTiles.get(i));
+            for(int j = 0; j < units.size(); j++){
+                if(!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
+                    units.get(i).setState(UnitState.AWAKE);
+                }
+            }
+        }
     }
 
     public void moveUnitAlongItsPath(Unit unit) {

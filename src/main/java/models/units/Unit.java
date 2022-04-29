@@ -152,6 +152,10 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         this.experiencePoints = experiencePoints;
     }
 
+    public void setState(UnitState state){
+        this.state = state;
+    }
+
     public UnitState getState() {
         return this.state;
     }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public enum UnitState {
     AWAKE(true),
     ASLEEP(false),
+    ALERT(false),
     FORTIFY(false),
     FORTIFYUNTILHEALED(false),
     GARRISON(false);

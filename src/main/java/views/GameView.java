@@ -14,6 +14,7 @@ import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
 import models.TileVisibility;
+import models.units.UnitState;
 import models.units.UnitType;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
@@ -203,7 +204,15 @@ public class GameView implements View {
                     showMap();
                     break;
                 }
-            } else {
+            }
+            else if((matcher = UnitCommands.SLEEP.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SLEEP)){
+                sleepUnit(unit);
+                break;
+            }
+            else if((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)){
+                alertAUnit(unit);
+            }
+            else {
                 printer.printlnError("Invalid Unit Command!");
             }
         }
@@ -217,17 +226,34 @@ public class GameView implements View {
 
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
-        if (controller.canUnitMove(unit)) {
+        if (unit.getState().waitsForCommand  && controller.canUnitMove(unit)) {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
-        if (unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+        if (unit.getState().waitsForCommand  && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
             result.put(UnitCommands.FOUND_CITY, true);
+        }
+
+        if(unit.getState() == UnitState.AWAKE){
+            result.put(UnitCommands.SLEEP, true);
+            result.put(UnitCommands.ALERT, true);
         }
 
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void alertAUnit(Unit unit){
+        unit.setState(UnitState.ALERT);
+        printer.println("unit alerted");
+        showMap();
+    }
+
+    private void sleepUnit(Unit unit){
+        unit.setState(UnitState.ASLEEP);
+        printer.println("unit slept");
+        showMap();
     }
 
     private boolean foundCity(Unit unit) {
