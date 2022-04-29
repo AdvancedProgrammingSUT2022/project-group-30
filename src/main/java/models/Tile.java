@@ -3,7 +3,6 @@ package models;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 import controllers.GameController;
 import models.improvements.Improvement;
@@ -12,6 +11,7 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
+import models.resources.BonusResource;
 import models.resources.Resource;
 import models.units.Unit;
 import models.works.Work;
@@ -84,6 +84,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
                 count++;
         }
         return count;
+    }
+
+    public ArrayList<Resource> calculateCollectibeResourcesOutput() {
+        ArrayList<Resource> collectibleResourceOutput = new ArrayList<>();
+        for (Resource resource : resources.keySet()) {
+            if (!(resource instanceof BonusResource) && resources.get(resource) > 0 && resource.canBeExploited(this)) {
+                collectibleResourceOutput.add(resource);
+            }
+        }
+        return collectibleResourceOutput;
     }
 
     public Output calculateOutput() {

@@ -95,6 +95,15 @@ public class City implements Selectable, TurnHandler, combative {
         }
     }
 
+    public ArrayList<Resource> calculateCollectibleResourceOutput() {
+        ArrayList<Resource> collectibleResources = new ArrayList<>();
+        for (Tile territory : territories) {
+            collectibleResources.addAll(territory.calculateCollectibeResourcesOutput());
+        }
+
+        return collectibleResources;
+    }
+
     private void growTerritory() {
         for (Tile territory : territories) {
             ArrayList<Tile> adjacentTiles = GameController.getGameController().getAdjacentTiles(territory);

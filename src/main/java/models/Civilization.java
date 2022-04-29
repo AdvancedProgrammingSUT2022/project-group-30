@@ -12,6 +12,7 @@ import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
+import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.Unit;
@@ -129,6 +130,18 @@ public class Civilization implements TurnHandler {
             beakerCount += goldCount;
             beakerCount = Math.max(0, beakerCount);
             goldCount = 0;
+        }
+
+        for (City city : getCities()) {
+            ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
+            for (Resource resource : collectibleResourcesInput) {
+                if (resource instanceof  LuxuryResource) {
+                    luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
+                }
+                if (resource instanceof  StrategicResource) {
+                    strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
+                }
+            }
         }
     }
 
