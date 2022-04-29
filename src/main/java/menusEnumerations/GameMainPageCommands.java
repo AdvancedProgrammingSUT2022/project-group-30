@@ -19,7 +19,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands GO_TO_NEXT_TURN = new GameMainPageCommands("(go to )?next( turn)?");
     public static GameMainPageCommands SHOW_UNITS = new GameMainPageCommands("(show )?units");
     public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
-    public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )research tab");
+    public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )?research tab");
     // pass the turn
     // show info about civ
 

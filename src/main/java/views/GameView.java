@@ -111,6 +111,8 @@ public class GameView implements View {
         String command;
         Matcher matcher;
         while(true){
+            command = scanner.nextLine();
+
 
         }
 

@@ -261,11 +261,11 @@ public class Civilization implements TurnHandler {
         this.strategicResources = strategicResources;
     }
 
-    public ArrayList<Technology> getTechnologies() {
+    public TechnologyMap getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(ArrayList<Technology> technologies) {
+    public void setTechnologies(TechnologyMap technologies) {
         this.technologies = technologies;
     }
 
