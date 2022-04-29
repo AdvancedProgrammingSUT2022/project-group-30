@@ -156,6 +156,17 @@ public class Civilization implements TurnHandler {
         }
     }
 
+    public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
+        for (StrategicResource strategicResource : amount.keySet()) {
+            int newValue = strategicResources.get(strategicResource) - amount.get(strategicResource);
+            if (newValue < 0) {
+                Debugger.debug("Civilization.java payStrategicResources method is making a value negative!");
+                return;
+            }
+            strategicResources.put(strategicResource, newValue);
+        }
+    }
+
     public void setNextResearchProject(Technology technology) {
         //TODO
     }

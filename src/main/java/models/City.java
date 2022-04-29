@@ -179,11 +179,11 @@ public class City implements Selectable, TurnHandler, combative {
             if (productionReserve.containsKey(producible)) {
                 hammerCount += productionReserve.get(producible);
                 productionReserve.remove(producible);
+            } else if (producible instanceof  UnitType) {
+                owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
             }
         } else {
-            productionReserve.put(entityInProduction, (int) hammerCount);
-            hammerCount = 0;
-            entityInProduction = null;
+            stopProduction();
             changeProduction(producible);
         }
         entityInProduction = producible;
