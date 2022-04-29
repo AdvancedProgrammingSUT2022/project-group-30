@@ -134,12 +134,21 @@ public class GameView implements View {
                 printer.println("You exited research tab");
                 break;
             }
+            else if((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null){
+                changeResearch(civilization);
+                waitForClick();
+            }
             else{
                 printer.println("Invalid command for Research tab!");
             }
 
         }
 
+    }
+
+    private void changeResearch(Civilization civilization){
+        this.stopResearch(civilization);
+        this.startResearch(civilization);
     }
 
     private void startResearch(Civilization civilization){
@@ -160,8 +169,13 @@ public class GameView implements View {
         Matcher matcher;
         while(true){
             input = scanner.nextLine();
-            if((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size()){
-                civilization.setResearchProject(technologies.get(Integer.parseInt(input) - 1));
+            if((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size() && Integer.parseInt(input) >= 1){
+                Technology researchProject = technologies.get(Integer.parseInt(input) - 1);
+                if(civilization.getResearchReserve().containsKey(researchProject)){
+                    civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
+                    civilization.getResearchReserve().remove(researchProject);
+                }
+                civilization.setResearchProject(researchProject);
                 break;
             }
             else{
