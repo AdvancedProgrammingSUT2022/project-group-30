@@ -23,6 +23,8 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
+    public static final int MAINTENANCE_COST_OF_UNIT = 2;
+
 
     public Unit(Civilization owner, UnitType type, Tile location) {
         this.owner = owner;

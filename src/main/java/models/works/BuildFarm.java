@@ -6,17 +6,18 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 
 public class BuildFarm extends BuildImprovement {
+
     @Override
     public void applyChange() {
-        // TODO
-        Tile myLocation = GameController.getGameController().findWorksLocation(this);
-        myLocation.addImprovement(new Improvement(ImprovementType.FARM, worker.getOwner()));
-        myLocation.removeWork();
+        this.findLocation().addImprovement(new Improvement(ImprovementType.FARM, worker.getOwner()));
+        this.findLocation().removeWork();
     }
 
     @Override
     public int calculateRequiredTurns() {
-        // TODO
+        Tile locationTile = this.findLocation();
+        //MINETODO
+       // if(locationTile.getFeatures().contains())
         return 0;
     }
 }
