@@ -297,6 +297,10 @@ public class City implements Selectable, TurnHandler, combative {
         }
     }
 
+    public boolean isCapital() {
+        return (owner.getCapital() == this);
+    }
+
     public void attack(Unit target) {
         // TODO
     }

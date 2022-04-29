@@ -151,7 +151,11 @@ public class GameView implements View {
     private void showCityInfo() {
         // TODO
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
-        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s City");
+        if (city.isCapital()) {
+            printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s Capital City");
+        } else {
+            printer.printPurple(controller.getCurrentPlayer().getName() + "'s City");
+        }
         printer.println("Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
         printer.println("The following tiles comprise this city's territory:");
         for (Tile tile : city.getTerritories()) {
