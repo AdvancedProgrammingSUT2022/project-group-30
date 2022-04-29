@@ -163,10 +163,10 @@ public class City implements Selectable, TurnHandler, combative {
     public Output calculateOutput() {
         Output output = new Output(0, 0, 0);
         for (Tile tile : this.territories) {
-            output.add(tile.getOutput());
+            output.add(tile.calculateOutput());
         }
         for (Citizen citizen : this.citizens) {
-            if (!citizen.isWorkless()) {
+            if (citizen.isWorkless()) {
                 output.add(new Output(0, 0, 1));
             }
         }
@@ -196,8 +196,7 @@ public class City implements Selectable, TurnHandler, combative {
         if (this.hasBuildingType(BuildingType.LIBRARY)) count += 2;
         if (this.hasBuildingType(BuildingType.UNIVERSITY)) percentage += 50;
         if (this.hasBuildingType((BuildingType.PUBLIC_SCHOOL))) percentage += 50;
-        //MINETODO page 37 trade...
-        return count * percentage;
+        return count * percentage / 100.0;
     }
 
     public double calculateTotalGoldCosts() {

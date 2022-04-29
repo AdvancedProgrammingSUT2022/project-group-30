@@ -98,11 +98,6 @@ public class GameController {
         setMapImageOfCivilization(owner);
     }
 
-    public Tile findWorksLocation(Work work) { // gets a work and finds the tile that owns it
-        // TODO
-        return null;
-    }
-
     public void addPlayers(User[] players) {
         gameDataBase.addPlayers(players);
     }
@@ -827,10 +822,21 @@ public class GameController {
         return scientificTreaties;
     }
 
-    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilization(Civilization civilization) {
+    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationPayer(Civilization civilization) {
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
         for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
-            if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civilization))
+            if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getPayer() == civilization)
+                stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
+        }
+        if (stepWiseGoldTransferContracts.size() == 0)
+            return null;
+        return stepWiseGoldTransferContracts;
+    }
+
+    public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+            if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
         if (stepWiseGoldTransferContracts.size() == 0)

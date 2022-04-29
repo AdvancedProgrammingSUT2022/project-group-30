@@ -68,7 +68,7 @@ public enum ImprovementType {
                                                         Feature.JUNGLE, Feature.MARSH, Feature.OASIS)),
                         0, "Rail Road");
 
-        public static final int MAINTENANCE_COST_OF_ROAD_AND_RAILROAD = 10;
+        public static final int MAINTENANCE_COST_OF_ROAD_AND_RAILROAD = 1;
         private final Output output;
         private final Technology prerequisiteTechnology;
         private final ArrayList<TerrainProperty> terrainProperties;

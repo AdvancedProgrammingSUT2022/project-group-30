@@ -9,7 +9,7 @@ public class BuildMine extends BuildImprovement {
     @Override
     public void applyChange() {
         // TODO
-        Tile myLocation = GameController.getGameController().findWorksLocation(this);
+        Tile myLocation = this.findLocation();
         myLocation.addImprovement(new Improvement(ImprovementType.MINE, worker.getOwner()));
         myLocation.removeWork();
     }

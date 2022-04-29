@@ -101,10 +101,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         if (!this.hasCitizen())
             return output;
         output.add(this.output);
-        for (Resource resource : this.resources.keySet()) {
-            if (this.containsImprovment(resource.getPrerequisiteImprovement())) {
-                for (int i = 0; i < this.resources.get(resource); i++)
-                    output.add(resource.getOutput());
+        for(Resource resource : this.resources.keySet()){
+            if(this.isImprovementTypeAccessible(resource.getPrerequisiteImprovement())){
+                for(int i=0 ; i< this.resources.get(resource); i++)
+                  output.add(resource.getOutput());
             }
         }
         for (Improvement improvement : this.getImprovements()) {
@@ -205,13 +205,23 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
+    public boolean isImprovementTypeAccessible(ImprovementType type){
+        if(this.containsImprovment(type)){
+            for (Improvement improvement : improvements) {
+                if(improvement.getType() == type && improvement.getIsPillaged())
+                    return true;
+            }
+        }
+        return false;
+    }
+
     public void addImprovement(Improvement improvement) {
         // TODO ... what else?
         this.improvements.add(improvement);
     }
 
     public void removeWork() {
-        // TODO
+        this.work = null;
     }
 
     public void goToNextTurn() {

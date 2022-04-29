@@ -178,7 +178,11 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             gold += city.calculateOutput().getGold();
         }
-        return 0;
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationRecipient(this);
+        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+            gold += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
+        }
+        return gold;
     }
 
     public double calculateTotalCosts() {
@@ -186,17 +190,13 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             cost += city.calculateTotalGoldCosts();
         }
-        for (Unit unit : this.getUnits()) {
-            cost += unit.getType().getCost() * 0.1;
+        cost += this.getUnits().size() * Unit.MAINTENANCE_COST_OF_UNIT;
+        cost += this.getNumberOfRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
+        cost += this.getNumberOfRailRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
+        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationPayer(this);
+        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+            cost += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
         }
-        cost += this.getNumberOfRoads() * 1;/*1 gold per turn for each unit*/
-        cost += this.getNumberOfRailRoads();
-        //MINETODO ... add "stepwisegold..." effects
-        ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilization(this);
-        //MINETODO fields of StepWiseGoldTransferContract...
-        /*        for(StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts){
-            cost += stepWiseGoldTransferContract
-        }*/
         return cost;
     }
 

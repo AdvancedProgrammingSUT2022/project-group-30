@@ -28,7 +28,7 @@ public class Improvement {
         return this.founder;
     }
 
-    public boolean isPillaged() {
+    public boolean getIsPillaged() {
         return isPillaged;
     }
 

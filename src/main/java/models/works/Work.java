@@ -1,5 +1,7 @@
 package models.works;
 
+import models.GameDataBase;
+import models.Tile;
 import models.interfaces.TurnHandler;
 import models.units.Unit;
 
@@ -32,4 +34,12 @@ public abstract class Work implements TurnHandler {
     }
 
     public abstract int calculateRequiredTurns();
+
+    public Tile findLocation() {
+        for(Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()){
+            if(tile.getWork() == this)
+                return tile;
+        }
+        return null;
+    }
 }
