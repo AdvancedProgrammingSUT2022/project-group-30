@@ -246,7 +246,7 @@ public class Civilization implements TurnHandler {
         // TODO : THIS IS FOR DEBUGGING, DELETE THIS
         // TODO
         ArrayList<Technology> techs = new ArrayList<>();
-        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY));
+        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
         return techs.contains(technology);
     }
 
@@ -258,7 +258,6 @@ public class Civilization implements TurnHandler {
         }
         return true;
     }
-
 
 
     public double getGoldCount() {

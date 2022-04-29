@@ -278,7 +278,7 @@ public class GameView implements View {
         printer.println("Units:");
         for (UnitType producibleUnit : producibleUnits) {
             int hammerCost = producibleUnit.calculateHammerCost();
-            int turnsRequired = Math.max(1, hammerCost / city.calculateOutput().getProduction());
+            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
             printer.println(producibleUnit.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsRequired + " turns");
             HashMap<StrategicResource, Integer> resources = producibleUnit.getPrerequisiteResources();
             for (StrategicResource resource : resources.keySet()) {
@@ -289,7 +289,7 @@ public class GameView implements View {
         printer.println("Buildings:");
         for (BuildingType producibleBuilding : producibleBuildings) {
             int hammerCost = producibleBuilding.calculateHammerCost();
-            int turnsReuquired = Math.max(1, hammerCost / city.calculateOutput().getProduction());
+            int turnsReuquired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
             printer.println(producibleBuilding.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsReuquired + " turns");
         }
 
@@ -331,7 +331,7 @@ public class GameView implements View {
             int hammerCost = currentProduction.calculateHammerCost();
             int productionOutput = city.calculateOutput().getProduction();
             int hammerCount = (int) city.getHammerCount();
-            int turnsRemaining = Math.max(1, (hammerCost - hammerCount) / productionOutput);
+            int turnsRemaining = (int) Math.ceil((double) (hammerCost - hammerCount) / productionOutput);
             printer.println(hammerCount + " out of " + hammerCost);
             printer.println(turnsRemaining + " turns remaining");
         }
