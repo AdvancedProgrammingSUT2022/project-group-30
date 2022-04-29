@@ -133,8 +133,6 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
-        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
-
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {
@@ -256,9 +254,10 @@ public class Civilization implements TurnHandler {
     public boolean hasTechnology(Technology technology) {
         // TODO : THIS IS FOR DEBUGGING, DELETE THIS
         // TODO
-        ArrayList<Technology> techs = new ArrayList<>();
-        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
-        return techs.contains(technology);
+        return true;
+//        ArrayList<Technology> techs = new ArrayList<>();
+//        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
+//        return techs.contains(technology);
     }
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {

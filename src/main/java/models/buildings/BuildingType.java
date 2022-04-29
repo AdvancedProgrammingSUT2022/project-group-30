@@ -77,7 +77,7 @@ public enum BuildingType implements Producible {
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;
-        this.prerequisiteBuildingTypes = null;
+        this.prerequisiteBuildingTypes = new ArrayList<>();
         this.shouldBeNearRiver = false;
         this.happiness = happiness;
         this.name = name;

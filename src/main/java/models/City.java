@@ -147,7 +147,7 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public ArrayList<BuildingType> calculatePurchasableBuildingTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH GOLD TO PURCHASE BUILDING
-        return calculateProductionReadyBuildingTypes();
+        return calculateProductionReadyBuildingTypes(true);
     }
 
     public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
@@ -166,9 +166,12 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
+        return calculateProductionReadyBuildingTypes(false);
+    }
+
+    public ArrayList<BuildingType> calculateProductionReadyBuildingTypes(boolean isForPurchase) {
         ArrayList<BuildingType> result = new ArrayList<BuildingType>();
         for (BuildingType type : BuildingType.values()) {
-
             if (owner.hasTechnology(type.getPrerequisiteTechnology()) && hasBuildingType(type) == false) {
                 if (type.shouldBeNearRiver()) {
                     if (!isNearTheRiver()) {
@@ -177,11 +180,6 @@ public class City implements Selectable, TurnHandler, combative {
                 }
                 if (type == BuildingType.STOCK_EXCHANGE) {
                     if (!(hasBuildingType(BuildingType.BANK) || hasBuildingType(BuildingType.SATRAPS_COURT))) {
-                        continue;
-                    }
-                }
-                for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
-                    if (!hasBuildingType(prerequisite)) {
                         continue;
                     }
                 }
@@ -206,6 +204,18 @@ public class City implements Selectable, TurnHandler, combative {
                     }
                 }
 
+                if (!isForPurchase && type == BuildingType.FACTORY) {
+                    if (!owner.hasStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL))) {
+                        continue;
+                    }
+                }
+
+                for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
+                    if (!hasBuildingType(prerequisite)) {
+                        continue;
+                    }
+                }
+
                 result.add(type);
             }
         }
@@ -217,8 +227,12 @@ public class City implements Selectable, TurnHandler, combative {
             if (productionReserve.containsKey(producible)) {
                 hammerCount += productionReserve.get(producible);
                 productionReserve.remove(producible);
-            } else if (producible instanceof  UnitType) {
-                owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
+            } else {
+                if (producible instanceof  UnitType) {
+                    owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
+                } else if (producible == BuildingType.FACTORY) {
+                    owner.payStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL));
+                }
             }
         } else {
             stopProduction();

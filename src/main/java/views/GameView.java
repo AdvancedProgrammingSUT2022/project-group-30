@@ -273,7 +273,7 @@ public class GameView implements View {
         }
         printer.printlnPurple("Choose This City's Next Production From The Below Lists: (enter \"cancel\" to exit)");
         ArrayList<UnitType> producibleUnits = city.calculateProductionReadyUnitTypes();
-        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes();
+        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes(false);
 
         printer.println("Units:");
         for (UnitType producibleUnit : producibleUnits) {
