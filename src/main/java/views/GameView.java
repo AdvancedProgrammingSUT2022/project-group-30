@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import controllers.GameController;
-import menusEnumerations.CitizenManagementPanelCommands;
-import menusEnumerations.CityCommands;
+import menusEnumerations.*;
 import models.*;
 import models.units.UnitState;
 import models.*;
@@ -22,8 +21,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import menusEnumerations.GameMainPageCommands;
-import menusEnumerations.UnitCommands;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -153,9 +150,38 @@ public class GameView implements View {
                 break;
             } else if ((matcher = CityCommands.SHOW_CITIZEN_MANAGEMENT_PANEL.getCommandMatcher(command)) != null) {
                 runCitizenManagementPanel(city);
+            } else if ((matcher = CityCommands.SHOW_PRODUCTION_PANEL.getCommandMatcher(command)) != null) {
+                runProductionPanel(city);
             } else {
                 printer.printlnError("Invalid command for city!");
             }
+        }
+    }
+
+    private void runProductionPanel(City city) {
+        String command;
+        Matcher matcher;
+
+        while (true) {
+            printer.printlnPurple("********************* Production Panel *********************");
+            printer.println("For a list of commands, enter \"show commands\"");
+            command = scanner.nextLine();
+            if (command.equals("show commands")) {
+                showProductionPanelCommands();
+                waitForClick();
+            } else if ((matcher = ProductionPanelCommands.BACK.getCommandMatcher(command)) != null) {
+                break;
+            } else {
+                printer.printlnError("Invalid command for Production Panel");
+            }
+        }
+
+    }
+
+    private void showProductionPanelCommands() {
+        printer.printlnPurple("Production Panel Commands:");
+        for (ProductionPanelCommands command : ProductionPanelCommands.getAllCommands()) {
+            printer.println(command.getName());
         }
     }
 
