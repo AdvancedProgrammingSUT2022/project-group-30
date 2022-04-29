@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import controllers.GameController;
@@ -230,8 +231,11 @@ public class Civilization implements TurnHandler {
     }
 
     public boolean hasTechnology(Technology technology) {
+        // TODO : THIS IS FOR DEBUGGING, DELETE THIS
         // TODO
-        return true;
+        ArrayList<Technology> techs = new ArrayList<>();
+        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY));
+        return techs.contains(technology);
     }
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
