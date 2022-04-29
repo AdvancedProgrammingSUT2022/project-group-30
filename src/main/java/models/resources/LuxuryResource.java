@@ -12,6 +12,9 @@ import models.TerrainType;
 import models.improvements.ImprovementType;
 
 public class LuxuryResource extends Resource {
+        private static ArrayList<LuxuryResource> allTypes = new ArrayList<>();
+
+
         public static LuxuryResource COTTON = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(
@@ -54,7 +57,6 @@ public class LuxuryResource extends Resource {
                         new ArrayList<TerrainProperty>(
                                         Arrays.asList(Feature.FLOOD_PLAINS, Feature.MARSH, TerrainType.HILLS)), "Sugar");
 
-        private static ArrayList<LuxuryResource> allTypes = new ArrayList<>();
         public LuxuryResource(Output output, ImprovementType prerequisiteImprovement,
                         ArrayList<TerrainProperty> allowedTerrains, String name) {
                 super(output, prerequisiteImprovement, allowedTerrains, name);

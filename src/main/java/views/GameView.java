@@ -114,11 +114,17 @@ public class GameView implements View {
         }
         printer.printlnPurple("Strategic Resources:");
         for (StrategicResource strategicResource : civilization.getStrategicResources().keySet()) {
-            printer.println(strategicResource.getName() + ": " + civilization.getStrategicResources().get(strategicResource));
+            int amount = civilization.getStrategicResources().get(strategicResource);
+            if (amount > 0) {
+                printer.println(strategicResource.getName() + ": " + amount);
+            }
         }
         printer.printlnPurple("Luxury Resources:");
         for (LuxuryResource luxuryResource : civilization.getLuxuryResources().keySet()) {
-            printer.println(luxuryResource.getName() + ": " + civilization.getLuxuryResources().get(luxuryResource));
+            int amount = civilization.getLuxuryResources().get(luxuryResource);
+            if (amount > 0) {
+                printer.println(luxuryResource.getName() + ": " + amount);
+            }
         }
         waitForClick();
         showMap();

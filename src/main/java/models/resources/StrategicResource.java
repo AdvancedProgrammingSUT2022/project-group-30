@@ -12,6 +12,7 @@ import models.interfaces.TerrainProperty;
 import models.technology.Technology;
 
 public class StrategicResource extends Resource {
+    private static ArrayList<StrategicResource> allTypes = new ArrayList<>();
     private Technology prerequisiteTechnology;
 
     public static StrategicResource COAL = new StrategicResource(new Output(0, 0, 1),
@@ -30,8 +31,6 @@ public class StrategicResource extends Resource {
                     Arrays.asList(TerrainType.TUNDRA, TerrainType.PLAINS, TerrainType.GRASSLAND, TerrainType.DESERT,
                             TerrainType.SNOW, TerrainType.HILLS)),
             Technology.IRON_WORKING, "Iron");
-
-    private static ArrayList<StrategicResource> allTypes = new ArrayList<>();
 
     public StrategicResource(Output output, ImprovementType prerequisiteImprovement,
             ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
