@@ -1,6 +1,5 @@
 package models;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +12,9 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.LuxuryResource;
 import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
@@ -167,7 +168,19 @@ public class City implements Selectable, TurnHandler, combative {
     public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
         ArrayList<BuildingType> result = new ArrayList<BuildingType>();
         for (BuildingType type : BuildingType.values()) {
+
             if (owner.hasTechnology(type.getPrerequisiteTechnology()) && hasBuildingType(type) == false) {
+                if (type.shouldBeNearRiver()) {
+                    if (!isNearTheRiver()) {
+                        continue;
+                    }
+                }
+                for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
+                    if (!hasBuildingType(prerequisite)) {
+                        continue;
+                    }
+                }
+
                 result.add(type);
             }
         }
@@ -216,6 +229,15 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
+    }
+
+    public boolean hasExploitableResourceNearby(Resource resource) {    // check if a tile in the territory has the resource and the required improvement to use it
+        for (Tile territory : territories) {
+            if (territory.hasExploitableResource(resource)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isTileBeingWorked(Tile tile) {

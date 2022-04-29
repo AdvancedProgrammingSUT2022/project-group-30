@@ -290,6 +290,20 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.resources;
     }
 
+    public boolean hasExploitableResource(Resource resource) {  // check if the tile has a resource and the proper improvement to use it
+        if (hasResource(resource) && resource.canBeExploited(this)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasResource(Resource resource) {
+        if (resources.containsKey(resource) && resources.get(resource) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<Improvement> getImprovements() {
         return this.improvements;
     }
