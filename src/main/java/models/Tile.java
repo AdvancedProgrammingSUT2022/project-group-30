@@ -2,6 +2,8 @@ package models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import controllers.GameController;
 import models.improvements.Improvement;
@@ -261,26 +263,18 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public int calculateDistance(Tile tile) {
-        ArrayList<Tile> checkedTiles = new ArrayList<>();
-        ArrayList<Tile> outerLayer = new ArrayList();
-        outerLayer.add(tile);
         int distance = 0;
-        while (true) {
-            if (outerLayer.contains(tile)) {
-                return distance;
-            } else {
-                checkedTiles.addAll(outerLayer);
-                for (Tile outerTile : outerLayer) {
-                    outerLayer.addAll(GameController.getGameController().getAdjacentTiles(outerTile));
-                }
-                for (Tile checkedTile : checkedTiles) {
-                    while (outerLayer.contains(checkedTile)) {
-                        outerLayer.remove(checkedTile);
-                    }
-                }
-                distance++;
+        HashSet<Tile> checkedTiles = new HashSet<>();
+        checkedTiles.add(this);
+        while (!checkedTiles.contains(tile)) {
+            distance++;
+            HashSet<Tile> newTiles = new HashSet<>();
+            for (Tile checkedTile : checkedTiles) {
+                newTiles.addAll(GameController.getGameController().getAdjacentTiles(checkedTile));
             }
+            checkedTiles.addAll(newTiles);
         }
+        return distance;
     }
 
     public String getInfo() {

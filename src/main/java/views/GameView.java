@@ -65,6 +65,8 @@ public class GameView implements View {
 
             if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
                 showMap();
+            } else if ((matcher = GameMainPageCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showCivInfo();
             } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
                 printTileInfo(matcher);
             } else if ((matcher = GameMainPageCommands.SELECT_UNIT.getCommandMatcher(command)) != null) {
@@ -94,6 +96,22 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void showCivInfo() {
+        Civilization civilization = controller.getCurrentPlayer();
+        printer.printlnBlue(civilization.getName());
+        printer.println("Science: " + civilization.getBeakerCount());
+        printer.println("Gold: " + civilization.getGoldCount());
+        int happiness = (int) civilization.calculateHappiness();
+        printer.print("Happiness: ");
+        if (happiness >= 0) {
+            printer.printlnBlue(happiness);
+        } else {
+            printer.printlnRed(happiness);
+        }
+        waitForClick();
+        showMap();
     }
 
     private void runCityActionsTab() {
@@ -148,6 +166,12 @@ public class GameView implements View {
         }
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
+        printer.println("City's food balance:");
+        if (city.getFoodCount() >= 0) {
+            printer.printlnBlue(city.getFoodCount());
+        } else {
+            printer.printlnRed(city.getFoodCount());
+        }
     }
 
     private void deselectCity(City city) {
@@ -340,6 +364,7 @@ public class GameView implements View {
             return false;
         }
         controller.foundCityWithSettler(unit);
+        controller.getCurrentPlayer().setSelectedEntity(null);
         return true;
     }
 
