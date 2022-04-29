@@ -85,10 +85,12 @@ public class City implements Selectable, TurnHandler, combative {
             addCitizen();
             foodCount = 0;
         }
-        expansionProgress += 1;
-        while (expansionProgress >= expansionLimit) {
-            expansionProgress -= expansionLimit;
-            growTerritory();
+        if (owner.getHappiness() >= 0) {
+            expansionProgress += 1;
+            while (expansionProgress >= expansionLimit) {
+                expansionProgress -= expansionLimit;
+                growTerritory();
+            }
         }
     }
 
