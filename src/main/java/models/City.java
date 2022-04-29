@@ -146,6 +146,12 @@ public class City implements Selectable, TurnHandler, combative {
         entityInProduction = producible;
     }
 
+    public void stopProduction() {
+        productionReserve.put(entityInProduction, (int) hammerCount);
+        entityInProduction = null;
+        hammerCount = 0;
+    }
+
     private void growTerritory() {
         for (Tile territory : territories) {
             ArrayList<Tile> adjacentTiles = GameController.getGameController().getAdjacentTiles(territory);

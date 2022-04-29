@@ -179,9 +179,27 @@ public class GameView implements View {
                 waitForClick();
             } else if ((matcher = ProductionPanelCommands.CHOOSE_PRODUCTION.getCommandMatcher(command)) != null) {
                 chooseProduction(city);
+            } else if ((matcher = ProductionPanelCommands.STOP_PRODUCTION.getCommandMatcher(command)) != null) {
+                  stopProduction(city);
             } else {
                 printer.printlnError("Invalid command for Production Panel");
             }
+        }
+    }
+
+    private void stopProduction(City city) {
+        if (city.getEntityInProduction() == null) {
+            printer.printlnError("There is no ongoing production in this city");
+            return;
+        }
+        printer.println("Are you sure you want to stop the production of " + city.getEntityInProduction().getName() + "? enter \"y\" if so.");
+        String input = scanner.nextLine();
+        if (input.equalsIgnoreCase("y")) {
+            city.stopProduction();
+            printer.println("Stopped Production.");
+        } else {
+            printer.printlnError("Operation Canceled.");
+            return;
         }
     }
 
