@@ -175,8 +175,33 @@ public class City implements Selectable, TurnHandler, combative {
                         continue;
                     }
                 }
+                if (type == BuildingType.STOCK_EXCHANGE) {
+                    if (!(hasBuildingType(BuildingType.BANK) || hasBuildingType(BuildingType.SATRAPS_COURT))) {
+                        continue;
+                    }
+                }
                 for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
                     if (!hasBuildingType(prerequisite)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.CIRCUS) {
+                    if (!(hasExploitableResourceNearby(StrategicResource.HORSE) || hasExploitableResourceNearby(LuxuryResource.IVORY))) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.STABLE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.HORSE)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.FORGE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.IRON)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.WINDMILL) {
+                    if (centralTile.isOfType(TerrainType.HILLS)) {
                         continue;
                     }
                 }
