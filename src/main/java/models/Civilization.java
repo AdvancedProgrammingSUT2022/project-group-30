@@ -12,6 +12,7 @@ import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
+import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.Unit;
@@ -21,18 +22,18 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
-    private HashMap<LuxuryResource, Integer> luxuryResources;
-    private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
+    private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
+    private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
     private ArrayList<Technology> technologies = new ArrayList<>();
     private double goldCount;
-    private double beakerCount;
+    private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
     private HashMap<Technology, Integer> researchReserve = new HashMap<>();
     private double happiness;
     private double diplomaticCredit;
     private double score;
     private City capital;
-    private final City originCapital;
+    private City originCapital;
     private Tile frameBase;
     private Selectable selectedEntity;
 
@@ -121,6 +122,27 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
+        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
+
+        int goldChange = (int) calculateGoldChange();
+        goldCount += goldChange;
+        if (goldCount < 0) {
+            beakerCount += goldCount;
+            beakerCount = Math.max(0, beakerCount);
+            goldCount = 0;
+        }
+
+        for (City city : getCities()) {
+            ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
+            for (Resource resource : collectibleResourcesInput) {
+                if (resource instanceof  LuxuryResource) {
+                    luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
+                }
+                if (resource instanceof  StrategicResource) {
+                    strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
+                }
+            }
+        }
     }
 
     public void setNextResearchProject(Technology technology) {
@@ -129,6 +151,26 @@ public class Civilization implements TurnHandler {
 
     private void updateStrategicResources() {
         // TODO
+    }
+
+    public double calculateHappiness() {
+        double happiness = 0;
+        for (City city : this.getCities()) {
+            happiness += city.calculateHappiness();
+        }
+        happiness += this.getLuxuryResources().keySet().size() * 4;
+        happiness -= this.getCities().size() * 0.5;
+        return happiness;
+    }
+
+    public double calculateTotalBeakers() {
+        double count = 0;
+        for (City city : this.getCities()) {
+            count += city.calculateBeakerProduction();
+        }
+        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
+        count += count * 15 * numberOfScientificTreaty / 100.0;
+        return count;
     }
 
     public double calculateNetGoldProduction() {
@@ -158,31 +200,11 @@ public class Civilization implements TurnHandler {
         return cost;
     }
 
-    public double calculateHappiness(){
-        double happiness = 0;
-        for(City city : this.getCities()){
-            happiness += city.calculateHappiness();
-        }
-        happiness += this.getLuxuryResources().keySet().size() * 4;
-        happiness -= this.getCities().size() * 0.5;
-        return happiness;
-    }
-
-    public double calculateTotalBeakers(){
-        double count = 0;
-        for(City city : this.getCities()){
-            count += city.calculateBeakerConsumption();
-        }
-        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
-        count += count * 15 * numberOfScientificTreaty / 100.0;
-        return  count;
-    }
-
-    public double calculateGoldConsumption() {
+    public double calculateGoldChange() {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
-    public ArrayList<Producible> findUnlockeProducibles() {
+    public ArrayList<Producible> findUnlockedProducibles() {
         // TODO
         return null;
     }
@@ -211,6 +233,8 @@ public class Civilization implements TurnHandler {
         // TODO
         return true;
     }
+
+
 
     public double getGoldCount() {
         return this.goldCount;
@@ -297,6 +321,9 @@ public class Civilization implements TurnHandler {
     }
 
     public void setCapital(City capital) {
+        if (originCapital == null) {
+            this.originCapital = capital;
+        }
         this.capital = capital;
     }
 

@@ -46,6 +46,6 @@ public class StepWiseGoldTransferContract extends Diplomacy implements TurnHandl
     }
 
     public void goToNextTurn() {
-        // TODO
+        // TODO : transfer the gold!
     }
 }

@@ -1,7 +1,9 @@
 package models.resources;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import models.Feature;
 import models.Output;
@@ -10,6 +12,9 @@ import models.TerrainType;
 import models.improvements.ImprovementType;
 
 public class LuxuryResource extends Resource {
+        private static ArrayList<LuxuryResource> allTypes = new ArrayList<>();
+
+
         public static LuxuryResource COTTON = new LuxuryResource(new Output(2, 0, 0),
                         ImprovementType.PLANTATION,
                         new ArrayList<TerrainProperty>(
@@ -55,5 +60,22 @@ public class LuxuryResource extends Resource {
         public LuxuryResource(Output output, ImprovementType prerequisiteImprovement,
                         ArrayList<TerrainProperty> allowedTerrains, String name) {
                 super(output, prerequisiteImprovement, allowedTerrains, name);
+                if (allTypes == null) {
+                        allTypes = new ArrayList<>();
+                }
+                allTypes.add(this);
+        }
+
+        public static ArrayList<LuxuryResource> getAllTypes() {
+                return new ArrayList<LuxuryResource>(allTypes);
+        }
+
+        public static HashMap<LuxuryResource, Integer> makeRawHashMap() {
+                HashMap<LuxuryResource, Integer> map = new HashMap<>();
+                for (LuxuryResource type : allTypes) {
+                        map.put(type, 0);
+                }
+
+                return map;
         }
 }

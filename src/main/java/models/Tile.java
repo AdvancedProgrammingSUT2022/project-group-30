@@ -2,6 +2,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import controllers.GameController;
 import models.improvements.Improvement;
@@ -10,6 +11,7 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
+import models.resources.BonusResource;
 import models.resources.Resource;
 import models.units.Unit;
 import models.works.Work;
@@ -17,7 +19,6 @@ import utilities.Debugger;
 
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
-    private Civilization civilization;
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
     private Ruins ruins;
@@ -25,11 +26,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
-    public Tile(TerrainType terrainType, Civilization civilization,
-            HashMap<Resource, Integer> resources, Ruins ruins) {
+    public Tile(TerrainType terrainType,
+                HashMap<Resource, Integer> resources, Ruins ruins) {
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
-        this.civilization = civilization;
         this.resources = resources;
         this.ruins = ruins;
         // TODO add "this.works = new Work();"
@@ -38,7 +38,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
     public TileHistory createTileHistory() {
         // TODO : doesn't save works in history
         TileHistory history = new TileHistory();
-        Tile tile = new Tile(terrainType, civilization, new HashMap<Resource, Integer>(resources), null);
+        Tile tile = new Tile(terrainType, new HashMap<Resource, Integer>(resources), null);
         tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
         if (this.ruins != null) {
             tile.ruins = this.ruins.createImage();
@@ -86,18 +86,28 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return count;
     }
 
-    public Output calculateOutput() {
-        Output output = new Output(0, 0, 0);
-        if(!this.hasCitizen())
-            return output;
-        output.add(this.output);
-        for(Resource resource : this.resources.keySet()){
-            if(this.containsImprovment(resource.getPrerequisiteImprovement())){
-                for(int i=0 ; i< this.resources.get(resource); i++)
-                  output.add(resource.getOutput());
+    public ArrayList<Resource> calculateCollectibeResourcesOutput() {
+        ArrayList<Resource> collectibleResourceOutput = new ArrayList<>();
+        for (Resource resource : resources.keySet()) {
+            if (!(resource instanceof BonusResource) && resources.get(resource) > 0 && resource.canBeExploited(this)) {
+                collectibleResourceOutput.add(resource);
             }
         }
-        for(Improvement improvement : this.getImprovements()){
+        return collectibleResourceOutput;
+    }
+
+    public Output calculateOutput() {
+        Output output = new Output(0, 0, 0);
+        if (!this.hasCitizen())
+            return output;
+        output.add(this.output);
+        for (Resource resource : this.resources.keySet()) {
+            if (this.containsImprovment(resource.getPrerequisiteImprovement())) {
+                for (int i = 0; i < this.resources.get(resource); i++)
+                    output.add(resource.getOutput());
+            }
+        }
+        for (Improvement improvement : this.getImprovements()) {
             output.add(improvement.getType().getOutput());
         }
         return output;
@@ -156,8 +166,8 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public void addFeature(Feature feature){
-        if(this.features.contains(feature)){
+    public void addFeature(Feature feature) {
+        if (this.features.contains(feature)) {
             Debugger.debug("feature already exists");
             return;
         }
@@ -179,17 +189,17 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public Improvement getRoadOfTile(){
-        for(Improvement improvement : this.improvements){
-            if(improvement.getType() == ImprovementType.ROAD)
+    public Improvement getRoadOfTile() {
+        for (Improvement improvement : this.improvements) {
+            if (improvement.getType() == ImprovementType.ROAD)
                 return improvement;
         }
         return null;
     }
 
-    public Improvement getRailRoadOfTile(){
-        for(Improvement improvement : this.improvements){
-            if(improvement.getType() == ImprovementType.RAILROAD)
+    public Improvement getRailRoadOfTile() {
+        for (Improvement improvement : this.improvements) {
+            if (improvement.getType() == ImprovementType.RAILROAD)
                 return improvement;
         }
         return null;
@@ -205,13 +215,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public void goToNextTurn() {
+        if (work != null) {
+            work.goToNextTurn();
+        }
         // TODO
     }
 
-    public boolean hasCitizen(){
+    public boolean hasCitizen() {
         City city = this.getCityOfTile();
-        for(Citizen citizen : city.getCitizens()){
-            if(this == citizen.getWorkPlace()){
+        for (Citizen citizen : city.getCitizens()) {
+            if (this == citizen.getWorkPlace()) {
                 return true;
             }
         }
@@ -227,7 +240,12 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public Civilization getCivilization() {
-        return this.civilization;
+        for (City city : GameDataBase.getGameDataBase().getCities()) {
+            if (city.getTerritories().contains(this)) {
+                return city.getOwner();
+            }
+        }
+        return null;
     }
 
     public HashMap<Resource, Integer> getResources() {
@@ -255,26 +273,18 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public int calculateDistance(Tile tile) {
-        ArrayList<Tile> checkedTiles = new ArrayList<>();
-        ArrayList<Tile> outerLayer = new ArrayList();
-        outerLayer.add(tile);
         int distance = 0;
-        while (true) {
-            if (outerLayer.contains(tile)) {
-                return distance;
-            } else {
-                checkedTiles.addAll(outerLayer);
-                for (Tile outerTile : outerLayer) {
-                    outerLayer.addAll(GameController.getGameController().getAdjacentTiles(outerTile));
-                }
-                for (Tile checkedTile : checkedTiles) {
-                    while (outerLayer.contains(checkedTile)) {
-                        outerLayer.remove(checkedTile);
-                    }
-                }
-                distance++;
+        HashSet<Tile> checkedTiles = new HashSet<>();
+        checkedTiles.add(this);
+        while (!checkedTiles.contains(tile)) {
+            distance++;
+            HashSet<Tile> newTiles = new HashSet<>();
+            for (Tile checkedTile : checkedTiles) {
+                newTiles.addAll(GameController.getGameController().getAdjacentTiles(checkedTile));
             }
+            checkedTiles.addAll(newTiles);
         }
+        return distance;
     }
 
     public String getInfo() {

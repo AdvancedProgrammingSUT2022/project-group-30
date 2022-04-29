@@ -65,7 +65,7 @@ public class GameMap {
             this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
-                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), null, new HashMap<>(), null);
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), new HashMap<>(), null);
                 }
             }
             scanner.close();

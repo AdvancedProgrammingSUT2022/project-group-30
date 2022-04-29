@@ -1,8 +1,10 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
+import controllers.GameController;
 import models.buildings.Building;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
@@ -12,7 +14,7 @@ import models.interfaces.Workable;
 import models.interfaces.combative;
 import models.resources.Resource;
 import models.units.Unit;
-import models.works.BuildImprovement;
+import models.units.UnitState;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -51,6 +53,12 @@ public class City implements Selectable, TurnHandler, combative {
         this.rangedCombatStrength = 5;
         this.hitPoints = 20;
         this.range = 2;
+        this.populationGrowthLimit = 10;
+        this.populationShrinkageLimit = -10;
+        this.expansionLimit = 1;
+        this.populationProgress = 0;
+        this.expansionProgress = 0;
+        this.expansionProgress = 0;
     }
 
     public City createImage() {
@@ -68,7 +76,45 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO
+        // TODO FOR MAHYAR : get this city's production output and spend it on its production(be it a Unit or a building)
+        foodCount += calculateFoodChange();
+        if (foodCount <= populationShrinkageLimit) {
+            killACitizen();
+            foodCount = 0;
+        }
+        if (foodCount >= populationGrowthLimit) {
+            addCitizen();
+            foodCount = 0;
+        }
+        if (owner.getHappiness() >= 0) {
+            expansionProgress += 1;
+            while (expansionProgress >= expansionLimit) {
+                expansionProgress -= expansionLimit;
+                growTerritory();
+            }
+        }
+    }
+
+    public ArrayList<Resource> calculateCollectibleResourceOutput() {
+        ArrayList<Resource> collectibleResources = new ArrayList<>();
+        for (Tile territory : territories) {
+            collectibleResources.addAll(territory.calculateCollectibeResourcesOutput());
+        }
+
+        return collectibleResources;
+    }
+
+    private void growTerritory() {
+        for (Tile territory : territories) {
+            ArrayList<Tile> adjacentTiles = GameController.getGameController().getAdjacentTiles(territory);
+            Collections.shuffle(adjacentTiles);
+            for (Tile adjacentTile : adjacentTiles) {
+                if (territories.contains(adjacentTile) == false && adjacentTile.getCityOfTile() == null) {
+                    territories.add(adjacentTile);
+                    return;
+                }
+            }
+        }
     }
 
     public boolean isTileBeingWorked(Tile tile) {
@@ -81,7 +127,11 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public Unit getGarrisoningUnit() {      // return null if city is not garrisoned, return the garrisoning unit otherwise
-        // TODO
+        for (Unit unit : GameDataBase.getGameDataBase().getUnits()) {
+            if (unit.getLocation() == centralTile && unit.getOwner() == owner && unit.getState() == UnitState.GARRISON) {
+                return unit;
+            }
+        }
         return null;
     }
 
@@ -130,18 +180,14 @@ public class City implements Selectable, TurnHandler, combative {
         return this.citizens.size() * 2;
     }
 
-    public double calculateFoodConsumption() {
+    public double calculateFoodChange() {
         double amount = this.calculateOutput().getFood();
         amount -= calculateRequiredFood();
         if (this.owner.getHappiness() < 0) amount = amount * 33.0 / 100;
         return amount;
     }
 
-    public double calculateProductionConsumption() {
-        return this.calculateOutput().getProduction();
-    }
-
-    public double calculateBeakerConsumption() {
+    public double calculateBeakerProduction() {
         double count = 3;//3 beakers per turn for capital(palace)
         double percentage = 100;
         for (City city : this.founder.getCities()) {
@@ -206,6 +252,64 @@ public class City implements Selectable, TurnHandler, combative {
         return count;
     }
 
+    public int calculateWorklessCitizenCount() {
+        int count = 0;
+        for (Citizen citizen : citizens) {
+            if (citizen.isWorkless()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public Citizen getWorklessCitizen() {
+        for (Citizen citizen : citizens) {
+            if (citizen.isWorkless()) {
+                return citizen;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Tile> getUnworkedTiles() {
+        ArrayList<Tile> unworkedTiles = new ArrayList<>();
+        for (Tile tile : territories) {
+            if (!isWorkableWorked(tile)) {
+                unworkedTiles.add(tile);
+            }
+        }
+        return unworkedTiles;
+    }
+
+    public ArrayList<Building> getUnworkedBuildings() {
+        ArrayList<Building> unworkedBuildings = new ArrayList<>();
+        for (Building building : buildings) {
+            if (!isWorkableWorked(building)) {
+                unworkedBuildings.add(building);
+            }
+        }
+        return unworkedBuildings;
+    }
+
+    public boolean isWorkableWorked(Workable workable) {
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() == workable) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addTileToTerritory(Tile tile) {
+        if (!territories.contains(tile)) {
+            territories.add(tile);
+        }
+    }
+
+    public boolean isCapital() {
+        return (owner.getCapital() == this);
+    }
+
     public void attack(Unit target) {
         // TODO
     }
@@ -236,6 +340,11 @@ public class City implements Selectable, TurnHandler, combative {
         // MINETODO check it
         // which one??
         //TODO
+
+        if (citizens.isEmpty()) {
+            return;
+        }
+        citizens.remove(0);
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
@@ -248,8 +357,17 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void assignCitizenToWorkplace(Workable workPlace, Citizen citizen) {
-        // MINETODO check it check errors...
+        // MINETODO check it check errors...    Amir: errors have been checked in view: the citizen passed is guaranteed to be workless and the tile is guaranteed to be unworked
         citizen.setWorkPlace(workPlace);
+    }
+
+    public Citizen getCitizenAssignedToTile(Tile tile) {
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() == tile) {
+                return citizen;
+            }
+        }
+        return null;
     }
 
     private void expandSelf() {
@@ -261,6 +379,8 @@ public class City implements Selectable, TurnHandler, combative {
         if (!owner.equals(founder)) return true;
         return false;
     }
+
+
 
     public Civilization getFounder() {
         return founder;

@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import controllers.GameController;
+import menusEnumerations.CitizenManagementPanelCommands;
 import menusEnumerations.CityCommands;
 import models.*;
 import models.units.UnitState;
+import models.*;
+import models.buildings.Building;
+import models.resources.LuxuryResource;
+import models.resources.StrategicResource;
 import models.units.UnitType;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
@@ -55,7 +60,7 @@ public class GameView implements View {
             if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof Unit) {
                 runUnitActionsTab();
                 continue;
-            } else if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof  City) {
+            } else if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof City) {
                 runCityActionsTab();
                 continue;
             }
@@ -64,6 +69,8 @@ public class GameView implements View {
 
             if ((matcher = GameMainPageCommands.SHOW_MAP.getCommandMatcher(command)) != null) {
                 showMap();
+            } else if ((matcher = GameMainPageCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showCivInfo();
             } else if ((matcher = GameMainPageCommands.GET_TILE_INFO.getCommandMatcher(command)) != null) {
                 printTileInfo(matcher);
             } else if ((matcher = GameMainPageCommands.SELECT_UNIT.getCommandMatcher(command)) != null) {
@@ -72,7 +79,7 @@ public class GameView implements View {
                 selectCivilianUnit(matcher);
             } else if ((matcher = GameMainPageCommands.SELECT_CITY.getCommandMatcher(command)) != null) {
                 selectCity(matcher);
-            }else if ((matcher = GameMainPageCommands.RIGHT.getCommandMatcher(command)) != null) {
+            } else if ((matcher = GameMainPageCommands.RIGHT.getCommandMatcher(command)) != null) {
                 goRight(matcher);
             } else if ((matcher = GameMainPageCommands.LEFT.getCommandMatcher(command)) != null) {
                 goLeft(matcher);
@@ -95,6 +102,36 @@ public class GameView implements View {
         }
     }
 
+    private void showCivInfo() {
+        Civilization civilization = controller.getCurrentPlayer();
+        printer.printlnBlue(civilization.getName());
+        printer.println("Science: " + civilization.getBeakerCount());
+        printer.println("Gold: " + civilization.getGoldCount());
+        int happiness = (int) civilization.calculateHappiness();
+        printer.print("Happiness: ");
+        if (happiness >= 0) {
+            printer.printlnBlue(happiness);
+        } else {
+            printer.printlnRed(happiness);
+        }
+        printer.printlnPurple("Strategic Resources:");
+        for (StrategicResource strategicResource : civilization.getStrategicResources().keySet()) {
+            int amount = civilization.getStrategicResources().get(strategicResource);
+            if (amount > 0) {
+                printer.println(strategicResource.getName() + ": " + amount);
+            }
+        }
+        printer.printlnPurple("Luxury Resources:");
+        for (LuxuryResource luxuryResource : civilization.getLuxuryResources().keySet()) {
+            int amount = civilization.getLuxuryResources().get(luxuryResource);
+            if (amount > 0) {
+                printer.println(luxuryResource.getName() + ": " + amount);
+            }
+        }
+        waitForClick();
+        showMap();
+    }
+
     private void runCityActionsTab() {
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
         String command;
@@ -107,11 +144,15 @@ public class GameView implements View {
             command = scanner.nextLine();
             if ((matcher = CityCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null) {
                 showCityCommands();
+                waitForClick();
             } else if ((matcher = CityCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
                 showCityInfo();
+                waitForClick();
             } else if ((matcher = CityCommands.DESELECT.getCommandMatcher(command)) != null) {
-                  deselectCity(city);
-                  break;
+                deselectCity(city);
+                break;
+            } else if ((matcher = CityCommands.SHOW_CITIZEN_MANAGEMENT_PANEL.getCommandMatcher(command)) != null) {
+                runCitizenManagementPanel(city);
             } else {
                 printer.printlnError("Invalid command for city!");
             }
@@ -128,18 +169,30 @@ public class GameView implements View {
     private void showCityInfo() {
         // TODO
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
-        printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s City");
+        if (city.isCapital()) {
+            printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s Capital City");
+        } else {
+            printer.printPurple(controller.getCurrentPlayer().getName() + "'s City");
+        }
         printer.println("Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
         printer.println("The following tiles comprise this city's territory:");
         for (Tile tile : city.getTerritories()) {
             if (tile != city.getCentralTile()) {
-                printer.print("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+                printer.print("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " ");
                 if (city.isTileBeingWorked(tile)) {
-                    printer.printlnBlue(" (worked)");
+                    printer.printlnBlue("(worked)");
                 } else {
-                    printer.printlnRed(" (not worked)");
+                    printer.printlnRed("(not worked)");
                 }
             }
+        }
+        printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
+                + " of them are workless.");
+        printer.println("City's food balance:");
+        if (city.getFoodCount() >= 0) {
+            printer.printlnBlue(city.getFoodCount());
+        } else {
+            printer.printlnRed(city.getFoodCount());
         }
     }
 
@@ -147,6 +200,102 @@ public class GameView implements View {
         city.getOwner().setSelectedEntity(null);
         printer.println("City deselected");
         showMap();
+    }
+
+    private void runCitizenManagementPanel(City city) {
+        showCitizenInfo(city);
+        String command;
+        Matcher matcher;
+        while (true) {
+            printer.printlnPurple("********************* Citizen Management Panel *********************");
+            printer.println("For a list of commands, enter \"show commands\"");
+            command = scanner.nextLine();
+            if ((matcher = CitizenManagementPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showCitizenInfo(city);
+                waitForClick();
+            } else if ((matcher = CitizenManagementPanelCommands.BACK.getCommandMatcher(command)) != null) {
+                break;
+            } else if ((matcher = CitizenManagementPanelCommands.WORK_TILE.getCommandMatcher(command)) != null) {
+                workTile(matcher, city);
+            } else if ((matcher = CitizenManagementPanelCommands.FREE_TILE.getCommandMatcher(command)) != null) {
+                freeTile(matcher, city);
+            } else if (command.matches("(show )?commands")) {
+                showCitizenManagementCommands();
+                waitForClick();
+            } else {
+                printer.printlnError("Invalid command for Citizen Management Panel!");
+            }
+        }
+    }
+
+    private void freeTile(Matcher matcher, City city) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnRed("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (!city.getTerritories().contains(tile)) {
+            printer.printlnRed("The tile you have entered is not in this city's territory!");
+            return;
+        }
+        if (!city.isTileBeingWorked(tile)) {
+            printer.printlnRed("This tile is not being worked!");
+            return;
+        }
+        Citizen citizen = city.getCitizenAssignedToTile(tile);
+        citizen.setWorkPlace(null);
+        printer.printlnBlue("Tile at Y: " + y + ", X: " + x + " freed! A citizen is out of work!");
+    }
+
+    private void workTile(Matcher matcher, City city) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnRed("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (!city.getTerritories().contains(tile)) {
+            printer.printlnRed("The tile you have entered is not in this city's territory!");
+            return;
+        }
+        if (city.isTileBeingWorked(tile)) {
+            printer.printlnRed("This tile is already being worked!");
+            return;
+        }
+        if (city.calculateWorklessCitizenCount() == 0) {
+            printer.printlnRed("There are no workless citizens to assign to this tile! Free a citizen and try again.");
+            return;
+        }
+        Citizen citizen = city.getWorklessCitizen();
+        city.assignCitizenToWorkplace(tile, citizen);
+        printer.printlnBlue("Citizen assigned to tile at Y: " + y + ", X: " + x);
+    }
+
+    private void showCitizenInfo(City city) {
+        ArrayList<Citizen> citizens = city.getCitizens();
+        printer.printlnBlue("Citizen Info:");
+        printer.println(citizens.size() + " citizens. " + city.calculateWorklessCitizenCount() + " of them are workless.");
+        printer.printlnPurple("Tiles being worked:");
+        for (Citizen citizen : citizens) {
+            if (citizen.getWorkPlace() instanceof  Tile) {
+                printer.println("Y: " + ((Tile)citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
+                        ((Tile)citizen.getWorkPlace()).findTileXCoordinateInMap());
+            }
+        }
+        printer.printlnRed("Tile not being worked:");
+        for (Tile unworkedTile : city.getUnworkedTiles()) {
+            printer.println("Y: " + unworkedTile.findTileYCoordinateInMap() + " X: " + unworkedTile.findTileXCoordinateInMap());
+        }
+    }
+
+    private void showCitizenManagementCommands() {
+        printer.printlnPurple("Citizen Management Panel Commands:");
+        for (CitizenManagementPanelCommands command : CitizenManagementPanelCommands.getAllCommands()) {
+            printer.println(command.getName());
+        }
     }
 
     private void passTurn() {
@@ -227,6 +376,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Unit Command!");
             }
         }
+    }
+
+    private void waitForClick() {
+        printer.printlnPurple("enter anything to continue...");
+        scanner.nextLine();
     }
 
     private HashMap<UnitCommands, Boolean> calculateAllowedCommands(Unit unit) {
@@ -324,6 +478,7 @@ public class GameView implements View {
             return false;
         }
         controller.foundCityWithSettler(unit);
+        controller.getCurrentPlayer().setSelectedEntity(null);
         return true;
     }
 
@@ -459,7 +614,7 @@ public class GameView implements View {
         }
 
         TileImage image = controller.getCurrentPlayer().getTileImage(controller.getTileByCoordinates(x, y));
-        printer.println("x : " + x + ", y : " + y);
+        printer.println("Y: " + y + ", X: " + x);
 
         if (image == null) {
             printer.printlnRed("This tile is not visible!");
@@ -620,7 +775,7 @@ public class GameView implements View {
                 .getCivilizationsImage(controller.getCurrentPlayer());
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                if(tilesImage[i][j] != null) {
+                if (tilesImage[i][j] != null) {
                     ArrayList<RiverSegment> riverSegments = GameMap.getGameMap().findTilesRiverSegments(tiles[i][j]);
                     for (int k = 0; k < riverSegments.size(); k++) {
                         String riverDirection = riverSegments.get(k).findRiverSegmentDirectionForTile(tiles[i][j]);
@@ -633,7 +788,7 @@ public class GameView implements View {
 
     private void colorATileRiverSegment(String riverDirection, PrintableCharacters printableCharacters[][], int XIndex,
                                         int YIndex, Tile[][] tiles) {
-        int tileStartingVerticalIndex = ((XIndex+tiles[0][0].findTileXCoordinateInMap()%2) % 2) * 3 + 6 * YIndex;
+        int tileStartingVerticalIndex = ((XIndex + tiles[0][0].findTileXCoordinateInMap() % 2) % 2) * 3 + 6 * YIndex;
         int tileStartingHorizontalIndex = 2 + XIndex * 8;
         if (riverDirection.equals("RU")) {
             printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 8].setANSI_COLOR(PrintableCharacters.ANSI_BLUE_BACKGROUND_BRIGHT);
@@ -657,7 +812,7 @@ public class GameView implements View {
     private void colorTiles(TileImage tilesImage[][], PrintableCharacters printableCharacters[][], Tile[][] tiles) {
         for (int i = 0; i < tilesImage.length; i++) {
             for (int j = 0; j < tilesImage[i].length; j++) {
-                int tileStartingVerticalIndex = ((j +tiles[0][0].findTileXCoordinateInMap() % 2)  % 2) * 3 + 6 * i;
+                int tileStartingVerticalIndex = ((j + tiles[0][0].findTileXCoordinateInMap() % 2) % 2) * 3 + 6 * i;
                 int tileStartingHorizontalIndex = 2 + j * 8;
                 Tile tile = null;
                 if (tilesImage[i][j] != null) {
@@ -668,12 +823,12 @@ public class GameView implements View {
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
                         units = ((TileHistory) tilesImage[i][j]).getUnits();
+                        printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 1].setCharacter('R');
                     }
-                    if(units.size() > 2){
+                    if (units.size() > 2) {
                         Debugger.debug("there are more than one units in this tile!");
-                    }
-                    else{
-                        for(int k = 0 ; k < units.size(); k++){
+                    } else {
+                        for (int k = 0; k < units.size(); k++) {
                             printableCharacters[tileStartingVerticalIndex + 3][tileStartingHorizontalIndex + 2 * k + 2].setCharacter(this.findUnitPrintableCharacter(units.get(k)));
                         }
                     }
@@ -708,16 +863,31 @@ public class GameView implements View {
                             printableCharacters[tileStartingVerticalIndex + 4][tileStartingHorizontalIndex + 6].setCharacter(name.charAt(0));
                         }
                     }
+                    this.printCitiesAndTheirTerritoriesInMap(tile, tileStartingVerticalIndex, tileStartingHorizontalIndex, printableCharacters);
                 }
             }
         }
     }
 
-    private char findUnitPrintableCharacter(Unit unit){
-        if(unit.getType() == UnitType.WORKER){
+    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters){
+        if(tile.getCityOfTile() !=  null){
+            if(tile.getCityOfTile().getCentralTile().equals(tile)){
+                printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('C');
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
+                printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
+            }
+            else{
+                printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('T');
+            }
+        }
+
+    }
+
+    private char findUnitPrintableCharacter(Unit unit) {
+        if (unit.getType() == UnitType.WORKER) {
             return 'W';
         }
-        if(unit.getType() == UnitType.SETTLER){
+        if (unit.getType() == UnitType.SETTLER) {
             return 'S';
         }
         return 'U';
@@ -781,8 +951,8 @@ public class GameView implements View {
         for (int i = 0; i < 21; i++) {
             for (int j = 0; j < 52; j++) {
                 printableCharacters[i][j] = new PrintableCharacters();
-                if (i == 2 &&  j < 48) {
-                    if((tiles[0][0].findTileXCoordinateInMap() % 2 == 0 && j%16 >= 11) || (tiles[0][0].findTileXCoordinateInMap() % 2 == 1 && j%16 >= 3 && j%16 <= 7)) {
+                if (i == 2 && j < 48) {
+                    if ((tiles[0][0].findTileXCoordinateInMap() % 2 == 0 && j % 16 >= 11) || (tiles[0][0].findTileXCoordinateInMap() % 2 == 1 && j % 16 >= 3 && j % 16 <= 7)) {
                         printableCharacters[i][j].setCharacter('_');
                     }
                 }
@@ -790,7 +960,7 @@ public class GameView implements View {
         }
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                int tileStartingVerticalIndex = ((j +tiles[0][0].findTileXCoordinateInMap() % 2)  % 2) * 3 + 6 * i;
+                int tileStartingVerticalIndex = ((j + tiles[0][0].findTileXCoordinateInMap() % 2) % 2) * 3 + 6 * i;
                 int tileStartingHorizontalIndex = 2 + j * 8;
                 this.drawATile(printableCharacters, tileStartingVerticalIndex, tileStartingHorizontalIndex, i, j);
             }

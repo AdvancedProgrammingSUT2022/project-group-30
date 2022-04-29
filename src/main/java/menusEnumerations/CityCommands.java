@@ -6,7 +6,7 @@ public class CityCommands extends Commands {
     public static final CityCommands SHOW_INFO = new CityCommands("(show )?info", "show info");
     public static final CityCommands DESELECT = new CityCommands("deselect", "deselect");
     public static final CityCommands SHOW_COMMANDS = new CityCommands("(show )?commands", "show commands");
-
+    public static final CityCommands SHOW_CITIZEN_MANAGEMENT_PANEL = new CityCommands("(open )?citizen management", "open citizen management");
 
     private final String name;
     private static ArrayList<CityCommands> allCommands;
