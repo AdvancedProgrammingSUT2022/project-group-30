@@ -124,8 +124,14 @@ public class Civilization implements TurnHandler {
     public void goToNextTurn() {
         // TODO
 
-        beakerCount += this.calculateTotalBeakers();
-
+        this.beakerCount += this.calculateTotalBeakers();
+        if(this.researchProject != null){
+            if(this.beakerCount >= this.researchProject.getCost()){
+                this.beakerCount -= this.researchProject.getCost();
+                this.technologies.learnTechnology(this.researchProject);
+                this.researchProject = null;
+            }
+        }
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {

@@ -109,8 +109,16 @@ public class GameView implements View {
         String command;
         Matcher matcher;
         while(true){
+            printer.printlnRed("*****************************************");
+            printer.println("Research Menu");
+            printer.println("enter \"show commands\" to see all commands");
+
             command = scanner.nextLine();
-            if((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
+            if((matcher = ResearchCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null){
+                showResearchMenuCommands();
+                waitForClick();
+            }
+            else if((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
                 showLearnedTechnologies(civilization);
                 waitForClick();
             }
@@ -138,12 +146,33 @@ public class GameView implements View {
                 changeResearch(civilization);
                 waitForClick();
             }
+            else if((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null){
+                showCurrentResearchInfo(civilization);
+                waitForClick();
+            }
             else{
                 printer.println("Invalid command for Research tab!");
             }
 
         }
 
+    }
+
+    private void showResearchMenuCommands(){
+        printer.printlnPurple("Research Menu commands :");
+        for (ResearchCommands command : ResearchCommands.getAllCommands()) {
+            printer.println(" -" + command.getName());
+        }
+    }
+
+    private void showCurrentResearchInfo(Civilization civilization){
+        if(civilization.getResearchProject() == null){
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        printer.printBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
+        int turnsLeft = (int) Math.ceil((civilization.getResearchProject().getCost() - civilization.getBeakerCount()) / civilization.calculateTotalBeakers());
+        printer.println("turns left to finish researching : " + turnsLeft);
     }
 
     private void changeResearch(Civilization civilization){

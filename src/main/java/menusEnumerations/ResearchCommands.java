@@ -12,6 +12,7 @@ public class ResearchCommands extends Commands{
     public static ResearchCommands RESERVED_RESEARCHES = new ResearchCommands("(show )?reserved researches", "reserved researches");
     public static ResearchCommands BACK = new ResearchCommands("back", "back");
     public static ResearchCommands SHOW_CURRENT_INFO = new ResearchCommands("(show )?(current )?research info", "show current research info");
+    public static ResearchCommands SHOW_COMMANDS = new ResearchCommands("show commands", "show commands");
 
     private static ArrayList<ResearchCommands> allCommands;
     private  String name;
@@ -29,7 +30,7 @@ public class ResearchCommands extends Commands{
         return this.name;
     }
 
-    public ArrayList<ResearchCommands> getAllCommands(){
+    public static ArrayList<ResearchCommands> getAllCommands(){
         return allCommands;
     }
 }
