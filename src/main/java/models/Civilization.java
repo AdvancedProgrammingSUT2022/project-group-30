@@ -15,6 +15,7 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -24,7 +25,7 @@ public class Civilization implements TurnHandler {
     private boolean isEverythingVisibleCheatCodeInEffect = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
-    private ArrayList<Technology> technologies = new ArrayList<>();
+    private TechnologyMap technologies = new TechnologyMap();
     private double goldCount;
     private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
