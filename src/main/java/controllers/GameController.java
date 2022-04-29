@@ -159,13 +159,22 @@ public class GameController {
                 }
             }
 
-
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
                 if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
                     // TODO : attack that tile
                 }
                 continue;
             }
+
+            if (city != null && city.getOwner() == unit.getOwner()) {
+                if (city.getEntityInProduction() instanceof UnitType) {
+                    UnitType producible = (UnitType) city.getEntityInProduction();
+                    if (producible.isCivilian() == unit.getType().isCivilian()) {
+                        continue;
+                    }
+                }
+            }
+
             destination = path.get(i);
             break;
         }

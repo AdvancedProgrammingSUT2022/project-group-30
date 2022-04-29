@@ -159,4 +159,8 @@ public enum UnitType implements Producible {
         public int calculateHammerCost() {
                 return (int) cost / 10;
         }
+
+        public boolean isCivilian() {
+                return (combatType == CombatType.CIVILIAN);
+        }
 }
