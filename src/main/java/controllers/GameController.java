@@ -98,6 +98,13 @@ public class GameController {
         setMapImageOfCivilization(owner);
     }
 
+    public void createUnit(UnitType type, Civilization owner, Tile location, int initialXP) {
+        Unit newUnit = new Unit(owner, type, location);
+        newUnit.setExperiencePoints(initialXP);
+        gameDataBase.getUnits().add(newUnit);
+        setMapImageOfCivilization(owner);
+    }
+
     public void addPlayers(User[] players) {
         gameDataBase.addPlayers(players);
     }

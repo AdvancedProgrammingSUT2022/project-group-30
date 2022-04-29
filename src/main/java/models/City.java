@@ -15,6 +15,7 @@ import models.interfaces.combative;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
@@ -80,8 +81,9 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        int production = calculateOutput().getProduction();
-        hammerCount += production;
+        double production = calculateOutput().getProduction();
+        production *= calculateBuildingEffectCoefficientForProduction();
+        hammerCount += (int) production;
         if (entityInProduction != null && hammerCount >= entityInProduction.calculateHammerCost()) {
             finishProduction();
         }
@@ -104,12 +106,33 @@ public class City implements Selectable, TurnHandler, combative {
         }
     }
 
+    private double calculateBuildingEffectCoefficientForProduction() {
+        double coeff = 1;
+        if (hasBuildingType(BuildingType.STABLE) && entityInProduction instanceof UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MOUNTED) {
+            coeff += 0.25;
+        }
+        if (hasBuildingType(BuildingType.FORGE) && entityInProduction instanceof  UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.15;
+        }
+        if (hasBuildingType(BuildingType.WORKSHOP) && entityInProduction instanceof  BuildingType) {
+            coeff += 0.20;
+        }
+        if (hasBuildingType(BuildingType.ARSENAL) && entityInProduction instanceof  UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.20;
+        }
+        return coeff;
+    }
+
     private void finishProduction() {
-        if (entityInProduction instanceof  BuildingType) {
+        if (entityInProduction instanceof BuildingType) {
             addBuilding((BuildingType) entityInProduction);
         } else if (entityInProduction instanceof UnitType) {
             if (centralTile.doesPackingLetUnitEnter((UnitType) entityInProduction)) {
-                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile);
+                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile,
+                        calculateInitialXPForUnitType((UnitType) entityInProduction));
             } else {
                 Debugger.debug("finishProduction of City.java: central tile shouldn't be full!");
                 return;
@@ -120,6 +143,22 @@ public class City implements Selectable, TurnHandler, combative {
         entityInProduction = null;
 
         // TODO : send notification to the player informing them of the end of production
+    }
+
+    private int calculateInitialXPForUnitType(UnitType type) {
+        int result = 0;
+        if (type.getCombatType() == CombatType.MELEE) {
+            if (hasBuildingType(BuildingType.BARRACKS)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.ARMORY)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.MILITARY_ACADEMY)) {
+                result += 15;
+            }
+        }
+        return result;
     }
 
     public ArrayList<Resource> calculateCollectibleResourceOutput() {
@@ -228,7 +267,7 @@ public class City implements Selectable, TurnHandler, combative {
                 hammerCount += productionReserve.get(producible);
                 productionReserve.remove(producible);
             } else {
-                if (producible instanceof  UnitType) {
+                if (producible instanceof UnitType) {
                     owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
                 } else if (producible == BuildingType.FACTORY) {
                     owner.payStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL));
