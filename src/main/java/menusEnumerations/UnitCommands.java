@@ -9,6 +9,8 @@ public class UnitCommands extends Commands {
     public static UnitCommands FOUND_CITY = new UnitCommands("found city", "found city");
     public static UnitCommands SLEEP = new UnitCommands("sleep", "sleep");
     public static UnitCommands ALERT = new UnitCommands("alert", "alert");
+    public static UnitCommands FORTIFY = new UnitCommands("fortify", "fortify");
+    public static UnitCommands FORTIFY_UNTIL_HEALED = new UnitCommands("fortify until healed", "fortify until healed");
     // if you add a command, make the appropriate changes to the calculateAllwedCommands method of GameView
     
     private static ArrayList<UnitCommands> allCommands;

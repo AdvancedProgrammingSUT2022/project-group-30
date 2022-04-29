@@ -60,7 +60,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         // TODO : very much incomplete
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
-        // TODO : handle state duration, inactivity time, and healing
+        // TODO : handle state duration, inactivity time, and healing(if the state is FORTIFYUNTILHEALED)
     }
 
     public void assemble() {
@@ -85,7 +85,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     }
 
     public double calculateEffectiveCombatStrength() {
-        // TODO
+        // TODO : handle FORTIFY state on defensiveStrength
         return 0;
     }
 

@@ -211,6 +211,15 @@ public class GameView implements View {
             }
             else if((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)){
                 alertAUnit(unit);
+                break;
+            }
+            else if((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)){
+                alertAUnit(unit);
+                break;
+            }
+            else if((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)){
+                alertAUnit(unit);
+                break;
             }
             else {
                 printer.printlnError("Invalid Unit Command!");
@@ -237,6 +246,8 @@ public class GameView implements View {
         if(unit.getState() == UnitState.AWAKE){
             result.put(UnitCommands.SLEEP, true);
             result.put(UnitCommands.ALERT, true);
+            result.put(UnitCommands.FORTIFY, true);
+            result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
         }
 
         // TODO : consider all commands
@@ -244,15 +255,27 @@ public class GameView implements View {
         return result;
     }
 
+    private void fortifyAUnit(Unit unit){
+        unit.setState(UnitState.FORTIFY);
+        printer.println("unit state changed to fortify");
+        showMap();
+    }
+
+    private void fortifyAUnitUntilHealed(Unit unit){
+        unit.setState(UnitState.FORTIFYUNTILHEALED);
+        printer.println("unit state changed to fortify until healed");
+        showMap();
+    }
+
     private void alertAUnit(Unit unit){
         unit.setState(UnitState.ALERT);
-        printer.println("unit alerted");
+        printer.println("unit state changed to alert");
         showMap();
     }
 
     private void sleepUnit(Unit unit){
         unit.setState(UnitState.ASLEEP);
-        printer.println("unit slept");
+        printer.println("unit state changed to asleep");
         showMap();
     }
 
@@ -277,6 +300,7 @@ public class GameView implements View {
 
     private void showUnitInfo(Unit unit) {
         printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
+        printer.println("State: " + unit.getState());
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
