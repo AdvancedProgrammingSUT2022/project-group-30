@@ -58,6 +58,9 @@ public class LuxuryResource extends Resource {
         public LuxuryResource(Output output, ImprovementType prerequisiteImprovement,
                         ArrayList<TerrainProperty> allowedTerrains, String name) {
                 super(output, prerequisiteImprovement, allowedTerrains, name);
+                if (allTypes == null) {
+                        allTypes = new ArrayList<>();
+                }
                 allTypes.add(this);
         }
 

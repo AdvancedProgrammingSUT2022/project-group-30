@@ -37,6 +37,9 @@ public class StrategicResource extends Resource {
             ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
         super(output, prerequisiteImprovement, allowedTerrains, name);
         this.prerequisiteTechnology = prerequisTechnology;
+        if (allTypes == null) {
+            allTypes = new ArrayList<>();
+        }
         allTypes.add(this);
     }
 
