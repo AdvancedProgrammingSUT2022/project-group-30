@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import controllers.GameController;
@@ -54,7 +55,7 @@ public class City implements Selectable, TurnHandler, combative {
         this.range = 2;
         this.populationGrowthLimit = 10;
         this.populationShrinkageLimit = -10;
-        this.expansionLimit = 5;
+        this.expansionLimit = 1;
         this.populationProgress = 0;
         this.expansionProgress = 0;
         this.expansionProgress = 0;
@@ -96,7 +97,9 @@ public class City implements Selectable, TurnHandler, combative {
 
     private void growTerritory() {
         for (Tile territory : territories) {
-            for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
+            ArrayList<Tile> adjacentTiles = GameController.getGameController().getAdjacentTiles(territory);
+            Collections.shuffle(adjacentTiles);
+            for (Tile adjacentTile : adjacentTiles) {
                 if (territories.contains(adjacentTile) == false && adjacentTile.getCityOfTile() == null) {
                     territories.add(adjacentTile);
                     return;
