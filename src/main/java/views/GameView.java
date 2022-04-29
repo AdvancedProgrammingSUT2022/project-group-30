@@ -8,6 +8,8 @@ import menusEnumerations.CitizenManagementPanelCommands;
 import menusEnumerations.CityCommands;
 import models.*;
 import models.buildings.Building;
+import models.resources.LuxuryResource;
+import models.resources.StrategicResource;
 import models.units.UnitType;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
@@ -109,6 +111,14 @@ public class GameView implements View {
             printer.printlnBlue(happiness);
         } else {
             printer.printlnRed(happiness);
+        }
+        printer.printlnPurple("Strategic Resources:");
+        for (StrategicResource strategicResource : civilization.getStrategicResources().keySet()) {
+            printer.println(strategicResource.getName() + ": " + civilization.getStrategicResources().get(strategicResource));
+        }
+        printer.printlnPurple("Luxury Resources:");
+        for (LuxuryResource luxuryResource : civilization.getLuxuryResources().keySet()) {
+            printer.println(luxuryResource.getName() + ": " + civilization.getLuxuryResources().get(luxuryResource));
         }
         waitForClick();
         showMap();
