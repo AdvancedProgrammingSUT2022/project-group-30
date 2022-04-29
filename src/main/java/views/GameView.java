@@ -214,12 +214,19 @@ public class GameView implements View {
                 break;
             }
             else if((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)){
-                alertAUnit(unit);
+                fortifyAUnit(unit);
                 break;
             }
             else if((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)){
-                alertAUnit(unit);
+                fortifyAUnitUntilHealed(unit);
                 break;
+            }
+            else if((matcher = UnitCommands.GARRISON.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.GARRISON)){
+                garrisonAUnit(unit);
+                break;
+            }
+            else if((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)){
+                awakeAUnit(unit);
             }
             else {
                 printer.printlnError("Invalid Unit Command!");
@@ -249,10 +256,29 @@ public class GameView implements View {
             result.put(UnitCommands.FORTIFY, true);
             result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
         }
+        else{
+            result.put(UnitCommands.AWAKE, true);
+        }
+
+        if(unit.getState().waitsForCommand && unit.isUnitInItsCivilizationCities()){
+            result.put(UnitCommands.GARRISON, true);
+        }
 
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void awakeAUnit(Unit unit){
+        unit.setState(UnitState.AWAKE);
+        printer.println("this unit is now awake and ready to order");
+        showMap();
+    }
+
+    private void garrisonAUnit(Unit unit){
+        unit.setState(UnitState.GARRISON);
+        printer.println("unit state changed to garrison");
+        showMap();
     }
 
     private void fortifyAUnit(Unit unit){

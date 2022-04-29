@@ -3,6 +3,7 @@ package models.units;
 import java.util.ArrayList;
 
 import controllers.GameController;
+import models.City;
 import models.Civilization;
 import models.Tile;
 import models.interfaces.Producible;
@@ -56,6 +57,14 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
         return image;
     }
 
+    public boolean isUnitInItsCivilizationCities(){
+        City city = this.location.getCityOfTile();
+        if(city.getOwner().equals(this.getOwner())){
+            return true;
+        }
+        return false;
+    }
+
     public void goToNextTurn() {
         // TODO : very much incomplete
         movePointsLeft = type.getMovementSpeed();
@@ -85,7 +94,7 @@ public class Unit implements Selectable, TurnHandler, Producible, combative {
     }
 
     public double calculateEffectiveCombatStrength() {
-        // TODO : handle FORTIFY state on defensiveStrength
+        // TODO : handle FORTIFY state on defensiveStrength and garrison effect
         return 0;
     }
 
