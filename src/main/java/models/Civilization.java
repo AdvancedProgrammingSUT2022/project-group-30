@@ -189,10 +189,11 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             gold += city.calculateOutput().getGold();
         }
+        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES:
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationRecipient(this);
-        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
-            gold += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
-        }
+//        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+//            gold += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
+//        }
         return gold;
     }
 
@@ -205,9 +206,10 @@ public class Civilization implements TurnHandler {
         cost += this.getNumberOfRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
         cost += this.getNumberOfRailRoads() * ImprovementType.MAINTENANCE_COST_OF_ROAD_AND_RAILROAD;
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationPayer(this);
-        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
-            cost += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
-        }
+        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES
+//        for (StepWiseGoldTransferContract stepWiseGoldTransferContract : stepWiseGoldTransferContracts) {
+//            cost += stepWiseGoldTransferContract.getTotalAmount() / stepWiseGoldTransferContract.getTotalTurns();
+//        }
         return cost;
     }
 

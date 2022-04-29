@@ -17,6 +17,7 @@ import models.resources.Resource;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
+import utilities.Debugger;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -78,7 +79,12 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO FOR MAHYAR : get this city's production output and spend it on its production(be it a Unit or a building)
+        int production = calculateOutput().getProduction();
+        hammerCount += production;
+        if (entityInProduction != null && hammerCount >= entityInProduction.calculateHammerCost()) {
+            finishProduction();
+        }
+
         foodCount += calculateFoodChange();
         if (foodCount <= populationShrinkageLimit) {
             killACitizen();
@@ -95,6 +101,24 @@ public class City implements Selectable, TurnHandler, combative {
                 growTerritory();
             }
         }
+    }
+
+    private void finishProduction() {
+        if (entityInProduction instanceof  BuildingType) {
+            addBuilding((BuildingType) entityInProduction);
+        } else if (entityInProduction instanceof UnitType) {
+            if (centralTile.doesPackingLetUnitEnter((UnitType) entityInProduction)) {
+                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile);
+            } else {
+                Debugger.debug("finishProduction of City.java: central tile shouldn't be full!");
+                return;
+            }
+        }
+
+        hammerCount -= entityInProduction.calculateHammerCost();
+        entityInProduction = null;
+
+        // TODO : send notification to the player informing them of the end of production
     }
 
     public ArrayList<Resource> calculateCollectibleResourceOutput() {
@@ -163,6 +187,9 @@ public class City implements Selectable, TurnHandler, combative {
             changeProduction(producible);
         }
         entityInProduction = producible;
+        if (hammerCount >= producible.calculateHammerCost()) {
+            finishProduction();
+        }
     }
 
     public void stopProduction() {

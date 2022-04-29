@@ -834,6 +834,7 @@ public class GameController {
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
+        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES:
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
         for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
