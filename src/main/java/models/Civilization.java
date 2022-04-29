@@ -132,7 +132,7 @@ public class Civilization implements TurnHandler {
                 this.researchProject = null;
             }
         }
-        int goldChange = (int) calculateGoldChange();
+/*        int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {
             beakerCount += goldCount;
@@ -150,7 +150,7 @@ public class Civilization implements TurnHandler {
                     strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
                 }
             }
-        }
+        }*/
     }
 
     public void setNextResearchProject(Technology technology) {
@@ -176,8 +176,8 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             count += city.calculateBeakerProduction();
         }
-        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
-        count += count * 15 * numberOfScientificTreaty / 100.0;
+        //double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
+        count += count * 15 /** numberOfScientificTreaty / 100.0*/;
         return count;
     }
 

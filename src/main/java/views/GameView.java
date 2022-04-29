@@ -170,7 +170,7 @@ public class GameView implements View {
             printer.printlnError("You don't have any active research projects!");
             return;
         }
-        printer.printBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
+        printer.printlnBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
         int turnsLeft = (int) Math.ceil((civilization.getResearchProject().getCost() - civilization.getBeakerCount()) / civilization.calculateTotalBeakers());
         printer.println("turns left to finish researching : " + turnsLeft);
     }
@@ -181,16 +181,20 @@ public class GameView implements View {
     }
 
     private void startResearch(Civilization civilization){
+        if(civilization.getCities().isEmpty()){
+            printer.printlnError("You should found a city first!");
+            return;
+        }
         if(civilization.getResearchProject() != null){
-            printer.printlnError("You have already started a research project");
+            printer.printlnError("You have already started a research project!");
             return;
         }
         ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
         if(technologies.isEmpty()){
-            printer.printlnError("There is no technology to research");
+            printer.printlnError("There is no technology to research!");
             return;
         }
-        printer.printBlue("Enter the number of the technology in order to start a research project:");
+        printer.printlnBlue("Enter the number of the technology in order to start a research project:");
         for(int i = 0; i < technologies.size(); i++){
             printer.println(" " + (i + 1) + "-" + technologies.get(i).getName());
         }
@@ -226,14 +230,18 @@ public class GameView implements View {
     }
 
     private void showReservedResearches(Civilization civilization){
-        printer.printBlue(civilization.getName() + "'s reserved technologies:");
+        if(civilization.getResearchReserve().isEmpty()){
+            printer.printlnError("There is no reserved research for " + civilization.getName() + " civilization!");
+            return;
+        }
+        printer.printlnBlue(civilization.getName() + "'s reserved technologies:");
         for(Technology technology : civilization.getResearchReserve().keySet()){
             printer.println(" -" + technology.getName() + ", beakers spent: " + civilization.getResearchReserve().get(technology));
         }
     }
 
     private void showUnlockedTechnologies(Civilization civilization){
-        printer.printBlue(civilization.getName() + "'s unlocked technologies:");
+        printer.printlnBlue(civilization.getName() + "'s unlocked technologies:");
         ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
         for (Technology technology : technologies) {
             printer.println(" -" + technology.getName());
@@ -241,10 +249,10 @@ public class GameView implements View {
     }
 
     private void showLearnedTechnologies(Civilization civilization){
-        printer.printBlue(civilization.getName() + "'s learned technologies:");
+        printer.printlnBlue(civilization.getName() + "'s learned technologies:");
         ArrayList<Technology> technologies = civilization.getTechnologies().getLearnedTechnologies();
         for (Technology technology : technologies) {
-            printer.print(" -" + technology.getName());
+            printer.println(" -" + technology.getName());
         }
     }
 
@@ -446,11 +454,11 @@ public class GameView implements View {
 
     private void passTurn() {
         ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-        if (idleUnits.isEmpty() == false) {
+/*        if (idleUnits.isEmpty() == false) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
-        }
+        }*/
         if(!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null){
             printer.printlnError("You should start a research project!");
             // TODO : FOR MY SELF
