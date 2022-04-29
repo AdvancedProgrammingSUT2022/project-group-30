@@ -1,5 +1,6 @@
 package views;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -176,11 +177,58 @@ public class GameView implements View {
             } else if ((matcher = ProductionPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
                 showProductionInfo(city);
                 waitForClick();
+            } else if ((matcher = ProductionPanelCommands.CHOOSE_PRODUCTION.getCommandMatcher(command)) != null) {
+                chooseProduction(city);
             } else {
                 printer.printlnError("Invalid command for Production Panel");
             }
         }
+    }
 
+    private void chooseProduction(City city) {
+        if (city.getEntityInProduction() != null) {
+            printer.printlnError("This city is already producing a " + city.getEntityInProduction().getName() + ". Its production will be halted if you choose another production");
+            waitForClick();
+        }
+        printer.printlnPurple("Choose This City's Next Production From The Below Lists: (enter \"cancel\" to exit)");
+        ArrayList<UnitType> producibleUnits = city.calculateProductionReadyUnitTypes();
+        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes();
+
+        printer.println("Units:");
+        for (UnitType producibleUnit : producibleUnits) {
+            int hammerCost = producibleUnit.calculateHammerCost();
+            int turnsRequired = hammerCost / city.calculateOutput().getProduction();
+            printer.println(producibleUnit.getName() + ", " + hammerCost + "\tHammers, " + turnsRequired + " turns");
+            HashMap<StrategicResource, Integer> resources = producibleUnit.getPrerequisiteResources();
+            for (StrategicResource resource : resources.keySet()) {
+                printer.println("\t" + resource.getName() + ": " + resources.get(resource));
+            }
+        }
+
+        printer.println("Buildings:");
+        for (BuildingType producibleBuilding : producibleBuildings) {
+            int hammerCost = producibleBuilding.calculateHammerCost();
+            int turnsReuquired = hammerCost / city.calculateOutput().getProduction();
+            printer.println(producibleBuilding.getName() + hammerCost + "\tHammers, " + turnsReuquired + " turns");
+        }
+
+        while (true) {
+            String choice = scanner.nextLine();
+            if (choice.equalsIgnoreCase("cancel") || choice.equalsIgnoreCase("back")) {
+                printer.println("Production change canceled.");
+                break;
+            }
+            ArrayList<Producible> allProducibles = new ArrayList<Producible>(producibleBuildings);
+            allProducibles.addAll(producibleUnits);
+            for (Producible producible : allProducibles) {
+                if (choice.equalsIgnoreCase(producible.getName())) {
+                    city.changeProduction(producible);
+                    printer.printlnBlue("Set city's production to " + producible.getName());
+                    break;
+                }
+            }
+            printer.printlnRed("Item was not found on the list, try again.");
+        }
     }
 
     private void showProductionInfo(City city) {
@@ -206,7 +254,7 @@ public class GameView implements View {
         }
         printer.println();
 
-        printer.printlnPurple("Production-Ready Building:");
+        printer.printlnPurple("Production-Ready Buildings:");
         for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
             printer.println(type.getName());
         }

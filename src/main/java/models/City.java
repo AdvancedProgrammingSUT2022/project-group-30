@@ -119,11 +119,24 @@ public class City implements Selectable, TurnHandler, combative {
     public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
         ArrayList<BuildingType> result = new ArrayList<BuildingType>();
         for (BuildingType type : BuildingType.values()) {
-            if (owner.hasTechnology(type.getPrerequisiteTechnology())) {
+            if (owner.hasTechnology(type.getPrerequisiteTechnology()) && hasBuildingType(type) == false) {
                 result.add(type);
             }
         }
         return result;
+    }
+
+    public void changeProduction(Producible producible) {
+        if (entityInProduction == null) {
+            if (productionReserve.containsKey(producible)) {
+                hammerCount += productionReserve.get(producible);
+                productionReserve.remove(producible);
+            }
+        } else {
+            productionReserve.put(entityInProduction, (int) hammerCount);
+            hammerCount = 0;
+        }
+        entityInProduction = producible;
     }
 
     private void growTerritory() {

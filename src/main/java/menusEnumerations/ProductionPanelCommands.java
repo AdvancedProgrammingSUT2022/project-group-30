@@ -7,6 +7,7 @@ public class ProductionPanelCommands extends Commands {
 
     public static ProductionPanelCommands BACK = new ProductionPanelCommands("back", "back");
     public static ProductionPanelCommands SHOW_INFO = new ProductionPanelCommands("(show )?info", "show info");
+    public static ProductionPanelCommands CHOOSE_PRODUCTION = new ProductionPanelCommands("choose( production)?", "choose production");
 
     private final String name;
     private ProductionPanelCommands(String regex, String name) {
