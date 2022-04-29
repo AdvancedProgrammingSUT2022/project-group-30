@@ -106,6 +106,25 @@ public class City implements Selectable, TurnHandler, combative {
         return collectibleResources;
     }
 
+    public ArrayList<UnitType> calculatePurchasableUnitTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH MONEY TO PURCHASE UNIT
+        ArrayList<UnitType> result = new ArrayList<>();
+        for (UnitType type : UnitType.values()) {
+            if (type == UnitType.SETTLER) {
+                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                    continue;
+                }
+            }
+            if (owner.hasTechnology(type.getPrerequisitTechnology())) {
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<BuildingType> calculatePurchasableBuildingTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH GOLD TO PURCHASE BUILDING
+        return calculateProductionReadyBuildingTypes();
+    }
+
     public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
@@ -150,6 +169,13 @@ public class City implements Selectable, TurnHandler, combative {
         productionReserve.put(entityInProduction, (int) hammerCount);
         entityInProduction = null;
         hammerCount = 0;
+    }
+
+    public void addBuilding(BuildingType type) {
+        if (hasBuildingType(type)) {
+            return;
+        }
+        buildings.add(new Building(type));
     }
 
     private void growTerritory() {
@@ -255,13 +281,13 @@ public class City implements Selectable, TurnHandler, combative {
         return maintenanceCost;
     }
 
-    public double calculateHappiness(){
+    public double calculateHappiness() {
         double happiness = 0;
-        for(Building building : this.buildings){
-            happiness+= building.getType().getHappiness();
+        for (Building building : this.buildings) {
+            happiness += building.getType().getHappiness();
         }
         happiness -= this.citizens.size() * 0.33;
-        if(this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
+        if (this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
             happiness = 0;
         return happiness;
     }
@@ -426,7 +452,6 @@ public class City implements Selectable, TurnHandler, combative {
         if (!owner.equals(founder)) return true;
         return false;
     }
-
 
 
     public Civilization getFounder() {

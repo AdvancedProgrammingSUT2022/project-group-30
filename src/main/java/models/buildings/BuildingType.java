@@ -62,8 +62,8 @@ public enum BuildingType implements Producible {
         this.name = name;
     }
 
-    public double getCost() {
-        return cost;
+    public int getCost() {
+        return (int) cost;
     }
 
     public Technology getPrerequisiteTechnology() {

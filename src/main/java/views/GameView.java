@@ -180,9 +180,72 @@ public class GameView implements View {
             } else if ((matcher = ProductionPanelCommands.CHOOSE_PRODUCTION.getCommandMatcher(command)) != null) {
                 chooseProduction(city);
             } else if ((matcher = ProductionPanelCommands.STOP_PRODUCTION.getCommandMatcher(command)) != null) {
-                  stopProduction(city);
+                stopProduction(city);
+            } else if ((matcher = ProductionPanelCommands.PURCHASE.getCommandMatcher(command)) != null) {
+                purchase(city);
             } else {
                 printer.printlnError("Invalid command for Production Panel");
+            }
+        }
+    }
+
+    private void purchase(City city) {
+        printer.println("Total Gold: " + (int) city.getOwner().getGoldCount());
+        printer.println("Choose what you wish to purchase with gold. enter cancel to abort.");
+
+        printer.printlnPurple("Purchasable Units:");
+        ArrayList<UnitType> purchasableUnits = city.calculatePurchasableUnitTypes();
+        for (UnitType unit : purchasableUnits) {
+            printer.println(unit.getName() + "\t\t\t" + unit.getCost() + " Gold");
+        }
+
+        printer.printlnPurple("Purchasable Buildings:");
+        ArrayList<BuildingType> purchasableBuildings = city.calculatePurchasableBuildingTypes();
+        for (BuildingType building : purchasableBuildings) {
+            printer.println(building.getName() + "\t\t\t" + building.getCost() + " Gold");
+        }
+
+        ArrayList<Producible> purchasables = new ArrayList<Producible>(purchasableUnits);
+        purchasables.addAll(purchasableBuildings);
+        Producible chosenPurchasable = null;
+
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
+                printer.printlnError("Purchase canceled");
+                return;
+            }
+
+            for (Producible purchasable : purchasables) {
+                if (input.equalsIgnoreCase(purchasable.getName())) {
+                    chosenPurchasable = purchasable;
+                    break;
+                }
+            }
+
+            if (chosenPurchasable == null) {
+                printer.printlnError("Input did not match any of the presented choices. Try again.");
+            } else {
+                break;
+            }
+        }
+
+        if (city.getOwner().getGoldCount() < chosenPurchasable.getCost()) {
+            printer.printlnError("You don't have enough gold to purchase this item!");
+            return;
+        }
+
+        if (chosenPurchasable instanceof BuildingType) {
+            city.addBuilding((BuildingType) chosenPurchasable);
+            printer.println("Successfully purchased " + chosenPurchasable.getName());
+        }
+        if (chosenPurchasable instanceof UnitType) {
+            if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
+                controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
+                printer.println("Successfully purchased " + chosenPurchasable.getName());
+            } else {
+                printer.printlnError("Your city is full! A new unit can't enter. Move the existing units and try again");
+                return;
             }
         }
     }

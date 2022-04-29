@@ -13,7 +13,9 @@ import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.resources.BonusResource;
 import models.resources.Resource;
+import models.units.CombatType;
 import models.units.Unit;
+import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
 
@@ -119,6 +121,32 @@ public class Tile implements Workable, TileImage, TurnHandler {
                 return city;
         }
         return null;
+    }
+
+    public boolean doesPackingLetUnitEnter(Unit unit) {
+        if (unit.isCivilian()) {
+            if (GameController.getGameController().getCivilianUnitInTile(this) != null) {
+                return false;
+            }
+        } else {
+            if (GameController.getGameController().getMilitaryUnitInTile(this) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean doesPackingLetUnitEnter(UnitType unitType) {
+        if (unitType.getCombatType() == CombatType.CIVILIAN) {
+            if (GameController.getGameController().getCivilianUnitInTile(this) != null) {
+                return false;
+            }
+        } else {
+            if (GameController.getGameController().getMilitaryUnitInTile(this) != null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isNearTheRiver() {
