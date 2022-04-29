@@ -22,8 +22,8 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
-    private HashMap<LuxuryResource, Integer> luxuryResources = new HashMap<>();
-    private HashMap<StrategicResource, Integer> strategicResources = new HashMap<>();
+    private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
+    private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
     private ArrayList<Technology> technologies = new ArrayList<>();
     private double goldCount;
     private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.

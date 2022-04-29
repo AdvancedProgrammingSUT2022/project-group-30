@@ -31,10 +31,13 @@ public class StrategicResource extends Resource {
                             TerrainType.SNOW, TerrainType.HILLS)),
             Technology.IRON_WORKING, "Iron");
 
+    private static ArrayList<StrategicResource> allTypes = new ArrayList<>();
+
     public StrategicResource(Output output, ImprovementType prerequisiteImprovement,
             ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
         super(output, prerequisiteImprovement, allowedTerrains, name);
         this.prerequisiteTechnology = prerequisTechnology;
+        allTypes.add(this);
     }
 
     @Override
@@ -47,10 +50,14 @@ public class StrategicResource extends Resource {
 
     public static HashMap<StrategicResource, Integer> makeRawHashMap() {
         HashMap<StrategicResource, Integer> result = new HashMap<StrategicResource, Integer>();
-        result.put(COAL, 0);
-        result.put(HORSE, 0);
-        result.put(IRON, 0);
+        for (StrategicResource type : allTypes) {
+            result.put(type, 0);
+        }
         return result;
+    }
+
+    public static ArrayList<StrategicResource> getAllTypes() {
+        return new ArrayList<StrategicResource>(allTypes);
     }
 
     public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) { // utility
