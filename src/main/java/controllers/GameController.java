@@ -776,6 +776,7 @@ public class GameController {
             if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 return (DiplomaticRelationsMap) diplomacy;
         }
+        //it will never return null
         return null;
     }
 
@@ -788,7 +789,6 @@ public class GameController {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
-        if (scientificTreaties.size() == 0) return null;
         return scientificTreaties;
     }
 
@@ -801,7 +801,6 @@ public class GameController {
             if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0) return null;
         return stepWiseGoldTransferContracts;
     }
 
@@ -822,8 +821,6 @@ public class GameController {
             if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civilization))
                 diplomaticRelationsMaps.add((DiplomaticRelationsMap) diplomacy);
         }
-        if (diplomaticRelationsMaps.size() == 0)
-            return null;
         return diplomaticRelationsMaps;
     }
 
@@ -833,8 +830,6 @@ public class GameController {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civilization))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
-        if (scientificTreaties.size() == 0)
-            return null;
         return scientificTreaties;
     }
 
@@ -844,8 +839,6 @@ public class GameController {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getPayer() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0)
-            return null;
         return stepWiseGoldTransferContracts;
     }
 
@@ -856,8 +849,6 @@ public class GameController {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0)
-            return null;
         return stepWiseGoldTransferContracts;
     }
 
@@ -867,8 +858,6 @@ public class GameController {
             if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civilization))
                 warInfos.add((WarInfo) diplomacy);
         }
-        if (warInfos.size() == 0)
-            return null;
         return warInfos;
     }
 }
