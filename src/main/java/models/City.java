@@ -393,8 +393,8 @@ public class City implements Selectable, TurnHandler, combative {
         this.owner = owner;
     }
 
-    public boolean isIsPuppet() {
-        return isPuppet;
+    public boolean getIsPuppet() {
+        return this.isPuppet;
     }
 
     public void setIsPuppet(boolean isPuppet) {
