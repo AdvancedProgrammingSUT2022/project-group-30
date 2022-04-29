@@ -16,6 +16,7 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -25,11 +26,11 @@ public class Civilization implements TurnHandler {
     private boolean isEverythingVisibleCheatCodeInEffect = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
-    private ArrayList<Technology> technologies = new ArrayList<>();
+    private TechnologyMap technologies = new TechnologyMap();
     private double goldCount;
     private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
-    private HashMap<Technology, Integer> researchReserve = new HashMap<>();
+    private HashMap<Technology, Double> researchReserve = new HashMap<>();
     private double happiness;
     private double diplomaticCredit;
     private double score;
@@ -133,6 +134,15 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
+
+        this.beakerCount += this.calculateTotalBeakers();
+        if(this.researchProject != null){
+            if(this.beakerCount >= this.researchProject.getCost()){
+                this.beakerCount -= this.researchProject.getCost();
+                this.technologies.learnTechnology(this.researchProject);
+                this.researchProject = null;
+            }
+        }
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {
@@ -293,11 +303,11 @@ public class Civilization implements TurnHandler {
         this.strategicResources = strategicResources;
     }
 
-    public ArrayList<Technology> getTechnologies() {
+    public TechnologyMap getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(ArrayList<Technology> technologies) {
+    public void setTechnologies(TechnologyMap technologies) {
         this.technologies = technologies;
     }
 
@@ -317,11 +327,11 @@ public class Civilization implements TurnHandler {
         this.researchProject = researchProject;
     }
 
-    public HashMap<Technology, Integer> getResearchReserve() {
+    public HashMap<Technology, Double> getResearchReserve() {
         return researchReserve;
     }
 
-    public void setResearchReserve(HashMap<Technology, Integer> researchReserve) {
+    public void setResearchReserve(HashMap<Technology, Double> researchReserve) {
         this.researchReserve = researchReserve;
     }
 

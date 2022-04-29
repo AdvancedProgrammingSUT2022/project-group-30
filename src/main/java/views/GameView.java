@@ -9,6 +9,7 @@ import menusEnumerations.*;
 import models.*;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
+import models.technology.Technology;
 import models.units.UnitState;
 import models.*;
 import models.buildings.Building;
@@ -96,9 +97,153 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
                 controller.makeEverythingVisible();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
+                runResearchTab();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
+        }
+    }
+
+    private void runResearchTab() {
+        Civilization civilization = controller.getCurrentPlayer();
+        String command;
+        Matcher matcher;
+        while (true) {
+            printer.printlnRed("*****************************************");
+            printer.println("Research Menu");
+            printer.println("enter \"show commands\" to see all commands");
+
+            command = scanner.nextLine();
+            if ((matcher = ResearchCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null) {
+                showResearchMenuCommands();
+                waitForClick();
+            } else if ((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null) {
+                showLearnedTechnologies(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.UNLOCKED_TECHNOLOGIES.getCommandMatcher(command)) != null) {
+                showUnlockedTechnologies(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.RESERVED_RESEARCHES.getCommandMatcher(command)) != null) {
+                showReservedResearches(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.STOP_RESEARCH.getCommandMatcher(command)) != null) {
+                stopResearch(civilization);
+            } else if ((matcher = ResearchCommands.START_RESEARCH.getCommandMatcher(command)) != null) {
+                startResearch(civilization);
+            } else if ((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null) {
+                printer.println("You exited research tab");
+                break;
+            } else if ((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null) {
+                changeResearch(civilization);
+            } else if ((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null) {
+                showCurrentResearchInfo(civilization);
+                waitForClick();
+            } else {
+                printer.println("Invalid command for Research tab!");
+            }
+
+        }
+
+    }
+
+    private void showResearchMenuCommands() {
+        printer.printlnPurple("Research Menu commands :");
+        for (ResearchCommands command : ResearchCommands.getAllCommands()) {
+            printer.println(" -" + command.getName());
+        }
+    }
+
+    private void showCurrentResearchInfo(Civilization civilization) {
+        if (civilization.getResearchProject() == null) {
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        printer.printlnBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
+        int turnsLeft = (int) Math.ceil((civilization.getResearchProject().getCost() - civilization.getBeakerCount()) / civilization.calculateTotalBeakers());
+        printer.println("Turns left to finish researching : " + turnsLeft);
+        printer.println("Cost : " + civilization.getResearchProject().getCost());
+        printer.println("Beaker Count : " + civilization.getBeakerCount());
+    }
+
+    private void changeResearch(Civilization civilization) {
+        this.stopResearch(civilization);
+        this.startResearch(civilization);
+    }
+
+    private void startResearch(Civilization civilization) {
+        if (civilization.getCities().isEmpty()) {
+            printer.printlnError("You should found a city first!");
+            return;
+        }
+        if (civilization.getResearchProject() != null) {
+            printer.printlnError("You have already started a research project!");
+            return;
+        }
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        if (technologies.isEmpty()) {
+            printer.printlnError("There is no technology to research!");
+            return;
+        }
+        printer.printlnBlue("Enter the number of the technology in order to start a research project:");
+        for (int i = 0; i < technologies.size(); i++) {
+            printer.println(" " + (i + 1) + "-" + technologies.get(i).getName());
+        }
+        String input;
+        Matcher matcher;
+        while (true) {
+            input = scanner.nextLine();
+            if ((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size() && Integer.parseInt(input) >= 1) {
+                Technology researchProject = technologies.get(Integer.parseInt(input) - 1);
+                if (civilization.getResearchReserve().containsKey(researchProject)) {
+                    civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
+                    civilization.getResearchReserve().remove(researchProject);
+                }
+                civilization.setResearchProject(researchProject);
+                break;
+            } else {
+                printer.printlnError("Please enter a number between 1 and " + technologies.size());
+            }
+        }
+    }
+
+    private void stopResearch(Civilization civilization) {
+        if (civilization.getResearchProject() == null) {
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        Technology researchProject = civilization.getResearchProject();
+        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
+        civilization.setResearchProject(null);
+        civilization.setBeakerCount(0);
+        printer.println("research " + researchProject.getName() + " has stopped!");
+    }
+
+    private void showReservedResearches(Civilization civilization) {
+        if (civilization.getResearchReserve().isEmpty()) {
+            printer.printlnError("There is no reserved research for " + civilization.getName() + " civilization!");
+            return;
+        }
+        printer.printlnBlue(civilization.getName() + "'s reserved technologies:");
+        for (Technology technology : civilization.getResearchReserve().keySet()) {
+            printer.println(" -" + technology.getName() + ", beakers spent: " + civilization.getResearchReserve().get(technology));
+        }
+    }
+
+    private void showUnlockedTechnologies(Civilization civilization) {
+        printer.printlnBlue(civilization.getName() + "'s unlocked technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        for (Technology technology : technologies) {
+            printer.println(" -" + technology.getName());
+        }
+    }
+
+    private void showLearnedTechnologies(Civilization civilization) {
+        printer.printlnBlue(civilization.getName() + "'s learned technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getLearnedTechnologies();
+        for (Technology technology : technologies) {
+            printer.println(" -" + technology.getName());
         }
     }
 
@@ -551,6 +696,11 @@ public class GameView implements View {
         if (idleUnits.isEmpty() == false) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
+            return;
+        }
+        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null) {
+            printer.printlnError("You should start a research project!");
+            // TODO : FOR MY SELF
             return;
         }
 
