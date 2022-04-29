@@ -154,4 +154,8 @@ public enum UnitType implements Producible {
         public CombatType getCombatType() {
                 return combatType;
         }
+
+        public int calculateHammerCost() {
+                return (int) cost / 10;
+        }
 }

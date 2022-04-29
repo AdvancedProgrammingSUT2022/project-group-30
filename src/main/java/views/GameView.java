@@ -6,6 +6,7 @@ import java.util.HashMap;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
+import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.units.UnitState;
 import models.*;
@@ -184,8 +185,19 @@ public class GameView implements View {
 
     private void showProductionInfo(City city) {
         printer.printlnPurple("########### City Production Info ###########");
+
         Producible currentProduction = city.getEntityInProduction();
-        printer.println("Currently producing: ");
+        printer.print("Currently producing: ");
+        if (currentProduction == null) {
+            printer.println("Nothing!");
+        } else {
+            printer.println(currentProduction.getName());
+        }
+
+        printer.println("Halted Productions:");
+        for (Producible producible : city.getProductionReserve().keySet()) {
+            printer.println(producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost());
+        }
     }
 
     private void showProductionPanelCommands() {

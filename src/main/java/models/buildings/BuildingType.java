@@ -81,4 +81,8 @@ public enum BuildingType implements Producible {
     public String getName() {
         return name;
     }
+
+    public int calculateHammerCost() {
+        return ((int) cost / 10);
+    }
 }
