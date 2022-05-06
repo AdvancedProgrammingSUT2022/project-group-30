@@ -1,12 +1,15 @@
 package views;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import controllers.GameController;
-import menusEnumerations.CitizenManagementPanelCommands;
-import menusEnumerations.CityCommands;
+import menusEnumerations.*;
 import models.*;
+import models.buildings.BuildingType;
+import models.interfaces.Producible;
+import models.technology.Technology;
 import models.units.UnitState;
 import models.*;
 import models.buildings.Building;
@@ -22,8 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import menusEnumerations.GameMainPageCommands;
-import menusEnumerations.UnitCommands;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -96,9 +97,153 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
                 controller.makeEverythingVisible();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
+                runResearchTab();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
+        }
+    }
+
+    private void runResearchTab() {
+        Civilization civilization = controller.getCurrentPlayer();
+        String command;
+        Matcher matcher;
+        while (true) {
+            printer.printlnRed("*****************************************");
+            printer.println("Research Menu");
+            printer.println("enter \"show commands\" to see all commands");
+
+            command = scanner.nextLine();
+            if ((matcher = ResearchCommands.SHOW_COMMANDS.getCommandMatcher(command)) != null) {
+                showResearchMenuCommands();
+                waitForClick();
+            } else if ((matcher = ResearchCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null) {
+                showLearnedTechnologies(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.UNLOCKED_TECHNOLOGIES.getCommandMatcher(command)) != null) {
+                showUnlockedTechnologies(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.RESERVED_RESEARCHES.getCommandMatcher(command)) != null) {
+                showReservedResearches(civilization);
+                waitForClick();
+            } else if ((matcher = ResearchCommands.STOP_RESEARCH.getCommandMatcher(command)) != null) {
+                stopResearch(civilization);
+            } else if ((matcher = ResearchCommands.START_RESEARCH.getCommandMatcher(command)) != null) {
+                startResearch(civilization);
+            } else if ((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null) {
+                printer.println("You exited research tab");
+                break;
+            } else if ((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null) {
+                changeResearch(civilization);
+            } else if ((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null) {
+                showCurrentResearchInfo(civilization);
+                waitForClick();
+            } else {
+                printer.println("Invalid command for Research tab!");
+            }
+
+        }
+
+    }
+
+    private void showResearchMenuCommands() {
+        printer.printlnPurple("Research Menu commands :");
+        for (ResearchCommands command : ResearchCommands.getAllCommands()) {
+            printer.println(" -" + command.getName());
+        }
+    }
+
+    private void showCurrentResearchInfo(Civilization civilization) {
+        if (civilization.getResearchProject() == null) {
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        printer.printlnBlue(civilization.getName() + "'s research : " + civilization.getResearchProject().getName());
+        int turnsLeft = (int) Math.ceil((civilization.getResearchProject().getCost() - civilization.getBeakerCount()) / civilization.calculateTotalBeakers());
+        printer.println("Turns left to finish researching : " + turnsLeft);
+        printer.println("Cost : " + civilization.getResearchProject().getCost());
+        printer.println("Beaker Count : " + civilization.getBeakerCount());
+    }
+
+    private void changeResearch(Civilization civilization) {
+        this.stopResearch(civilization);
+        this.startResearch(civilization);
+    }
+
+    private void startResearch(Civilization civilization) {
+        if (civilization.getCities().isEmpty()) {
+            printer.printlnError("You should found a city first!");
+            return;
+        }
+        if (civilization.getResearchProject() != null) {
+            printer.printlnError("You have already started a research project!");
+            return;
+        }
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        if (technologies.isEmpty()) {
+            printer.printlnError("There is no technology to research!");
+            return;
+        }
+        printer.printlnBlue("Enter the number of the technology in order to start a research project:");
+        for (int i = 0; i < technologies.size(); i++) {
+            printer.println(" " + (i + 1) + "-" + technologies.get(i).getName());
+        }
+        String input;
+        Matcher matcher;
+        while (true) {
+            input = scanner.nextLine();
+            if ((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size() && Integer.parseInt(input) >= 1) {
+                Technology researchProject = technologies.get(Integer.parseInt(input) - 1);
+                if (civilization.getResearchReserve().containsKey(researchProject)) {
+                    civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
+                    civilization.getResearchReserve().remove(researchProject);
+                }
+                civilization.setResearchProject(researchProject);
+                break;
+            } else {
+                printer.printlnError("Please enter a number between 1 and " + technologies.size());
+            }
+        }
+    }
+
+    private void stopResearch(Civilization civilization) {
+        if (civilization.getResearchProject() == null) {
+            printer.printlnError("You don't have any active research projects!");
+            return;
+        }
+        Technology researchProject = civilization.getResearchProject();
+        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
+        civilization.setResearchProject(null);
+        civilization.setBeakerCount(0);
+        printer.println("research " + researchProject.getName() + " has stopped!");
+    }
+
+    private void showReservedResearches(Civilization civilization) {
+        if (civilization.getResearchReserve().isEmpty()) {
+            printer.printlnError("There is no reserved research for " + civilization.getName() + " civilization!");
+            return;
+        }
+        printer.printlnBlue(civilization.getName() + "'s reserved technologies:");
+        for (Technology technology : civilization.getResearchReserve().keySet()) {
+            printer.println(" -" + technology.getName() + ", beakers spent: " + civilization.getResearchReserve().get(technology));
+        }
+    }
+
+    private void showUnlockedTechnologies(Civilization civilization) {
+        printer.printlnBlue(civilization.getName() + "'s unlocked technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getUnlockedTechnologies();
+        for (Technology technology : technologies) {
+            printer.println(" -" + technology.getName());
+        }
+    }
+
+    private void showLearnedTechnologies(Civilization civilization) {
+        printer.printlnBlue(civilization.getName() + "'s learned technologies:");
+        ArrayList<Technology> technologies = civilization.getTechnologies().getLearnedTechnologies();
+        for (Technology technology : technologies) {
+            printer.println(" -" + technology.getName());
         }
     }
 
@@ -153,9 +298,257 @@ public class GameView implements View {
                 break;
             } else if ((matcher = CityCommands.SHOW_CITIZEN_MANAGEMENT_PANEL.getCommandMatcher(command)) != null) {
                 runCitizenManagementPanel(city);
+            } else if ((matcher = CityCommands.SHOW_PRODUCTION_PANEL.getCommandMatcher(command)) != null) {
+                runProductionPanel(city);
+            } else if ((matcher = CityCommands.PURCHASE_TILE.getCommandMatcher(command)) != null) {
+                purchaseTile(city);
             } else {
                 printer.printlnError("Invalid command for city!");
             }
+        }
+    }
+
+    private void purchaseTile(City city) {
+        printer.printlnPurple("Enter the coordinates (Y, X) of an adjacent tile you wish to buy for " + city.calculateNextTilePrice() + " Gold.");
+        printer.println("Available Tiles:");
+        ArrayList<Tile> purchasableTiles = city.findPurchasableTiles();
+        for (Tile tile : purchasableTiles) {
+            printer.println("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+        }
+        printer.printlnError("enter cancel to cancel the purchase");
+
+        Pattern inputPattern = Pattern.compile("(?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
+        Matcher matcher;
+        int x, y;
+
+        while (true) {
+            String input = scanner.nextLine();
+            if ((matcher = inputPattern.matcher(input)).matches()) {
+                y = Integer.parseInt(matcher.group("y"));
+                x = Integer.parseInt(matcher.group("x"));
+                if (!controller.areCoordinatesValid(x, y)) {
+                    printer.printlnError("Invalid coordinates, try again.");
+                    continue;
+                }
+                Tile tile = controller.getTileByCoordinates(x, y);
+                if (!purchasableTiles.contains(tile)) {
+                    printer.printlnError("You can only choose from the presented list. Try again.");
+                    continue;
+                }
+                int cost = city.calculateNextTilePrice();
+                if (cost > city.getOwner().getGoldCount()) {
+                    printer.printlnError("You don't have enough gold to buy this tile!");
+                    break;
+                }
+                break;
+            } else if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
+                printer.printlnRed("purchase canceled.");
+                break;
+            } else {
+                printer.printlnError("Invalid input, try again.");
+            }
+        }
+    }
+
+    private void runProductionPanel(City city) {
+        String command;
+        Matcher matcher;
+
+        while (true) {
+            printer.printlnPurple("********************* Production Panel *********************");
+            printer.println("For a list of commands, enter \"show commands\"");
+            command = scanner.nextLine();
+            if (command.equals("show commands")) {
+                showProductionPanelCommands();
+                waitForClick();
+            } else if ((matcher = ProductionPanelCommands.BACK.getCommandMatcher(command)) != null) {
+                break;
+            } else if ((matcher = ProductionPanelCommands.SHOW_INFO.getCommandMatcher(command)) != null) {
+                showProductionInfo(city);
+                waitForClick();
+            } else if ((matcher = ProductionPanelCommands.CHOOSE_PRODUCTION.getCommandMatcher(command)) != null) {
+                chooseProduction(city);
+            } else if ((matcher = ProductionPanelCommands.STOP_PRODUCTION.getCommandMatcher(command)) != null) {
+                stopProduction(city);
+            } else if ((matcher = ProductionPanelCommands.PURCHASE.getCommandMatcher(command)) != null) {
+                purchase(city);
+            } else {
+                printer.printlnError("Invalid command for Production Panel");
+            }
+        }
+    }
+
+    private void purchase(City city) {
+        printer.println("Total Gold: " + (int) city.getOwner().getGoldCount());
+        printer.println("Choose what you wish to purchase with gold. enter cancel to abort.");
+
+        printer.printlnPurple("Purchasable Units:");
+        ArrayList<UnitType> purchasableUnits = city.calculatePurchasableUnitTypes();
+        for (UnitType unit : purchasableUnits) {
+            printer.println(unit.getName() + "\t\t\t" + unit.getCost() + " Gold");
+        }
+
+        printer.printlnPurple("Purchasable Buildings:");
+        ArrayList<BuildingType> purchasableBuildings = city.calculatePurchasableBuildingTypes();
+        for (BuildingType building : purchasableBuildings) {
+            printer.println(building.getName() + "\t\t\t" + building.getCost() + " Gold");
+        }
+
+        ArrayList<Producible> purchasables = new ArrayList<Producible>(purchasableUnits);
+        purchasables.addAll(purchasableBuildings);
+        Producible chosenPurchasable = null;
+
+        while (true) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
+                printer.printlnError("Purchase canceled");
+                return;
+            }
+
+            for (Producible purchasable : purchasables) {
+                if (input.equalsIgnoreCase(purchasable.getName())) {
+                    chosenPurchasable = purchasable;
+                    break;
+                }
+            }
+
+            if (chosenPurchasable == null) {
+                printer.printlnError("Input did not match any of the presented choices. Try again.");
+            } else {
+                break;
+            }
+        }
+
+        if (city.getOwner().getGoldCount() < chosenPurchasable.getCost()) {
+            printer.printlnError("You don't have enough gold to purchase this item!");
+            return;
+        }
+
+        if (chosenPurchasable instanceof BuildingType) {
+            city.addBuilding((BuildingType) chosenPurchasable);
+            printer.println("Successfully purchased " + chosenPurchasable.getName());
+        }
+        if (chosenPurchasable instanceof UnitType) {
+            if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
+                controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
+                printer.println("Successfully purchased " + chosenPurchasable.getName());
+            } else {
+                printer.printlnError("Your city is full! A new unit can't enter. Move the existing units and try again");
+                return;
+            }
+        }
+    }
+
+    private void stopProduction(City city) {
+        if (city.getEntityInProduction() == null) {
+            printer.printlnError("There is no ongoing production in this city");
+            return;
+        }
+        printer.println("Are you sure you want to stop the production of " + city.getEntityInProduction().getName() + "? enter \"y\" if so.");
+        String input = scanner.nextLine();
+        if (input.equalsIgnoreCase("y")) {
+            city.stopProduction();
+            printer.println("Stopped Production.");
+        } else {
+            printer.printlnError("Operation Canceled.");
+            return;
+        }
+    }
+
+    private void chooseProduction(City city) {
+        if (city.getEntityInProduction() != null) {
+            printer.printlnError("This city is already producing a " + city.getEntityInProduction().getName() + ". Its production will be halted if you choose another production");
+            waitForClick();
+        }
+        printer.printlnPurple("Choose This City's Next Production From The Below Lists: (enter \"cancel\" to exit)");
+        ArrayList<UnitType> producibleUnits = city.calculateProductionReadyUnitTypes();
+        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes(false);
+
+        printer.println("Units:");
+        for (UnitType producibleUnit : producibleUnits) {
+            int hammerCost = producibleUnit.calculateHammerCost();
+            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            printer.println(producibleUnit.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsRequired + " turns");
+            HashMap<StrategicResource, Integer> resources = producibleUnit.getPrerequisiteResources();
+            for (StrategicResource resource : resources.keySet()) {
+                printer.println("\t" + resource.getName() + ": " + resources.get(resource));
+            }
+        }
+
+        printer.println("Buildings:");
+        for (BuildingType producibleBuilding : producibleBuildings) {
+            int hammerCost = producibleBuilding.calculateHammerCost();
+            int turnsReuquired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            printer.println(producibleBuilding.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsReuquired + " turns");
+        }
+
+        while (true) {
+            String choice = scanner.nextLine();
+            if (choice.equalsIgnoreCase("cancel") || choice.equalsIgnoreCase("back")) {
+                printer.println("Production change canceled.");
+                break;
+            }
+            ArrayList<Producible> allProducibles = new ArrayList<Producible>(producibleBuildings);
+            allProducibles.addAll(producibleUnits);
+
+            boolean isCommandValid = false;
+            for (Producible producible : allProducibles) {
+                if (choice.equalsIgnoreCase(producible.getName())) {
+                    if (producible instanceof UnitType && !city.getCentralTile().doesPackingLetUnitEnter((UnitType) producible)) {
+                        printer.printlnError("There is already a unit in the city. You need to move it to make room!");
+                        return;
+                    }
+                    city.changeProduction(producible);
+                    printer.printlnBlue("Set city's production to " + producible.getName());
+                    isCommandValid = true;
+                    break;
+                }
+            }
+            if (isCommandValid == false) {
+                printer.printlnRed("Item was not found on the list, try again.");
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void showProductionInfo(City city) {
+        printer.printlnPurple("########### City Production Info ###########");
+
+        Producible currentProduction = city.getEntityInProduction();
+        printer.print("Currently producing: ");
+        if (currentProduction == null) {
+            printer.println("Nothing!");
+        } else {
+            printer.println(currentProduction.getName());
+            int hammerCost = currentProduction.calculateHammerCost();
+            int productionOutput = city.calculateOutput().getProduction();
+            int hammerCount = (int) city.getHammerCount();
+            int turnsRemaining = (int) Math.ceil((double) (hammerCost - hammerCount) / productionOutput);
+            printer.println(hammerCount + " out of " + hammerCost);
+            printer.println(turnsRemaining + " turns remaining");
+        }
+
+        printer.println("Halted Productions:");
+        for (Producible producible : city.getProductionReserve().keySet()) {
+            printer.println(producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost());
+        }
+
+        printer.printlnPurple("Production-Ready Units:");
+        for (UnitType type : city.calculateProductionReadyUnitTypes()) {
+            printer.println(type.getName());
+        }
+
+        printer.printlnPurple("Production-Ready Buildings:");
+        for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
+            printer.println(type.getName());
+        }
+    }
+
+    private void showProductionPanelCommands() {
+        printer.printlnPurple("Production Panel Commands:");
+        for (ProductionPanelCommands command : ProductionPanelCommands.getAllCommands()) {
+            printer.println(command.getName());
         }
     }
 
@@ -280,9 +673,9 @@ public class GameView implements View {
         printer.println(citizens.size() + " citizens. " + city.calculateWorklessCitizenCount() + " of them are workless.");
         printer.printlnPurple("Tiles being worked:");
         for (Citizen citizen : citizens) {
-            if (citizen.getWorkPlace() instanceof  Tile) {
-                printer.println("Y: " + ((Tile)citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
-                        ((Tile)citizen.getWorkPlace()).findTileXCoordinateInMap());
+            if (citizen.getWorkPlace() instanceof Tile) {
+                printer.println("Y: " + ((Tile) citizen.getWorkPlace()).findTileYCoordinateInMap() + " X: " +
+                        ((Tile) citizen.getWorkPlace()).findTileXCoordinateInMap());
             }
         }
         printer.printlnRed("Tile not being worked:");
@@ -305,7 +698,18 @@ public class GameView implements View {
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
         }
-        // TODO : if a city can start a new production, make the player choose it!
+        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null) {
+            printer.printlnError("You should start a research project!");
+            // TODO : FOR MY SELF
+            return;
+        }
+
+        ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
+        if (citiesWaitingForProduction.isEmpty() == false) {
+            printer.printlnError("Some cities are waiting for their next production!");
+            controller.getCurrentPlayer().setSelectedEntity(citiesWaitingForProduction.get(0));
+            return;
+        }
 
         controller.goToNextPlayer();
         showMap();
@@ -344,35 +748,27 @@ public class GameView implements View {
                     showMap();
                     break;
                 }
-            }
-            else if((matcher = UnitCommands.SLEEP.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SLEEP)){
+            } else if ((matcher = UnitCommands.SLEEP.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SLEEP)) {
                 sleepUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)){
+            } else if ((matcher = UnitCommands.ALERT.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.ALERT)) {
                 alertAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)){
+            } else if ((matcher = UnitCommands.FORTIFY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY)) {
                 fortifyAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)){
+            } else if ((matcher = UnitCommands.FORTIFY_UNTIL_HEALED.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FORTIFY_UNTIL_HEALED)) {
                 fortifyAUnitUntilHealed(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.GARRISON.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.GARRISON)){
+            } else if ((matcher = UnitCommands.GARRISON.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.GARRISON)) {
                 garrisonAUnit(unit);
                 break;
-            }
-            else if((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)){
+            } else if ((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)) {
                 awakeAUnit(unit);
-            }
-            else if((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)){
+            } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
-            }
-            else {
+            } else {
                 printer.printlnError("Invalid Unit Command!");
             }
         }
@@ -392,25 +788,30 @@ public class GameView implements View {
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);
-        if (unit.getState().waitsForCommand  && controller.canUnitMove(unit)) {
+        if (unit.getState().waitsForCommand && controller.canUnitMove(unit)) {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
-        if (unit.getState().waitsForCommand  && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+        if (unit.getState().waitsForCommand && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
             result.put(UnitCommands.FOUND_CITY, true);
         }
 
-        if(unit.getState() == UnitState.AWAKE){
+        if (unit.getState() == UnitState.AWAKE) {
+            if (unit.getType().getCombatType().isStateAllowed(UnitState.FORTIFY)) {
+                result.put(UnitCommands.FORTIFY, true);
+                if (unit.getHitPointsLeft() < unit.getType().getHitPoints()) {
+                    result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
+                }
+            }
             result.put(UnitCommands.SLEEP, true);
             result.put(UnitCommands.ALERT, true);
-            result.put(UnitCommands.FORTIFY, true);
-            result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
-        }
-        else{
+        } else {
             result.put(UnitCommands.AWAKE, true);
         }
 
-        if(unit.getState().waitsForCommand && unit.isUnitInItsCivilizationCities()){
+        if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
+                controller.getCityCenteredInTile(unit.getLocation()) != null &&
+                controller.getCityCenteredInTile(unit.getLocation()).getOwner() == unit.getOwner()) {
             result.put(UnitCommands.GARRISON, true);
         }
 
@@ -419,7 +820,7 @@ public class GameView implements View {
         return result;
     }
 
-    private void deleteAUnit(Unit unit){
+    private void deleteAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
         GameDataBase.getGameDataBase().getUnits().remove(unit);
@@ -427,41 +828,41 @@ public class GameView implements View {
         showMap();
     }
 
-    private void awakeAUnit(Unit unit){
+    private void awakeAUnit(Unit unit) {
         unit.setState(UnitState.AWAKE);
         printer.println("this unit is now awake and ready to order");
         showMap();
     }
 
-    private void garrisonAUnit(Unit unit){
+    private void garrisonAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.GARRISON);
         printer.println("unit state changed to garrison");
         showMap();
     }
 
-    private void fortifyAUnit(Unit unit){
+    private void fortifyAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFY);
         printer.println("unit state changed to fortify");
         showMap();
     }
 
-    private void fortifyAUnitUntilHealed(Unit unit){
+    private void fortifyAUnitUntilHealed(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.FORTIFYUNTILHEALED);
         printer.println("unit state changed to fortify until healed");
         showMap();
     }
 
-    private void alertAUnit(Unit unit){
+    private void alertAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ALERT);
         printer.println("unit state changed to alert");
         showMap();
     }
 
-    private void sleepUnit(Unit unit){
+    private void sleepUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
         unit.setState(UnitState.ASLEEP);
         printer.println("unit state changed to asleep");
@@ -819,7 +1220,7 @@ public class GameView implements View {
                     ArrayList<Unit> units = new ArrayList<>();
                     if (tilesImage[i][j] instanceof Tile) {
                         tile = (Tile) tilesImage[i][j];
-                        units  = this.controller.getUnitsInTile(tile);
+                        units = this.controller.getUnitsInTile(tile);
                     } else if (tilesImage[i][j] instanceof TileHistory) {
                         tile = ((TileHistory) tilesImage[i][j]).getTile();
                         units = ((TileHistory) tilesImage[i][j]).getUnits();
@@ -869,14 +1270,13 @@ public class GameView implements View {
         }
     }
 
-    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters){
-        if(tile.getCityOfTile() !=  null){
-            if(tile.getCityOfTile().getCentralTile().equals(tile)){
+    private void printCitiesAndTheirTerritoriesInMap(Tile tile, int tileStartingVerticalIndex, int tileStartingHorizontalIndex, PrintableCharacters[][] printableCharacters) {
+        if (tile.getCityOfTile() != null) {
+            if (tile.getCityOfTile().getCentralTile().equals(tile)) {
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('C');
                 printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 3].setCharacter(tile.getCivilization().getName().charAt(0));
                 printableCharacters[tileStartingVerticalIndex + 2][tileStartingHorizontalIndex + 4].setCharacter(tile.getCivilization().getName().charAt(1));
-            }
-            else{
+            } else {
                 printableCharacters[tileStartingVerticalIndex][tileStartingHorizontalIndex + 3].setCharacter('T');
             }
         }

@@ -12,9 +12,14 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.LuxuryResource;
 import models.resources.Resource;
+import models.resources.StrategicResource;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
+import models.units.UnitType;
+import utilities.Debugger;
 
 public class City implements Selectable, TurnHandler, combative {
     private final Civilization founder;
@@ -76,7 +81,13 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO FOR MAHYAR : get this city's production output and spend it on its production(be it a Unit or a building)
+        double production = calculateOutput().getProduction();
+        production *= calculateBuildingEffectCoefficientForProduction();
+        hammerCount += (int) production;
+        if (entityInProduction != null && hammerCount >= entityInProduction.calculateHammerCost()) {
+            finishProduction();
+        }
+
         foodCount += calculateFoodChange();
         if (foodCount <= populationShrinkageLimit) {
             killACitizen();
@@ -95,6 +106,61 @@ public class City implements Selectable, TurnHandler, combative {
         }
     }
 
+    private double calculateBuildingEffectCoefficientForProduction() {
+        double coeff = 1;
+        if (hasBuildingType(BuildingType.STABLE) && entityInProduction instanceof UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MOUNTED) {
+            coeff += 0.25;
+        }
+        if (hasBuildingType(BuildingType.FORGE) && entityInProduction instanceof  UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.15;
+        }
+        if (hasBuildingType(BuildingType.WORKSHOP) && entityInProduction instanceof  BuildingType) {
+            coeff += 0.20;
+        }
+        if (hasBuildingType(BuildingType.ARSENAL) && entityInProduction instanceof  UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.20;
+        }
+        return coeff;
+    }
+
+    private void finishProduction() {
+        if (entityInProduction instanceof BuildingType) {
+            addBuilding((BuildingType) entityInProduction);
+        } else if (entityInProduction instanceof UnitType) {
+            if (centralTile.doesPackingLetUnitEnter((UnitType) entityInProduction)) {
+                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile,
+                        calculateInitialXPForUnitType((UnitType) entityInProduction));
+            } else {
+                Debugger.debug("finishProduction of City.java: central tile shouldn't be full!");
+                return;
+            }
+        }
+
+        hammerCount -= entityInProduction.calculateHammerCost();
+        entityInProduction = null;
+
+        // TODO : send notification to the player informing them of the end of production
+    }
+
+    private int calculateInitialXPForUnitType(UnitType type) {
+        int result = 0;
+        if (type.getCombatType() == CombatType.MELEE) {
+            if (hasBuildingType(BuildingType.BARRACKS)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.ARMORY)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.MILITARY_ACADEMY)) {
+                result += 15;
+            }
+        }
+        return result;
+    }
+
     public ArrayList<Resource> calculateCollectibleResourceOutput() {
         ArrayList<Resource> collectibleResources = new ArrayList<>();
         for (Tile territory : territories) {
@@ -102,6 +168,132 @@ public class City implements Selectable, TurnHandler, combative {
         }
 
         return collectibleResources;
+    }
+
+    public ArrayList<UnitType> calculatePurchasableUnitTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH MONEY TO PURCHASE UNIT
+        ArrayList<UnitType> result = new ArrayList<>();
+        for (UnitType type : UnitType.values()) {
+            if (type == UnitType.SETTLER) {
+                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                    continue;
+                }
+            }
+            if (owner.hasTechnology(type.getPrerequisitTechnology())) {
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<BuildingType> calculatePurchasableBuildingTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH GOLD TO PURCHASE BUILDING
+        return calculateProductionReadyBuildingTypes(true);
+    }
+
+    public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
+        ArrayList<UnitType> result = new ArrayList<>();
+        for (UnitType type : UnitType.values()) {
+            if (type == UnitType.SETTLER) {
+                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                    continue;
+                }
+            }
+            if (owner.hasTechnology(type.getPrerequisitTechnology()) && owner.hasStrategicResources(type.getPrerequisiteResources())) {
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
+        return calculateProductionReadyBuildingTypes(false);
+    }
+
+    public ArrayList<BuildingType> calculateProductionReadyBuildingTypes(boolean isForPurchase) {
+        ArrayList<BuildingType> result = new ArrayList<BuildingType>();
+        for (BuildingType type : BuildingType.values()) {
+            if (owner.hasTechnology(type.getPrerequisiteTechnology()) && hasBuildingType(type) == false) {
+                if (type.shouldBeNearRiver()) {
+                    if (!isNearTheRiver()) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.STOCK_EXCHANGE) {
+                    if (!(hasBuildingType(BuildingType.BANK) || hasBuildingType(BuildingType.SATRAPS_COURT))) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.CIRCUS) {
+                    if (!(hasExploitableResourceNearby(StrategicResource.HORSE) || hasExploitableResourceNearby(LuxuryResource.IVORY))) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.STABLE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.HORSE)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.FORGE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.IRON)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.WINDMILL) {
+                    if (centralTile.isOfType(TerrainType.HILLS)) {
+                        continue;
+                    }
+                }
+
+                if (!isForPurchase && type == BuildingType.FACTORY) {
+                    if (!owner.hasStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL))) {
+                        continue;
+                    }
+                }
+
+                for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
+                    if (!hasBuildingType(prerequisite)) {
+                        continue;
+                    }
+                }
+
+                result.add(type);
+            }
+        }
+        return result;
+    }
+
+    public void changeProduction(Producible producible) {
+        if (entityInProduction == null) {
+            if (productionReserve.containsKey(producible)) {
+                hammerCount += productionReserve.get(producible);
+                productionReserve.remove(producible);
+            } else {
+                if (producible instanceof UnitType) {
+                    owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
+                } else if (producible == BuildingType.FACTORY) {
+                    owner.payStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL));
+                }
+            }
+        } else {
+            stopProduction();
+            changeProduction(producible);
+        }
+        entityInProduction = producible;
+        if (hammerCount >= producible.calculateHammerCost()) {
+            finishProduction();
+        }
+    }
+
+    public void stopProduction() {
+        productionReserve.put(entityInProduction, (int) hammerCount);
+        entityInProduction = null;
+        hammerCount = 0;
+    }
+
+    public void addBuilding(BuildingType type) {
+        if (hasBuildingType(type)) {
+            return;
+        }
+        buildings.add(new Building(type));
     }
 
     private void growTerritory() {
@@ -115,6 +307,33 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
+    }
+
+    public int calculateNextTilePrice() {
+        int price = 50;
+        price *= territories.size();
+        return price;
+    }
+
+    public ArrayList<Tile> findPurchasableTiles() {
+        ArrayList<Tile> result = new ArrayList<>();
+        for (Tile territory : territories) {
+            for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
+                if (!territories.contains(adjacentTile)) {
+                    result.add(adjacentTile);
+                }
+            }
+        }
+        return result;
+    }
+
+    public boolean hasExploitableResourceNearby(Resource resource) {    // check if a tile in the territory has the resource and the required improvement to use it
+        for (Tile territory : territories) {
+            if (territory.hasExploitableResource(resource)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isTileBeingWorked(Tile tile) {
@@ -207,13 +426,13 @@ public class City implements Selectable, TurnHandler, combative {
         return maintenanceCost;
     }
 
-    public double calculateHappiness(){
+    public double calculateHappiness() {
         double happiness = 0;
-        for(Building building : this.buildings){
-            happiness+= building.getType().getHappiness();
+        for (Building building : this.buildings) {
+            happiness += building.getType().getHappiness();
         }
         happiness -= this.citizens.size() * 0.33;
-        if(this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
+        if (this.hasBuildingType(BuildingType.COURTHOUSE) && happiness < 0)
             happiness = 0;
         return happiness;
     }
@@ -378,7 +597,6 @@ public class City implements Selectable, TurnHandler, combative {
         if (!owner.equals(founder)) return true;
         return false;
     }
-
 
 
     public Civilization getFounder() {

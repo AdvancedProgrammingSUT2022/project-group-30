@@ -98,6 +98,13 @@ public class GameController {
         setMapImageOfCivilization(owner);
     }
 
+    public void createUnit(UnitType type, Civilization owner, Tile location, int initialXP) {
+        Unit newUnit = new Unit(owner, type, location);
+        newUnit.setExperiencePoints(initialXP);
+        gameDataBase.getUnits().add(newUnit);
+        setMapImageOfCivilization(owner);
+    }
+
     public void addPlayers(User[] players) {
         gameDataBase.addPlayers(players);
     }
@@ -159,13 +166,22 @@ public class GameController {
                 }
             }
 
-
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
                 if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
                     // TODO : attack that tile
                 }
                 continue;
             }
+
+            if (city != null && city.getOwner() == unit.getOwner()) {
+                if (city.getEntityInProduction() instanceof UnitType) {
+                    UnitType producible = (UnitType) city.getEntityInProduction();
+                    if (producible.isCivilian() == unit.getType().isCivilian()) {
+                        continue;
+                    }
+                }
+            }
+
             destination = path.get(i);
             break;
         }
@@ -507,7 +523,7 @@ public class GameController {
             return MPCostEnum.IMPASSABLE;
         if (hasCommonRoadOrRailRoad(sourceTile, destinationTile) && ((getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRoadOfTile().getFounder())).getFriendliness() >= 0) || (getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0)))
             hasCommonRoadOrRailRoad = true;
-        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
+        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad && unit.getOwner().getTechnologies().getLearnedTechnologies().contains(Technology.CONSTRUCTION)))
             return MPCostEnum.EXPENSIVE;
         if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile)) return MPCostEnum.EXPENSIVE;
         if (!unit.getType().equals(UnitType.SCOUT))
@@ -760,6 +776,7 @@ public class GameController {
             if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 return (DiplomaticRelationsMap) diplomacy;
         }
+        //it will never return null
         return null;
     }
 
@@ -772,7 +789,6 @@ public class GameController {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
-        if (scientificTreaties.size() == 0) return null;
         return scientificTreaties;
     }
 
@@ -785,7 +801,6 @@ public class GameController {
             if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0) return null;
         return stepWiseGoldTransferContracts;
     }
 
@@ -806,8 +821,6 @@ public class GameController {
             if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civilization))
                 diplomaticRelationsMaps.add((DiplomaticRelationsMap) diplomacy);
         }
-        if (diplomaticRelationsMaps.size() == 0)
-            return null;
         return diplomaticRelationsMaps;
     }
 
@@ -817,8 +830,6 @@ public class GameController {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civilization))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
-        if (scientificTreaties.size() == 0)
-            return null;
         return scientificTreaties;
     }
 
@@ -828,19 +839,16 @@ public class GameController {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getPayer() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0)
-            return null;
         return stepWiseGoldTransferContracts;
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
+        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES:
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
         for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
-        if (stepWiseGoldTransferContracts.size() == 0)
-            return null;
         return stepWiseGoldTransferContracts;
     }
 
@@ -850,8 +858,6 @@ public class GameController {
             if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civilization))
                 warInfos.add((WarInfo) diplomacy);
         }
-        if (warInfos.size() == 0)
-            return null;
         return warInfos;
     }
 }

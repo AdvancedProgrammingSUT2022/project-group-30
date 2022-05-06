@@ -1,11 +1,13 @@
 package models.units;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
+import models.interfaces.Producible;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 
-public enum UnitType {
+public enum UnitType implements Producible {
         ARCHER("Archer", 70, CombatType.ARCHERY,
                         4, 6, 2, 2,
                         StrategicResource.getRequiredResourceHashMap(), Technology.ARCHERY),
@@ -152,5 +154,13 @@ public enum UnitType {
 
         public CombatType getCombatType() {
                 return combatType;
+        }
+
+        public int calculateHammerCost() {
+                return (int) cost / 10;
+        }
+
+        public boolean isCivilian() {
+                return (combatType == CombatType.CIVILIAN);
         }
 }

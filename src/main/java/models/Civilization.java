@@ -1,6 +1,7 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import controllers.GameController;
@@ -15,6 +16,7 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -24,11 +26,11 @@ public class Civilization implements TurnHandler {
     private boolean isEverythingVisibleCheatCodeInEffect = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
-    private ArrayList<Technology> technologies = new ArrayList<>();
+    private TechnologyMap technologies = new TechnologyMap();
     private double goldCount;
     private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
     private Technology researchProject;
-    private HashMap<Technology, Integer> researchReserve = new HashMap<>();
+    private HashMap<Technology, Double> researchReserve = new HashMap<>();
     private double happiness;
     private double diplomaticCredit;
     private double score;
@@ -98,6 +100,16 @@ public class Civilization implements TurnHandler {
         return cities;
     }
 
+    public ArrayList<City> getCitiesWaitingForProduction() {
+        ArrayList<City> result = new ArrayList<>();
+        for (City city : getCities()) {
+            if (city.getEntityInProduction() == null) {
+                result.add(city);
+            }
+        }
+        return result;
+    }
+
     public double getNumberOfRoads() {
         double count = 0;
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
@@ -122,8 +134,15 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         // TODO
-        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
 
+        this.beakerCount += this.calculateTotalBeakers();
+        if(this.researchProject != null){
+            if(this.beakerCount >= this.researchProject.getCost()){
+                this.beakerCount -= this.researchProject.getCost();
+                this.technologies.learnTechnology(this.researchProject);
+                this.researchProject = null;
+            }
+        }
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {
@@ -135,13 +154,24 @@ public class Civilization implements TurnHandler {
         for (City city : getCities()) {
             ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
             for (Resource resource : collectibleResourcesInput) {
-                if (resource instanceof  LuxuryResource) {
+                if (resource instanceof LuxuryResource) {
                     luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
                 }
-                if (resource instanceof  StrategicResource) {
+                if (resource instanceof StrategicResource) {
                     strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
                 }
             }
+        }
+    }
+
+    public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
+        for (StrategicResource strategicResource : amount.keySet()) {
+            int newValue = strategicResources.get(strategicResource) - amount.get(strategicResource);
+            if (newValue < 0) {
+                Debugger.debug("Civilization.java payStrategicResources method is making a value negative!");
+                return;
+            }
+            strategicResources.put(strategicResource, newValue);
         }
     }
 
@@ -168,8 +198,9 @@ public class Civilization implements TurnHandler {
         for (City city : this.getCities()) {
             count += city.calculateBeakerProduction();
         }
-        double numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
-        count += count * 15 * numberOfScientificTreaty / 100.0;
+        int numberOfScientificTreaty = GameController.getGameController().getScientificTreatiesOfCivilization(this).size();
+        if (numberOfScientificTreaty != 0)
+            count += count * 15 * numberOfScientificTreaty / 100.0;
         return count;
     }
 
@@ -230,10 +261,22 @@ public class Civilization implements TurnHandler {
     }
 
     public boolean hasTechnology(Technology technology) {
+        // TODO : THIS IS FOR DEBUGGING, DELETE THIS
         // TODO
         return true;
+//        ArrayList<Technology> techs = new ArrayList<>();
+//        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
+//        return techs.contains(technology);
     }
 
+    public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
+        for (StrategicResource resource : resources.keySet()) {
+            if (strategicResources.get(resource) < resources.get(resource)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
     public double getGoldCount() {
@@ -260,11 +303,11 @@ public class Civilization implements TurnHandler {
         this.strategicResources = strategicResources;
     }
 
-    public ArrayList<Technology> getTechnologies() {
+    public TechnologyMap getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(ArrayList<Technology> technologies) {
+    public void setTechnologies(TechnologyMap technologies) {
         this.technologies = technologies;
     }
 
@@ -284,11 +327,11 @@ public class Civilization implements TurnHandler {
         this.researchProject = researchProject;
     }
 
-    public HashMap<Technology, Integer> getResearchReserve() {
+    public HashMap<Technology, Double> getResearchReserve() {
         return researchReserve;
     }
 
-    public void setResearchReserve(HashMap<Technology, Integer> researchReserve) {
+    public void setResearchReserve(HashMap<Technology, Double> researchReserve) {
         this.researchReserve = researchReserve;
     }
 

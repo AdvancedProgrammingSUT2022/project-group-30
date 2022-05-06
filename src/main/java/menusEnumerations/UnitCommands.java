@@ -12,7 +12,7 @@ public class UnitCommands extends Commands {
     public static UnitCommands FORTIFY = new UnitCommands("fortify", "fortify");
     public static UnitCommands FORTIFY_UNTIL_HEALED = new UnitCommands("fortify until healed", "fortify until healed");
     public static UnitCommands GARRISON = new UnitCommands("garrison", "garrison");
-    public static UnitCommands AWAKE = new UnitCommands("awake", "awake");
+    public static UnitCommands AWAKE = new UnitCommands("wake", "wake");
     public static UnitCommands DELETE = new UnitCommands("delete", "delete");
     // if you add a command, make the appropriate changes to the calculateAllwedCommands method of GameView
     
