@@ -560,7 +560,6 @@ public class GameView implements View {
     }
 
     private void showCityInfo() {
-        // TODO
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
         if (city.isCapital()) {
             printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s Capital City");
@@ -579,6 +578,19 @@ public class GameView implements View {
                 }
             }
         }
+
+        printer.printlnBlue("Resources in this city:");
+        for (Tile tile : city.getTerritories()) {
+            for (Resource resource : tile.getResourcesAsArrayList()) {
+                printer.print(resource.getName());
+                if (resource.canBeExploited(tile)) {
+                    printer.println(" (exploited by " + resource.getPrerequisiteImprovement().getName() + ")");
+                } else {
+                    printer.println(" (not exploited, requires " + resource.getPrerequisiteImprovement().getName() + ")");
+                }
+            }
+        }
+
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
         printer.println("City's food balance:");
