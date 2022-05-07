@@ -297,7 +297,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
                 result.add(resource);
             }
         }
-        return null;
+        return result;
     }
 
     public boolean hasExploitableResource(Resource resource) {  // check if the tile has a resource and the proper improvement to use it
