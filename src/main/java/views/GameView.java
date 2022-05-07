@@ -850,8 +850,7 @@ public class GameView implements View {
 
     private void deleteAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
-        unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
-        GameDataBase.getGameDataBase().getUnits().remove(unit);
+        controller.deleteUnit(unit);
         printer.println("this unit is now deleted");
         showMap();
     }

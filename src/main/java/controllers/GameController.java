@@ -22,6 +22,7 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
@@ -338,14 +339,23 @@ public class GameController {
             unit.getOwner().setCapital(newCity);
         }
 
-        deleteUnit(unit);
+        removeUnit(unit);
     }
 
-    private void deleteUnit(Unit unit) {
+    public void deleteUnit(Unit unit) {
+        unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
+        for (StrategicResource strategicResource : unit.getType().getPrerequisiteResources().keySet()) {
+            unit.getOwner().addStrategicResource(strategicResource, unit.getType().getPrerequisiteResources().get(strategicResource));
+        }
+        removeUnit(unit);
+    }
+
+    private void removeUnit(Unit unit) {
         if (unit.getOwner().getSelectedEntity() == unit) {
             unit.getOwner().setSelectedEntity(null);
         }
         gameDataBase.getUnits().remove(unit);
+        setMapImageOfCivilization(unit.getOwner());
     }
 
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
