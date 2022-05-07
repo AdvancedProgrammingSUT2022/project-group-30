@@ -102,10 +102,17 @@ public class GameView implements View {
                 showMap();
             } else if ((matcher = GameMainPageCommands.ADD_GOLD.getCommandMatcher(command)) != null) {
                 addGold();
+            } else if ((matcher = GameMainPageCommands.DISABLE_TURN_BREAK.getCommandMatcher(command)) != null) {
+                disableTurnBreak();
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void disableTurnBreak() {
+        controller.disableTurnBreak();
+        printer.println("ee vaghte show gharibam");
     }
 
     private void addGold() {
@@ -718,19 +725,20 @@ public class GameView implements View {
 
     private void passTurn() {
         ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-        if (idleUnits.isEmpty() == false) {
+        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
         }
-        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null) {
+        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("You should start a research project!");
             // TODO : FOR MY SELF
             return;
         }
 
         ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
-        if (citiesWaitingForProduction.isEmpty() == false) {
+        if (citiesWaitingForProduction.isEmpty() == false &&  !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("Some cities are waiting for their next production!");
             controller.getCurrentPlayer().setSelectedEntity(citiesWaitingForProduction.get(0));
             return;

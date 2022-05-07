@@ -342,6 +342,11 @@ public class GameController {
         removeUnit(unit);
     }
 
+    public void disableTurnBreak() {
+        Civilization player = getCurrentPlayer();
+        player.setisTurnBreakDisabled(true);
+    }
+
     public void deleteUnit(Unit unit) {
         unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
         for (StrategicResource strategicResource : unit.getType().getPrerequisiteResources().keySet()) {

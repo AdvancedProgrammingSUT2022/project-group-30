@@ -25,6 +25,7 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
+    private boolean isTurnBreakDisabled = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
     private TechnologyMap technologies = new TechnologyMap();
@@ -389,6 +390,14 @@ public class Civilization implements TurnHandler {
 
     public City getOriginCapital() {
         return originCapital;
+    }
+
+    public void setisTurnBreakDisabled(boolean isTurnBreakDisabled) {
+        this.isTurnBreakDisabled = isTurnBreakDisabled;
+    }
+
+    public boolean isTurnBreakDisabled() {
+        return isTurnBreakDisabled;
     }
 
     public void setFrameBase(Tile tile) {
