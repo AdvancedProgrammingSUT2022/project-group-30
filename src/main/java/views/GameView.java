@@ -786,6 +786,8 @@ public class GameView implements View {
             } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
+            } else if ((matcher = UnitCommands.CANCEL_MOVE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.CANCEL_MOVE)) {
+                cancelUnitMove(unit);
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -833,9 +835,17 @@ public class GameView implements View {
             result.put(UnitCommands.GARRISON, true);
         }
 
+        if (unit.getPath() != null) {
+            result.put(UnitCommands.CANCEL_MOVE, true);
+        }
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void cancelUnitMove(Unit unit) {
+        unit.setPath(null);
+        printer.println("Unit's schedualed move was canceled");
     }
 
     private void deleteAUnit(Unit unit) {

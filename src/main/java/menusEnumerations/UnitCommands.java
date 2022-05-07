@@ -14,6 +14,7 @@ public class UnitCommands extends Commands {
     public static UnitCommands GARRISON = new UnitCommands("garrison", "garrison");
     public static UnitCommands AWAKE = new UnitCommands("wake", "wake");
     public static UnitCommands DELETE = new UnitCommands("delete", "delete");
+    public static UnitCommands CANCEL_MOVE = new UnitCommands("cancel move", "cancel move");
     // if you add a command, make the appropriate changes to the calculateAllwedCommands method of GameView
     
     private static ArrayList<UnitCommands> allCommands;
