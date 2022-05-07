@@ -18,10 +18,11 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands MOVE_FRAME_TO = new GameMainPageCommands("move frame to (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
     public static GameMainPageCommands GO_TO_NEXT_TURN = new GameMainPageCommands("(go to )?next( turn)?");
     public static GameMainPageCommands SHOW_UNITS = new GameMainPageCommands("(show )?units");
-    public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
     public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )?research tab");
-    // pass the turn
-    // show info about civ
+
+    // Cheat Codes
+    public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
+    public static GameMainPageCommands ADD_GOLD = new GameMainPageCommands("cash ziad eine hatami");
 
     GameMainPageCommands(String regex) {
         super(regex);

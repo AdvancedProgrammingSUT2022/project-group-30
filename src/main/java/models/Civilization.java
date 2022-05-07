@@ -300,6 +300,10 @@ public class Civilization implements TurnHandler {
         strategicResources.put(resource, strategicResources.get(resource) + 1);
     }
 
+    public void addGold(int amount) {
+        goldCount += amount;
+    }
+
     public void addStrategicResource(StrategicResource resource, int amount) {
         strategicResources.put(resource, strategicResources.get(resource) + amount);
     }

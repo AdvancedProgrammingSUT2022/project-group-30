@@ -100,10 +100,17 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
                 runResearchTab();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.ADD_GOLD.getCommandMatcher(command)) != null) {
+                addGold();
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void addGold() {
+        controller.getCurrentPlayer().addGold(200);
+        printer.printlnYellow("Balam az zamane Khatami");
     }
 
     private void runResearchTab() {
