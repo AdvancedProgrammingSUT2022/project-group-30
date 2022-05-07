@@ -587,6 +587,12 @@ public class GameView implements View {
         } else {
             printer.printlnRed(city.getFoodCount());
         }
+        String productionName = (city.getEntityInProduction() == null) ? "nothing!" : city.getEntityInProduction().getName();
+        printer.println("This city is producing " + productionName);
+        printer.printlnGreen("Food Output: " + city.calculateOutput().getFood());
+        printer.printlnRed("Production Output: " + city.calculateOutput().getProduction());
+        printer.printlnBlue("Science Output: " + city.calculateBeakerProduction());
+        printer.printlnYellow("Gold Output: " + city.calculateOutput().getGold());
     }
 
     private void deselectCity(City city) {
