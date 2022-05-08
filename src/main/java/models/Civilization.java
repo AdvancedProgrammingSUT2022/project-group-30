@@ -263,12 +263,7 @@ public class Civilization implements TurnHandler {
     }
 
     public boolean hasTechnology(Technology technology) {
-        // TODO : THIS IS FOR DEBUGGING, DELETE THIS
-        // TODO
-        return true;
-//        ArrayList<Technology> techs = new ArrayList<>();
-//        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
-//        return techs.contains(technology);
+        return technologies.isTechnologyLearned(technology);
     }
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {

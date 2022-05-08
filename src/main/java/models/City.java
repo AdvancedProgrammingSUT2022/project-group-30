@@ -188,7 +188,7 @@ public class City implements Selectable, TurnHandler, combative {
                     continue;
                 }
             }
-            if (owner.hasTechnology(type.getPrerequisitTechnology())) {
+            if (owner.getTechnologies().isTechnologyLearned(type.getPrerequisitTechnology())) {
                 result.add(type);
             }
         }

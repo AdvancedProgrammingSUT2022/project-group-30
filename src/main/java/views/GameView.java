@@ -10,6 +10,7 @@ import models.*;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.technology.Technology;
+import models.units.CombatType;
 import models.units.UnitState;
 import models.*;
 import models.buildings.Building;
@@ -839,6 +840,9 @@ public class GameView implements View {
                 break;
             } else if ((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)) {
                 awakeAUnit(unit);
+            } else if ((matcher = UnitCommands.SET_UP_FOR_RANGED_ATTACK.getCommandMatcher(command)) != null &&
+                    allowedCommands.get(UnitCommands.SET_UP_FOR_RANGED_ATTACK)) {
+                setUpForRangedAttack(unit);
             } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
@@ -861,6 +865,10 @@ public class GameView implements View {
             result.put(command, false);
         }
 
+
+        if (unit.getType().getCombatType() == CombatType.SIEGE && unit.isAssembled() == false && unit.getMovePointsLeft() >= 1) {
+            result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
+        }
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);
@@ -897,6 +905,12 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void setUpForRangedAttack(Unit unit) {
+        unit.assemble();
+        unit.setMovePointsLeft(Math.max(unit.getMovePointsLeft() - 1, 0));
+        printer.println("Unit successfully assembled!");
     }
 
     private void cancelUnitMove(Unit unit) {
@@ -975,6 +989,9 @@ public class GameView implements View {
     private void showUnitInfo(Unit unit) {
         printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
         printer.println("State: " + unit.getState());
+        if (unit.getType().getCombatType() == CombatType.SIEGE) {
+            printer.println((unit.isAssembled()) ? "Assembled" : "Disassembled");
+        }
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());

@@ -9,7 +9,7 @@ public enum BuildingType implements Producible {
     BARRACKS(80, 1, Technology.BRONZE_WORKING, 0, "Barracks"),
     GRANARY(100, 1, Technology.POTTERY, 0, "Granary"),
     LIBRARY(80, 1, Technology.WRITING, 0, "Library"),
-    MONUMENT(60, 1, null, 0, "Monument"),
+    MONUMENT(60, 1, Technology.AGRICULTURE, 0, "Monument"),
     WALLS(100, 1, Technology.MASONRY, 0, "Walls"),
     WATER_MILL(120, 2, Technology.THE_WHEEL, true,0, "Water Mill"),
     ARMORY(130, 3, Technology.IRON_WORKING, createArrayList(BARRACKS), 0, "Armory"),
