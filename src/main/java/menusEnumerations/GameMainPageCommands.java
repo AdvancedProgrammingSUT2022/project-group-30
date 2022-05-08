@@ -20,6 +20,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands SHOW_UNITS = new GameMainPageCommands("(show )?units");
     public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
     public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )?research tab");
+    public static GameMainPageCommands UNITS_INFO = new GameMainPageCommands("units panel");
     // pass the turn
     // show info about civ
 

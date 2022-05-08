@@ -100,11 +100,16 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
                 runResearchTab();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.UNITS_INFO.getCommandMatcher(command)) != null) {
+                showUnitsInfo();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
     }
+
+    private void showUnitsInfo() {}
 
     private void runResearchTab() {
         Civilization civilization = controller.getCurrentPlayer();
