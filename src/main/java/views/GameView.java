@@ -109,7 +109,48 @@ public class GameView implements View {
         }
     }
 
-    private void showUnitsInfo() {}
+    private void showUnitsInfo() {
+        Civilization civilization = controller.getCurrentPlayer();
+        ArrayList<Unit> units = civilization.getUnits();
+        String command;
+        while(true){
+            printer.printlnRed("*****************************************");
+            printer.println("Units panel");
+            printer.println("enter back to exit");
+            printer.println("you can select a unit from bellow list with this command : select <unit number in below list>");
+            printAllUnits(civilization, units);
+
+            command = scanner.nextLine();
+            if(command.equals("back")){
+                break;
+            }
+            else if(command.startsWith("select ")){
+                Matcher matcher = Pattern.compile("select (?<unitNumber>\\d+)").matcher(command);
+                if (!matcher.matches()){
+                    printer.println("Invalid command for Units panel!");
+                }
+                else{
+                    int unitNumber = Integer.parseInt(matcher.group("unitNumber"));
+                }
+            }
+            else {
+                printer.println("Invalid command for Units panel!");
+            }
+        }
+    }
+
+    private void selectUnitFromUnitsPanel(ArrayList<Unit> units, int unitNumber){
+
+    }
+
+    private void printAllUnits(Civilization civilization, ArrayList<Unit> units){
+        printer.printlnBlue(civilization.getName() + "'s Units:");
+        for(int i = 0; i < units.size(); i++){
+            printer.println(" " + (i + 1) + "- " + units.get(i).getType().getName() + " at Y: " + units.get(i).getLocation().findTileYCoordinateInMap() +
+                    ", X: " + units.get(i).getLocation().findTileXCoordinateInMap());
+        }
+    }
+
 
     private void runResearchTab() {
         Civilization civilization = controller.getCurrentPlayer();
