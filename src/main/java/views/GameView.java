@@ -149,6 +149,8 @@ public class GameView implements View {
             } else if ((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null) {
                 printer.println("You exited research tab");
                 break;
+            } else if ((matcher = ResearchCommands.LEARN_TECHNOLOGY.getCommandMatcher(command)) != null) {
+                learnTechnology(matcher);
             } else if ((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null) {
                 changeResearch(civilization);
             } else if ((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null) {
@@ -160,6 +162,21 @@ public class GameView implements View {
 
         }
 
+    }
+
+    private void learnTechnology(Matcher matcher) {
+        String techName = matcher.group("name");
+        Technology chosenTech = Technology.getTechnologyByName(techName);
+        if (chosenTech == null) {
+            printer.printlnError("Technology not recognized");
+            return;
+        }
+        if (controller.getCurrentPlayer().getTechnologies().isTechnologyLearned(chosenTech)) {
+            printer.printlnError("You have already learned this technology!");
+            return;
+        }
+        controller.getCurrentPlayer().getTechnologies().learnTechnologyAndPrerequisites(chosenTech);
+        printer.println("You have successfully stolen this technology.");
     }
 
     private void showResearchMenuCommands() {

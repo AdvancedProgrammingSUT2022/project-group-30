@@ -14,8 +14,13 @@ public class ResearchCommands extends Commands{
     public static ResearchCommands SHOW_CURRENT_INFO = new ResearchCommands("(show )?(current )?research info", "show current research info");
     public static ResearchCommands SHOW_COMMANDS = new ResearchCommands("show commands", "show commands");
 
+
+    // CHEAT CODES:
+    public static ResearchCommands LEARN_TECHNOLOGY = new ResearchCommands("alohomora (?<name>.*)");
+
+
     private static ArrayList<ResearchCommands> allCommands;
-    private  String name;
+    private String name;
 
     public ResearchCommands(String regex, String name){
         super(regex);
@@ -24,6 +29,11 @@ public class ResearchCommands extends Commands{
             allCommands = new ArrayList<>();
         }
         allCommands.add(this);
+    }
+
+    public ResearchCommands(String regex){
+        super(regex);
+        this.name = "Cheat Code";
     }
 
     public String getName(){

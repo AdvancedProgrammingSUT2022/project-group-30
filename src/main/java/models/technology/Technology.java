@@ -108,4 +108,13 @@ public enum Technology {
     public String getName(){
         return this.name;
     }
+
+    public static Technology getTechnologyByName(String name) {
+        for (Technology technology : values()) {
+            if (technology.getName().equalsIgnoreCase(name)) {
+                return technology;
+            }
+        }
+        return null;
+    }
 }
