@@ -109,10 +109,29 @@ public class GameView implements View {
                 addStrategicResource(matcher);
             } else if ((matcher = GameMainPageCommands.ADD_LUXURY_RESOURCE.getCommandMatcher(command)) != null) {
                 addLuxuryResource(matcher);
+            } else if ((matcher = GameMainPageCommands.ADD_UNIT.getCommandMatcher(command)) != null) {
+                addUnit(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void addUnit(Matcher matcher) {
+        String name = matcher.group("name");
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        UnitType selectedType = UnitType.getUnitTypeByName(name);
+        if (selectedType == null) {
+            printer.printlnError("Unit not recognized");
+            return;
+        }
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates");
+            return;
+        }
+        controller.createUnit(selectedType, controller.getCurrentPlayer(), controller.getTileByCoordinates(x, y));
+        printer.println("Your units have been dispatched");
     }
 
     private void addStrategicResource(Matcher matcher) {

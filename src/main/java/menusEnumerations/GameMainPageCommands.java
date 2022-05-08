@@ -26,6 +26,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands DISABLE_TURN_BREAK = new GameMainPageCommands("jenab sarvan welam kon");
     public static GameMainPageCommands ADD_STRATEGIC_RESOURCE = new GameMainPageCommands("need me some (?<name>.*)");
     public static GameMainPageCommands ADD_LUXURY_RESOURCE = new GameMainPageCommands("asan luxury shodan monshiam (?<name>.*)");
+    public static GameMainPageCommands ADD_UNIT = new GameMainPageCommands("send dudes (?<name>.*)[-: ](?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
 
     GameMainPageCommands(String regex) {
         super(regex);
