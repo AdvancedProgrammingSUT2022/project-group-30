@@ -122,14 +122,42 @@ public class GameView implements View {
             printer.println("Cities panel");
             printer.println("Enter back to exit");
             printer.println("you can select a city from bellow list with this command : select <city number in below list>");
+
+            command = scanner.nextLine();
+            if(command.equals("back")){
+                break;
+            }
+            else if(command.startsWith("select ")){
+                Matcher matcher = Pattern.compile("select (?<cityNumber>\\d+)").matcher(command);
+                if (!matcher.matches()){
+                    printer.println("Invalid command for Cities panel!");
+                }
+                else{
+                    int cityNumber = Integer.parseInt(matcher.group("cityNumber"));
+                    quit = selectCityFromCitiesPanel(civilization, cities, cityNumber);
+                }
+            }
+            else {
+                printer.println("Invalid command for Units panel!");
+            }
         }
     }
 
+    private boolean selectCityFromCitiesPanel(Civilization civilization, ArrayList<City> cities, int cityNumber){
+        if(cityNumber < 1 || cityNumber > cities.size()){
+            printer.println("Invalid city number!");
+            return false;
+        }
+        City city = cities.get(cityNumber - 1);
+        civilization.setSelectedEntity(city);
+        return true;
+    }
+
     private void printAllCities(Civilization civilization, ArrayList<City> cities){
-        printer.printlnBlue(civilization.getName() + "'s Cities:");
+        printer.printlnBlue(civilization.getName() + " has cities with central tiles in this positions:");
         for(int i = 0; i < cities.size(); i++){
-            printer.println(" " + (i + 1) + "- " + cities.get(i).getType().getName() + " at Y: " + units.get(i).getLocation().findTileYCoordinateInMap() +
-                    ", X: " + units.get(i).getLocation().findTileXCoordinateInMap());
+            printer.println(" " + (i + 1) + "- " + " at Y: " + cities.get(i).getCentralTile().findTileYCoordinateInMap() +
+                    ", X: " + cities.get(i).getCentralTile().findTileYCoordinateInMap());
         }
     }
 
