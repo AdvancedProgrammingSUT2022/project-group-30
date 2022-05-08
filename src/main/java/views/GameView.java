@@ -103,9 +103,33 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.UNITS_INFO.getCommandMatcher(command)) != null) {
                 showUnitsInfo();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.CITIES_INFO.getCommandMatcher(command)) != null) {
+                showCitiesInfo();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
+        }
+    }
+
+    private void showCitiesInfo() {
+        Civilization civilization = controller.getCurrentPlayer();
+        ArrayList<City> cities = civilization.getCities();
+        String command;
+        boolean quit = false;
+        while(!quit){
+            printer.printlnRed("*****************************************");
+            printer.println("Cities panel");
+            printer.println("Enter back to exit");
+            printer.println("you can select a city from bellow list with this command : select <city number in below list>");
+        }
+    }
+
+    private void printAllCities(Civilization civilization, ArrayList<City> cities){
+        printer.printlnBlue(civilization.getName() + "'s Cities:");
+        for(int i = 0; i < cities.size(); i++){
+            printer.println(" " + (i + 1) + "- " + cities.get(i).getType().getName() + " at Y: " + units.get(i).getLocation().findTileYCoordinateInMap() +
+                    ", X: " + units.get(i).getLocation().findTileXCoordinateInMap());
         }
     }
 
@@ -117,7 +141,7 @@ public class GameView implements View {
         while(!quit){
             printer.printlnRed("*****************************************");
             printer.println("Units panel");
-            printer.println("enter back to exit");
+            printer.println("Enter back to exit");
             printer.println("you can select a unit from bellow list with this command : select <unit number in below list>");
             printAllUnits(civilization, units);
 
