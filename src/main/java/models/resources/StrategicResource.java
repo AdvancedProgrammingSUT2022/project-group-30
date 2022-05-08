@@ -78,4 +78,13 @@ public class StrategicResource extends Resource {
         }
         return result;
     }
+
+    public static StrategicResource getStrategicResourceByName(String name) {
+        for (StrategicResource type : allTypes) {
+            if (type.getName().equalsIgnoreCase(name)) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

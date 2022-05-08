@@ -24,6 +24,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
     public static GameMainPageCommands ADD_GOLD = new GameMainPageCommands("cash ziad eine hatami");
     public static GameMainPageCommands DISABLE_TURN_BREAK = new GameMainPageCommands("jenab sarvan welam kon");
+    public static GameMainPageCommands ADD_STRATEGIC_RESOURCE = new GameMainPageCommands("need me some (?<name>.*)");
 
     GameMainPageCommands(String regex) {
         super(regex);

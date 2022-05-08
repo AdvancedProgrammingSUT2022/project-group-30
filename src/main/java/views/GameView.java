@@ -104,10 +104,23 @@ public class GameView implements View {
                 addGold();
             } else if ((matcher = GameMainPageCommands.DISABLE_TURN_BREAK.getCommandMatcher(command)) != null) {
                 disableTurnBreak();
+            } else if ((matcher = GameMainPageCommands.ADD_STRATEGIC_RESOURCE.getCommandMatcher(command)) != null) {
+                addStrategicResource(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void addStrategicResource(Matcher matcher) {
+        String name = matcher.group("name");
+        StrategicResource chosenResource = StrategicResource.getStrategicResourceByName(name);
+        if (chosenResource == null) {
+            printer.printlnError("Resource not recognized!");
+            return;
+        }
+        controller.getCurrentPlayer().addStrategicResource(chosenResource, 5);
+        printer.println("You just purchased some " + chosenResource.getName() + " on dark web. I'd look over my shoulder for a while...");
     }
 
     private void disableTurnBreak() {
@@ -159,9 +172,7 @@ public class GameView implements View {
             } else {
                 printer.println("Invalid command for Research tab!");
             }
-
         }
-
     }
 
     private void learnTechnology(Matcher matcher) {
