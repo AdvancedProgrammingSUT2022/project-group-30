@@ -113,7 +113,8 @@ public class GameView implements View {
         Civilization civilization = controller.getCurrentPlayer();
         ArrayList<Unit> units = civilization.getUnits();
         String command;
-        while(true){
+        boolean quit = false;
+        while(!quit){
             printer.printlnRed("*****************************************");
             printer.println("Units panel");
             printer.println("enter back to exit");
@@ -131,6 +132,7 @@ public class GameView implements View {
                 }
                 else{
                     int unitNumber = Integer.parseInt(matcher.group("unitNumber"));
+                    quit = selectUnitFromUnitsPanel(civilization, units, unitNumber);
                 }
             }
             else {
@@ -139,8 +141,15 @@ public class GameView implements View {
         }
     }
 
-    private void selectUnitFromUnitsPanel(ArrayList<Unit> units, int unitNumber){
-
+    private boolean selectUnitFromUnitsPanel(Civilization civilization, ArrayList<Unit> units, int unitNumber){
+        if(unitNumber < 1 || unitNumber > units.size()){
+            printer.println("Invalid unit number!");
+            return false;
+        }
+        Unit unit = units.get(unitNumber - 1);
+        civilization.setSelectedEntity(unit);
+        printer.println(civilization.getName() + "'s " + unit.getType().getName() + " was selected");
+        return true;
     }
 
     private void printAllUnits(Civilization civilization, ArrayList<Unit> units){
