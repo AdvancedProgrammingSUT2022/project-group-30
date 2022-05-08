@@ -297,16 +297,20 @@ public class Civilization implements TurnHandler {
         luxuryResources.put(resource, luxuryResources.get(resource) + 1);
     }
 
+    public void addLuxuryResource(LuxuryResource resource, int amount) {
+        luxuryResources.put(resource, luxuryResources.get(resource) + amount);
+    }
+
     public void addStrategicResource(StrategicResource resource) {
         strategicResources.put(resource, strategicResources.get(resource) + 1);
     }
 
-    public void addGold(int amount) {
-        goldCount += amount;
-    }
-
     public void addStrategicResource(StrategicResource resource, int amount) {
         strategicResources.put(resource, strategicResources.get(resource) + amount);
+    }
+
+    public void addGold(int amount) {
+        goldCount += amount;
     }
 
     public void setLuxuryResources(HashMap<LuxuryResource, Integer> luxuryResources) {

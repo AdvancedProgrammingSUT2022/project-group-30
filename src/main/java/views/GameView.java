@@ -106,6 +106,8 @@ public class GameView implements View {
                 disableTurnBreak();
             } else if ((matcher = GameMainPageCommands.ADD_STRATEGIC_RESOURCE.getCommandMatcher(command)) != null) {
                 addStrategicResource(matcher);
+            } else if ((matcher = GameMainPageCommands.ADD_LUXURY_RESOURCE.getCommandMatcher(command)) != null) {
+                addLuxuryResource(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
@@ -120,6 +122,17 @@ public class GameView implements View {
             return;
         }
         controller.getCurrentPlayer().addStrategicResource(chosenResource, 5);
+        printer.println("You just purchased some " + chosenResource.getName() + " on dark web. I'd look over my shoulder for a while...");
+    }
+
+    private void addLuxuryResource(Matcher matcher) {
+        String name = matcher.group("name");
+        LuxuryResource chosenResource = LuxuryResource.getLuxuryResourceByName(name);
+        if (chosenResource == null) {
+            printer.printlnError("Resource not recognized!");
+            return;
+        }
+        controller.getCurrentPlayer().addLuxuryResource(chosenResource, 5);
         printer.println("You just purchased some " + chosenResource.getName() + " on dark web. I'd look over my shoulder for a while...");
     }
 
