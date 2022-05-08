@@ -869,6 +869,12 @@ public class GameView implements View {
         if (unit.getType().getCombatType() == CombatType.SIEGE && unit.isAssembled() == false && unit.getMovePointsLeft() >= 1) {
             result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
         }
+        if (controller.canUnitMeleeAttack(unit)) {
+            result.put(UnitCommands.MELEE_ATTACK, true);
+        }
+        if (controller.canUnitRangedAttack(unit)) {
+            result.put(UnitCommands.RANGED_ATTACK, true);
+        }
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);

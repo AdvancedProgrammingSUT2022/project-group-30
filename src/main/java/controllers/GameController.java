@@ -128,13 +128,13 @@ public class GameController {
         awakeAllNearAlertedUnits(unit);
     }
 
-    private void awakeAllNearAlertedUnits(Unit unit){
+    private void awakeAllNearAlertedUnits(Unit unit) {
         Tile tile = unit.getLocation();
         ArrayList<Tile> adjacetTiles = this.getAdjacentTiles(tile);
-        for(int i = 0; i < adjacetTiles.size(); i++){
+        for (int i = 0; i < adjacetTiles.size(); i++) {
             ArrayList<Unit> units = this.getUnitsInTile(adjacetTiles.get(i));
-            for(int j = 0; j < units.size(); j++){
-                if(!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
+            for (int j = 0; j < units.size(); j++) {
+                if (!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
                     units.get(i).setState(UnitState.AWAKE);
                 }
             }
@@ -199,7 +199,7 @@ public class GameController {
     private void updateUnitPath(Unit unit, Tile destination) {
         ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
         int index = newPath.indexOf(destination);
-        for(int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             newPath.remove(0);
         }
         if (newPath.size() == 1) {
@@ -452,6 +452,35 @@ public class GameController {
         }
     }
 
+    public boolean canUnitMeleeAttack(Unit unit) {
+        if (unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
+            return false;
+        }
+        ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
+        for (Tile tile : unitVicinity) {
+            ArrayList<Unit> unitsInTile = getUnitsInTile(tile);
+            for (Unit unitInTile : unitsInTile) {
+                if (unitInTile.getOwner() != unit.getOwner()) {
+                    return true;
+                }
+            }
+            City city = getCityCenteredInTile(tile);
+            if (city != null) {
+                if (city.getOwner() != unit.getOwner()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean canUnitRangedAttack(Unit unit) {
+        if (unit.isCivilian() || !unit.getType().isRanged() || unit.getMovePointsLeft() == 0 || !unit.isAssembled()) {
+            return false;
+        }
+        return true;
+    }
+
     public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)
         for (City city : gameDataBase.getCities()) {
             if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {
@@ -687,7 +716,7 @@ public class GameController {
         return GameMap.getGameMap().getMap().length;
     }
 
-    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         ArrayList<Tile> pathTiles = new ArrayList<>();
         TileGraph graph = this.makeTilesGraph(unit, sourceTile, destinationTile);
         GraphNode destinationNode = graph.getNodeByTile(destinationTile);
@@ -698,16 +727,16 @@ public class GameController {
         return pathTiles;
     }
 
-    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source){
+    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source) {
         source.setDistance(0);
         HashSet<GraphNode> settledNodes = new HashSet<>();
         HashSet<GraphNode> unsettledNodes = new HashSet<>();
         unsettledNodes.add(source);
-        while(!unsettledNodes.isEmpty()){
+        while (!unsettledNodes.isEmpty()) {
             GraphNode currentNode = this.getLowestDistanceNode(unsettledNodes);
             unsettledNodes.remove(currentNode);
-            for(Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()){
-                if(!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()){
+            for (Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()) {
+                if (!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()) {
                     adjacencyPair.getKey().setDistance(currentNode.getDistance() + adjacencyPair.getValue());
                     List<GraphNode> shortestPath = new LinkedList<>(currentNode.getShortestPath());
                     shortestPath.add(currentNode);
@@ -720,11 +749,11 @@ public class GameController {
         return graph;
     }
 
-    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes){
+    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes) {
         GraphNode lowestDistanceNode = null;
         int lowestDistance = Integer.MAX_VALUE;
         for (GraphNode unsettledNode : unsettledNodes) {
-            if(unsettledNode.getDistance() < lowestDistance){
+            if (unsettledNode.getDistance() < lowestDistance) {
                 lowestDistance = unsettledNode.getDistance();
                 lowestDistanceNode = unsettledNode;
             }
@@ -732,17 +761,17 @@ public class GameController {
         return lowestDistanceNode;
     }
 
-    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
+    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination) {
         TileGraph graph = new TileGraph();
         GraphNode sourceNode = new GraphNode(origin);
         graph.addNode(sourceNode);
-        while(!graph.isTileAddedToGraph(destination)){
+        while (!graph.isTileAddedToGraph(destination)) {
             ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
-            for (int i = 0 ; i < nodes.size(); i++) {
+            for (int i = 0; i < nodes.size(); i++) {
                 GraphNode node = nodes.get(i);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                    if (!graph.isTileAddedToGraph(adjacentTile)) {
                         MPCostInterface mpCost;
                         if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
                             GraphNode newNode = new GraphNode(adjacentTile);
@@ -757,13 +786,13 @@ public class GameController {
                 }
             }
         }
-        for(int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
-            for (int j = 0 ; j < nodes.size(); j++) {
+            for (int j = 0; j < nodes.size(); j++) {
                 GraphNode node = nodes.get(j);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                    if (!graph.isTileAddedToGraph(adjacentTile)) {
                         MPCostInterface mpCost;
                         if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
                             GraphNode newNode = new GraphNode(adjacentTile);
