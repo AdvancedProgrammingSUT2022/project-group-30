@@ -22,6 +22,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )?research tab");
     public static GameMainPageCommands UNITS_INFO = new GameMainPageCommands("units panel");
     public static GameMainPageCommands CITIES_INFO = new GameMainPageCommands("cities panel");
+    public static GameMainPageCommands NOTIFICATION_HISTORY = new GameMainPageCommands("(show )notification history");
     // pass the turn
     // show info about civ
 

@@ -59,6 +59,7 @@ public class GameView implements View {
         Matcher matcher;
         while (true) {
             this.printNewNotifications();
+
             if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof Unit) {
                 runUnitActionsTab();
                 continue;
@@ -107,10 +108,22 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.CITIES_INFO.getCommandMatcher(command)) != null) {
                 showCitiesInfo();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.NOTIFICATION_HISTORY.getCommandMatcher(command)) != null) {
+                showAllNotification();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void showAllNotification(){
+        ArrayList<Notification> notifications = this.controller.getCurrentPlayer().getNotifications();
+        printer.printlnGreen("Your all notifications :");
+        for(int i = 0; i < notifications.size(); i++){
+            printer.println(" " + (i + 1) + "- " + notifications.get(i).getText() + " , in turn: " + notifications.get(i).getTurnNumber());
+        }
+        this.controller.seenAllNotifications();
     }
 
     private void printNewNotifications(){
