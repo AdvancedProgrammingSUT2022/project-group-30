@@ -533,6 +533,7 @@ public class GameController {
         for (Improvement improvement : unit.getLocation().getImprovements()) {
             improvement.setIsPillaged(true);
         }
+        unit.setMovePointsLeft(0);
     }
 
     public City whoseTerritoryIsTileInButIsNotTheCenterOf(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center does not count)
