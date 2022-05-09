@@ -511,13 +511,27 @@ public class GameController {
         return true;
     }
 
-    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)
+    public City whoseTerritoryIsTileInButIsNotTheCenterOf(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center does not count)
         for (City city : gameDataBase.getCities()) {
             if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {
                 return city;
             }
         }
         return null;
+    }
+
+    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts)
+        for (City city : gameDataBase.getCities()) {
+            if (city.getTerritories().contains(tile)) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public void addTileToCityTerritory(City city, Tile tile) {
+        city.addTileToTerritory(tile);
+        setMapImageOfCivilization(city.getOwner());
     }
 
     public boolean areTwoTilesAdjacent(Tile tile1, Tile tile2) {

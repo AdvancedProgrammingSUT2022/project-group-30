@@ -308,6 +308,10 @@ public class Civilization implements TurnHandler {
         goldCount += amount;
     }
 
+    public void decreaseGold(int amount) {
+        goldCount -= amount;
+    }
+
     public void setLuxuryResources(HashMap<LuxuryResource, Integer> luxuryResources) {
         this.luxuryResources = luxuryResources;
     }

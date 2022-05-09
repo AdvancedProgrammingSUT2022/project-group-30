@@ -422,6 +422,8 @@ public class GameView implements View {
         Matcher matcher;
         int x, y;
 
+        Tile tile = null;
+        int cost = 0;
         while (true) {
             String input = scanner.nextLine();
             if ((matcher = inputPattern.matcher(input)).matches()) {
@@ -431,24 +433,28 @@ public class GameView implements View {
                     printer.printlnError("Invalid coordinates, try again.");
                     continue;
                 }
-                Tile tile = controller.getTileByCoordinates(x, y);
+                tile = controller.getTileByCoordinates(x, y);
                 if (!purchasableTiles.contains(tile)) {
                     printer.printlnError("You can only choose from the presented list. Try again.");
                     continue;
                 }
-                int cost = city.calculateNextTilePrice();
+                cost = city.calculateNextTilePrice();
                 if (cost > city.getOwner().getGoldCount()) {
                     printer.printlnError("You don't have enough gold to buy this tile!");
-                    break;
+                    return;
                 }
                 break;
             } else if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
                 printer.printlnRed("purchase canceled.");
-                break;
+                return;
             } else {
                 printer.printlnError("Invalid input, try again.");
+                continue;
             }
         }
+        controller.getCurrentPlayer().decreaseGold(cost);
+        controller.addTileToCityTerritory(city, tile);
+        printer.println("Tile successfully purchased!");
     }
 
     private void runProductionPanel(City city) {
@@ -1211,7 +1217,7 @@ public class GameView implements View {
             tile = (Tile) image;
             units = controller.getUnitsInTile(tile);
             cityCentral = controller.getCityCenteredInTile(tile);
-            city = controller.whoseTerritoryIsTileIn(tile);
+            city = controller.whoseTerritoryIsTileInButIsNotTheCenterOf(tile);
         } else if (image instanceof TileHistory) {
             printer.printlnBlue("This tile is only revealed, the information contained may be out of date");
             TileHistory history = (TileHistory) image;

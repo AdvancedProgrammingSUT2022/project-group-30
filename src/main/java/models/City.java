@@ -329,7 +329,7 @@ public class City implements Selectable, TurnHandler, combative {
         ArrayList<Tile> result = new ArrayList<>();
         for (Tile territory : territories) {
             for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
-                if (!territories.contains(adjacentTile)) {
+                if (!territories.contains(adjacentTile) && GameController.getGameController().whoseTerritoryIsTileIn(adjacentTile) == null) {
                     result.add(adjacentTile);
                 }
             }
