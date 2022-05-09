@@ -134,7 +134,7 @@ public class GameView implements View {
 
             command = scanner.nextLine();
             if(command.equals("show commands")){
-
+                showDemographicPanelCommands();
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null){
@@ -176,6 +176,14 @@ public class GameView implements View {
 
             }
 
+        }
+    }
+
+    private void showDemographicPanelCommands(){
+        ArrayList<DemographicPanelCommands> demographicPanelCommands = DemographicPanelCommands.getAllCommands();
+        printer.printlnBlue("Demographic panel commands:");
+        for (DemographicPanelCommands demographicPanelCommand : demographicPanelCommands) {
+            printer.println(" -" + demographicPanelCommand.getName());
         }
     }
 

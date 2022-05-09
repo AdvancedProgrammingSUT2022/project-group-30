@@ -32,7 +32,7 @@ public class DemographicPanelCommands extends Commands{
         return this.name;
     }
 
-    public ArrayList<DemographicPanelCommands> getAllCommands(){
+    public static ArrayList<DemographicPanelCommands> getAllCommands(){
         return allCommands;
     }
 }
