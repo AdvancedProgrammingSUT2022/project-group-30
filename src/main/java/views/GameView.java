@@ -912,6 +912,9 @@ public class GameView implements View {
         if (controller.canWorkerBuildFarm(worker)) {
             result.add(WorkerCommands.BUILD_FARM);
         }
+        if (controller.canWorkerBuildMine(worker)) {
+            result.add(WorkerCommands.BUILD_MINE);
+        }
         return result;
         // TODO
     }
