@@ -934,6 +934,9 @@ public class GameView implements View {
         if (controller.canUnitRangedAttack(unit)) {
             result.put(UnitCommands.RANGED_ATTACK, true);
         }
+        if (controller.canUnitPillage(unit)) {
+            result.put(UnitCommands.PILLAGE, true);
+        }
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);

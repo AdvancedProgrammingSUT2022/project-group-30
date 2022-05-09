@@ -482,6 +482,19 @@ public class GameController {
         }
     }
 
+    public boolean canUnitPillage(Unit unit) {
+        if (unit.isCivilian()) {
+            return false;
+        }
+        if (unit.getMovePointsLeft() == 0) {
+            return false;
+        }
+        if (unit.getLocation().getUnpillagedImprovements().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean canUnitMeleeAttack(Unit unit) {
         if (unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
             return false;

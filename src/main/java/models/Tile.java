@@ -318,6 +318,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.improvements;
     }
 
+    public ArrayList<Improvement> getUnpillagedImprovements() {
+        ArrayList<Improvement> result = new ArrayList<Improvement>();
+        for (Improvement improvement : improvements) {
+            if (!improvement.getIsPillaged()) {
+                result.add(improvement);
+            }
+        }
+        return result;
+    }
+
     public Ruins getRuins() {
         return this.ruins;
     }

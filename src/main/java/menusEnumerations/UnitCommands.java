@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class UnitCommands extends Commands {
     public static UnitCommands DESELECT = new UnitCommands("deselect", "deselect");
     public static UnitCommands SET_UP_FOR_RANGED_ATTACK = new UnitCommands("set up( for ranged attack)?", "set up for ranged attack");
+    public static UnitCommands PILLAGE = new UnitCommands("pillage", "pillage");
     public static UnitCommands MELEE_ATTACK = new UnitCommands("(melee )?attack", "melee attack");
     public static UnitCommands RANGED_ATTACK = new UnitCommands("ranged attack", "ranged attack");
     public static UnitCommands MOVE_TO = new UnitCommands("move (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)", "move y, x");
