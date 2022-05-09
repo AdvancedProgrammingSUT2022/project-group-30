@@ -1,7 +1,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import controllers.GameController;
@@ -12,7 +11,6 @@ import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
-import models.resources.BonusResource;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -39,6 +37,7 @@ public class Civilization implements TurnHandler {
     private City originCapital;
     private Tile frameBase;
     private Selectable selectedEntity;
+    private ArrayList<Notification> notifications = new ArrayList<>();
 
     public Civilization(String name) {
         this.name = name;
@@ -141,6 +140,7 @@ public class Civilization implements TurnHandler {
             if(this.beakerCount >= this.researchProject.getCost()){
                 this.beakerCount -= this.researchProject.getCost();
                 this.technologies.learnTechnology(this.researchProject);
+                this.addNotificationForResearch(this.researchProject);
                 this.researchProject = null;
             }
         }
@@ -423,5 +423,19 @@ public class Civilization implements TurnHandler {
             }
         }
         return null;
+    }
+
+    private void addNotificationForResearch(Technology researchProject){
+        String technologyName = researchProject.getName();
+        String notificationText = "You have learned " + technologyName + "technology!";
+        Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications){
+        this.notifications = notifications;
+    }
+
+    public ArrayList<Notification> getNotifications(){
+        return this.notifications;
     }
 }
