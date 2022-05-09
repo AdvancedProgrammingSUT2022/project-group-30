@@ -130,7 +130,7 @@ public class GameController {
             return false;
         }
 
-        return false;
+        return true;
     }
 
     public boolean isWorkerWorking(Unit worker) {

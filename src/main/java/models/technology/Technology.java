@@ -24,7 +24,7 @@ public enum Technology {
     POTTERY(10, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Pottery"),
     CALENDAR(10, new ArrayList<Technology>(Arrays.asList(POTTERY)), "Calendar"),
     MASONRY(10, new ArrayList<Technology>(Arrays.asList(MINING)), "Masonry"),
-    THE_WHEEL(10, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY)), " The Wheel"),
+    THE_WHEEL(10, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY)), "The Wheel"),
     TRAPPING(10, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY)), "Trapping"),
     WRITING(10, new ArrayList<Technology>(Arrays.asList(POTTERY)), "Writing"),
     CONSTRUCTION(10, new ArrayList<Technology>(Arrays.asList(MASONRY)), "Construction"),

@@ -878,7 +878,27 @@ public class GameView implements View {
     private void runWorkActionsTab() {
         Unit worker = (Unit) controller.getCurrentPlayer().getSelectedEntity();
         ArrayList<WorkerCommands> allowedCommands = calculateWorkerAllowedActions(worker);
+        printer.printlnRed("**********************************");
+        printer.printlnRed("Work Actions Tab");
+        printer.println("Choose an action from the below list: enter back to go back :)");
+        for (WorkerCommands allowedCommand : allowedCommands) {
+            printer.println(allowedCommand.getName());
+        }
 
+        String command;
+        Matcher matcher;
+        while (true) {
+            command = scanner.nextLine();
+            if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
+                // TODO
+                printer.println("building road...");
+            } else if (command.equals("cancel") || command.equals("back")) {
+                printer.println("You have exited Work Actions Panel");
+                break;
+            } else {
+                printer.printlnError("Invalid Command!");
+            }
+        }
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
