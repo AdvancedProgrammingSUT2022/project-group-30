@@ -861,5 +861,13 @@ public class GameController {
         return warInfos;
     }
 
-    //public ArrayList<>
+    public ArrayList<Notification> getCivilizationNewNotification(){
+        ArrayList<Notification> allNotifications = this.getCurrentPlayer().getNotifications();
+        ArrayList<Notification> newNotifications = new ArrayList<>();
+        for (int i = 0; i < allNotifications.size(); i++){
+            if(!allNotifications.get(i).getIsSeen()){
+                newNotifications.add(allNotifications.get(i));
+            }
+        }
+    }
 }
