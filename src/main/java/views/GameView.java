@@ -166,14 +166,14 @@ public class GameView implements View {
                 showScore();
             }
             else if((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null){
-
+                showScoreBoard();
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.BACK.getCommandMatcher(command)) != null){
                 break;
             }
             else{
-
+                printer.println("Invalid command for demographic panel!");
             }
 
         }
@@ -185,8 +185,13 @@ public class GameView implements View {
         showScore();
         printer.println("Highest score : " + this.controller.calculateHighestScore());
         printer.println("Lowest score : " + this.controller.calculateLowestScore());
-
-
+        printer.println("Average score : " + this.controller.calculateAverageScore());
+        printer.println("##########################");
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        for(int i = 0; i < players.size(); i++){
+            printer.println(" " + (i + 1) + "- " + players.get(i).getCivilization().getName() + " , score : " + this.controller.calculateScoreForCivilization(players.get(i).getCivilization()));
+        }
+        printer.println("##########################");
     }
 
     private void showScore(){
