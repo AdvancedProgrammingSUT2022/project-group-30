@@ -1219,6 +1219,15 @@ public class GameView implements View {
         if (unit.getType().getCombatType() == CombatType.SIEGE) {
             printer.println((unit.isAssembled()) ? "Assembled" : "Disassembled");
         }
+        if (unit.getType() == UnitType.WORKER) {
+            if (controller.getWorkersWork(unit) == null) {
+                printer.println("Not Currently Working...");
+            } else {
+                printer.println("Work: " + controller.getWorkersWork(unit));
+                Tile location = controller.getWorkersWork(unit).findLocation();
+                printer.println("Work Place: Y: " + location.findTileYCoordinateInMap() + ", X: " + location.findTileXCoordinateInMap());
+            }
+        }
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());

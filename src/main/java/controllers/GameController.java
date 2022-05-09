@@ -207,6 +207,15 @@ public class GameController {
         return false;
     }
 
+    public Work getWorkersWork(Unit worker) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker) {
+                return tile.getWork();
+            }
+        }
+        return null;
+    }
+
     public TileVisibility getTileVisibilityForPlayer(Tile tile) { // returns Visible, Fog of War, or Revealed
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
