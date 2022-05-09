@@ -915,6 +915,25 @@ public class GameView implements View {
         if (controller.canWorkerBuildMine(worker)) {
             result.add(WorkerCommands.BUILD_MINE);
         }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.TRADING_POST)) {
+            result.add(WorkerCommands.BUILD_TRADING_POST);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.LUMBER_MILL)) {
+            result.add(WorkerCommands.BUILD_LUMBER_MILL);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PASTURE)) {
+            result.add(WorkerCommands.BUILD_PASTURE);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PLANTATION)) {
+            result.add(WorkerCommands.BUILD_PLANTATION);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.QUARRY)) {
+            result.add(WorkerCommands.BUILD_QUARRY);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.CAMP)) {
+            result.add(WorkerCommands.BUILD_CAMP);
+        }
+
         return result;
         // TODO
     }

@@ -1,5 +1,6 @@
 package controllers;
 
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
@@ -162,6 +164,30 @@ public class GameController {
             }
         }
         return true;
+    }
+
+    public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(improvementType.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if (!improvementType.isCompatibleWithTile(worker.getLocation())) {
+            return false;
+        }
+        for (Resource resource : location.getResourcesAsArrayList()) {
+            if (resource.getPrerequisiteImprovement() == improvementType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean canWorkerBuildRoad(Unit worker) {
