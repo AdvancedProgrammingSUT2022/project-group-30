@@ -939,6 +939,9 @@ public class GameView implements View {
         if (controller.canWorkerClearFeature(worker, Feature.MARSH)) {
             result.add(WorkerCommands.CLEAR_MARSH);
         }
+        if (controller.canWorkerClearRoutes(worker)) {
+            result.add(WorkerCommands.CLEAR_ROUTES);
+        }
         return result;
         // TODO
     }

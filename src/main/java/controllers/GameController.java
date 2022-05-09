@@ -120,6 +120,17 @@ public class GameController {
         return gameDataBase.getMap().getTile(x, y);
     }
 
+    public boolean canWorkerClearRoutes(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (!(worker.getLocation().containsImprovment(ImprovementType.ROAD) ||
+                worker.getLocation().containsImprovment(ImprovementType.RAILROAD))) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean canWorkerClearFeature(Unit worker, Feature feature) {
         if (isWorkerWorking(worker)) {
             return false;
