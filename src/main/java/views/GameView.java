@@ -773,6 +773,10 @@ public class GameView implements View {
             printer.printlnRed("The tile you have entered is not in this city's territory!");
             return;
         }
+        if (tile.calculateDistance(city.getCentralTile()) > 2) {
+            printer.printlnError("This tile is too far away from city center!");
+            return;
+        }
         if (city.isTileBeingWorked(tile)) {
             printer.printlnRed("This tile is already being worked!");
             return;
