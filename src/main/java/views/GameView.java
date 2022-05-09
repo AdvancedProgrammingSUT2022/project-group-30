@@ -20,6 +20,7 @@ import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -144,7 +145,7 @@ public class GameView implements View {
                 showGoldCount();
             }
             else if((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null){
-
+                showAllResources();
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null){
@@ -152,7 +153,7 @@ public class GameView implements View {
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
-
+                showLearnedTechnologies(this.controller.getCurrentPlayer());
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null){
@@ -160,7 +161,7 @@ public class GameView implements View {
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null){
-
+                showOutput();
             }
             else if((matcher = DemographicPanelCommands.SCORE.getCommandMatcher(command)) != null){
                 showScore();
@@ -177,6 +178,31 @@ public class GameView implements View {
             }
 
         }
+    }
+
+    private void showAllResources(){
+        printer.printlnGreen("Your luxury resources:");
+        HashMap<LuxuryResource, Integer> luxuryResources = this.controller.getCurrentPlayer().getLuxuryResources();
+        for(Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()){
+            if(entry.getValue() > 0) {
+                printer.println(" " + "- " + entry.getKey() + ", " + entry.getValue());
+            }
+        }
+        printer.printlnGreen("Your strategic resources:");
+        HashMap<StrategicResource, Integer> strategicResources = this.controller.getCurrentPlayer().getStrategicResources();
+        for(Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()){
+            if(entry.getValue() > 0) {
+                printer.println(" " + "- " + entry.getKey() + ", " + entry.getValue());
+            }
+        }
+    }
+
+    private void showOutput(){
+        Civilization civilization = this.controller.getCurrentPlayer();
+        printer.printlnGreen("Your collectable outputs in each turn:");
+        printer.println("Gold : " + (int) civilization.calculateNetGoldProduction());
+        printer.println("Production : " + (int) civilization.calculateTotalBeakers());
+        printer.println("Food : " + (int) civilization.calculateTotalFoodFromCities());
     }
 
     private void showScoreBoard(){
