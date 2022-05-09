@@ -529,6 +529,12 @@ public class GameController {
         tile.addImprovement(newImprovement);
     }
 
+    public void pillageUnitsTile(Unit unit) {
+        for (Improvement improvement : unit.getLocation().getImprovements()) {
+            improvement.setIsPillaged(true);
+        }
+    }
+
     public City whoseTerritoryIsTileInButIsNotTheCenterOf(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center does not count)
         for (City city : gameDataBase.getCities()) {
             if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {

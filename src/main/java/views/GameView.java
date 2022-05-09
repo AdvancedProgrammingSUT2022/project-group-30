@@ -928,6 +928,8 @@ public class GameView implements View {
             } else if ((matcher = UnitCommands.SET_UP_FOR_RANGED_ATTACK.getCommandMatcher(command)) != null &&
                     allowedCommands.get(UnitCommands.SET_UP_FOR_RANGED_ATTACK)) {
                 setUpForRangedAttack(unit);
+            } else if ((matcher = UnitCommands.PILLAGE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.PILLAGE)) {
+                pillage(unit);
             } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
@@ -1003,6 +1005,11 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void pillage(Unit unit) {
+        controller.pillageUnitsTile(unit);
+        printer.println("You just successfully tore apart hard-earned value!");
     }
 
     private void instantHealUnit(Unit unit) {
