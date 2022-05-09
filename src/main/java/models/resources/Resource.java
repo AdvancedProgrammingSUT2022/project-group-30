@@ -36,7 +36,7 @@ public abstract class Resource {
     }
 
     public boolean canBeExploited(Tile tile) {
-        if (tile.containsImprovment(prerequisiteImprovement)) {
+        if (tile.getUnpillagedImprovements().contains(prerequisiteImprovement)) {
             return true;
         } else {
             return false;
