@@ -118,6 +118,30 @@ public class GameController {
         return gameDataBase.getMap().getTile(x, y);
     }
 
+    public boolean canWorkerBuildRoad(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(ImprovementType.ROAD) ||
+                worker.getLocation().containsImprovment(ImprovementType.RAILROAD)) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(ImprovementType.ROAD.getPrerequisiteTechnology())) {
+            return false;
+        }
+
+        return false;
+    }
+
+    public boolean isWorkerWorking(Unit worker) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public TileVisibility getTileVisibilityForPlayer(Tile tile) { // returns Visible, Fog of War, or Revealed
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }

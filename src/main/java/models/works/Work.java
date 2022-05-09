@@ -42,4 +42,28 @@ public abstract class Work implements TurnHandler {
         }
         return null;
     }
+
+    public int getTurnsRemaining() {
+        return turnsRemaining;
+    }
+
+    public void setTurnsRemaining(int turnsRemaining) {
+        this.turnsRemaining = turnsRemaining;
+    }
+
+    public Unit getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Unit worker) {
+        this.worker = worker;
+    }
+
+    public boolean isInProgress() {
+        return isInProgress;
+    }
+
+    public void setInProgress(boolean inProgress) {
+        isInProgress = inProgress;
+    }
 }

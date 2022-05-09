@@ -882,7 +882,12 @@ public class GameView implements View {
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
-        return null;
+        ArrayList<WorkerCommands> result = new ArrayList<WorkerCommands>();
+        if (controller.canWorkerBuildRoad(worker)) {
+            result.add(WorkerCommands.BUILD_ROAD);
+        }
+
+        return result;
         // TODO
     }
 
