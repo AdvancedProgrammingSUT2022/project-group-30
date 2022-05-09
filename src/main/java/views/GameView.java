@@ -1,6 +1,5 @@
 package views;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,8 +12,6 @@ import models.interfaces.Producible;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.UnitState;
-import models.*;
-import models.buildings.Building;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
@@ -933,7 +930,15 @@ public class GameView implements View {
         if (controller.canWorkerBuildImprovement(worker, ImprovementType.CAMP)) {
             result.add(WorkerCommands.BUILD_CAMP);
         }
-
+        if (controller.canWorkerClearFeature(worker, Feature.JUNGLE)) {
+            result.add(WorkerCommands.CLEAR_JUNGLE);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.FOREST)) {
+            result.add(WorkerCommands.CLEAR_FOREST);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.MARSH)) {
+            result.add(WorkerCommands.CLEAR_MARSH);
+        }
         return result;
         // TODO
     }

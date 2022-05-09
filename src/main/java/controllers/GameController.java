@@ -120,6 +120,19 @@ public class GameController {
         return gameDataBase.getMap().getTile(x, y);
     }
 
+    public boolean canWorkerClearFeature(Unit worker, Feature feature) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (!worker.getLocation().getFeatures().contains(feature)) {
+            return false;
+        }
+        if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean canWorkerBuildFarm(Unit worker) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();

@@ -1,7 +1,5 @@
 package menusEnumerations;
 
-import models.works.Work;
-
 import java.util.ArrayList;
 
 public class WorkerCommands extends Commands {
@@ -16,7 +14,7 @@ public class WorkerCommands extends Commands {
     public static WorkerCommands BUILD_QUARRY = new WorkerCommands("build quarry", "build quarry");
     public static WorkerCommands BUILD_CAMP = new WorkerCommands("build camp", "build camp");
     public static WorkerCommands CLEAR_JUNGLE = new WorkerCommands("clear jungle", "clear jungle");
-    public static WorkerCommands CLEAR_FORREST = new WorkerCommands("clear forrest", "clear forrest");
+    public static WorkerCommands CLEAR_FOREST = new WorkerCommands("clear forrest", "clear forrest");
     public static WorkerCommands CLEAR_MARSH = new WorkerCommands("clear marsh", "clear marsh");
     public static WorkerCommands CLEAR_ROUTES = new WorkerCommands("clear routes", "clear routes");
     public static WorkerCommands FIX_IMPROVEMENT = new WorkerCommands("fix improvement (?<name>.*)", "fix improvement <improvement name>");
