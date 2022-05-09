@@ -115,7 +115,7 @@ public class GameView implements View {
                 militaryOverviewPanel();
                 showMap();
             } else if ((matcher = GameMainPageCommands.DEMOGRAPHIC_PANEL.getCommandMatcher(command)) != null) {
-                //militaryOverviewPanel();
+                runDemographicPanel();
                 showMap();
             } else {
                 printer.printlnError("Invalid Command!");
@@ -123,14 +123,19 @@ public class GameView implements View {
         }
     }
 
-    private void showDemographicPanel(){
+    private void runDemographicPanel(){
         printer.printlnRed("This is your civilization demographic pannel: " + this.controller.getCurrentPlayer().getName());
         String command;
         Matcher matcher;
         while(true){
+            printer.printlnRed("*****************************************");
+            printer.println("Research Menu");
+            printer.println("enter \"show commands\" to see all commands");
+
             command = scanner.nextLine();
             if(command.equals("show commands")){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null){
 
@@ -140,15 +145,19 @@ public class GameView implements View {
             }
             else if((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null){
 
@@ -158,9 +167,10 @@ public class GameView implements View {
             }
             else if((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null){
 
+                waitForClick();
             }
             else if((matcher = DemographicPanelCommands.BACK.getCommandMatcher(command)) != null){
-
+                break;
             }
             else{
 
