@@ -524,6 +524,11 @@ public class GameController {
         return true;
     }
 
+    public void addImprovementToTile(Tile tile, ImprovementType improvementType) {  // Ignores stacking and everything else!
+        Improvement newImprovement = new Improvement(improvementType, getCurrentPlayer());
+        tile.addImprovement(newImprovement);
+    }
+
     public City whoseTerritoryIsTileInButIsNotTheCenterOf(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center does not count)
         for (City city : gameDataBase.getCities()) {
             if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {

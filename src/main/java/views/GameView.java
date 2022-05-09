@@ -8,6 +8,7 @@ import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
 import models.buildings.BuildingType;
+import models.improvements.ImprovementType;
 import models.interfaces.Producible;
 import models.technology.Technology;
 import models.units.CombatType;
@@ -113,10 +114,39 @@ public class GameView implements View {
                 addUnit(matcher);
             } else if ((matcher = GameMainPageCommands.KILL_UNIT.getCommandMatcher(command)) != null) {
                 killUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.MAKE_IMPROVEMENT.getCommandMatcher(command)) != null) {
+                makeImprovement(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void makeImprovement(Matcher matcher) {
+        String name = matcher.group("name");
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        ImprovementType chosenType = ImprovementType.getImprovementTypeByName(name);
+        if (chosenType == null) {
+            printer.printlnError("Not a valid improvement type!");
+            return;
+        }
+        if (tile.containsImprovment(chosenType)) {
+            printer.printlnError("This tile already contains an improvement of this type!");
+            return;
+        }
+        if (chosenType != ImprovementType.ROAD && chosenType != ImprovementType.RAILROAD &&
+                (tile.getCityOfTile() == null || tile.getCityOfTile().getOwner() != controller.getCurrentPlayer())) {
+            printer.printlnError("You can only construct improvements in your own cities!");
+            return;
+        }
+        controller.addImprovementToTile(tile, chosenType);
+        printer.println("I would like a snowman");
     }
 
     private void killUnit(Matcher matcher) {
