@@ -111,10 +111,19 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.NOTIFICATION_HISTORY.getCommandMatcher(command)) != null) {
                 showAllNotification();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.MILITARY_OVERVIEW.getCommandMatcher(command)) != null) {
+                //showAllNotification();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void militaryOverviewPanel(){
+        ArrayList<Unit> units = this.controller.getCurrentPlayer().getUnits();
+
+
     }
 
     private void showAllNotification(){

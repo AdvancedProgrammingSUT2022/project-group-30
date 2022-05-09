@@ -16,6 +16,7 @@ import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
+import models.units.CombatType;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -88,6 +89,17 @@ public class Civilization implements TurnHandler {
                 units.add(unit);
         }
         return units;
+    }
+
+    public ArrayList<Unit> getMilitaryUnits() {
+        ArrayList<Unit> allUnits = this.getUnits();
+        ArrayList<Unit> militaryUnits = new ArrayList<>();
+        for(int i = 0; i < allUnits.size(); i++){
+            if(allUnits.get(i).getType().getCombatType() != CombatType.CIVILIAN){
+                militaryUnits.add(allUnits.get(i));
+            }
+        }
+        return militaryUnits;
     }
 
     public ArrayList<City> getCities() {
