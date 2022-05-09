@@ -58,6 +58,7 @@ public class GameView implements View {
         String command;
         Matcher matcher;
         while (true) {
+            this.printNewNotifications();
             if (controller.getCurrentPlayer().getSelectedEntity() != null && controller.getCurrentPlayer().getSelectedEntity() instanceof Unit) {
                 runUnitActionsTab();
                 continue;
