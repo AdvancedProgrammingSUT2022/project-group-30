@@ -895,6 +895,8 @@ public class GameView implements View {
                 cancelUnitMove(unit);
             } else if ((matcher = UnitCommands.TELEPORT.getCommandMatcher(command)) != null) {
                 teleportUnit(matcher, unit);
+            } else if ((matcher = UnitCommands.INSTANT_HEAL.getCommandMatcher(command)) != null) {
+                instantHealUnit(unit);
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -958,6 +960,11 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void instantHealUnit(Unit unit) {
+        unit.setHitPointsLeft(unit.getType().getHitPoints());
+        printer.println("by his wounds you have been healed");
     }
 
     private void teleportUnit(Matcher matcher, Unit unit) {

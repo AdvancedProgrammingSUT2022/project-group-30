@@ -22,6 +22,7 @@ public class UnitCommands extends Commands {
 
     // Cheat Codes
     public static UnitCommands TELEPORT = new UnitCommands("mig mig (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
+    public static UnitCommands INSTANT_HEAL = new UnitCommands("anapneo");
 
 
     private static ArrayList<UnitCommands> allCommands;
