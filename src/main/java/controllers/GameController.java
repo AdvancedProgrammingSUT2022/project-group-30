@@ -963,4 +963,14 @@ public class GameController {
         return lowestScore;
     }
 
+    public double calculateAverageScore(){
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int averageScore = 0;
+        for (Player player : players) {
+            averageScore += this.calculateScoreForCivilization(player.getCivilization());
+        }
+        averageScore /= players.size();
+        return averageScore;
+    }
+
 }
