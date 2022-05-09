@@ -941,4 +941,26 @@ public class GameController {
         }
     }
 
+    public int calculateHighestScore(){
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int highestScore = 0;
+        for (Player player : players) {
+            if(this.calculateScoreForCivilization(player.getCivilization()) > highestScore){
+                highestScore = this.calculateScoreForCivilization(player.getCivilization());
+            }
+        }
+        return highestScore;
+    }
+
+    public int calculateLowestScore(){
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int lowestScore = this.calculateScoreForCivilization(players.get(0).getCivilization());
+        for (Player player : players) {
+            if(this.calculateScoreForCivilization(player.getCivilization()) < lowestScore){
+                lowestScore = this.calculateScoreForCivilization(player.getCivilization());
+            }
+        }
+        return lowestScore;
+    }
+
 }

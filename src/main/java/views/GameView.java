@@ -141,7 +141,7 @@ public class GameView implements View {
                 showTerritorySize();
             }
             else if((matcher = DemographicPanelCommands.GOLD_COUNT.getCommandMatcher(command)) != null) {
-
+                showGoldCount();
             }
             else if((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null){
 
@@ -156,14 +156,14 @@ public class GameView implements View {
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null){
-
+                militaryOverviewPanel();
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null){
 
             }
             else if((matcher = DemographicPanelCommands.SCORE.getCommandMatcher(command)) != null){
-
+                showScore();
             }
             else if((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null){
 
@@ -177,6 +177,26 @@ public class GameView implements View {
             }
 
         }
+    }
+
+    private void showScoreBoard(){
+        this.controller.sortPlayersInOrderOfScore();
+        printer.printlnGreen("Game scoreboard:");
+        showScore();
+        printer.println("Highest score : " + this.controller.calculateHighestScore());
+        printer.println("Lowest score : " + this.controller.calculateLowestScore());
+
+
+    }
+
+    private void showScore(){
+        Civilization civilization = this.controller.getCurrentPlayer();
+        printer.println("Your score is : " + this.controller.calculateScoreForCivilization(civilization));
+    }
+
+    private void showGoldCount(){
+        Civilization civilization = this.controller.getCurrentPlayer();
+        printer.println("You have " +(int) civilization.getGoldCount() + " golds!");
     }
 
     private void showTerritorySize(){
@@ -196,10 +216,10 @@ public class GameView implements View {
     private void militaryOverviewPanel(){
         ArrayList<Unit> militaryUnits = this.controller.getCurrentPlayer().getMilitaryUnits();
         if(militaryUnits.isEmpty()){
-            printer.println("You don't have any military unit to show!");
+            printer.println("You don't have any military units to show!");
         }
         else{
-            printer.printlnBlue("Your all military units : ");
+            printer.printlnBlue("Your military units : ");
             for(int i = 0; i < militaryUnits.size(); i++){
                 printer.println(" " + (i + 1) + "- " + militaryUnits.get(i).getType().getName() + " in Y: " + militaryUnits.get(i).getLocation().findTileYCoordinateInMap() + " , X: " + militaryUnits.get(i).getLocation().findTileXCoordinateInMap());
             }
