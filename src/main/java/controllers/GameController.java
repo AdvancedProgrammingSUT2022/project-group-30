@@ -869,5 +869,13 @@ public class GameController {
                 newNotifications.add(allNotifications.get(i));
             }
         }
+        return newNotifications;
+    }
+
+    public void seenAllNotifications(){
+        ArrayList<Notification> notifications = this.getCurrentPlayer().getNotifications();
+        for(int i = 0; i < notifications.size(); i++){
+            notifications.get(i).setIsSeen(true);
+        }
     }
 }
