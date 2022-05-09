@@ -113,8 +113,14 @@ public class GameView implements View {
     }
 
     private void printNewNotifications(){
-        Civilization civilization = this.controller.getCurrentPlayer();
-        //ArrayList<Notification> notifications =
+        ArrayList<Notification> notifications = this.controller.getCivilizationNewNotification();
+        if(!notifications.isEmpty()){
+            printer.printlnGreen("You have some new notifications:");
+            for (Notification notification : notifications) {
+                printer.println(notification.getText());
+            }
+            this.controller.seenAllNotifications();
+        }
     }
 
     private void showCitiesInfo() {
