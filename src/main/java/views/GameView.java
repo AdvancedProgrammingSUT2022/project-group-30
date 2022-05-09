@@ -149,7 +149,7 @@ public class GameView implements View {
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null){
-
+                showAllImprovements();
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
@@ -177,6 +177,14 @@ public class GameView implements View {
                 printer.println("Invalid command for demographic panel!");
             }
 
+        }
+    }
+
+    private void showAllImprovements(){
+        printer.println("You have these improvements on different tiles : (if there is two same improvements, it means that you have that on two tiles)");
+        Civilization civilization = this.controller.getCurrentPlayer();
+        for (Improvement improvement : civilization.getAllImprovements()) {
+            printer.println(" - " + improvement.getType().getName());
         }
     }
 
