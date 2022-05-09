@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class WorkerCommands extends Commands {
     public static WorkerCommands BUILD_ROAD = new WorkerCommands("build road", "build road");
-    //public static WorkerCommands BUILD_RAILROAD = new WorkerCommands("", "");
+    public static WorkerCommands BUILD_RAILROAD = new WorkerCommands("build railroad", "build railroad");
     public static WorkerCommands BUILD_FARM = new WorkerCommands("build farm", "build farm");
     public static WorkerCommands BUILD_MINE = new WorkerCommands("build mine", "build mine");
     public static WorkerCommands BUILD_TRADING_POST = new WorkerCommands("build trading post", "build trading post");

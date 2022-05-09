@@ -942,6 +942,9 @@ public class GameView implements View {
         if (controller.canWorkerClearRoutes(worker)) {
             result.add(WorkerCommands.CLEAR_ROUTES);
         }
+        if (controller.canWorkerFixImprovement(worker)) {
+            result.add(WorkerCommands.FIX_IMPROVEMENT);
+        }
         return result;
         // TODO
     }
