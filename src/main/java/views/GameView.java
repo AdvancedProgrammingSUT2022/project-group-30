@@ -112,7 +112,7 @@ public class GameView implements View {
                 showAllNotification();
                 showMap();
             } else if ((matcher = GameMainPageCommands.MILITARY_OVERVIEW.getCommandMatcher(command)) != null) {
-                //showAllNotification();
+                militaryOverviewPanel();
                 showMap();
             } else {
                 printer.printlnError("Invalid Command!");
@@ -121,7 +121,16 @@ public class GameView implements View {
     }
 
     private void militaryOverviewPanel(){
-        ArrayList<Unit> units = this.controller.getCurrentPlayer().getUnits();
+        ArrayList<Unit> militaryUnits = this.controller.getCurrentPlayer().getMilitaryUnits();
+        if(militaryUnits.isEmpty()){
+            printer.println("You don't have any military unit to show!");
+        }
+        else{
+            printer.printlnBlue("Your all military units : ");
+            for(int i = 0; i < militaryUnits.size(); i++){
+                printer.println(" " + (i + 1) + "- " + militaryUnits.get(i).getType().getName() + " in Y: " + militaryUnits.get(i).getLocation().findTileYCoordinateInMap() + " , X: " + militaryUnits.get(i).getLocation().findTileXCoordinateInMap());
+            }
+        }
 
 
     }
