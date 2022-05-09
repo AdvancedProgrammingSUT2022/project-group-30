@@ -377,7 +377,7 @@ public class GameController {
         player.setisTurnBreakDisabled(true);
     }
 
-    public void deleteUnit(Unit unit) {
+    public void deleteUnit(Unit unit) {     // deletes unit and REFUNDS ITS OWNER
         unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
         for (StrategicResource strategicResource : unit.getType().getPrerequisiteResources().keySet()) {
             unit.getOwner().addStrategicResource(strategicResource, unit.getType().getPrerequisiteResources().get(strategicResource));
@@ -385,7 +385,7 @@ public class GameController {
         removeUnit(unit);
     }
 
-    private void removeUnit(Unit unit) {
+    public void removeUnit(Unit unit) {     // just removes the unit, updates fog of war, and nothing else
         if (unit.getOwner().getSelectedEntity() == unit) {
             unit.getOwner().setSelectedEntity(null);
         }

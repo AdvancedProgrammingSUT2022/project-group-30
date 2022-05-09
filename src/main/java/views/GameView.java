@@ -111,10 +111,31 @@ public class GameView implements View {
                 addLuxuryResource(matcher);
             } else if ((matcher = GameMainPageCommands.ADD_UNIT.getCommandMatcher(command)) != null) {
                 addUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.KILL_UNIT.getCommandMatcher(command)) != null) {
+                killUnit(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void killUnit(Matcher matcher) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("You missed! The coordinates are invalid");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        ArrayList<Unit> units = controller.getUnitsInTile(tile);
+        if (units.size() == 0) {
+            printer.printlnError("You missed! This is an empty tile!");
+            return;
+        }
+        for (Unit unit : units) {
+            controller.removeUnit(unit);
+        }
+        printer.println("Congratulations! You're a heartless murderer");
     }
 
     private void addUnit(Matcher matcher) {
