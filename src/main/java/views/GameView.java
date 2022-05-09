@@ -877,7 +877,7 @@ public class GameView implements View {
 
     private void runWorkActionsTab() {
         Unit worker = (Unit) controller.getCurrentPlayer().getSelectedEntity();
-        ArrayList<WorkerCommands> = calculateAllowedCommands(worker);
+        ArrayList<WorkerCommands> allowedCommands = calculateWorkerAllowedActions(worker);
 
     }
 
