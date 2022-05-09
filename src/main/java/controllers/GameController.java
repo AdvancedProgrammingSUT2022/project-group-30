@@ -216,6 +216,9 @@ public class GameController {
 
         if (destination != null) {
             moveUnit(unit, destination);
+            if (unit.getType().needsAssmbly()) {
+                unit.disassemble();
+            }
             expendMPForMovementAlongPath(unit, destination);
             updateUnitPath(unit, destination);
         } else {
