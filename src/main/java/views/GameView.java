@@ -138,7 +138,7 @@ public class GameView implements View {
                 waitForClick();
             }
             else if((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null){
-
+                showTerritorySize();
             }
             else if((matcher = DemographicPanelCommands.GOLD_COUNT.getCommandMatcher(command)) != null) {
 
@@ -177,6 +177,12 @@ public class GameView implements View {
             }
 
         }
+    }
+
+    private void showTerritorySize(){
+        Civilization civilization = this.controller.getCurrentPlayer();
+        int territorySize = this.controller.calculateCivilizationTerritorySize(civilization);
+        printer.println("You have " + territorySize + " tiles!");
     }
 
     private void showDemographicPanelCommands(){
