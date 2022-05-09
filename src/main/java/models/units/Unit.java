@@ -164,6 +164,9 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public void setState(UnitState state){
+        if(state != UnitState.AWAKE){
+            this.path = null;
+        }
         this.state = state;
     }
 
