@@ -3,7 +3,6 @@ package menusEnumerations;
 import java.util.ArrayList;
 
 public class ResearchCommands extends Commands{
-
     public static ResearchCommands LEARNED_TECHNOLOGIES = new ResearchCommands("(show )?(my )?learned technologies", "learned technologies");
     public static ResearchCommands UNLOCKED_TECHNOLOGIES = new ResearchCommands("(show )?(my )?unlocked technologies", "unlocked technologies");
     public static ResearchCommands START_RESEARCH = new ResearchCommands("start a research( project)?", "start research");

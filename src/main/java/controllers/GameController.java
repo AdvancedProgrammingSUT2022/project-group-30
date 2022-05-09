@@ -128,6 +128,36 @@ public class GameController {
         awakeAllNearAlertedUnits(unit);
     }
 
+    public boolean canUnitTeleportToTile(Unit unit, Tile tile) {
+        if (tile == unit.getLocation()) {
+            return true;
+        }
+        if (isTileImpassable(tile)) {
+            return false;
+        }
+        Unit militaryUnitInTile = getMilitaryUnitInTile(tile);
+        Unit civilianUnitInTile = getCivilianUnitInTile(tile);
+        City city = getCityCenteredInTile(tile);
+        if (militaryUnitInTile != null) {
+            if (militaryUnitInTile.getOwner() != unit.getOwner()) {
+                return false;
+            } else if (!unit.isCivilian()) {
+                return false;
+            }
+        }
+        if (civilianUnitInTile != null) {
+            if (civilianUnitInTile.getOwner() != unit.getOwner()) {
+                return false;
+            } else if (unit.isCivilian()) {
+                return false;
+            }
+        }
+        if (city != null && city.getOwner() != unit.getOwner()) {
+            return false;
+        }
+        return true;
+    }
+
     private void awakeAllNearAlertedUnits(Unit unit) {
         Tile tile = unit.getLocation();
         ArrayList<Tile> adjacetTiles = this.getAdjacentTiles(tile);

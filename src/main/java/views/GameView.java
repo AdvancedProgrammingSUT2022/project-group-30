@@ -867,6 +867,8 @@ public class GameView implements View {
                 break;
             } else if ((matcher = UnitCommands.CANCEL_MOVE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.CANCEL_MOVE)) {
                 cancelUnitMove(unit);
+            } else if ((matcher = UnitCommands.TELEPORT.getCommandMatcher(command)) != null) {
+                teleportUnit(matcher, unit);
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -930,6 +932,22 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void teleportUnit(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates! teleport failed");
+            return;
+        }
+        Tile destination = controller.getTileByCoordinates(x, y);
+        if (!controller.canUnitTeleportToTile(unit, destination)) {
+            printer.printlnError("You can't teleport to that tile!");
+            return;
+        }
+        controller.moveUnit(unit, destination);
+        printer.println("Meow");
     }
 
     private void setUpForRangedAttack(Unit unit) {

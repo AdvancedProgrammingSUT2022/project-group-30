@@ -19,10 +19,15 @@ public class UnitCommands extends Commands {
     public static UnitCommands DELETE = new UnitCommands("delete", "delete");
     public static UnitCommands CANCEL_MOVE = new UnitCommands("cancel move", "cancel move");
     // if you add a command, make the appropriate changes to the calculateAllwedCommands method of GameView
-    
+
+    // Cheat Codes
+    public static UnitCommands TELEPORT = new UnitCommands("mig mig (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
+
+
     private static ArrayList<UnitCommands> allCommands;
 
     private String name;
+
     private UnitCommands(String regex, String name) {
         super(regex);
         this.name = name;
@@ -31,6 +36,11 @@ public class UnitCommands extends Commands {
             allCommands = new ArrayList<>();
         }
         allCommands.add(this);
+    }
+
+    private UnitCommands(String regex) {
+        super(regex);
+        this.name = "Cheat Code";
     }
 
     public String getName() {
