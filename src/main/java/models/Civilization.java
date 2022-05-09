@@ -456,4 +456,15 @@ public class Civilization implements TurnHandler {
     public ArrayList<Notification> getNotifications(){
         return this.notifications;
     }
+
+    public int calculateTotalFoodFromCities(){
+        ArrayList<City> cities = this.getCities();
+        int sum = 0;
+        for (City city : cities) {
+            sum += city.calculateOutput().getFood();
+        }
+        return sum;
+    }
+
+
 }

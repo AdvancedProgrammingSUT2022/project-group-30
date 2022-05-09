@@ -878,4 +878,39 @@ public class GameController {
             notifications.get(i).setIsSeen(true);
         }
     }
+
+    public int calculateScoreForCivilization(Civilization civilization){
+        int score = 0;
+        score += this.calculateCivilizationTerritorySize(civilization) * 10;
+        score += this.calculateSumOfMilitaryUnitsCostsForCivilization(civilization);
+        score += this.calculateEffectOfOutputOnScore(civilization);
+        score += civilization.getGoldCount();
+        return score;
+    }
+
+    public int calculateCivilizationTerritorySize(Civilization civilization){
+        ArrayList<City> cities = civilization.getCities();
+        int territorySize = 0;
+        for (City city : cities) {
+            territorySize += city.getTerritories().size();
+        }
+        return territorySize;
+    }
+
+    public int calculateSumOfMilitaryUnitsCostsForCivilization(Civilization civilization){
+        ArrayList<Unit> units = civilization.getMilitaryUnits();
+        int sum = 0;
+        for (Unit unit : units) {
+            sum += unit.getType().getCost();
+        }
+        return sum;
+    }
+
+    public int calculateEffectOfOutputOnScore(Civilization civilization){
+        return (int) civilization.calculateNetGoldProduction() * 10 + (int) civilization.calculateTotalBeakers() * 10 + civilization.calculateTotalFoodFromCities() * 10;
+    }
+
+    public int calculateNumberOfResourcesForCivilization(Civilization civilization){
+
+    }
 }

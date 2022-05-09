@@ -24,6 +24,7 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands CITIES_INFO = new GameMainPageCommands("(show )cities panel");
     public static GameMainPageCommands NOTIFICATION_HISTORY = new GameMainPageCommands("(show )notification history");
     public static GameMainPageCommands MILITARY_OVERVIEW = new GameMainPageCommands("(show )military overview( panel)");
+    public static GameMainPageCommands DEMOGRAPHIC_PANEL = new GameMainPageCommands("(show )demographic panel");
     // pass the turn
     // show info about civ
 

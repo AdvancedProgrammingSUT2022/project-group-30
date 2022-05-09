@@ -114,6 +114,9 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.MILITARY_OVERVIEW.getCommandMatcher(command)) != null) {
                 militaryOverviewPanel();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.DEMOGRAPHIC_PANEL.getCommandMatcher(command)) != null) {
+                //militaryOverviewPanel();
+                showMap();
             } else {
                 printer.printlnError("Invalid Command!");
             }
