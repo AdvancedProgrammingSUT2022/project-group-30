@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import models.Output;
+import models.Tile;
 import models.technology.Technology;
 import models.TerrainType;
 import models.Feature;
@@ -72,7 +73,6 @@ public enum ImprovementType {
     private final Output output;
     private final Technology prerequisiteTechnology;
     private final ArrayList<TerrainProperty> terrainProperties;
-    private boolean isPillaged;
     private final double maintenanceCost;
     private final String name;
 
@@ -81,7 +81,6 @@ public enum ImprovementType {
         this.output = output;
         this.prerequisiteTechnology = prerequisiteTechnology;
         this.terrainProperties = terrainProperties;
-        this.isPillaged = false;
         this.maintenanceCost = maintenanceCost;
         this.name = name;
     }
@@ -98,12 +97,16 @@ public enum ImprovementType {
         return this.terrainProperties;
     }
 
-    public boolean getIsPillaged() {
-        return this.isPillaged;
-    }
-
-    public void setIsPillaged(boolean isPillaged) {
-        this.isPillaged = isPillaged;
+    public boolean isCompatibleWithTile(Tile tile) {
+        if (terrainProperties.contains(tile.getTerrainType())) {
+            return true;
+        }
+        for (Feature feature : tile.getFeatures()) {
+            if (terrainProperties.contains(feature)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public double getMaintenanceCost() {

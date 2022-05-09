@@ -865,7 +865,7 @@ public class GameView implements View {
         }
 
         ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
-        if (citiesWaitingForProduction.isEmpty() == false &&  !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("Some cities are waiting for their next production!");
             controller.getCurrentPlayer().setSelectedEntity(citiesWaitingForProduction.get(0));
             return;
@@ -873,6 +873,17 @@ public class GameView implements View {
 
         controller.goToNextPlayer();
         showMap();
+    }
+
+    private void runWorkActionsTab() {
+        Unit worker = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        ArrayList<WorkerCommands> = calculateAllowedCommands(worker);
+
+    }
+
+    private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
+        return null;
+        // TODO
     }
 
     private void runUnitActionsTab() {
@@ -939,6 +950,8 @@ public class GameView implements View {
                 teleportUnit(matcher, unit);
             } else if ((matcher = UnitCommands.INSTANT_HEAL.getCommandMatcher(command)) != null) {
                 instantHealUnit(unit);
+            } else if ((matcher = UnitCommands.WORK_ACTIONS.getCommandMatcher(command)) != null) {
+                runWorkActionsTab();
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -991,6 +1004,10 @@ public class GameView implements View {
             result.put(UnitCommands.ALERT, true);
         } else {
             result.put(UnitCommands.AWAKE, true);
+        }
+
+        if (unit.getType() == UnitType.WORKER) {
+            result.put(UnitCommands.WORK_ACTIONS, true);
         }
 
         if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
