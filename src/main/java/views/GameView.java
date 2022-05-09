@@ -892,6 +892,9 @@ public class GameView implements View {
             if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
                 // TODO
                 printer.println("building road...");
+            } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
+                // TODO
+                printer.println("building farm...");
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -906,7 +909,9 @@ public class GameView implements View {
         if (controller.canWorkerBuildRoad(worker)) {
             result.add(WorkerCommands.BUILD_ROAD);
         }
-
+        if (controller.canWorkerBuildFarm(worker)) {
+            result.add(WorkerCommands.BUILD_FARM);
+        }
         return result;
         // TODO
     }

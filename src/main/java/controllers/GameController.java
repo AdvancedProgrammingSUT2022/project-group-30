@@ -118,6 +118,29 @@ public class GameController {
         return gameDataBase.getMap().getTile(x, y);
     }
 
+    public boolean canWorkerBuildFarm(Unit worker) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(ImprovementType.FARM.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if (!ImprovementType.FARM.isCompatibleWithTile(worker.getLocation())) {
+            if (!((location.getFeatures().contains(Feature.FOREST) && owner.hasTechnology(Technology.MINING)) ||
+                    (location.getFeatures().contains(Feature.JUNGLE) && owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                    (location.getFeatures().contains(Feature.MARSH) && owner.hasTechnology(Technology.MASONRY)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean canWorkerBuildRoad(Unit worker) {
         if (isWorkerWorking(worker)) {
             return false;
