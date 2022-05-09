@@ -150,6 +150,7 @@ public class City implements Selectable, TurnHandler, combative {
         }
 
         hammerCount -= entityInProduction.calculateHammerCost();
+        this.owner.addNotificationForProduction(entityInProduction);
         entityInProduction = null;
 
         // TODO : send notification to the player informing them of the end of production

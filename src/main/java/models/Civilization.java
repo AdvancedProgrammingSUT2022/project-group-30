@@ -425,9 +425,15 @@ public class Civilization implements TurnHandler {
         return null;
     }
 
-    private void addNotificationForResearch(Technology researchProject){
+    public void addNotificationForResearch(Technology researchProject){
         String technologyName = researchProject.getName();
-        String notificationText = "You have learned " + technologyName + "technology!";
+        String notificationText = "You have learned " + technologyName + " technology!";
+        Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+    }
+
+    public void addNotificationForProduction(Producible production){
+        String productionName = production.getName();
+        String notificationText = "City production is finished : " + productionName + " !";
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
     }
 

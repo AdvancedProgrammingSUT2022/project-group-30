@@ -860,4 +860,6 @@ public class GameController {
         }
         return warInfos;
     }
+
+    //public ArrayList<>
 }

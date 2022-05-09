@@ -112,6 +112,11 @@ public class GameView implements View {
         }
     }
 
+    private void printNewNotifications(){
+        Civilization civilization = this.controller.getCurrentPlayer();
+        //ArrayList<Notification> notifications =
+    }
+
     private void showCitiesInfo() {
         Civilization civilization = controller.getCurrentPlayer();
         ArrayList<City> cities = civilization.getCities();
