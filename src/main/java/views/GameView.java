@@ -125,7 +125,7 @@ public class GameView implements View {
 
     private void showDemographicPanel(){
         printer.printlnRed("This is your civilization demographic pannel: " + this.controller.getCurrentPlayer().getName());
-        // TODO...
+
     }
 
     private void militaryOverviewPanel(){
