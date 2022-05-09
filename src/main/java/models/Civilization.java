@@ -466,5 +466,22 @@ public class Civilization implements TurnHandler {
         return sum;
     }
 
+    public ArrayList<Improvement> getAllImprovements(){
+        ArrayList<Improvement> improvements = new ArrayList<>();
+        GameMap map = GameMap.getGameMap();
+        Tile [][] tiles = map.getMap();
+        for(int i = 0; i < tiles.length; i++){
+            for(int j = 0; j < tiles[i].length; j++){
+                ArrayList<Improvement> tilesImprovements = tiles[i][j].getImprovements();
+                for(int k = 0; k < tilesImprovements.size(); k++){
+                    if(tilesImprovements.get(k).getFounder().equals(this)){
+                        improvements.add(tilesImprovements.get(k));
+                    }
+                }
+            }
+        }
+        return improvements;
+    }
+
 
 }

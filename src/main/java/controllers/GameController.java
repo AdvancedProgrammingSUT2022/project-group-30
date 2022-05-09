@@ -890,6 +890,7 @@ public class GameController {
         score += civilization.getGoldCount();
         score += this.calculateNumberOfResourcesForCivilization(civilization) * 10;
         score += civilization.getTechnologies().getLearnedTechnologies().size() * 10;
+        score += civilization.getAllImprovements().size() * 5;
         return score;
     }
 
@@ -931,4 +932,5 @@ public class GameController {
         }
         return count;
     }
+
 }
