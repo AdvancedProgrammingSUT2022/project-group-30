@@ -1,17 +1,8 @@
 package controllers;
 
-import java.util.Map;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.LinkedList;
-import java.util.List;
 
 import models.*;
 import models.buildings.Building;
@@ -931,6 +922,23 @@ public class GameController {
             }
         }
         return count;
+    }
+
+    public void sortPlayersInOrderOfScore(){
+        GameDataBase gameDatabase = GameDataBase.getGameDataBase();
+        for(int i = 0; i < gameDatabase.getPlayers().size(); i++){
+            for(int j = i + 1; j < gameDatabase.getPlayers().size(); j++){
+                Player firstPlayer = gameDatabase.getPlayers().get(i);
+                Player secondPlayer = gameDatabase.getPlayers().get(j);
+                int firstCivScore = this.calculateScoreForCivilization(firstPlayer.getCivilization());
+                int secondCivScore = this.calculateScoreForCivilization(secondPlayer.getCivilization());
+                if(firstCivScore < secondCivScore){
+                    Player temp = firstPlayer;
+                    firstPlayer = secondPlayer;
+                    secondPlayer = temp;
+                }
+            }
+        }
     }
 
 }
