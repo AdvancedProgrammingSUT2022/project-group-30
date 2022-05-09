@@ -22,6 +22,9 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
@@ -885,6 +888,8 @@ public class GameController {
         score += this.calculateSumOfMilitaryUnitsCostsForCivilization(civilization);
         score += this.calculateEffectOfOutputOnScore(civilization);
         score += civilization.getGoldCount();
+        score += this.calculateNumberOfResourcesForCivilization(civilization) * 10;
+        score += civilization.getTechnologies().getLearnedTechnologies().size() * 10;
         return score;
     }
 
@@ -911,6 +916,19 @@ public class GameController {
     }
 
     public int calculateNumberOfResourcesForCivilization(Civilization civilization){
-
+        HashMap<LuxuryResource, Integer> luxuryResources = civilization.getLuxuryResources();
+        HashMap<StrategicResource, Integer> strategicResources = civilization.getStrategicResources();
+        int count = 0;
+        for(Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()){
+            if(entry.getValue() > 0){
+                count += entry.getValue();
+            }
+        }
+        for(Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()){
+            if(entry.getValue() > 0){
+                count += entry.getValue();
+            }
+        }
+        return count;
     }
 }
