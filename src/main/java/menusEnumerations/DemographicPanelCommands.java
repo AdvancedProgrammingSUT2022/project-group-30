@@ -13,6 +13,7 @@ public class DemographicPanelCommands extends Commands{
     public static DemographicPanelCommands OUTPUT = new DemographicPanelCommands("(show )?(total )?output","output");
     public static DemographicPanelCommands SCORE = new DemographicPanelCommands("(show )?(total )?score", "score");
     public static DemographicPanelCommands SCOREBOARD = new DemographicPanelCommands("(show )?scoreboard", "scoreboard");
+    public static DemographicPanelCommands BACK = new DemographicPanelCommands("back", "back");
 
     private static ArrayList<DemographicPanelCommands> allCommands;
 

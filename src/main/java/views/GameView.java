@@ -125,7 +125,48 @@ public class GameView implements View {
 
     private void showDemographicPanel(){
         printer.printlnRed("This is your civilization demographic pannel: " + this.controller.getCurrentPlayer().getName());
+        String command;
+        Matcher matcher;
+        while(true){
+            command = scanner.nextLine();
+            if(command.equals("show commands")){
 
+            }
+            else if((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.GOLD_COUNT.getCommandMatcher(command)) != null) {
+
+            }
+            else if((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.SCORE.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null){
+
+            }
+            else if((matcher = DemographicPanelCommands.BACK.getCommandMatcher(command)) != null){
+
+            }
+            else{
+
+            }
+
+        }
     }
 
     private void militaryOverviewPanel(){
