@@ -7,13 +7,11 @@ import models.units.Unit;
 
 public abstract class Work implements TurnHandler {
     //private or protected??
-    private int turnsRemaining;
+    protected int turnsRemaining;
     protected Unit worker;
-    private boolean isInProgress;
+    protected boolean isInProgress;
 
     public void goToNextTurn() {
-        // TODO
-
         if (isInProgress) {
             turnsRemaining--;
         }
@@ -24,6 +22,10 @@ public abstract class Work implements TurnHandler {
 
     public abstract void applyChange();
 
+    public void startWork(Unit newWorker) {
+        worker = newWorker;
+        isInProgress = true;
+    }
     public void startWork() {
         // TODO
         isInProgress = true;

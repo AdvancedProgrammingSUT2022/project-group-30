@@ -15,6 +15,7 @@ import models.units.UnitState;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
+import models.works.BuildImprovement;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -887,8 +888,7 @@ public class GameView implements View {
         while (true) {
             command = scanner.nextLine();
             if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
-                // TODO
-                printer.println("building road...");
+                buildRoad(worker);
             } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
                 // TODO
                 printer.println("building farm...");
@@ -899,6 +899,27 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void buildRoad(Unit worker) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof  BuildImprovement &&
+                    ((BuildImprovement)location.getWork()).getImprovement() == ImprovementType.ROAD) {
+                ((BuildImprovement)location.getWork()).startWork(worker);
+                printer.println("Resumed road construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Build Road canceled");
+                return;
+            }
+        }
+        BuildImprovement newWork = new BuildImprovement(ImprovementType.ROAD, worker);
+        location.setWork(newWork);
+        printer.println("Started the construction of a road here!");
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
@@ -946,7 +967,6 @@ public class GameView implements View {
             result.add(WorkerCommands.FIX_IMPROVEMENT);
         }
         return result;
-        // TODO
     }
 
     private void runUnitActionsTab() {

@@ -4,8 +4,12 @@ import controllers.GameController;
 import models.Tile;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
+import models.units.Unit;
 
 public class BuildFarm extends BuildImprovement {
+    public BuildFarm(Unit worker) {
+        super(ImprovementType.FARM, worker);
+    }
 
     @Override
     public void applyChange() {

@@ -336,6 +336,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.work;
     }
 
+    public void setWork(Work work) {
+        this.work = work;
+    }
+
     public Output getOutput() {
         return this.output;
     }
