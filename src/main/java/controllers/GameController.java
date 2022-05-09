@@ -128,10 +128,7 @@ public class GameController {
         awakeAllNearAlertedUnits(unit);
     }
 
-    public boolean canUnitTeleportToTile(Unit unit, Tile tile) {
-        if (tile == unit.getLocation()) {
-            return true;
-        }
+    public boolean canUnitTeleportToTile(UnitType unit, Civilization owner, Tile tile) {
         if (isTileImpassable(tile)) {
             return false;
         }
@@ -139,20 +136,20 @@ public class GameController {
         Unit civilianUnitInTile = getCivilianUnitInTile(tile);
         City city = getCityCenteredInTile(tile);
         if (militaryUnitInTile != null) {
-            if (militaryUnitInTile.getOwner() != unit.getOwner()) {
+            if (militaryUnitInTile.getOwner() != owner) {
                 return false;
             } else if (!unit.isCivilian()) {
                 return false;
             }
         }
         if (civilianUnitInTile != null) {
-            if (civilianUnitInTile.getOwner() != unit.getOwner()) {
+            if (civilianUnitInTile.getOwner() != owner) {
                 return false;
             } else if (unit.isCivilian()) {
                 return false;
             }
         }
-        if (city != null && city.getOwner() != unit.getOwner()) {
+        if (city != null && city.getOwner() != owner) {
             return false;
         }
         return true;

@@ -151,7 +151,12 @@ public class GameView implements View {
             printer.printlnError("Invalid coordinates");
             return;
         }
-        controller.createUnit(selectedType, controller.getCurrentPlayer(), controller.getTileByCoordinates(x, y));
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (!controller.canUnitTeleportToTile(selectedType, controller.getCurrentPlayer(), tile)) {
+            printer.printlnError("Can't put a unit there!");
+            return;
+        }
+        controller.createUnit(selectedType, controller.getCurrentPlayer(), tile);
         printer.println("Your units have been dispatched");
     }
 
@@ -963,7 +968,7 @@ public class GameView implements View {
             return;
         }
         Tile destination = controller.getTileByCoordinates(x, y);
-        if (!controller.canUnitTeleportToTile(unit, destination)) {
+        if (!controller.canUnitTeleportToTile(unit.getType(), controller.getCurrentPlayer(), destination)) {
             printer.printlnError("You can't teleport to that tile!");
             return;
         }
