@@ -115,11 +115,35 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.MILITARY_OVERVIEW.getCommandMatcher(command)) != null) {
                 militaryOverviewPanel();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.ECONOMIC_OVERVIEW.getCommandMatcher(command)) != null) {
+                economicOverviewPanel();
+                showMap();
             } else if ((matcher = GameMainPageCommands.DEMOGRAPHIC_PANEL.getCommandMatcher(command)) != null) {
                 runDemographicPanel();
                 showMap();
             } else {
                 printer.printlnError("Invalid Command!");
+            }
+        }
+    }
+
+    private void economicOverviewPanel(){
+        ArrayList<City> cities = this.controller.getCurrentPlayer().getCities();
+        printer.printlnGreen("You have " + cities.size() + " cities");
+        for(int i = 0; i < cities.size(); i++){
+            printer.printlnBlue("City central tile is in Y: " + cities.get(i).getCentralTile().findTileYCoordinateInMap() + " , X: " + cities.get(i).getCentralTile().findTileXCoordinateInMap());
+            printer.println(" population : " + cities.get(i).getCitizens().size());
+            printer.println(" effective combat strength : " + cities.get(i).calculateEffectiveCombatStrength());
+            printer.println(" food : " + cities.get(i).calculateOutput().getFood());
+            printer.println(" gold : " + cities.get(i).calculateOutput().getGold());
+            printer.println(" production : " + cities.get(i).calculateOutput().getProduction());
+            printer.println(" science : " + cities.get(i).calculateBeakerProduction());
+            if(cities.get(i).getEntityInProduction() == null){
+                printer.println(" This city doesn't have any entity in production!");
+            }
+            else{
+                printer.println(" entity in production : " + cities.get(i).getEntityInProduction().getName());
+                printer.println(" turns left : " + (int) ((cities.get(i).getEntityInProduction().getCost() - cities.get(i).getHammerCount()) / cities.get(i).calculateOutput().getProduction()));
             }
         }
     }
@@ -263,8 +287,6 @@ public class GameView implements View {
                 printer.println(" " + (i + 1) + "- " + militaryUnits.get(i).getType().getName() + " in Y: " + militaryUnits.get(i).getLocation().findTileYCoordinateInMap() + " , X: " + militaryUnits.get(i).getLocation().findTileXCoordinateInMap());
             }
         }
-
-
     }
 
     private void showAllNotification(){
