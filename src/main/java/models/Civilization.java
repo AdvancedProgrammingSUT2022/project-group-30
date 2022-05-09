@@ -152,18 +152,6 @@ public class Civilization implements TurnHandler {
             beakerCount = Math.max(0, beakerCount);
             goldCount = 0;
         }
-
-        for (City city : getCities()) {
-            ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
-            for (Resource resource : collectibleResourcesInput) {
-                if (resource instanceof LuxuryResource) {
-                    luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
-                }
-                if (resource instanceof StrategicResource) {
-                    strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
-                }
-            }
-        }
     }
 
     public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
