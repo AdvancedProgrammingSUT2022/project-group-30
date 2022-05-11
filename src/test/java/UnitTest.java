@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 //@RunWith(MockitoJUnitRunner.class)
 @ExtendWith(MockitoExtension.class)
@@ -169,6 +170,45 @@ public class UnitTest {
       //  when(pair.containsCivilization(civilization1)).thenReturn(true);
         ArrayList<DiplomaticRelationsMap> diplomacies = GameController.getGameController().getDiplomaticRelationsMapOfCivilization(civilization1);
         Assertions.assertEquals(0, diplomacies.size());
+    }
+    @Test
+    public void testGetScientificTreatiesOfCivilization(){
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy1);
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy2);
+        ArrayList<ScientificTreaty> diplomacies = GameController.getGameController().getScientificTreatiesOfCivilization(civilization1);
+        Assertions.assertEquals(0, diplomacies.size());
+    }
+
+    @Test
+    public void testGetStepWiseGoldTransferContractsOfCivilizationPayer(){
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy1);
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy2);
+        ArrayList<StepWiseGoldTransferContract> diplomacies = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationPayer(civilization1);
+        Assertions.assertEquals(0, diplomacies.size());
+    }
+
+    @Test
+    public void testGetStepWiseGoldTransferContractsOfCivilizationRecipient(){
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy1);
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy2);
+        ArrayList<StepWiseGoldTransferContract> diplomacies = GameController.getGameController().getStepWiseGoldTransferContractsOfCivilizationRecipient(civilization1);
+        Assertions.assertEquals(0, diplomacies.size());
+    }
+
+    @Test
+    public void testGetWarInfoMapOfCivilization(){
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy1);
+        GameDataBase.getGameDataBase().getAllDiplomaticRelations().add(diplomacy2);
+        ArrayList<WarInfo> diplomacies = GameController.getGameController().getWarInfoMapOfCivilization(civilization1);
+        Assertions.assertEquals(0, diplomacies.size());
+    }
+
+    @Test
+    public void testAddCivilization(){
+        GameDataBase.getGameDataBase().getCivilizations().add(civilization1);
+        //GameDataBase.getGameDataBase().getCivilizations().add(civilization2);
+        GameController.getGameController().addCivilization(civilization);
+        verify(GameDataBase.getGameDataBase().getAllDiplomaticRelations()).add(new DiplomaticRelationsMap(civilization1, civilization));
     }
 
 }
