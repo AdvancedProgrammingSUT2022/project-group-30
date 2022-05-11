@@ -42,9 +42,8 @@ public class GameController {
     }
 
     public static GameController getGameController() {
-        if (gameController == null) {
+        if (gameController == null)
             gameController = new GameController();
-        }
         return gameController;
     }
 
