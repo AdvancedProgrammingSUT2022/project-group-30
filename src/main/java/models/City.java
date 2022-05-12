@@ -12,6 +12,7 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.BonusResource;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -102,6 +103,15 @@ public class City implements Selectable, TurnHandler, combative {
             while (expansionProgress >= expansionLimit) {
                 expansionProgress -= expansionLimit;
                 growTerritory();
+            }
+        }
+        for (Tile tile : territories) {
+            for (Resource resource : tile.calculateCollectibeResourcesOutput()) {
+                if (resource instanceof LuxuryResource) {
+                    owner.addLuxuryResource((LuxuryResource) resource);
+                } else if (resource instanceof StrategicResource) {
+                    owner.addStrategicResource((StrategicResource) resource);
+                }
             }
         }
     }

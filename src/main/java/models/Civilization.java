@@ -12,6 +12,7 @@ import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.resources.BonusResource;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -289,6 +290,14 @@ public class Civilization implements TurnHandler {
 
     public HashMap<LuxuryResource, Integer> getLuxuryResources() {
         return luxuryResources;
+    }
+
+    public void addLuxuryResource(LuxuryResource resource) {
+        luxuryResources.put(resource, luxuryResources.get(resource) + 1);
+    }
+
+    public void addStrategicResource(StrategicResource resource) {
+        strategicResources.put(resource, strategicResources.get(resource) + 1);
     }
 
     public void setLuxuryResources(HashMap<LuxuryResource, Integer> luxuryResources) {
