@@ -193,7 +193,20 @@ public class GameController {
         if (!worker.getOwner().hasTechnology(ImprovementType.ROAD.getPrerequisiteTechnology())) {
             return false;
         }
+        return true;
+    }
 
+    public boolean canWorkerBuildRailRoad(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(ImprovementType.ROAD) ||
+                worker.getLocation().containsImprovment(ImprovementType.RAILROAD)) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(ImprovementType.RAILROAD.getPrerequisiteTechnology())) {
+            return false;
+        }
         return true;
     }
 

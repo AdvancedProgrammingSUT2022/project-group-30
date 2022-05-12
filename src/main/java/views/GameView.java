@@ -927,6 +927,9 @@ public class GameView implements View {
         if (controller.canWorkerBuildRoad(worker)) {
             result.add(WorkerCommands.BUILD_ROAD);
         }
+        if (controller.canWorkerBuildRailRoad(worker)) {
+            result.add(WorkerCommands.BUILD_RAILROAD);
+        }
         if (controller.canWorkerBuildImprovement(worker, ImprovementType.FARM)) {
             result.add(WorkerCommands.BUILD_FARM);
         }
