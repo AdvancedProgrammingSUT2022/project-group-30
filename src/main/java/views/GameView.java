@@ -1033,7 +1033,7 @@ public class GameView implements View {
                 teleportUnit(matcher, unit);
             } else if ((matcher = UnitCommands.INSTANT_HEAL.getCommandMatcher(command)) != null) {
                 instantHealUnit(unit);
-            } else if ((matcher = UnitCommands.WORK_ACTIONS.getCommandMatcher(command)) != null) {
+            } else if ((matcher = UnitCommands.WORK_ACTIONS.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.WORK_ACTIONS)) {
                 runWorkActionsTab();
             } else {
                 printer.printlnError("Invalid Unit Command!");
