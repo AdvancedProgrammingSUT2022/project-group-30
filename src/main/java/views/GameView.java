@@ -149,7 +149,7 @@ public class GameView implements View {
     }
 
     private void runDemographicPanel(){
-        printer.printlnRed("This is your civilization demographic pannel: " + this.controller.getCurrentPlayer().getName());
+        printer.printlnRed("This is your civilization demographic panel: " + this.controller.getCurrentPlayer().getName());
         String command;
         Matcher matcher;
         while(true){
