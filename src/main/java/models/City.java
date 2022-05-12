@@ -122,14 +122,14 @@ public class City implements Selectable, TurnHandler, combative {
                 ((UnitType) entityInProduction).getCombatType() == CombatType.MOUNTED) {
             coeff += 0.25;
         }
-        if (hasBuildingType(BuildingType.FORGE) && entityInProduction instanceof  UnitType &&
+        if (hasBuildingType(BuildingType.FORGE) && entityInProduction instanceof UnitType &&
                 ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
             coeff += 0.15;
         }
-        if (hasBuildingType(BuildingType.WORKSHOP) && entityInProduction instanceof  BuildingType) {
+        if (hasBuildingType(BuildingType.WORKSHOP) && entityInProduction instanceof BuildingType) {
             coeff += 0.20;
         }
-        if (hasBuildingType(BuildingType.ARSENAL) && entityInProduction instanceof  UnitType &&
+        if (hasBuildingType(BuildingType.ARSENAL) && entityInProduction instanceof UnitType &&
                 ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
             coeff += 0.20;
         }
@@ -189,7 +189,7 @@ public class City implements Selectable, TurnHandler, combative {
                     continue;
                 }
             }
-            if (owner.hasTechnology(type.getPrerequisitTechnology())) {
+            if (owner.getTechnologies().isTechnologyLearned(type.getPrerequisitTechnology())) {
                 result.add(type);
             }
         }
@@ -330,7 +330,7 @@ public class City implements Selectable, TurnHandler, combative {
         ArrayList<Tile> result = new ArrayList<>();
         for (Tile territory : territories) {
             for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
-                if (!territories.contains(adjacentTile)) {
+                if (!territories.contains(adjacentTile) && GameController.getGameController().whoseTerritoryIsTileIn(adjacentTile) == null) {
                     result.add(adjacentTile);
                 }
             }
@@ -548,10 +548,15 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public double calculateEffectiveCombatStrength() {
-        // TODO
-        //TODO +5 Defense if the city has Walls  -> you can use "if(this.hasBuildingType(BuildingType.WALLS))"
-        //TODO +7.5 Defense if the city has Castle
-        return 0;
+        double combatStrength = this.combatStrength;
+        combatStrength += this.territories.size() / 6.0;
+        if (this.hasBuildingType(BuildingType.WALLS))
+            combatStrength += 5;
+        if (this.hasBuildingType(BuildingType.CASTLE))
+            combatStrength += 7.5;
+        //garrisoned units -> central tile?
+        //HILLs  -> central tile?
+        return combatStrength;
     }
 
     public double calculateEffectiveRangedCombatStrength() {
@@ -622,8 +627,8 @@ public class City implements Selectable, TurnHandler, combative {
         this.owner = owner;
     }
 
-    public boolean isIsPuppet() {
-        return isPuppet;
+    public boolean getIsPuppet() {
+        return this.isPuppet;
     }
 
     public void setIsPuppet(boolean isPuppet) {

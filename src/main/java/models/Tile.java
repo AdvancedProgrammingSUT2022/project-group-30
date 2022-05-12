@@ -290,6 +290,16 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.resources;
     }
 
+    public ArrayList<Resource> getResourcesAsArrayList() {
+        ArrayList<Resource> result = new ArrayList<>();
+        for (Resource resource : resources.keySet()) {
+            if (resources.get(resource) > 0) {
+                result.add(resource);
+            }
+        }
+        return result;
+    }
+
     public boolean hasExploitableResource(Resource resource) {  // check if the tile has a resource and the proper improvement to use it
         if (hasResource(resource) && resource.canBeExploited(this)) {
             return true;
@@ -308,12 +318,26 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.improvements;
     }
 
+    public ArrayList<Improvement> getUnpillagedImprovements() {
+        ArrayList<Improvement> result = new ArrayList<Improvement>();
+        for (Improvement improvement : improvements) {
+            if (!improvement.getIsPillaged()) {
+                result.add(improvement);
+            }
+        }
+        return result;
+    }
+
     public Ruins getRuins() {
         return this.ruins;
     }
 
     public Work getWork() {
         return this.work;
+    }
+
+    public void setWork(Work work) {
+        this.work = work;
     }
 
     public Output getOutput() {

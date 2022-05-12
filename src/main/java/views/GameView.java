@@ -1,6 +1,5 @@
 package views;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,14 +7,15 @@ import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
 import models.buildings.BuildingType;
+import models.improvements.ImprovementType;
 import models.interfaces.Producible;
 import models.technology.Technology;
+import models.units.CombatType;
 import models.units.UnitState;
-import models.*;
-import models.buildings.Building;
 import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
+import models.works.BuildImprovement;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -103,6 +103,20 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
                 runResearchTab();
                 showMap();
+            } else if ((matcher = GameMainPageCommands.ADD_GOLD.getCommandMatcher(command)) != null) {
+                addGold();
+            } else if ((matcher = GameMainPageCommands.DISABLE_TURN_BREAK.getCommandMatcher(command)) != null) {
+                disableTurnBreak();
+            } else if ((matcher = GameMainPageCommands.ADD_STRATEGIC_RESOURCE.getCommandMatcher(command)) != null) {
+                addStrategicResource(matcher);
+            } else if ((matcher = GameMainPageCommands.ADD_LUXURY_RESOURCE.getCommandMatcher(command)) != null) {
+                addLuxuryResource(matcher);
+            } else if ((matcher = GameMainPageCommands.ADD_UNIT.getCommandMatcher(command)) != null) {
+                addUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.KILL_UNIT.getCommandMatcher(command)) != null) {
+                killUnit(matcher);
+            } else if ((matcher = GameMainPageCommands.MAKE_IMPROVEMENT.getCommandMatcher(command)) != null) {
+                makeImprovement(matcher);
             } else if ((matcher = GameMainPageCommands.UNITS_INFO.getCommandMatcher(command)) != null) {
                 showUnitsInfo();
                 showMap();
@@ -125,6 +139,106 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void makeImprovement(Matcher matcher) {
+        String name = matcher.group("name");
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        ImprovementType chosenType = ImprovementType.getImprovementTypeByName(name);
+        if (chosenType == null) {
+            printer.printlnError("Not a valid improvement type!");
+            return;
+        }
+        if (tile.containsImprovment(chosenType)) {
+            printer.printlnError("This tile already contains an improvement of this type!");
+            return;
+        }
+        if (chosenType != ImprovementType.ROAD && chosenType != ImprovementType.RAILROAD &&
+                (tile.getCityOfTile() == null || tile.getCityOfTile().getOwner() != controller.getCurrentPlayer())) {
+            printer.printlnError("You can only construct improvements in your own cities!");
+            return;
+        }
+        controller.addImprovementToTile(tile, chosenType);
+        printer.println("I would like a snowman");
+    }
+
+    private void killUnit(Matcher matcher) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("You missed! The coordinates are invalid");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        ArrayList<Unit> units = controller.getUnitsInTile(tile);
+        if (units.size() == 0) {
+            printer.printlnError("You missed! This is an empty tile!");
+            return;
+        }
+        for (Unit unit : units) {
+            controller.removeUnit(unit);
+        }
+        printer.println("Congratulations! You're a heartless murderer");
+    }
+
+    private void addUnit(Matcher matcher) {
+        String name = matcher.group("name");
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        UnitType selectedType = UnitType.getUnitTypeByName(name);
+        if (selectedType == null) {
+            printer.printlnError("Unit not recognized");
+            return;
+        }
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        if (!controller.canUnitTeleportToTile(selectedType, controller.getCurrentPlayer(), tile)) {
+            printer.printlnError("Can't put a unit there!");
+            return;
+        }
+        controller.createUnit(selectedType, controller.getCurrentPlayer(), tile);
+        printer.println("Your units have been dispatched");
+    }
+
+    private void addStrategicResource(Matcher matcher) {
+        String name = matcher.group("name");
+        StrategicResource chosenResource = StrategicResource.getStrategicResourceByName(name);
+        if (chosenResource == null) {
+            printer.printlnError("Resource not recognized!");
+            return;
+        }
+        controller.getCurrentPlayer().addStrategicResource(chosenResource, 5);
+        printer.println("You just purchased some " + chosenResource.getName() + " on dark web. I'd look over my shoulder for a while...");
+    }
+
+    private void addLuxuryResource(Matcher matcher) {
+        String name = matcher.group("name");
+        LuxuryResource chosenResource = LuxuryResource.getLuxuryResourceByName(name);
+        if (chosenResource == null) {
+            printer.printlnError("Resource not recognized!");
+            return;
+        }
+        controller.getCurrentPlayer().addLuxuryResource(chosenResource, 5);
+        printer.println("You just purchased some " + chosenResource.getName() + " on dark web. I'd look over my shoulder for a while...");
+    }
+
+    private void disableTurnBreak() {
+        controller.disableTurnBreak();
+        printer.println("ee vaghte show gharibam");
+    }
+
+    private void addGold() {
+        controller.getCurrentPlayer().addGold(200);
+        printer.printlnYellow("Balam az zamane Khatami");
     }
 
     private void economicOverviewPanel(){
@@ -439,6 +553,8 @@ public class GameView implements View {
             } else if ((matcher = ResearchCommands.BACK.getCommandMatcher(command)) != null) {
                 printer.println("You exited research tab");
                 break;
+            } else if ((matcher = ResearchCommands.LEARN_TECHNOLOGY.getCommandMatcher(command)) != null) {
+                learnTechnology(matcher);
             } else if ((matcher = ResearchCommands.CHANGE_RESEARCH.getCommandMatcher(command)) != null) {
                 changeResearch(civilization);
             } else if ((matcher = ResearchCommands.SHOW_CURRENT_INFO.getCommandMatcher(command)) != null) {
@@ -447,9 +563,22 @@ public class GameView implements View {
             } else {
                 printer.println("Invalid command for Research tab!");
             }
-
         }
+    }
 
+    private void learnTechnology(Matcher matcher) {
+        String techName = matcher.group("name");
+        Technology chosenTech = Technology.getTechnologyByName(techName);
+        if (chosenTech == null) {
+            printer.printlnError("Technology not recognized");
+            return;
+        }
+        if (controller.getCurrentPlayer().getTechnologies().isTechnologyLearned(chosenTech)) {
+            printer.printlnError("You have already learned this technology!");
+            return;
+        }
+        controller.getCurrentPlayer().getTechnologies().learnTechnologyAndPrerequisites(chosenTech);
+        printer.println("You have successfully stolen this technology.");
     }
 
     private void showResearchMenuCommands() {
@@ -625,6 +754,8 @@ public class GameView implements View {
         Matcher matcher;
         int x, y;
 
+        Tile tile = null;
+        int cost = 0;
         while (true) {
             String input = scanner.nextLine();
             if ((matcher = inputPattern.matcher(input)).matches()) {
@@ -634,24 +765,28 @@ public class GameView implements View {
                     printer.printlnError("Invalid coordinates, try again.");
                     continue;
                 }
-                Tile tile = controller.getTileByCoordinates(x, y);
+                tile = controller.getTileByCoordinates(x, y);
                 if (!purchasableTiles.contains(tile)) {
                     printer.printlnError("You can only choose from the presented list. Try again.");
                     continue;
                 }
-                int cost = city.calculateNextTilePrice();
+                cost = city.calculateNextTilePrice();
                 if (cost > city.getOwner().getGoldCount()) {
                     printer.printlnError("You don't have enough gold to buy this tile!");
-                    break;
+                    return;
                 }
                 break;
             } else if (input.equalsIgnoreCase("cancel") || input.equalsIgnoreCase("back")) {
                 printer.printlnRed("purchase canceled.");
-                break;
+                return;
             } else {
                 printer.printlnError("Invalid input, try again.");
+                continue;
             }
         }
+        controller.getCurrentPlayer().decreaseGold(cost);
+        controller.addTileToCityTerritory(city, tile);
+        printer.println("Tile successfully purchased!");
     }
 
     private void runProductionPanel(City city) {
@@ -864,7 +999,6 @@ public class GameView implements View {
     }
 
     private void showCityInfo() {
-        // TODO
         City city = (City) controller.getCurrentPlayer().getSelectedEntity();
         if (city.isCapital()) {
             printer.printlnPurple(controller.getCurrentPlayer().getName() + "'s Capital City");
@@ -883,6 +1017,19 @@ public class GameView implements View {
                 }
             }
         }
+
+        printer.printlnBlue("Resources in this city:");
+        for (Tile tile : city.getTerritories()) {
+            for (Resource resource : tile.getResourcesAsArrayList()) {
+                printer.print(resource.getName());
+                if (resource.canBeExploited(tile)) {
+                    printer.println(" (exploited by " + resource.getPrerequisiteImprovement().getName() + ")");
+                } else {
+                    printer.println(" (not exploited, requires " + resource.getPrerequisiteImprovement().getName() + ")");
+                }
+            }
+        }
+
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
         printer.println("City's food balance:");
@@ -964,6 +1111,10 @@ public class GameView implements View {
             printer.printlnRed("The tile you have entered is not in this city's territory!");
             return;
         }
+        if (tile.calculateDistance(city.getCentralTile()) > 2) {
+            printer.printlnError("This tile is too far away from city center!");
+            return;
+        }
         if (city.isTileBeingWorked(tile)) {
             printer.printlnRed("This tile is already being worked!");
             return;
@@ -1003,19 +1154,20 @@ public class GameView implements View {
 
     private void passTurn() {
         ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-        if (idleUnits.isEmpty() == false) {
+        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("Some units are waiting for a command!");
             controller.getCurrentPlayer().setSelectedEntity(idleUnits.get(0));
             return;
         }
-        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null) {
+        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("You should start a research project!");
             // TODO : FOR MY SELF
             return;
         }
 
         ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
-        if (citiesWaitingForProduction.isEmpty() == false) {
+        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("Some cities are waiting for their next production!");
             controller.getCurrentPlayer().setSelectedEntity(citiesWaitingForProduction.get(0));
             return;
@@ -1023,6 +1175,102 @@ public class GameView implements View {
 
         controller.goToNextPlayer();
         showMap();
+    }
+
+    private void runWorkActionsTab() {
+        Unit worker = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        ArrayList<WorkerCommands> allowedCommands = calculateWorkerAllowedActions(worker);
+        printer.printlnRed("**********************************");
+        printer.printlnRed("Work Actions Tab");
+        printer.println("Choose an action from the below list: enter back to go back :)");
+        for (WorkerCommands allowedCommand : allowedCommands) {
+            printer.println(allowedCommand.getName());
+        }
+
+        String command;
+        Matcher matcher;
+        while (true) {
+            command = scanner.nextLine();
+            if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
+                buildRoad(worker);
+            } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
+                // TODO
+                printer.println("building farm...");
+            } else if (command.equals("cancel") || command.equals("back")) {
+                printer.println("You have exited Work Actions Panel");
+                break;
+            } else {
+                printer.printlnError("Invalid Command!");
+            }
+        }
+    }
+
+    private void buildRoad(Unit worker) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof  BuildImprovement &&
+                    ((BuildImprovement)location.getWork()).getImprovement() == ImprovementType.ROAD) {
+                ((BuildImprovement)location.getWork()).startWork(worker);
+                printer.println("Resumed road construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Build Road canceled");
+                return;
+            }
+        }
+        BuildImprovement newWork = new BuildImprovement(ImprovementType.ROAD, worker);
+        location.setWork(newWork);
+        printer.println("Started the construction of a road here!");
+    }
+
+    private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
+        ArrayList<WorkerCommands> result = new ArrayList<WorkerCommands>();
+        if (controller.canWorkerBuildRoad(worker)) {
+            result.add(WorkerCommands.BUILD_ROAD);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.FARM)) {
+            result.add(WorkerCommands.BUILD_FARM);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.MINE)) {
+            result.add(WorkerCommands.BUILD_MINE);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.TRADING_POST)) {
+            result.add(WorkerCommands.BUILD_TRADING_POST);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.LUMBER_MILL)) {
+            result.add(WorkerCommands.BUILD_LUMBER_MILL);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PASTURE)) {
+            result.add(WorkerCommands.BUILD_PASTURE);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PLANTATION)) {
+            result.add(WorkerCommands.BUILD_PLANTATION);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.QUARRY)) {
+            result.add(WorkerCommands.BUILD_QUARRY);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.CAMP)) {
+            result.add(WorkerCommands.BUILD_CAMP);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.JUNGLE)) {
+            result.add(WorkerCommands.CLEAR_JUNGLE);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.FOREST)) {
+            result.add(WorkerCommands.CLEAR_FOREST);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.MARSH)) {
+            result.add(WorkerCommands.CLEAR_MARSH);
+        }
+        if (controller.canWorkerClearRoutes(worker)) {
+            result.add(WorkerCommands.CLEAR_ROUTES);
+        }
+        if (controller.canWorkerFixImprovement(worker)) {
+            result.add(WorkerCommands.FIX_IMPROVEMENT);
+        }
+        return result;
     }
 
     private void runUnitActionsTab() {
@@ -1075,9 +1323,22 @@ public class GameView implements View {
                 break;
             } else if ((matcher = UnitCommands.AWAKE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.AWAKE)) {
                 awakeAUnit(unit);
+            } else if ((matcher = UnitCommands.SET_UP_FOR_RANGED_ATTACK.getCommandMatcher(command)) != null &&
+                    allowedCommands.get(UnitCommands.SET_UP_FOR_RANGED_ATTACK)) {
+                setUpForRangedAttack(unit);
+            } else if ((matcher = UnitCommands.PILLAGE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.PILLAGE)) {
+                pillage(unit);
             } else if ((matcher = UnitCommands.DELETE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.DELETE)) {
                 deleteAUnit(unit);
                 break;
+            } else if ((matcher = UnitCommands.CANCEL_MOVE.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.CANCEL_MOVE)) {
+                cancelUnitMove(unit);
+            } else if ((matcher = UnitCommands.TELEPORT.getCommandMatcher(command)) != null) {
+                teleportUnit(matcher, unit);
+            } else if ((matcher = UnitCommands.INSTANT_HEAL.getCommandMatcher(command)) != null) {
+                instantHealUnit(unit);
+            } else if ((matcher = UnitCommands.WORK_ACTIONS.getCommandMatcher(command)) != null) {
+                runWorkActionsTab();
             } else {
                 printer.printlnError("Invalid Unit Command!");
             }
@@ -1095,6 +1356,19 @@ public class GameView implements View {
             result.put(command, false);
         }
 
+
+        if (unit.getType().getCombatType() == CombatType.SIEGE && unit.isAssembled() == false && unit.getMovePointsLeft() >= 1) {
+            result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
+        }
+        if (controller.canUnitMeleeAttack(unit)) {
+            result.put(UnitCommands.MELEE_ATTACK, true);
+        }
+        if (controller.canUnitRangedAttack(unit)) {
+            result.put(UnitCommands.RANGED_ATTACK, true);
+        }
+        if (controller.canUnitPillage(unit)) {
+            result.put(UnitCommands.PILLAGE, true);
+        }
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
         result.put(UnitCommands.DELETE, true);
@@ -1119,21 +1393,65 @@ public class GameView implements View {
             result.put(UnitCommands.AWAKE, true);
         }
 
+        if (unit.getType() == UnitType.WORKER) {
+            result.put(UnitCommands.WORK_ACTIONS, true);
+        }
+
         if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
                 controller.getCityCenteredInTile(unit.getLocation()) != null &&
                 controller.getCityCenteredInTile(unit.getLocation()).getOwner() == unit.getOwner()) {
             result.put(UnitCommands.GARRISON, true);
         }
 
+        if (unit.getPath() != null) {
+            result.put(UnitCommands.CANCEL_MOVE, true);
+        }
         // TODO : consider all commands
 
         return result;
     }
 
+    private void pillage(Unit unit) {
+        controller.pillageUnitsTile(unit);
+        printer.println("You just successfully tore apart hard-earned value!");
+    }
+
+    private void instantHealUnit(Unit unit) {
+        unit.setHitPointsLeft(unit.getType().getHitPoints());
+        printer.println("by his wounds you have been healed");
+    }
+
+    private void teleportUnit(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates! teleport failed");
+            return;
+        }
+        Tile destination = controller.getTileByCoordinates(x, y);
+        if (!controller.canUnitTeleportToTile(unit.getType(), controller.getCurrentPlayer(), destination)) {
+            printer.printlnError("You can't teleport to that tile!");
+            return;
+        }
+        controller.moveUnit(unit, destination);
+        printer.println("Meow");
+    }
+
+    private void setUpForRangedAttack(Unit unit) {
+        unit.assemble();
+        unit.setMovePointsLeft(Math.max(unit.getMovePointsLeft() - 1, 0));
+        unit.setPath(null);
+        printer.println("Unit successfully assembled!");
+    }
+
+    private void cancelUnitMove(Unit unit) {
+        unit.setPath(null);
+        printer.println("Unit's schedualed move was canceled");
+    }
+
     private void deleteAUnit(Unit unit) {
         unit.getOwner().setSelectedEntity(null);
-        unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
-        GameDataBase.getGameDataBase().getUnits().remove(unit);
+        controller.deleteUnit(unit);
         printer.println("this unit is now deleted");
         showMap();
     }
@@ -1202,6 +1520,18 @@ public class GameView implements View {
     private void showUnitInfo(Unit unit) {
         printer.printlnBlue(unit.getOwner().getName() + "'s " + unit.getType().getName());
         printer.println("State: " + unit.getState());
+        if (unit.getType().getCombatType() == CombatType.SIEGE) {
+            printer.println((unit.isAssembled()) ? "Assembled" : "Disassembled");
+        }
+        if (unit.getType() == UnitType.WORKER) {
+            if (controller.getWorkersWork(unit) == null) {
+                printer.println("Not Currently Working...");
+            } else {
+                printer.println("Work: " + controller.getWorkersWork(unit));
+                Tile location = controller.getWorkersWork(unit).findLocation();
+                printer.println("Work Place: Y: " + location.findTileYCoordinateInMap() + ", X: " + location.findTileXCoordinateInMap());
+            }
+        }
         printer.println("Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
         printer.println("Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
         printer.println("Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
@@ -1340,7 +1670,7 @@ public class GameView implements View {
             tile = (Tile) image;
             units = controller.getUnitsInTile(tile);
             cityCentral = controller.getCityCenteredInTile(tile);
-            city = controller.whoseTerritoryIsTileIn(tile);
+            city = controller.whoseTerritoryIsTileInButIsNotTheCenterOf(tile);
         } else if (image instanceof TileHistory) {
             printer.printlnBlue("This tile is only revealed, the information contained may be out of date");
             TileHistory history = (TileHistory) image;

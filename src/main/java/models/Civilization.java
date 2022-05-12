@@ -24,6 +24,7 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
+    private boolean isTurnBreakDisabled = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
     private TechnologyMap technologies = new TechnologyMap();
@@ -163,18 +164,6 @@ public class Civilization implements TurnHandler {
             beakerCount = Math.max(0, beakerCount);
             goldCount = 0;
         }
-
-        for (City city : getCities()) {
-            ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
-            for (Resource resource : collectibleResourcesInput) {
-                if (resource instanceof LuxuryResource) {
-                    luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
-                }
-                if (resource instanceof StrategicResource) {
-                    strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
-                }
-            }
-        }
     }
 
     public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
@@ -274,12 +263,7 @@ public class Civilization implements TurnHandler {
     }
 
     public boolean hasTechnology(Technology technology) {
-        // TODO : THIS IS FOR DEBUGGING, DELETE THIS
-        // TODO
-        return true;
-//        ArrayList<Technology> techs = new ArrayList<>();
-//        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY, Technology.WRITING));
-//        return techs.contains(technology);
+        return technologies.isTechnologyLearned(technology);
     }
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
@@ -308,8 +292,24 @@ public class Civilization implements TurnHandler {
         luxuryResources.put(resource, luxuryResources.get(resource) + 1);
     }
 
+    public void addLuxuryResource(LuxuryResource resource, int amount) {
+        luxuryResources.put(resource, luxuryResources.get(resource) + amount);
+    }
+
     public void addStrategicResource(StrategicResource resource) {
         strategicResources.put(resource, strategicResources.get(resource) + 1);
+    }
+
+    public void addStrategicResource(StrategicResource resource, int amount) {
+        strategicResources.put(resource, strategicResources.get(resource) + amount);
+    }
+
+    public void addGold(int amount) {
+        goldCount += amount;
+    }
+
+    public void decreaseGold(int amount) {
+        goldCount -= amount;
     }
 
     public void setLuxuryResources(HashMap<LuxuryResource, Integer> luxuryResources) {
@@ -393,6 +393,14 @@ public class Civilization implements TurnHandler {
 
     public City getOriginCapital() {
         return originCapital;
+    }
+
+    public void setisTurnBreakDisabled(boolean isTurnBreakDisabled) {
+        this.isTurnBreakDisabled = isTurnBreakDisabled;
+    }
+
+    public boolean isTurnBreakDisabled() {
+        return isTurnBreakDisabled;
     }
 
     public void setFrameBase(Tile tile) {

@@ -18,7 +18,6 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands MOVE_FRAME_TO = new GameMainPageCommands("move frame to (?<y>\\d+)\\s*[:, ]\\s*(?<x>\\d+)");
     public static GameMainPageCommands GO_TO_NEXT_TURN = new GameMainPageCommands("(go to )?next( turn)?");
     public static GameMainPageCommands SHOW_UNITS = new GameMainPageCommands("(show )?units");
-    public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
     public static GameMainPageCommands RESEARCH_TAB = new GameMainPageCommands("(show )?research tab");
     public static GameMainPageCommands UNITS_INFO = new GameMainPageCommands("(show )?units panel");
     public static GameMainPageCommands CITIES_INFO = new GameMainPageCommands("(show )?cities panel");
@@ -28,6 +27,17 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands DEMOGRAPHIC_PANEL = new GameMainPageCommands("(show )?demographic panel");
     // pass the turn
     // show info about civ
+
+    // Cheat Codes
+    public static GameMainPageCommands MAKE_VISIBLE = new GameMainPageCommands("let there be light");
+    public static GameMainPageCommands ADD_GOLD = new GameMainPageCommands("cash ziad eine hatami");
+    public static GameMainPageCommands DISABLE_TURN_BREAK = new GameMainPageCommands("jenab sarvan welam kon");
+    public static GameMainPageCommands ADD_STRATEGIC_RESOURCE = new GameMainPageCommands("need me some (?<name>.*)");
+    public static GameMainPageCommands ADD_LUXURY_RESOURCE = new GameMainPageCommands("asan luxury shodan monshiam (?<name>.*)");
+    public static GameMainPageCommands ADD_UNIT = new GameMainPageCommands("send dudes (?<name>.*)[-: ](?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
+    public static GameMainPageCommands KILL_UNIT = new GameMainPageCommands("avada kedavra (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
+    public static GameMainPageCommands MAKE_IMPROVEMENT =
+            new GameMainPageCommands("do you wanna build a snowman (?<name>.*) (?<y>\\d+)\\s*[:, ](?<x>\\d+)");
 
     GameMainPageCommands(String regex) {
         super(regex);

@@ -78,6 +78,10 @@ public class Unit implements Selectable, TurnHandler, combative {
         isAssembled = true;
     }
 
+    public void disassemble() {
+        isAssembled = false;
+    }
+
     public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
                                    // rest all return true
         if (type.needsAssmbly()) {

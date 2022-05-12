@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import models.Civilization;
 import models.Output;
+import models.improvements.Improvement;
 import models.interfaces.TerrainProperty;
 import models.Tile;
 import models.improvements.ImprovementType;
@@ -36,11 +37,13 @@ public abstract class Resource {
     }
 
     public boolean canBeExploited(Tile tile) {
-        if (tile.containsImprovment(prerequisiteImprovement)) {
-            return true;
-        } else {
-            return false;
+        ArrayList<Improvement> unpillagedImprovements = tile.getUnpillagedImprovements();
+        for (Improvement improvement : unpillagedImprovements) {
+            if (improvement.getType() == prerequisiteImprovement) {
+                return true;
+            }
         }
+        return false;
     }
 
     public Output getOutput() {
