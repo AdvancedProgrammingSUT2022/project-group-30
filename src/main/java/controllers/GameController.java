@@ -45,9 +45,8 @@ public class GameController {
     }
 
     public static GameController getGameController() {
-        if (gameController == null) {
+        if (gameController == null)
             gameController = new GameController();
-        }
         return gameController;
     }
 
@@ -662,18 +661,12 @@ public class GameController {
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if (Math.abs(x - x2) > 1 || Math.abs(y - y2) > 1) {
-            return false;
-        }
+        if (Math.abs(x - x2) > 1 || Math.abs(y - y2) > 1) return false;
         if (x % 2 == 0) {
-            if (y2 - y == 1 && x != x2) {
-                return false;
-            }
+            if (y2 - y == 1 && x != x2) return false;
             return true;
         } else {
-            if (y - y2 == 1 && x != x2) {
-                return false;
-            }
+            if (y - y2 == 1 && x != x2) return false;
             return true;
         }
     }

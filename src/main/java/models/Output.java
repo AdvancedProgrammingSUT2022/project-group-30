@@ -35,6 +35,13 @@ public class Output {
         production = other.getProduction();
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Output))
+            return false;
+        return this.food == ((Output) o).getFood() && this.gold == ((Output) o).getGold() && this.production == ((Output) o).getProduction();
+    }
+
     public void setGold(int gold) {
         this.gold = gold;
     }
