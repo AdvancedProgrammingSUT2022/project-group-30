@@ -2,6 +2,7 @@ package controllers;
 
 import models.City;
 import models.interfaces.combative;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitType;
 
@@ -96,10 +97,16 @@ public class CombatController {
         gameController.moveUnit(attacker, defender.getLocation());
     }
 
-    public void executeMeleeAttack(Unit attacker, combative defender) {
-        attacker.setMovePointsLeft(0);
+    private void applyAttackChangesOnUnit(Unit attacker) {
+        if (attacker.getType().getCombatType() != CombatType.MOUNTED) {
+            attacker.setMovePointsLeft(0);
+        }
         attacker.setHasAttackedThisTurns(true);
         attacker.resetInactivityDuration();
+    }
+
+    public void executeMeleeAttack(Unit attacker, combative defender) {
+        applyAttackChangesOnUnit(attacker);
 
         if (defender instanceof Unit && ((Unit)defender).isCivilian()) {
             captureUnit(attacker, (Unit) defender);
