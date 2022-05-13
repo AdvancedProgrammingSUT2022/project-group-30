@@ -20,7 +20,6 @@ public class Unit implements Selectable, TurnHandler, combative {
     private int experiencePoints; // note : won't be used if we don't implement unit upgrades
     private UnitState state;
     private boolean isAssembled;
-    private boolean hasBeenInactive;
     private boolean hasAttackedThisTurn;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
@@ -36,7 +35,6 @@ public class Unit implements Selectable, TurnHandler, combative {
         movePointsLeft = type.getMovementSpeed();
         experiencePoints = 0;
         state = UnitState.AWAKE;
-        hasBeenInactive = true;
         hasAttackedThisTurn = false;
         inactivityDuration = 0;
         stateDuration = 0;
@@ -54,7 +52,6 @@ public class Unit implements Selectable, TurnHandler, combative {
         image.movePointsLeft = movePointsLeft;
         image.experiencePoints = experiencePoints;
         image.state = state;
-        image.hasBeenInactive = hasBeenInactive;
         image.inactivityDuration = inactivityDuration;
         image.stateDuration = stateDuration;
         image.isAssembled = isAssembled;
@@ -136,11 +133,6 @@ public class Unit implements Selectable, TurnHandler, combative {
         } else {
             return false;
         }
-    }
-
-    public void move() { // like a setter for location : but it handles other things as well
-        // TODO
-        hasBeenInactive = false;
     }
 
     public Civilization getOwner() {
