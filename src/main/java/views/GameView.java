@@ -803,6 +803,7 @@ public class GameView implements View {
             return;
         }
         CombatController.getCombatController().executeRangedAttack(city, target);
+        printer.println("Attacked target at " + y + ", " + x);
     }
 
     private void purchaseTile(City city) {
@@ -1659,6 +1660,7 @@ public class GameView implements View {
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
         CombatController.getCombatController().executeRangedAttack(unit, target);
+        printer.println("Ranged Attacked " + y + ", " + x);
     }
 
     private void meleeAttack(Matcher matcher, Unit unit) {
@@ -1679,6 +1681,7 @@ public class GameView implements View {
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
         CombatController.getCombatController().executeMeleeAttack(unit, target);
+        printer.println("Melee Attacked " + y + ", " + x);
     }
 
     private void pillage(Unit unit) {
