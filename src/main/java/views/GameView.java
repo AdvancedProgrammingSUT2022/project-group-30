@@ -922,27 +922,6 @@ public class GameView implements View {
         printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
-    private void buildRoad(Unit worker) {
-        Tile location = worker.getLocation();
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof  BuildImprovement &&
-                    ((BuildImprovement)location.getWork()).getImprovement() == ImprovementType.ROAD) {
-                ((BuildImprovement)location.getWork()).startWork(worker);
-                printer.println("Resumed road construction here");
-                return;
-            }
-            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
-            String input = scanner.nextLine();
-            if (input.equalsIgnoreCase("n")) {
-                printer.println("Build Road canceled");
-                return;
-            }
-        }
-        BuildImprovement newWork = new BuildImprovement(ImprovementType.ROAD, worker);
-        location.setWork(newWork);
-        printer.println("Started the construction of a road here!");
-    }
-
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
         ArrayList<WorkerCommands> result = new ArrayList<WorkerCommands>();
         if (controller.canWorkerBuildRoute(worker, ImprovementType.ROAD)) {
