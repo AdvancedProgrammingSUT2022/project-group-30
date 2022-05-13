@@ -457,6 +457,11 @@ public class Civilization implements TurnHandler {
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
     }
 
+    public void addNotification(String text) {
+        Notification notification = new Notification(text, false, GameDataBase.getGameDataBase().getTurnNumber());
+        notifications.add(notification);
+    }
+
     public void setNotifications(ArrayList<Notification> notifications){
         this.notifications = notifications;
     }

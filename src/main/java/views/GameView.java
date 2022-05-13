@@ -3,6 +3,7 @@ package views;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.CombatController;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
@@ -10,6 +11,7 @@ import models.buildings.Building;
 import models.buildings.BuildingType;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
+import models.interfaces.combative;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.UnitState;
@@ -105,7 +107,7 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
                 showUnits();
             } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
-                controller.makeEverythingVisible();
+                makeEverythingVisible();
                 showMap();
             } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
                 runResearchTab();
@@ -150,6 +152,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void makeEverythingVisible() {
+        controller.makeEverythingVisible();
+        printer.println("And then there was light!");
     }
 
     private void clearAllFeatures(Matcher matcher) {
@@ -762,10 +769,41 @@ public class GameView implements View {
                 runProductionPanel(city);
             } else if ((matcher = CityCommands.PURCHASE_TILE.getCommandMatcher(command)) != null) {
                 purchaseTile(city);
+            } else if ((matcher = CityCommands.ATTACK.getCommandMatcher(command)) != null) {
+                cityRangedAttack(matcher, city);
             } else {
                 printer.printlnError("Invalid command for city!");
             }
         }
+    }
+
+    private void cityRangedAttack(Matcher matcher, City city) {
+        if (city.hasAttackedThisTurn()) {
+            printer.printlnError("This city has already attacked in this turn!");
+            return;
+        }
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (targetTile.calculateDistance(city.getCentralTile()) >= city.getRange()) {
+            printer.printlnError("This target is not within city's range!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, city.getOwner())) {
+            printer.printlnError("There are no hostile entities in this tile!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, city.getOwner());
+        if (target instanceof City) {
+            printer.printlnError("You can't attack another city!");
+            return;
+        }
+        CombatController.getCombatController().executeRangedAttack(city, target);
+        printer.println("Attacked target at " + y + ", " + x);
     }
 
     private void purchaseTile(City city) {
@@ -1059,6 +1097,7 @@ public class GameView implements View {
 
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
+        printer.println("Hit Points Left: " + city.getHitPointsLeft());
         printer.println("City's food balance:");
         if (city.getFoodCount() >= 0) {
             printer.printlnBlue(city.getFoodCount());
@@ -1493,6 +1532,10 @@ public class GameView implements View {
                 if (unit.getOwner().getSelectedEntity() == null) {
                     break;
                 }
+            } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
+                meleeAttack(matcher, unit);
+            } else if ((matcher = UnitCommands.RANGED_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.RANGED_ATTACK)) {
+                rangedAttack(matcher, unit);
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else if ((matcher = UnitCommands.FOUND_CITY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FOUND_CITY)) {
@@ -1607,6 +1650,49 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void rangedAttack(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
+            !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
+            printer.printlnError("You can only attack target that are seen and within range!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            printer.printlnError("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeRangedAttack(unit, target);
+        printer.println("Ranged Attacked " + y + ", " + x);
+    }
+
+    private void meleeAttack(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (!controller.areTwoTilesAdjacent(targetTile, unit.getLocation())) {
+            printer.printlnError("You can only melee attack adjacent tiles!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            printer.printlnError("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+        printer.println("Melee Attacked " + y + ", " + x);
     }
 
     private void pillage(Unit unit) {

@@ -8,6 +8,7 @@ public class CityCommands extends Commands {
     public static final CityCommands SHOW_CITIZEN_MANAGEMENT_PANEL = new CityCommands("(open )?citizen management", "open citizen management");
     public static final CityCommands SHOW_PRODUCTION_PANEL = new CityCommands("(open )?production( panel)?", "open production panel");
     public static final CityCommands PURCHASE_TILE = new CityCommands("purchase tile", "purchase tile");
+    public static final CityCommands ATTACK = new CityCommands("attack (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)", "attack y, x");
     public static final CityCommands DESELECT = new CityCommands("deselect", "deselect");
 
     private final String name;

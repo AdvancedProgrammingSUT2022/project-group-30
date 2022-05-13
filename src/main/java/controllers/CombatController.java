@@ -11,6 +11,9 @@ import models.units.UnitState;
 import models.units.UnitType;
 
 import java.util.ArrayList;
+import models.units.UnitType;
+
+import java.util.ArrayList;
 
 public class CombatController {
     private static CombatController combatController = null;
@@ -21,6 +24,12 @@ public class CombatController {
         }
         return combatController;
     }
+
+    private CombatController() {
+        gameController = GameController.getGameController();
+    }
+
+    private final GameController gameController;
 
     public int calculateEffectiveMeleeCombatStrengthForCity(City city, combative target) {
         Tile myLocation = city.getCentralTile();
@@ -56,18 +65,13 @@ public class CombatController {
         percentage += city.getTerritories().size() * 2;
         if (city.getGarrisoningUnit() != null)
             percentage += 33;
+        if (city.hasBuildingType(BuildingType.CASTLE))
+            percentage += 30;
+        if (city.hasBuildingType(BuildingType.WALLS))
+            percentage += 20;
         percentage = Math.max(-50, percentage);
         percentage = Math.min(50, percentage);
         return (int) percentage;
-    }
-
-    public double calculateNumberOfNetDefensiveBonusForCity(City city, combative attacker) {
-        double defenseBonus = 0;
-        if (city.hasBuildingType(BuildingType.CASTLE))
-            defenseBonus += 7.5;
-        if (city.hasBuildingType(BuildingType.WALLS))
-            defenseBonus += 5;
-        return defenseBonus;
     }
 
     public int calculateEffectiveMeleeCombatStrengthForUnit(Unit unit, combative target) {
@@ -87,7 +91,6 @@ public class CombatController {
 
     public int calculateEffectiveRangedCombatStrengthForUnit(Unit unit, combative target) {
         Tile myLocation = unit.getLocation();
-        //   if( || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
         double percentage = 0;
         for (Feature feature : myLocation.getFeatures()) {
             if (feature.getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
@@ -151,6 +154,14 @@ public class CombatController {
         }
     }
 
+    public int calculateEffectiveRangedCombatStrength(combative attacker, combative defender) {
+        if (attacker instanceof City) {
+            return calculateEffectiveRangedCombatStrengthForCity((City) attacker, defender);
+        } else {
+            return calculateEffectiveRangedCombatStrengthForUnit((Unit) attacker, defender);
+        }
+    }
+
     private int calculateEffectiveNetDefensiveBonus(combative defender, combative attacker) {
         if (defender instanceof City) {
             return calculateNetDefensiveBonusForCity((City) defender, attacker);
@@ -160,11 +171,22 @@ public class CombatController {
     }
 
     private void kill(City city) {
-        // TODO
+        city.getOwner().addNotification("Your city at " + city.getCentralTile().findTileYCoordinateInMap() + ", " +
+                city.getCentralTile().findTileXCoordinateInMap() + " was destroyed!");
+
+        ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
+        for (Unit unit : units) {
+            gameController.removeUnit(unit);
+        }
+        gameController.destroyCity(city);
     }
 
     private void kill(Unit unit) {
+        unit.getOwner().addNotification("Your " + unit.getType().getName() + " at " +
+                unit.getLocation().findTileYCoordinateInMap() + ", " + unit.getLocation().findTileXCoordinateInMap() +
+                " was destroyed!");
 
+        gameController.removeUnit(unit);
     }
 
     private void kill(combative entityToKill) {
@@ -175,47 +197,94 @@ public class CombatController {
         }
     }
 
+    private void captureUnit(Unit attacker, Unit defender) {
+        defender.getOwner().addNotification("Your " + defender.getType().getName() + " at " + defender.getLocation().findTileYCoordinateInMap() +
+                ", " + defender.getLocation().findTileXCoordinateInMap() + " was captured by " + attacker.getOwner().getName());
+        gameController.removeUnit(defender);
+        gameController.createUnit(UnitType.WORKER, attacker.getOwner(), defender.getLocation());
+        gameController.moveUnit(attacker, defender.getLocation());
+    }
+
+    private void applyAttackChangesOnUnit(Unit attacker) {
+        if (attacker.getType().getCombatType() != CombatType.MOUNTED) {
+            attacker.setMovePointsLeft(0);
+        }
+        attacker.setHasAttackedThisTurns(true);
+        attacker.resetInactivityDuration();
+    }
+
+    private void applyAttackChangesOnCity(City attacker) {
+        attacker.setHasAttackedThisTurn(true);
+        // TODO
+    }
+
+    private void applyMeleeCombatEndEffects(combative winner, combative loser) {
+        Unit capturedUnit = null;
+        if (loser instanceof Unit && winner instanceof  Unit) {
+            Unit loserUnit = (Unit) loser;
+            capturedUnit = gameController.getCivilianUnitInTile(loserUnit.getLocation());
+        }
+
+        kill(loser);
+        if (capturedUnit != null) {
+            captureUnit((Unit) winner, capturedUnit);
+        }
+
+        if (winner instanceof Unit) {
+            gameController.moveUnit((Unit) winner, loser.getLocation());
+        }
+    }
+
     public void executeMeleeAttack(Unit attacker, combative defender) {
+        applyAttackChangesOnUnit(attacker);
+
+        if (defender instanceof Unit && ((Unit)defender).isCivilian()) {
+            captureUnit(attacker, (Unit) defender);
+        }
+
         int attackerStrength = calculateEffectiveMeleeCombatStrengthForUnit(attacker, defender);
         int defenderStrength = calculateEffectiveMeleeCombatStrength(defender, attacker);
         int defenderDefensiveBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);
         int attackerDefensiveBonus = calculateNetDefensiveBonusForUnit(attacker, defender);
         int damageDoneToDefender = attackerStrength * (100 - defenderDefensiveBonus) / 100;
         int damageDoneToAttacker = defenderStrength * (100 - attackerDefensiveBonus) / 100;
-        if (defender.getHitPointsLeft() < damageDoneToDefender) {
-            kill(defender);
 
+        if (defender.getHitPointsLeft() <= damageDoneToDefender) {
+            attacker.reduceHitPoints(damageDoneToAttacker);
+            if (attacker.getHitPointsLeft() <= 0) {
+                attacker.setHitPointsLeft(1);
+            }
+
+            applyMeleeCombatEndEffects(attacker, defender);
+        } else if (attacker.getHitPointsLeft() <= damageDoneToAttacker) {
+            defender.reduceHitPoints(damageDoneToDefender);
+
+            applyMeleeCombatEndEffects(defender, attacker);
+        } else {
+            attacker.reduceHitPoints(damageDoneToAttacker);
+            defender.reduceHitPoints(damageDoneToDefender);
         }
-
-        // TODO
-        /*
-        NOTES:
-        - HANDLE BOTH DYING AT THE SAME TIME
-
-        if defender is civilian, have it capture -> turn it into worker and move into the tile
-        calculate combat strengths and defensive bonuses
-        apply damages and check HPs
-        kill first one to reach 0 HPs -> if it's a unit, just kill it and move the other one into it.
-                                      -> if it's a city, destroy it and all units contained in it.
-        modify unit's hasAttackedField
-        modify unit's inactivityDuration field and make sure the same thing is done with move
-        drain unit's MPs (doesn't apply to some types)
-         */
     }
 
-    public void executeUnitRangedAttack(Unit attacker, combative defender) {
-        // TODO
-        /*
-        NOTES:
-        - HANDLE BOTH DYING AT THE SAME TIME
+    public void executeRangedAttack(combative attacker, combative defender) {
+        if (attacker instanceof  Unit) {
+            applyAttackChangesOnUnit((Unit) attacker);
+        } else {
+            applyAttackChangesOnCity((City) attacker);
+        }
 
-        if defender is civilian, do a normal attack
-        calculate ranged combat strength and defensive bonus
-        apply damage and check HP -> don't let city hp fall below 1
-        if defender reached 0 HPs -> it's a unit, just kill it and move the other one into it.
-        modify unit's hasAttackedField
-        modify unit's inactivityDuration field and make sure the same thing is done with move
-        drain Unit's MPs (doesn't apply to some types)
-         */
+        int attackerStrength = calculateEffectiveRangedCombatStrength(attacker, defender);
+        int defenderDefenseBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);
+
+        int totalDamageDone = attackerStrength * (100 - defenderDefenseBonus) / 100;
+        if (totalDamageDone >= defender.getHitPointsLeft()) {
+            if (defender instanceof City) {
+                ((City) defender).setHitPoints(1);
+            } else {
+                kill(defender);
+            }
+        } else {
+            defender.reduceHitPoints(totalDamageDone);
+        }
     }
 }

@@ -171,6 +171,10 @@ public enum UnitType implements Producible {
         return (combatType == CombatType.CIVILIAN);
     }
 
+    public int getRange() {
+        return range;
+    }
+
     public static UnitType getUnitTypeByName(String name) {
         for (UnitType type : values()) {
             if (type.getName().equalsIgnoreCase(name)) {

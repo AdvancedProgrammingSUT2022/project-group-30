@@ -23,6 +23,7 @@ import models.units.UnitType;
 import utilities.Debugger;
 
 public class City implements Selectable, TurnHandler, combative {
+    private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??
@@ -39,6 +40,7 @@ public class City implements Selectable, TurnHandler, combative {
     private double rangedCombatStrength;
     private double range;
     private double hitPoints;
+    private boolean hasAttackedThisTurn;
     // TODO initialize 5 following fields with proper number
     private double expansionProgress;
     private double expansionLimit;
@@ -55,9 +57,10 @@ public class City implements Selectable, TurnHandler, combative {
         this.territories.add(tile);
         this.hammerCount = 0;
         this.foodCount = 0;
+        this.hasAttackedThisTurn = false;
         this.combatStrength = 8;
         this.rangedCombatStrength = 5;
-        this.hitPoints = 20;
+        this.hitPoints = MAXHITPOINTS;
         this.range = 2;
         this.populationGrowthLimit = 10;
         this.populationShrinkageLimit = -10;
@@ -114,7 +117,8 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
-        // TODO: increments HPs with if (maedeh nakhoonde bood ino)
+        hasAttackedThisTurn = false;
+        hitPoints = Math.min(hitPoints + 1, MAXHITPOINTS);
     }
 
     private double calculateBuildingEffectCoefficientForProduction() {
@@ -153,8 +157,6 @@ public class City implements Selectable, TurnHandler, combative {
         hammerCount -= entityInProduction.calculateHammerCost();
         this.owner.addNotificationForProduction(entityInProduction);
         entityInProduction = null;
-
-        // TODO : send notification to the player informing them of the end of production
     }
 
     private int calculateInitialXPForUnitType(UnitType type) {
@@ -623,6 +625,11 @@ public class City implements Selectable, TurnHandler, combative {
         return centralTile;
     }
 
+    @Override
+    public Tile getLocation() {
+        return getCentralTile();
+    }
+
     public void setTerritories(ArrayList<Tile> territories) {
         this.territories = territories;
     }
@@ -756,5 +763,13 @@ public class City implements Selectable, TurnHandler, combative {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return hasAttackedThisTurn;
+    }
+
+    public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 }

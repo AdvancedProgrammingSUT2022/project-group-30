@@ -19,6 +19,7 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.interfaces.combative;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -281,6 +282,7 @@ public class GameController {
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
         awakeAllNearAlertedUnits(unit);
+        unit.resetInactivityDuration();
     }
 
     public boolean canUnitTeleportToTile(UnitType unit, Civilization owner, Tile tile) {
@@ -316,8 +318,8 @@ public class GameController {
         for (int i = 0; i < adjacetTiles.size(); i++) {
             ArrayList<Unit> units = this.getUnitsInTile(adjacetTiles.get(i));
             for (int j = 0; j < units.size(); j++) {
-                if (!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
-                    units.get(i).setState(UnitState.AWAKE);
+                if (units.get(j).getOwner() != unit.getOwner() && units.get(j).getState() == UnitState.ALERT) {
+                    units.get(j).setState(UnitState.AWAKE);
                 }
             }
         }
@@ -441,6 +443,36 @@ public class GameController {
         return null;
     }
 
+    public boolean doesTileContainEnemyCombative(Tile tile, Civilization reference) {
+        ArrayList<Unit> tileUnits = getUnitsInTile(tile);
+        for (Unit unit : tileUnits) {
+            if (unit.getOwner() != reference) {
+                return true;
+            }
+        }
+        if (getCityCenteredInTile(tile) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public combative getPriorityTargetInTile(Tile tile, Civilization reference) {
+        City city = getCityCenteredInTile(tile);
+        if (city != null && city.getOwner() != reference) {
+            return city;
+        }
+
+        Unit militaryUnit = getMilitaryUnitInTile(tile);
+        if (militaryUnit != null && militaryUnit.getOwner() != reference) {
+            return militaryUnit;
+        }
+        Unit civilianUnit = getCivilianUnitInTile(tile);
+        if (civilianUnit != null && civilianUnit.getOwner() != reference) {
+            return civilianUnit;
+        }
+        return null;
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
@@ -544,8 +576,22 @@ public class GameController {
         if (unit.getOwner().getSelectedEntity() == unit) {
             unit.getOwner().setSelectedEntity(null);
         }
+        if (unit.getType() == UnitType.WORKER && getWorkersWork(unit) != null) {
+            getWorkersWork(unit).stopWork();
+        }
         gameDataBase.getUnits().remove(unit);
         setMapImageOfCivilization(unit.getOwner());
+    }
+
+    public void destroyCity(City city) {
+        if (city.getOwner().getSelectedEntity() == city) {
+            city.getOwner().setSelectedEntity(null);
+        }
+        for (Tile tile : city.getTerritories()) {
+            tile.removeAllImprovements();
+        }
+        gameDataBase.getCities().remove(city);
+        setMapImageOfCivilization(city.getOwner());
     }
 
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
@@ -652,34 +698,27 @@ public class GameController {
 
     public boolean canUnitSetUpForRangedAttack(Unit unit) {
         return (unit.getType().getCombatType() == CombatType.SIEGE &&
-                unit.isAssembled() == false && unit.getMovePointsLeft() >= 1 &&
+                !unit.isAssembled() && unit.getMovePointsLeft() >= 1 &&
                 unit.getState().waitsForCommand());
     }
 
     public boolean canUnitMeleeAttack(Unit unit) {
-        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
+        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || unit.hasAttackedThisTurn()) {
             return false;
         }
         ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
         for (Tile tile : unitVicinity) {
-            ArrayList<Unit> unitsInTile = getUnitsInTile(tile);
-            for (Unit unitInTile : unitsInTile) {
-                if (unitInTile.getOwner() != unit.getOwner()) {
-                    return true;
-                }
-            }
-            City city = getCityCenteredInTile(tile);
-            if (city != null) {
-                if (city.getOwner() != unit.getOwner()) {
-                    return true;
-                }
+            if (doesTileContainEnemyCombative(tile, unit.getOwner())) {
+                return true;
             }
         }
         return false;
     }
 
     public boolean canUnitRangedAttack(Unit unit) {
-        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() || unit.getMovePointsLeft() == 0 || !unit.isAssembled()) {
+        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || !unit.isAssembled() || unit.hasAttackedThisTurn()) {
             return false;
         }
         return true;
@@ -896,6 +935,10 @@ public class GameController {
                 tiles.addAll(getVisibleTilesFromTile(unit.getLocation(), unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2));
         }
         return deleteRepetitiveElementsFromArrayList(tiles);
+    }
+
+    public ArrayList<Tile> getVisibleTilesByUnit(Unit unit) {
+        return getVisibleTilesFromTile(unit.getLocation(), unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2);
     }
 
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {

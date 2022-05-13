@@ -188,6 +188,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         improvements.remove(improvement);
     }
 
+    public void removeAllImprovements() {
+        improvements = new ArrayList<>();
+    }
+
     public boolean isOfType(TerrainProperty property) {
         if (this.terrainType.equals(property) || this.features.contains(property))
             return true;
