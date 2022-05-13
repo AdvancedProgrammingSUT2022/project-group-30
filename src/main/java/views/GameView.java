@@ -3,6 +3,7 @@ package views;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import controllers.CombatController;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
@@ -10,6 +11,7 @@ import models.buildings.Building;
 import models.buildings.BuildingType;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
+import models.interfaces.combative;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.UnitState;
@@ -1617,6 +1619,8 @@ public class GameView implements View {
             return;
         }
         // TODO: attack
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
     }
 
     private void pillage(Unit unit) {

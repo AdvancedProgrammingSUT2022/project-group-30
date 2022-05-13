@@ -71,6 +71,8 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public void goToNextTurn() {
         // TODO : very much incomplete
+        inactivityDuration++;
+        stateDuration++;
         hasAttackedThisTurn = false;
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
@@ -194,6 +196,9 @@ public class Unit implements Selectable, TurnHandler, combative {
         if(state != UnitState.AWAKE){
             this.path = null;
         }
+        if (this.state != state) {
+            stateDuration = 0;
+        }
         this.state = state;
     }
 
@@ -203,6 +208,10 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public int getInactivityDuration() {
         return this.inactivityDuration;
+    }
+
+    public void resetInactivityDuration() {
+        this.inactivityDuration = 0;
     }
 
     public int getStateDuration() {

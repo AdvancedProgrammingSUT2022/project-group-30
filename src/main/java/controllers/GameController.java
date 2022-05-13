@@ -19,6 +19,7 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.interfaces.combative;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -261,6 +262,7 @@ public class GameController {
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
         awakeAllNearAlertedUnits(unit);
+        unit.resetInactivityDuration();
     }
 
     public boolean canUnitTeleportToTile(UnitType unit, Civilization owner, Tile tile) {
@@ -432,6 +434,23 @@ public class GameController {
             return true;
         }
         return false;
+    }
+
+    public combative getPriorityTargetInTile(Tile tile, Civilization reference) {
+        City city = getCityCenteredInTile(tile);
+        if (city != null && city.getOwner() != reference) {
+            return city;
+        }
+
+        Unit militaryUnit = getMilitaryUnitInTile(tile);
+        if (militaryUnit != null && militaryUnit.getOwner() != reference) {
+            return militaryUnit;
+        }
+        Unit civilianUnit = getCivilianUnitInTile(tile);
+        if (civilianUnit != null && civilianUnit.getOwner() != reference) {
+            return civilianUnit;
+        }
+        return null;
     }
 
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
@@ -656,7 +675,7 @@ public class GameController {
 
     public boolean canUnitSetUpForRangedAttack(Unit unit) {
         return (unit.getType().getCombatType() == CombatType.SIEGE &&
-                unit.isAssembled() == false && unit.getMovePointsLeft() >= 1 &&
+                !unit.isAssembled() && unit.getMovePointsLeft() >= 1 &&
                 unit.getState().waitsForCommand());
     }
 

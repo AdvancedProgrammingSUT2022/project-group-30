@@ -97,6 +97,10 @@ public class CombatController {
     }
 
     public void executeMeleeAttack(Unit attacker, combative defender) {
+        attacker.setMovePointsLeft(0);
+        attacker.setHasAttackedThisTurns(true);
+        attacker.resetInactivityDuration();
+
         if (defender instanceof Unit && ((Unit)defender).isCivilian()) {
             captureUnit(attacker, (Unit) defender);
         }
