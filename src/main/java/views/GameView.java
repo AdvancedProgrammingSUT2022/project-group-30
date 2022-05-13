@@ -20,6 +20,7 @@ import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -888,10 +889,9 @@ public class GameView implements View {
         while (true) {
             command = scanner.nextLine();
             if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
-                buildRoad(worker);
-            } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
-                // TODO
-                printer.println("building farm...");
+                buildImprovement(worker, ImprovementType.ROAD);
+            } else if ((matcher = WorkerCommands.BUILD_RAILROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_RAILROAD)) {
+                buildImprovement(worker, ImprovementType.RAILROAD);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -899,6 +899,27 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void buildImprovement(Unit worker, ImprovementType improvementType) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof  BuildImprovement &&
+                    ((BuildImprovement)location.getWork()).getImprovement() == improvementType) {
+                ((BuildImprovement)location.getWork()).startWork(worker);
+                printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Building " + improvementType.getName().toLowerCase() + " canceled");
+                return;
+            }
+        }
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
+        location.setWork(newWork);
+        printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
     private void buildRoad(Unit worker) {
@@ -924,10 +945,10 @@ public class GameView implements View {
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
         ArrayList<WorkerCommands> result = new ArrayList<WorkerCommands>();
-        if (controller.canWorkerBuildRoad(worker)) {
+        if (controller.canWorkerBuildRoute(worker, ImprovementType.ROAD)) {
             result.add(WorkerCommands.BUILD_ROAD);
         }
-        if (controller.canWorkerBuildRailRoad(worker)) {
+        if (controller.canWorkerBuildRoute(worker, ImprovementType.RAILROAD)) {
             result.add(WorkerCommands.BUILD_RAILROAD);
         }
         if (controller.canWorkerBuildImprovement(worker, ImprovementType.FARM)) {
