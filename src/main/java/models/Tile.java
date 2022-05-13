@@ -227,6 +227,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
     }
 
+    public void removeAllFeaturesAndApplyChanges() {
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, new ArrayList<Feature>());
+    }
+
 
     public int findTileYCoordinateInMap() {
         GameMap map = GameMap.getGameMap();

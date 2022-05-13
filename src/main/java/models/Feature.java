@@ -73,4 +73,13 @@ public enum Feature implements TerrainProperty {
     public String getName() {
         return name;
     }
+
+    public static Feature getFeatureByName(String name) {
+        for (Feature value : values()) {
+            if (value.getName().equalsIgnoreCase(name)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }
