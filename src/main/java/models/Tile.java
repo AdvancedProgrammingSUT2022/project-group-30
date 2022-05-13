@@ -248,6 +248,17 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.improvements.add(improvement);
     }
 
+    public void removeImprovement(ImprovementType improvementType){
+        //TODO ... what else?
+        for(int i=0; i<this.improvements.size(); i++){
+            if(this.improvements.get(i).getType() == improvementType)
+            {
+                this.improvements.remove(i);
+                return;
+            }
+        }
+    }
+
     public void removeWork() {
         this.work = null;
     }
