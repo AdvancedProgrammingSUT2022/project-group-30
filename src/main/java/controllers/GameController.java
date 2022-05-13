@@ -667,17 +667,8 @@ public class GameController {
         }
         ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
         for (Tile tile : unitVicinity) {
-            ArrayList<Unit> unitsInTile = getUnitsInTile(tile);
-            for (Unit unitInTile : unitsInTile) {
-                if (unitInTile.getOwner() != unit.getOwner()) {
-                    return true;
-                }
-            }
-            City city = getCityCenteredInTile(tile);
-            if (city != null) {
-                if (city.getOwner() != unit.getOwner()) {
-                    return true;
-                }
+            if (doesTileContainEnemyCombative(tile, unit.getOwner())) {
+                return true;
             }
         }
         return false;

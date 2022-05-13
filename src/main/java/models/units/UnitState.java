@@ -28,7 +28,7 @@ public enum UnitState {
         return result;
     }
 
-    public static boolean waitsForCommand() {
+    public boolean waitsForCommand() {
         return waitsForCommand();
     }
 }
