@@ -1331,7 +1331,7 @@ public class GameView implements View {
             if (controller.getWorkersWork(unit) == null) {
                 printer.println("Not Currently Working...");
             } else {
-                printer.println("Work: " + controller.getWorkersWork(unit));
+                printer.println("Work: " + controller.getWorkersWork(unit).getTitle());
                 Tile location = controller.getWorkersWork(unit).findLocation();
                 printer.println("Work Place: Y: " + location.findTileYCoordinateInMap() + ", X: " + location.findTileXCoordinateInMap());
             }
