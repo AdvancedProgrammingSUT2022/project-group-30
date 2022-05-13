@@ -71,6 +71,11 @@ public class Unit implements Selectable, TurnHandler, combative {
         // TODO : very much incomplete
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
+        // TODO: heal:
+        /*
+            if it has been inactive for 1 turn: heal: modify healing pace based on doc, don't let HPs exceep max HPs
+            make sure inactivityDuration is updated appropriately
+        */
         // TODO : handle state duration, inactivity time, and healing(if the state is FORTIFYUNTILHEALED)
     }
 

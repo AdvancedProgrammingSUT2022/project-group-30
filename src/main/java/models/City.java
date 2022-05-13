@@ -114,6 +114,7 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
+        // TODO: increments HPs with if (maedeh nakhoonde bood ino)
     }
 
     private double calculateBuildingEffectCoefficientForProduction() {
