@@ -23,6 +23,7 @@ import models.units.UnitType;
 import utilities.Debugger;
 
 public class City implements Selectable, TurnHandler, combative {
+    private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;
     // Should I delete following field??
@@ -59,7 +60,7 @@ public class City implements Selectable, TurnHandler, combative {
         this.hasAttackedThisTurn = false;
         this.combatStrength = 8;
         this.rangedCombatStrength = 5;
-        this.hitPoints = 20;
+        this.hitPoints = MAXHITPOINTS;
         this.range = 2;
         this.populationGrowthLimit = 10;
         this.populationShrinkageLimit = -10;
@@ -117,7 +118,7 @@ public class City implements Selectable, TurnHandler, combative {
             }
         }
         hasAttackedThisTurn = false;
-        // TODO: increments HPs with if (maedeh nakhoonde bood ino)
+        hitPoints = Math.min(hitPoints + 1, MAXHITPOINTS);
     }
 
     private double calculateBuildingEffectCoefficientForProduction() {
