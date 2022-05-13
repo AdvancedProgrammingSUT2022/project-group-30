@@ -548,23 +548,6 @@ public class City implements Selectable, TurnHandler, combative {
         // TODO
     }
 
-    public double calculateEffectiveCombatStrength() {
-        double combatStrength = this.combatStrength;
-        combatStrength += this.territories.size() / 6.0;
-        if (this.hasBuildingType(BuildingType.WALLS))
-            combatStrength += 5;
-        if (this.hasBuildingType(BuildingType.CASTLE))
-            combatStrength += 7.5;
-        //garrisoned units -> central tile?
-        //HILLs  -> central tile?
-        return combatStrength;
-    }
-
-    public double calculateEffectiveRangedCombatStrength() {
-        // TODO
-        return 0;
-    }
-
     public void addCitizen() {
         // MINETODO check it
         //TODO

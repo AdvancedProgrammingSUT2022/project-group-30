@@ -5,13 +5,16 @@ import models.Feature;
 import models.Tile;
 import models.buildings.BuildingType;
 import models.interfaces.combative;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
+import models.units.UnitType;
 
 import java.util.ArrayList;
 
 public class CombatController {
     private static CombatController combatController = null;
+
     public static CombatController getCombatController() {
         if (combatController == null) {
             combatController = new CombatController();
@@ -19,117 +22,129 @@ public class CombatController {
         return combatController;
     }
 
-    //1
     public int calculateEffectiveMeleeCombatStrengthForCity(City city, combative target) {
-        // TODO
         Tile myLocation = city.getCentralTile();
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
+        for (Feature feature : myLocation.getFeatures())
             percentage += feature.getCombatModifier();
         percentage += myLocation.getTerrainType().getCombatModifier();
         percentage = Math.max(-100, percentage);
         return (int) (city.getCombatStrength() * (percentage + 100) / 100);
     }
 
-    //2
     public int calculateEffectiveRangedCombatStrengthForCity(City city, combative target) {
-        // TODO
         Tile myLocation = city.getCentralTile();
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
+        for (Feature feature : myLocation.getFeatures())
             percentage += feature.getCombatModifier();
         percentage += myLocation.getTerrainType().getCombatModifier();
-        if(city.getOwner().getHappiness() < 0)
+        if (city.getOwner().getHappiness() < 0)
             percentage -= 25;
         percentage += city.getTerritories().size() * 2;
         percentage = Math.max(-100, percentage);
         return (int) (city.getRangedCombatStrength() * (percentage + 100) / 100);
     }
 
-    //3
     public int calculateNetDefensiveBonusForCity(City city, combative attacker) {
-        // TODO: return percentage defensive bonus between -50 and 50
         Tile myLocation = city.getCentralTile();
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
+        for (Feature feature : myLocation.getFeatures())
             percentage += feature.getCombatModifier();
         percentage += myLocation.getTerrainType().getCombatModifier();
-        if(city.getOwner().getHappiness() < 0)
+        if (city.getOwner().getHappiness() < 0)
             percentage -= 25;
         percentage += city.getTerritories().size() * 2;
-        if(city.getGarrisoningUnit() != null)
+        if (city.getGarrisoningUnit() != null)
             percentage += 33;
         percentage = Math.max(-50, percentage);
         percentage = Math.min(50, percentage);
-        return (int)percentage;
+        return (int) percentage;
     }
+
     public double calculateNumberOfNetDefensiveBonusForCity(City city, combative attacker) {
         double defenseBonus = 0;
-        if(city.hasBuildingType(BuildingType.CASTLE))
+        if (city.hasBuildingType(BuildingType.CASTLE))
             defenseBonus += 7.5;
-        if(city.hasBuildingType(BuildingType.WALLS))
+        if (city.hasBuildingType(BuildingType.WALLS))
             defenseBonus += 5;
         return defenseBonus;
     }
 
-    //4
     public int calculateEffectiveMeleeCombatStrengthForUnit(Unit unit, combative target) {
-        // TODO
         Tile myLocation = unit.getLocation();
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
-            percentage += feature.getCombatModifier();
-        percentage += myLocation.getTerrainType().getCombatModifier();
         Tile targetTile;
-        if(target instanceof City)
-            targetTile = ((City)target).getCentralTile();
+        if (target instanceof City)
+            targetTile = ((City) target).getCentralTile();
         else
-            targetTile = ((Unit)target).getLocation();
-        if(GameController.getGameController().hasCommonRiver(myLocation, targetTile))
+            targetTile = ((Unit) target).getLocation();
+        if (GameController.getGameController().hasCommonRiver(myLocation, targetTile) && unit.getType().getCombatType() == CombatType.MOUNTED)
             percentage -= 33;
         percentage = Math.max(-100, percentage);
-        double effectOfHitPoints =  (10 - ((10 - unit.getHitPointsLeft()) / 2) ) * 10;
-        return (int) (unit.getType().getCombatStrength() * (percentage + 100) / 100  * effectOfHitPoints);
+        double effectOfHitPoints = (10 - ((10 - unit.getHitPointsLeft()) / 2)) * 10;
+        return (int) (unit.getType().getCombatStrength() * (percentage + 100) / 100 * effectOfHitPoints);
     }
 
-    //5
     public int calculateEffectiveRangedCombatStrengthForUnit(Unit unit, combative target) {
-        // TODO
         Tile myLocation = unit.getLocation();
+        //   if( || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
-            percentage += feature.getCombatModifier();
-        percentage += myLocation.getTerrainType().getCombatModifier();
-        if(unit.getOwner().getHappiness() < 0)
+        for (Feature feature : myLocation.getFeatures()) {
+            if (feature.getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
+                percentage += feature.getCombatModifier();
+            }
+        }
+        if (myLocation.getTerrainType().getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
+            percentage += myLocation.getTerrainType().getCombatModifier();
+        if (unit.getOwner().getHappiness() < 0)
             percentage -= 25;
+        if (!(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
+            if ((unit.getType() == UnitType.SPEARMAN || unit.getType() == UnitType.PIKEMAN) && target instanceof Unit && ((Unit) target).getType().getCombatType() == CombatType.MOUNTED)
+                percentage += 100;
+            if ((unit.getType() == UnitType.CATAPULT || unit.getType() == UnitType.TREBUCHET || unit.getType() == UnitType.CANNON || unit.getType() == UnitType.ARTILLERY || unit.getType() == UnitType.TANK) && target instanceof City)
+                percentage += 10;
+            if (unit.getType() == UnitType.ANTI_TANK_GUN && target instanceof Unit && ((Unit) target).getType() == UnitType.TANK)
+                percentage += 10;
+        }
         percentage = Math.max(-100, percentage);
-        double effectOfHitPoints =  (10 - ((10 - unit.getHitPointsLeft()) / 2) ) * 10;
-        return (int) (unit.getType().getRangedCombatStrength() * (percentage + 100) / 100  * effectOfHitPoints);
+        double effectOfHitPoints = (10 - ((10 - unit.getHitPointsLeft()) / 2)) * 10;
+        return (int) (unit.getType().getRangedCombatStrength() * (percentage + 100) / 100 * effectOfHitPoints);
     }
 
-    //6
     public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
-        // TODO: return percentage defensive bonus between -50 and 50
         Tile myLocation = unit.getLocation();
+        //   if( || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
         double percentage = 0;
-        for(Feature feature : myLocation.getFeatures())
-            percentage += feature.getCombatModifier();
-        percentage += myLocation.getTerrainType().getCombatModifier();
-        if(unit.getOwner().getHappiness() < 0)
+        for (Feature feature : myLocation.getFeatures()) {
+            if (feature.getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
+                percentage += feature.getCombatModifier();
+            }
+        }
+        if (myLocation.getTerrainType().getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
+            percentage += myLocation.getTerrainType().getCombatModifier();
+        if (unit.getOwner().getHappiness() < 0)
             percentage -= 25;
-        if(unit.getState() == UnitState.FORTIFY || unit.getState() == UnitState.FORTIFYUNTILHEALED || unit.getState() == UnitState.ALERT){
-            if(unit.getStateDuration() == 1)
+        if ((unit.getState() == UnitState.FORTIFY || unit.getState() == UnitState.FORTIFYUNTILHEALED || unit.getState() == UnitState.ALERT) && !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)){
+            if (unit.getStateDuration() == 1)
                 percentage += 25;
-            else if(unit.getStateDuration() > 1)
+            else if (unit.getStateDuration() > 1)
                 percentage += 50;
+        }
+        if (!(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
+            if ((unit.getType() == UnitType.SPEARMAN || unit.getType() == UnitType.PIKEMAN) && attacker instanceof Unit && ((Unit) attacker).getType().getCombatType() == CombatType.MOUNTED)
+                percentage += 100;
+            if ((unit.getType() == UnitType.CATAPULT || unit.getType() == UnitType.TREBUCHET || unit.getType() == UnitType.CANNON || unit.getType() == UnitType.ARTILLERY || unit.getType() == UnitType.TANK) && attacker instanceof City)
+                percentage += 10;
+            if (unit.getType() == UnitType.ANTI_TANK_GUN && attacker instanceof Unit && ((Unit) attacker).getType() == UnitType.TANK)
+                percentage += 10;
         }
         percentage = Math.max(-50, percentage);
         percentage = Math.min(50, percentage);
-        return (int)percentage;
+        return (int) percentage;
     }
 
     private int calculateEffectiveMeleeCombatStrength(combative attacker, combative defender) {
-        if (attacker instanceof  Unit) {
+        if (attacker instanceof Unit) {
             return calculateEffectiveMeleeCombatStrengthForUnit((Unit) attacker, defender);
         } else {
             return calculateEffectiveMeleeCombatStrengthForCity((City) attacker, defender);
@@ -153,7 +168,7 @@ public class CombatController {
     }
 
     private void kill(combative entityToKill) {
-        if (entityToKill instanceof  Unit) {
+        if (entityToKill instanceof Unit) {
             kill((Unit) entityToKill);
         } else {
             kill((City) entityToKill);

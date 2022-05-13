@@ -288,7 +288,7 @@ public class GameView implements View {
         for (int i = 0; i < cities.size(); i++) {
             printer.printlnBlue("City central tile is in Y: " + cities.get(i).getCentralTile().findTileYCoordinateInMap() + " , X: " + cities.get(i).getCentralTile().findTileXCoordinateInMap());
             printer.println(" population : " + cities.get(i).getCitizens().size());
-            printer.println(" effective combat strength : " + cities.get(i).calculateEffectiveCombatStrength());
+            printer.println(" effective combat strength : " + cities.get(i).getCombatStrength());
             printer.println(" food : " + cities.get(i).calculateOutput().getFood());
             printer.println(" gold : " + cities.get(i).calculateOutput().getGold());
             printer.println(" production : " + cities.get(i).calculateOutput().getProduction());
@@ -1358,6 +1358,7 @@ public class GameView implements View {
             }
         }
         location.setWork(new ClearRoutes(worker));
+        worker.setPath(null);
         printer.println("Started the clearance of routes here!");
     }
 
@@ -1378,6 +1379,7 @@ public class GameView implements View {
             }
         }
         location.setWork(new ClearFeature(feature, worker));
+        worker.setPath(null);
         printer.println("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
     }
 
@@ -1405,6 +1407,7 @@ public class GameView implements View {
             }
         }
         location.setWork(new FixPillage(improvementType, worker));
+        worker.setPath(null);
         printer.println("Started the fixation of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
