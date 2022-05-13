@@ -21,6 +21,7 @@ public class Unit implements Selectable, TurnHandler, combative {
     private UnitState state;
     private boolean isAssembled;
     private boolean hasBeenInactive;
+    private boolean hasAttackedThisTurn;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
@@ -36,6 +37,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         experiencePoints = 0;
         state = UnitState.AWAKE;
         hasBeenInactive = true;
+        hasAttackedThisTurn = false;
         inactivityDuration = 0;
         stateDuration = 0;
         path = null;
@@ -69,6 +71,7 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public void goToNextTurn() {
         // TODO : very much incomplete
+        hasAttackedThisTurn = false;
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
         // TODO: heal:
@@ -220,5 +223,13 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public boolean isCivilian() {
         return (type.getCombatType() == CombatType.CIVILIAN);
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return hasAttackedThisTurn;
+    }
+
+    public void setHasAttackedThisTurns(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 }

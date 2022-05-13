@@ -68,6 +68,7 @@ public class CombatController {
         return 0;
     }
 
+
     private void kill(City city) {
         ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
         for (Unit unit : units) {
@@ -87,6 +88,7 @@ public class CombatController {
             kill((City) entityToKill);
         }
     }
+
 
     private void captureUnit(Unit attacker, Unit defender) {
         gameController.removeUnit(defender);
@@ -124,13 +126,13 @@ public class CombatController {
         // TODO
         /*
         NOTES:
-        - HANDLE BOTH DYING AT THE SAME TIME
+        - HANDLE BOTH DYING AT THE SAME TIME    C
 
-        if defender is civilian, have it capture -> turn it into worker and move into the tile
-        calculate combat strengths and defensive bonuses
-        apply damages and check HPs
-        kill first one to reach 0 HPs -> if it's a unit, just kill it and move the other one into it.
-                                      -> if it's a city, destroy it and all units contained in it.
+        if defender is civilian, have it capture -> turn it into worker and move into the tile  C
+        calculate combat strengths and defensive bonuses    C
+        apply damages and check HPs C
+        kill first one to reach 0 HPs -> if it's a unit, just kill it and move the other one into it.   C
+                                      -> if it's a city, destroy it and all units contained in it.  C
         modify unit's hasAttackedField
         modify unit's inactivityDuration field and make sure the same thing is done with move
         drain unit's MPs (doesn't apply to some types)

@@ -648,7 +648,8 @@ public class GameController {
     }
 
     public boolean canUnitMeleeAttack(Unit unit) {
-        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
+        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || unit.hasAttackedThisTurn()) {
             return false;
         }
         ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
@@ -670,7 +671,8 @@ public class GameController {
     }
 
     public boolean canUnitRangedAttack(Unit unit) {
-        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() || unit.getMovePointsLeft() == 0 || !unit.isAssembled()) {
+        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || !unit.isAssembled() || unit.hasAttackedThisTurn()) {
             return false;
         }
         return true;
