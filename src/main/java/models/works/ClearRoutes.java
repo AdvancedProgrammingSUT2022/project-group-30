@@ -4,8 +4,8 @@ import models.Tile;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
-public class ClearRoadOrRailRoad extends Work {
-    public ClearRoadOrRailRoad(Unit worker) {
+public class ClearRoutes extends Work {
+    public ClearRoutes(Unit worker) {
         this.worker = worker;
         turnsRemaining = calculateRequiredTurns();
         isInProgress = true;

@@ -17,7 +17,7 @@ import models.resources.StrategicResource;
 import models.units.UnitType;
 import models.works.BuildImprovement;
 import models.works.ClearFeature;
-import models.works.ClearRoadOrRailRoad;
+import models.works.ClearRoutes;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -1189,7 +1189,10 @@ public class GameView implements View {
                 clearFeature(worker, Feature.JUNGLE);
             } else if ((matcher = WorkerCommands.CLEAR_MARSH.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_MARSH)) {
                 clearFeature(worker, Feature.MARSH);
-            } else if (command.equals("cancel") || command.equals("back")) {
+            } else if ((matcher = WorkerCommands.CLEAR_ROUTES.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_ROUTES)) {
+                //clearRoadOrRailRoad();
+            }
+            else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
             } else {
@@ -1219,23 +1222,22 @@ public class GameView implements View {
         printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
-    private void clearRoadOrRailRoad(Unit worker, ImprovementType improvementType) {
+    private void clearRoutes(Unit worker) {
         Tile location = worker.getLocation();
         if (location.getWork() != null) {
-            if (location.getWork() instanceof ClearRoadOrRailRoad &&
-                    ((ClearRoadOrRailRoad) location.getWork()).getImprovement() == improvementType) {
-                ((ClearRoadOrRailRoad) location.getWork()).startWork(worker);
+            if (location.getWork() instanceof ClearRoutes) {
+                ((ClearRoutes) location.getWork()).startWork(worker);
                 return;
             }
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Clearace " + improvementType.getName().toLowerCase() + " canceled");
+                printer.println("Clearace routes canceled");
                 return;
             }
         }
-        location.setWork(new ClearRoadOrRailRoad(improvementType, worker));
-        printer.println("Started the clearance of a " + improvementType.getName().toLowerCase() + " here!");
+        location.setWork(new ClearRoutes(worker));
+        printer.println("Started the clearance of routes here!");
     }
 
     private void clearFeature(Unit worker, Feature feature) {
