@@ -79,13 +79,16 @@ public class CombatController {
         for(Feature feature : myLocation.getFeatures())
             percentage += feature.getCombatModifier();
         percentage += myLocation.getTerrainType().getCombatModifier();
-        if(unit.getOwner().getHappiness() < 0)
-            percentage -= 25;
-        percentage += city.getTerritories().size() * 2;
+        Tile targetTile;
+        if(target instanceof City)
+            targetTile = ((City)target).getCentralTile();
+        else
+            targetTile = ((Unit)target).getLocation();
+        if(GameController.getGameController().hasCommonRiver(myLocation, targetTile))
+            percentage -= 33;
         percentage = Math.max(-100, percentage);
-        return (int) (city.getRangedCombatStrength() * (percentage + 100) / 100);
-
-        return unit.getType().getCombatStrength();
+        double effectOfHitPoints =  (10 - ((10 - unit.getHitPointsLeft()) / 2) ) * 10;
+        return (int) (unit.getType().getCombatStrength() * (percentage + 100) / 100  * effectOfHitPoints);
     }
 
     //5
@@ -99,7 +102,8 @@ public class CombatController {
         if(unit.getOwner().getHappiness() < 0)
             percentage -= 25;
         percentage = Math.max(-100, percentage);
-        return (int) (unit.getType().getRangedCombatStrength() * (percentage + 100) / 100);
+        double effectOfHitPoints =  (10 - ((10 - unit.getHitPointsLeft()) / 2) ) * 10;
+        return (int) (unit.getType().getRangedCombatStrength() * (percentage + 100) / 100  * effectOfHitPoints);
     }
 
     //6
@@ -108,7 +112,7 @@ public class CombatController {
         return 0;
     }
 
-    private int calculateEffectiveMeleeCombatStrength(`combative attacker, combative defender) {
+    private int calculateEffectiveMeleeCombatStrength(combative attacker, combative defender) {
         if (attacker instanceof  Unit) {
             return calculateEffectiveMeleeCombatStrengthForUnit((Unit) attacker, defender);
         } else {
