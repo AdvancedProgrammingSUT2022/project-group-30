@@ -107,7 +107,7 @@ public class GameView implements View {
             } else if ((matcher = GameMainPageCommands.SHOW_UNITS.getCommandMatcher(command)) != null) {
                 showUnits();
             } else if ((matcher = GameMainPageCommands.MAKE_VISIBLE.getCommandMatcher(command)) != null) {
-                controller.makeEverythingVisible();
+                makeEverythingVisible();
                 showMap();
             } else if ((matcher = GameMainPageCommands.RESEARCH_TAB.getCommandMatcher(command)) != null) {
                 runResearchTab();
@@ -152,6 +152,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void makeEverythingVisible() {
+        controller.makeEverythingVisible();
+        printer.println("And then there was light!");
     }
 
     private void clearAllFeatures(Matcher matcher) {
