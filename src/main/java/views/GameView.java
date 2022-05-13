@@ -241,10 +241,10 @@ public class GameView implements View {
         printer.printlnYellow("Balam az zamane Khatami");
     }
 
-    private void economicOverviewPanel(){
+    private void economicOverviewPanel() {
         ArrayList<City> cities = this.controller.getCurrentPlayer().getCities();
         printer.printlnGreen("You have " + cities.size() + " cities");
-        for(int i = 0; i < cities.size(); i++){
+        for (int i = 0; i < cities.size(); i++) {
             printer.printlnBlue("City central tile is in Y: " + cities.get(i).getCentralTile().findTileYCoordinateInMap() + " , X: " + cities.get(i).getCentralTile().findTileXCoordinateInMap());
             printer.println(" population : " + cities.get(i).getCitizens().size());
             printer.println(" effective combat strength : " + cities.get(i).calculateEffectiveCombatStrength());
@@ -252,73 +252,61 @@ public class GameView implements View {
             printer.println(" gold : " + cities.get(i).calculateOutput().getGold());
             printer.println(" production : " + cities.get(i).calculateOutput().getProduction());
             printer.println(" science : " + cities.get(i).calculateBeakerProduction());
-            if(cities.get(i).getEntityInProduction() == null){
+            if (cities.get(i).getEntityInProduction() == null) {
                 printer.println(" This city doesn't have any entity in production!");
-            }
-            else{
+            } else {
                 printer.println(" entity in production : " + cities.get(i).getEntityInProduction().getName());
                 printer.println(" turns left : " + (int) ((cities.get(i).getEntityInProduction().getCost() - cities.get(i).getHammerCount()) / cities.get(i).calculateOutput().getProduction()));
             }
         }
     }
 
-    private void runDemographicPanel(){
+    private void runDemographicPanel() {
         printer.printlnRed("This is your civilization demographic panel: " + this.controller.getCurrentPlayer().getName());
         String command;
         Matcher matcher;
-        while(true){
+        while (true) {
             printer.printlnRed("*****************************************");
             printer.println("Research Menu");
             printer.println("enter \"show commands\" to see all commands");
 
             command = scanner.nextLine();
-            if(command.equals("show commands")){
+            if (command.equals("show commands")) {
                 showDemographicPanelCommands();
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.TERRITORY_SIZE.getCommandMatcher(command)) != null) {
                 showTerritorySize();
-            }
-            else if((matcher = DemographicPanelCommands.GOLD_COUNT.getCommandMatcher(command)) != null) {
+            } else if ((matcher = DemographicPanelCommands.GOLD_COUNT.getCommandMatcher(command)) != null) {
                 showGoldCount();
-            }
-            else if((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.RESOURCES.getCommandMatcher(command)) != null) {
                 showAllResources();
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.IMPROVEMENTS.getCommandMatcher(command)) != null) {
                 showAllImprovements();
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.LEARNED_TECHNOLOGIES.getCommandMatcher(command)) != null) {
                 showLearnedTechnologies(this.controller.getCurrentPlayer());
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.MILITARY_UNITS.getCommandMatcher(command)) != null) {
                 militaryOverviewPanel();
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.OUTPUT.getCommandMatcher(command)) != null) {
                 showOutput();
-            }
-            else if((matcher = DemographicPanelCommands.SCORE.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.SCORE.getCommandMatcher(command)) != null) {
                 showScore();
-            }
-            else if((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.SCOREBOARD.getCommandMatcher(command)) != null) {
                 showScoreBoard();
                 waitForClick();
-            }
-            else if((matcher = DemographicPanelCommands.BACK.getCommandMatcher(command)) != null){
+            } else if ((matcher = DemographicPanelCommands.BACK.getCommandMatcher(command)) != null) {
                 break;
-            }
-            else{
+            } else {
                 printer.println("Invalid command for demographic panel!");
             }
 
         }
     }
 
-    private void showAllImprovements(){
+    private void showAllImprovements() {
         printer.println("You have these improvements on different tiles : (if there is two same improvements, it means that you have that on two tiles)");
         Civilization civilization = this.controller.getCurrentPlayer();
         for (Improvement improvement : civilization.getAllImprovements()) {
@@ -326,24 +314,24 @@ public class GameView implements View {
         }
     }
 
-    private void showAllResources(){
+    private void showAllResources() {
         printer.printlnGreen("Your luxury resources:");
         HashMap<LuxuryResource, Integer> luxuryResources = this.controller.getCurrentPlayer().getLuxuryResources();
-        for(Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()){
-            if(entry.getValue() > 0) {
+        for (Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()) {
+            if (entry.getValue() > 0) {
                 printer.println(" " + "- " + entry.getKey() + ", " + entry.getValue());
             }
         }
         printer.printlnGreen("Your strategic resources:");
         HashMap<StrategicResource, Integer> strategicResources = this.controller.getCurrentPlayer().getStrategicResources();
-        for(Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()){
-            if(entry.getValue() > 0) {
+        for (Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()) {
+            if (entry.getValue() > 0) {
                 printer.println(" " + "- " + entry.getKey() + ", " + entry.getValue());
             }
         }
     }
 
-    private void showOutput(){
+    private void showOutput() {
         Civilization civilization = this.controller.getCurrentPlayer();
         printer.printlnGreen("Your collectable outputs in each turn:");
         printer.println("Gold : " + (int) civilization.calculateNetGoldProduction());
@@ -351,7 +339,7 @@ public class GameView implements View {
         printer.println("Food : " + (int) civilization.calculateTotalFoodFromCities());
     }
 
-    private void showScoreBoard(){
+    private void showScoreBoard() {
         this.controller.sortPlayersInOrderOfScore();
         printer.printlnGreen("Game scoreboard:");
         showScore();
@@ -360,29 +348,29 @@ public class GameView implements View {
         printer.println("Average score : " + this.controller.calculateAverageScore());
         printer.println("##########################");
         ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
-        for(int i = 0; i < players.size(); i++){
+        for (int i = 0; i < players.size(); i++) {
             printer.println(" " + (i + 1) + "- " + players.get(i).getCivilization().getName() + " , score : " + this.controller.calculateScoreForCivilization(players.get(i).getCivilization()));
         }
         printer.println("##########################");
     }
 
-    private void showScore(){
+    private void showScore() {
         Civilization civilization = this.controller.getCurrentPlayer();
         printer.println("Your score is : " + this.controller.calculateScoreForCivilization(civilization));
     }
 
-    private void showGoldCount(){
+    private void showGoldCount() {
         Civilization civilization = this.controller.getCurrentPlayer();
-        printer.println("You have " +(int) civilization.getGoldCount() + " golds!");
+        printer.println("You have " + (int) civilization.getGoldCount() + " golds!");
     }
 
-    private void showTerritorySize(){
+    private void showTerritorySize() {
         Civilization civilization = this.controller.getCurrentPlayer();
         int territorySize = this.controller.calculateCivilizationTerritorySize(civilization);
         printer.println("You have " + territorySize + " tiles!");
     }
 
-    private void showDemographicPanelCommands(){
+    private void showDemographicPanelCommands() {
         ArrayList<DemographicPanelCommands> demographicPanelCommands = DemographicPanelCommands.getAllCommands();
         printer.printlnBlue("Demographic panel commands:");
         for (DemographicPanelCommands demographicPanelCommand : demographicPanelCommands) {
@@ -390,31 +378,30 @@ public class GameView implements View {
         }
     }
 
-    private void militaryOverviewPanel(){
+    private void militaryOverviewPanel() {
         ArrayList<Unit> militaryUnits = this.controller.getCurrentPlayer().getMilitaryUnits();
-        if(militaryUnits.isEmpty()){
+        if (militaryUnits.isEmpty()) {
             printer.println("You don't have any military units to show!");
-        }
-        else{
+        } else {
             printer.printlnBlue("Your military units : ");
-            for(int i = 0; i < militaryUnits.size(); i++){
+            for (int i = 0; i < militaryUnits.size(); i++) {
                 printer.println(" " + (i + 1) + "- " + militaryUnits.get(i).getType().getName() + " in Y: " + militaryUnits.get(i).getLocation().findTileYCoordinateInMap() + " , X: " + militaryUnits.get(i).getLocation().findTileXCoordinateInMap());
             }
         }
     }
 
-    private void showAllNotification(){
+    private void showAllNotification() {
         ArrayList<Notification> notifications = this.controller.getCurrentPlayer().getNotifications();
         printer.printlnGreen("Your all notifications :");
-        for(int i = 0; i < notifications.size(); i++){
+        for (int i = 0; i < notifications.size(); i++) {
             printer.println(" " + (i + 1) + "- " + notifications.get(i).getText() + " , in turn: " + notifications.get(i).getTurnNumber());
         }
         this.controller.seenAllNotifications();
     }
 
-    private void printNewNotifications(){
+    private void printNewNotifications() {
         ArrayList<Notification> notifications = this.controller.getCivilizationNewNotification();
-        if(!notifications.isEmpty()){
+        if (!notifications.isEmpty()) {
             printer.printlnGreen("You have some new notifications:");
             for (Notification notification : notifications) {
                 printer.println(notification.getText());
@@ -428,34 +415,31 @@ public class GameView implements View {
         ArrayList<City> cities = civilization.getCities();
         String command;
         boolean quit = false;
-        while(!quit){
+        while (!quit) {
             printer.printlnRed("*****************************************");
             printer.println("Cities panel");
             printer.println("Enter back to exit");
             printer.println("you can select a city from bellow list with this command : select <city number in below list>");
 
             command = scanner.nextLine();
-            if(command.equals("back")){
+            if (command.equals("back")) {
                 break;
-            }
-            else if(command.startsWith("select ")){
+            } else if (command.startsWith("select ")) {
                 Matcher matcher = Pattern.compile("select (?<cityNumber>\\d+)").matcher(command);
-                if (!matcher.matches()){
+                if (!matcher.matches()) {
                     printer.println("Invalid command for Cities panel!");
-                }
-                else{
+                } else {
                     int cityNumber = Integer.parseInt(matcher.group("cityNumber"));
                     quit = selectCityFromCitiesPanel(civilization, cities, cityNumber);
                 }
-            }
-            else {
+            } else {
                 printer.println("Invalid command for Units panel!");
             }
         }
     }
 
-    private boolean selectCityFromCitiesPanel(Civilization civilization, ArrayList<City> cities, int cityNumber){
-        if(cityNumber < 1 || cityNumber > cities.size()){
+    private boolean selectCityFromCitiesPanel(Civilization civilization, ArrayList<City> cities, int cityNumber) {
+        if (cityNumber < 1 || cityNumber > cities.size()) {
             printer.println("Invalid city number!");
             return false;
         }
@@ -464,9 +448,9 @@ public class GameView implements View {
         return true;
     }
 
-    private void printAllCities(Civilization civilization, ArrayList<City> cities){
+    private void printAllCities(Civilization civilization, ArrayList<City> cities) {
         printer.printlnBlue(civilization.getName() + " has cities with central tiles in this positions:");
-        for(int i = 0; i < cities.size(); i++){
+        for (int i = 0; i < cities.size(); i++) {
             printer.println(" " + (i + 1) + "- " + " at Y: " + cities.get(i).getCentralTile().findTileYCoordinateInMap() +
                     ", X: " + cities.get(i).getCentralTile().findTileYCoordinateInMap());
         }
@@ -477,7 +461,7 @@ public class GameView implements View {
         ArrayList<Unit> units = civilization.getUnits();
         String command;
         boolean quit = false;
-        while(!quit){
+        while (!quit) {
             printer.printlnRed("*****************************************");
             printer.println("Units panel");
             printer.println("Enter back to exit");
@@ -485,27 +469,24 @@ public class GameView implements View {
             printAllUnits(civilization, units);
 
             command = scanner.nextLine();
-            if(command.equals("back")){
+            if (command.equals("back")) {
                 break;
-            }
-            else if(command.startsWith("select ")){
+            } else if (command.startsWith("select ")) {
                 Matcher matcher = Pattern.compile("select (?<unitNumber>\\d+)").matcher(command);
-                if (!matcher.matches()){
+                if (!matcher.matches()) {
                     printer.println("Invalid command for Units panel!");
-                }
-                else{
+                } else {
                     int unitNumber = Integer.parseInt(matcher.group("unitNumber"));
                     quit = selectUnitFromUnitsPanel(civilization, units, unitNumber);
                 }
-            }
-            else {
+            } else {
                 printer.println("Invalid command for Units panel!");
             }
         }
     }
 
-    private boolean selectUnitFromUnitsPanel(Civilization civilization, ArrayList<Unit> units, int unitNumber){
-        if(unitNumber < 1 || unitNumber > units.size()){
+    private boolean selectUnitFromUnitsPanel(Civilization civilization, ArrayList<Unit> units, int unitNumber) {
+        if (unitNumber < 1 || unitNumber > units.size()) {
             printer.println("Invalid unit number!");
             return false;
         }
@@ -515,9 +496,9 @@ public class GameView implements View {
         return true;
     }
 
-    private void printAllUnits(Civilization civilization, ArrayList<Unit> units){
+    private void printAllUnits(Civilization civilization, ArrayList<Unit> units) {
         printer.printlnBlue(civilization.getName() + "'s Units:");
-        for(int i = 0; i < units.size(); i++){
+        for (int i = 0; i < units.size(); i++) {
             printer.println(" " + (i + 1) + "- " + units.get(i).getType().getName() + " at Y: " + units.get(i).getLocation().findTileYCoordinateInMap() +
                     ", X: " + units.get(i).getLocation().findTileXCoordinateInMap());
         }
@@ -1192,10 +1173,14 @@ public class GameView implements View {
         while (true) {
             command = scanner.nextLine();
             if ((matcher = WorkerCommands.BUILD_ROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_ROAD)) {
-                buildRoad(worker);
+                buildImprovement(worker, ImprovementType.ROAD);
             } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
                 // TODO
                 printer.println("building farm...");
+            } else if ((matcher = WorkerCommands.BUILD_QUARRY.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_QUARRY)) {
+                buildImprovement(worker, ImprovementType.QUARRY);
+            } else if ((matcher = WorkerCommands.BUILD_CAMP.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_CAMP)) {
+                buildImprovement(worker, ImprovementType.CAMP);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -1205,25 +1190,25 @@ public class GameView implements View {
         }
     }
 
-    private void buildRoad(Unit worker) {
+    private void buildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         if (location.getWork() != null) {
-            if (location.getWork() instanceof  BuildImprovement &&
-                    ((BuildImprovement)location.getWork()).getImprovement() == ImprovementType.ROAD) {
-                ((BuildImprovement)location.getWork()).startWork(worker);
-                printer.println("Resumed road construction here");
+            if (location.getWork() instanceof BuildImprovement &&
+                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
+                ((BuildImprovement) location.getWork()).startWork(worker);
+                printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
                 return;
             }
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Build Road canceled");
+                printer.println("Building " + improvementType.getName().toLowerCase() + " canceled");
                 return;
             }
         }
-        BuildImprovement newWork = new BuildImprovement(ImprovementType.ROAD, worker);
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
         location.setWork(newWork);
-        printer.println("Started the construction of a road here!");
+        printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
