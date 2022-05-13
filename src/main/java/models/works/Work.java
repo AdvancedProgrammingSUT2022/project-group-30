@@ -36,6 +36,7 @@ public abstract class Work implements TurnHandler {
     }
 
     public abstract int calculateRequiredTurns();
+    public abstract String getTitle();
 
     public Tile findLocation() {
         for(Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()){

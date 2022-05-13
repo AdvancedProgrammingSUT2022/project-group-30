@@ -15,4 +15,10 @@ public class FixPillage extends Work {
         // TODO
         return 0;
     }
+
+    @Override
+    public String getTitle() {
+        String result = "Fixing " + improvement.getType().getName().toLowerCase();
+        return result;
+    }
 }

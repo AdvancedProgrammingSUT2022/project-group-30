@@ -14,11 +14,12 @@ public class BuildImprovementAndRemoveFeature extends BuildImprovement {
         super(type, worker);
     }
 
+    private final ArrayList<Feature> clearableFeatures = new ArrayList<>(Arrays.asList(Feature.FOREST, Feature.JUNGLE, Feature.MARSH));
+
     @Override
     public void applyChange() {
         Tile location = this.findLocation();
         location.addImprovement(new Improvement(improvementType, worker.getOwner()));
-        ArrayList<Feature> clearableFeatures = new ArrayList<>(Arrays.asList(Feature.FOREST, Feature.JUNGLE, Feature.MARSH));
         for (Feature feature : clearableFeatures) {
             if (location.getFeatures().contains(feature)) {
                 location.removeFeatureAndApplyChanges(feature);
@@ -39,5 +40,17 @@ public class BuildImprovementAndRemoveFeature extends BuildImprovement {
         } else {
             return 6;
         }
+    }
+
+    @Override
+    public String getTitle() {
+        String result = "Building " + improvementType.getName();
+        Tile location = this.findLocation();
+        for (Feature feature : clearableFeatures) {
+            if (location.getFeatures().contains(feature)) {
+                result += " and clear " + feature.getName();
+            }
+        }
+        return result;
     }
 }

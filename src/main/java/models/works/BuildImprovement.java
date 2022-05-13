@@ -33,6 +33,12 @@ public class BuildImprovement extends Work {
         return 0;
     }
 
+    @Override
+    public String getTitle() {
+        String result = "Building " + improvementType.getName().toLowerCase();
+        return result;
+    }
+
     public ImprovementType getImprovement() {
         return improvementType;
     }

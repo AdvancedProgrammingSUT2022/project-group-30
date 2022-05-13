@@ -1442,7 +1442,10 @@ public class GameView implements View {
         HashMap<Resource, Integer> resources = tile.getResources();
         for (Resource resource : resources.keySet()) {
             if (resources.get(resource) > 0 && resource.isDiscoverable(controller.getCurrentPlayer())) {
-                printer.println(resource.getName());
+                printer.print(resource.getName());
+                String requiredImprovementName = resource.getPrerequisiteImprovement().getName();
+                printer.println((resource.canBeExploited(tile) ? " (exploited by " + requiredImprovementName + ")" :
+                        " (not exploited, requires " + requiredImprovementName + ")"));
             }
         }
 
@@ -1453,6 +1456,18 @@ public class GameView implements View {
                 printer.printRed(" (pillaged)");
             }
             printer.println();
+        }
+
+        printer.printlnBlue("Worker Project");
+        if (tile.getWork() == null) {
+            printer.println("No project in progress here!");
+        } else {
+            printer.println(tile.getWork().getTitle());
+            if (tile.getWork().isInProgress()) {
+                printer.println(tile.getWork().getTurnsRemaining() + " turns remaining");
+            } else {
+                printer.println("Work is paused, " + tile.getWork().getTurnsRemaining() + " turns remaining");
+            }
         }
     }
 
