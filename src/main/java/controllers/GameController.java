@@ -556,6 +556,9 @@ public class GameController {
         if (unit.getOwner().getSelectedEntity() == unit) {
             unit.getOwner().setSelectedEntity(null);
         }
+        if (unit.getType() == UnitType.WORKER && getWorkersWork(unit) != null) {
+            getWorkersWork(unit).stopWork();
+        }
         gameDataBase.getUnits().remove(unit);
         setMapImageOfCivilization(unit.getOwner());
     }

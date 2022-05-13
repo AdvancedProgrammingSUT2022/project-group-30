@@ -170,9 +170,9 @@ public class CombatController {
         apply damages and check HPs C
         kill first one to reach 0 HPs -> if it's a unit, just kill it and move the other one into it.   C
                                       -> if it's a city, destroy it and all units contained in it.  C
-        modify unit's hasAttackedField
-        modify unit's inactivityDuration field and make sure the same thing is done with move
-        drain unit's MPs (doesn't apply to some types)
+        modify unit's hasAttackedField  C
+        modify unit's inactivityDuration field and make sure the same thing is done with move   C
+        drain unit's MPs (doesn't apply to some types)  C
          */
     }
 
