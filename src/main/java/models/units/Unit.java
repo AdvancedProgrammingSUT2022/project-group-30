@@ -68,17 +68,30 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public void goToNextTurn() {
         // TODO : very much incomplete
-        inactivityDuration++;
+        if (!hasAttackedThisTurn && movePointsLeft == type.movementSpeed) {
+            inactivityDuration++;
+        }
+
         stateDuration++;
         hasAttackedThisTurn = false;
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
-        // TODO: heal:
-        /*
-            if it has been inactive for 1 turn: heal: modify healing pace based on doc, don't let HPs exceep max HPs
-            make sure inactivityDuration is updated appropriately
-        */
-        // TODO : handle state duration, inactivity time, and healing(if the state is FORTIFYUNTILHEALED)
+
+        if (inactivityDuration >= 1) {
+            City central = GameController.getGameController().getCityCenteredInTile(location);
+            City territorial = GameController.getGameController().whoseTerritoryIsTileInButIsNotTheCenterOf(location);
+            if (central != null && central.getOwner() == owner) {
+                hitPointsLeft += 3;
+            } else if (territorial != null && territorial.getOwner() != owner) {
+                hitPointsLeft += 2;
+            } else {
+                hitPointsLeft += 1;
+            }
+            hitPointsLeft = Math.min(hitPointsLeft, type.getHitPoints());
+            if (hitPointsLeft == type.getHitPoints() && state == UnitState.FORTIFYUNTILHEALED) {
+                setState(UnitState.AWAKE);
+            }
+        }
     }
 
     public void assemble() {
