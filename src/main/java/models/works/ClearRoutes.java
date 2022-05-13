@@ -22,6 +22,12 @@ public class ClearRoutes extends Work {
     }
 
     @Override
+    public String getTitle() {
+        String result = "Clear route";
+        return result;
+    }
+
+    @Override
     public int calculateRequiredTurns() {
         return 3;
     }

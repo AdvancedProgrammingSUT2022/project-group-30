@@ -125,16 +125,12 @@ public class GameController {
         if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
             return false;
         }
-/*        if (!worker.getLocation().containsImprovment(type) || !worker.getLocation().getImprovementByType(type).getIsPillaged()) {
-            return false;
-        }*/
-        //what is the applocation of following piece of code??
         for (Improvement improvement : worker.getLocation().getImprovements()) {
             if (improvement.getIsPillaged()) {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     public boolean canWorkerClearRoutes(Unit worker) {
@@ -161,11 +157,51 @@ public class GameController {
         return true;
     }
 
+    public boolean canWorkerBuildFarmOrMine(Unit worker, ImprovementType type) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(type)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(type.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if ((location.getFeatures().contains(Feature.FOREST) && !owner.hasTechnology(Technology.MINING)) ||
+                (location.getFeatures().contains(Feature.JUNGLE) && !owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                (location.getFeatures().contains(Feature.MARSH) && !owner.hasTechnology(Technology.MASONRY))) {
+            return false;
+        }
+
+        if (!type.isCompatibleWithTile(worker.getLocation())) {
+            if (!((location.getFeatures().contains(Feature.FOREST) && owner.hasTechnology(Technology.MINING)) ||
+                    (location.getFeatures().contains(Feature.JUNGLE) && owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                    (location.getFeatures().contains(Feature.MARSH) && owner.hasTechnology(Technology.MASONRY)))) {
+                return false;
+            }
+        }
+        for (Resource resource : location.getResourcesAsArrayList()) {
+            if (resource.getPrerequisiteImprovement() == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();
 
         if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(improvementType)) {
             return false;
         }
         if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
@@ -185,7 +221,7 @@ public class GameController {
         return false;
     }
 
-    public boolean canWorkerBuildRoad(Unit worker) {
+    public boolean canWorkerBuildRoute(Unit worker, ImprovementType routeType) {
         if (isWorkerWorking(worker)) {
             return false;
         }
@@ -193,16 +229,15 @@ public class GameController {
                 worker.getLocation().containsImprovment(ImprovementType.RAILROAD)) {
             return false;
         }
-        if (!worker.getOwner().hasTechnology(ImprovementType.ROAD.getPrerequisiteTechnology())) {
+        if (!worker.getOwner().hasTechnology(routeType.getPrerequisiteTechnology())) {
             return false;
         }
-
         return true;
     }
 
     public boolean isWorkerWorking(Unit worker) {
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
-            if (tile.getWork() != null && tile.getWork().getWorker() == worker) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker && tile.getWork().isInProgress()) {
                 return true;
             }
         }

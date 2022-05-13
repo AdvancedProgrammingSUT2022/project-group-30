@@ -41,4 +41,9 @@ public class ClearFeature extends Work {
         return this.feature;
     }
 
+    @Override
+    public String getTitle() {
+        String result = "Clearing " + feature.getName().toLowerCase();
+        return result;
+    }
 }

@@ -27,15 +27,14 @@ public abstract class Work implements TurnHandler {
         isInProgress = true;
     }
     public void startWork() {
-        // TODO
         isInProgress = true;
     }
     public void stopWork() {
-        // TODO
         isInProgress = false;
     }
 
     public abstract int calculateRequiredTurns();
+    public abstract String getTitle();
 
     public Tile findLocation() {
         for(Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()){

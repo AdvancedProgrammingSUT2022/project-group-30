@@ -7,7 +7,7 @@ import models.improvements.ImprovementType;
 import models.units.Unit;
 
 public class BuildImprovement extends Work {
-    private ImprovementType improvementType;
+    protected ImprovementType improvementType;
 
     public BuildImprovement(ImprovementType improvementType, Unit worker) {
         this.improvementType = improvementType;
@@ -26,11 +26,13 @@ public class BuildImprovement extends Work {
 
     @Override
     public int calculateRequiredTurns() {
-        if (improvementType == ImprovementType.ROAD) {
-            return 3;
-        }
-        // TODO
-        return 0;
+        return improvementType.getConstructionDuration();
+    }
+
+    @Override
+    public String getTitle() {
+        String result = "Building " + improvementType.getName().toLowerCase();
+        return result;
     }
 
     public ImprovementType getImprovement() {

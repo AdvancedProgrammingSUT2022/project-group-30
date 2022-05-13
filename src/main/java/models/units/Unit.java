@@ -115,7 +115,9 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public boolean isWaitingForCommand() {
         // TODO : might be incomplete
-
+        if (type == UnitType.WORKER && GameController.getGameController().isWorkerWorking(this)) {
+            return false;
+        }
         if (state.waitsForCommand == false || path != null) { // if it is in an inactive state like fortified or sleeping, return false
             return false;
         }

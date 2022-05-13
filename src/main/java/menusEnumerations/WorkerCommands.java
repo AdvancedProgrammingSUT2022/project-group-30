@@ -18,6 +18,7 @@ public class WorkerCommands extends Commands {
     public static WorkerCommands CLEAR_MARSH = new WorkerCommands("clear marsh", "clear marsh");
     public static WorkerCommands CLEAR_ROUTES = new WorkerCommands("clear routes", "clear routes");
     public static WorkerCommands FIX_IMPROVEMENT = new WorkerCommands("fix improvement (?<name>.*)", "fix improvement <improvement name>");
+    public static WorkerCommands STOP_WORK = new WorkerCommands("stop( work)?", "stop work");
 
     private static ArrayList<WorkerCommands> allCommands;
 

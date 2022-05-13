@@ -18,7 +18,8 @@ public class FixPillage extends Work {
     @Override
     public void applyChange() {
         Tile myLocation = this.findLocation();
-        myLocation.getImprovementByType(improvementType).setIsPillaged(false);
+        if (myLocation.containsImprovment(improvementType))
+            myLocation.getImprovementByType(improvementType).setIsPillaged(false);
         myLocation.removeWork();
     }
 
@@ -29,5 +30,11 @@ public class FixPillage extends Work {
 
     public ImprovementType getImprovementType() {
         return improvementType;
+    }
+
+    @Override
+    public String getTitle() {
+        String result = "Fixing " + improvementType.getName().toLowerCase();
+        return result;
     }
 }
