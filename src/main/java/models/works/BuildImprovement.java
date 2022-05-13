@@ -7,7 +7,7 @@ import models.improvements.ImprovementType;
 import models.units.Unit;
 
 public class BuildImprovement extends Work {
-    private ImprovementType improvementType;
+    protected ImprovementType improvementType;
 
     public BuildImprovement(ImprovementType improvementType, Unit worker) {
         this.improvementType = improvementType;

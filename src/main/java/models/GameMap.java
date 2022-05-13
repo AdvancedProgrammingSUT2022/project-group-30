@@ -271,42 +271,42 @@ public class GameMap {
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 8 && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.FLOOD_PLAINS);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.FLOOD_PLAINS);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.FOREST);
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.FOREST);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.FOREST);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.ICE);
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 3 && (compatiblTiles.get(i).getTerrainType() == TerrainType.SNOW || compatiblTiles.get(i).getTerrainType() == TerrainType.TUNDRA) && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.ICE);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.ICE);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.JUNGLE);
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.JUNGLE);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.JUNGLE);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.MARSH);
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.MARSH);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.MARSH);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.OASIS);
         for(int i = 0; i < compatiblTiles.size(); i++){
             int chance = rand.nextInt(10);
             if(chance < 4 && compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT && compatiblTiles.get(i).getFeatures().size() < 3){
-                compatiblTiles.get(i).addFeature(Feature.OASIS);
+                compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.OASIS);
             }
         }
     }

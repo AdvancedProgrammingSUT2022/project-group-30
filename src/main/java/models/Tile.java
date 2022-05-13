@@ -194,13 +194,23 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public void addFeature(Feature feature) {
+    public void addFeatureAndApplyChanges(Feature feature) {
         if (this.features.contains(feature)) {
             Debugger.debug("feature already exists");
             return;
         }
         ArrayList<Feature> featuresCopy = new ArrayList<>(features);
         featuresCopy.add(feature);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
+    }
+
+    public void removeFeatureAndApplyChanges(Feature feature) {
+        if (!this.features.contains(feature)) {
+            Debugger.debug("feature does not exist");
+            return;
+        }
+        ArrayList<Feature> featuresCopy = new ArrayList<>(features);
+        featuresCopy.remove(feature);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
     }
 

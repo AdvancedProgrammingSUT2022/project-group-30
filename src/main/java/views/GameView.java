@@ -16,6 +16,7 @@ import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
 import models.works.BuildImprovement;
+import models.works.BuildImprovementAndRemoveFeature;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -893,7 +894,7 @@ public class GameView implements View {
             } else if ((matcher = WorkerCommands.BUILD_RAILROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_RAILROAD)) {
                 buildImprovement(worker, ImprovementType.RAILROAD);
             } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
-                buildFarm(worker);
+                buildFarmOrMine(worker, ImprovementType.FARM);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -903,9 +904,25 @@ public class GameView implements View {
         }
     }
 
-    private void buildFarm(Unit worker) {
+    private void buildFarmOrMine(Unit worker, ImprovementType type) {
         Tile location = worker.getLocation();
-
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof BuildImprovementAndRemoveFeature &&
+                    (((BuildImprovementAndRemoveFeature) location.getWork()).getImprovement() == type)) {
+                ((BuildImprovementAndRemoveFeature)location.getWork()).startWork(worker);
+                printer.println("Resumed " + type.getName().toLowerCase() + " construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Building " + type.getName().toLowerCase() + " canceled");
+                return;
+            }
+        }
+        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
+        location.setWork(newWork);
+        printer.println("Started the construction of a " + type.getName().toLowerCase() + " here!");
     }
 
     private void buildImprovement(Unit worker, ImprovementType improvementType) {
