@@ -1,14 +1,14 @@
 package models.improvements;
 
+import models.Feature;
+import models.Output;
+import models.TerrainType;
+import models.Tile;
+import models.interfaces.TerrainProperty;
+import models.technology.Technology;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import models.Output;
-import models.Tile;
-import models.technology.Technology;
-import models.TerrainType;
-import models.Feature;
-import models.interfaces.TerrainProperty;
 
 public enum ImprovementType {
     CAMP(new Output(0, 0, 0), Technology.TRAPPING,

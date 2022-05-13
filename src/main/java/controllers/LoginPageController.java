@@ -1,7 +1,11 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import models.ProgramDatabase;
+import models.User;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,11 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import models.ProgramDatabase;
-import models.User;
 
 public class LoginPageController {
     private static LoginPageController loginPageController;
@@ -93,11 +92,12 @@ public class LoginPageController {
         this.programDatabase.setLoggedInUser(user);
     }
 
-    public static void readUsersListFromFile(){
+    public static void readUsersListFromFile() {
         try {
-            String input = new String(Files.readAllBytes(Paths.get("src","main","java","resources","Users.json")));
-            ArrayList<User> users = new Gson().fromJson(input, new TypeToken<List<User>>(){}.getType());
-            if(users == null){
+            String input = new String(Files.readAllBytes(Paths.get("src", "main", "java", "resources", "Users.json")));
+            ArrayList<User> users = new Gson().fromJson(input, new TypeToken<List<User>>() {
+            }.getType());
+            if (users == null) {
                 users = new ArrayList<>();
             }
             ProgramDatabase.getProgramDatabase().setUsers(users);
@@ -106,7 +106,7 @@ public class LoginPageController {
         }
     }
 
-    public static void writeUsersListToFile(){
+    public static void writeUsersListToFile() {
         File main = new File("src", "main");
         File java = new File(main, "java");
         File resources = new File(java, "resources");

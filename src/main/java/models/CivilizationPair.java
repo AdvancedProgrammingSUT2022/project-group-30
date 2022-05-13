@@ -1,13 +1,14 @@
 package models;
 
+import utilities.Debugger;
+
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import utilities.Debugger;
-
 public class CivilizationPair {
-    private Set<Civilization> civilizations = new LinkedHashSet<>();;
+    private Set<Civilization> civilizations = new LinkedHashSet<>();
+    ;
 
     public CivilizationPair(Civilization civ1, Civilization civ2) {
         if (civ1.equals(civ2)) {
@@ -28,7 +29,7 @@ public class CivilizationPair {
         return this.civilizations;
     }
 
-    public ArrayList<Civilization> getCivilizationsArray(){
+    public ArrayList<Civilization> getCivilizationsArray() {
         ArrayList<Civilization> civilizations = new ArrayList<Civilization>(this.civilizations);
         return civilizations;
     }

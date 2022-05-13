@@ -5,7 +5,7 @@ import models.Civilization;
 public class Improvement {
     private final ImprovementType type;
     private final Civilization founder;
-    
+
     private boolean isPillaged;
 
     public Improvement(ImprovementType type, Civilization founder) {

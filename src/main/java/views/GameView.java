@@ -1,45 +1,35 @@
 package views;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import controllers.CombatController;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
-import models.buildings.Building;
 import models.buildings.BuildingType;
+import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
+import models.interfaces.TileImage;
 import models.interfaces.combative;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
+import models.units.Unit;
 import models.units.UnitState;
-import models.resources.LuxuryResource;
-import models.resources.StrategicResource;
 import models.units.UnitType;
-import models.works.BuildImprovement;
-import models.works.ClearFeature;
-import models.works.ClearRoutes;
-import models.works.FixPillage;
-import models.works.BuildImprovementAndRemoveFeature;
-import models.works.Work;
+import models.works.*;
 import utilities.Debugger;
+import utilities.MyScanner;
 import utilities.PrintableCharacters;
 import utilities.Printer;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-import models.improvements.Improvement;
-import models.interfaces.TileImage;
-import models.resources.Resource;
-import models.units.Unit;
-import utilities.MyScanner;
 
 public class GameView implements View {
 
@@ -1658,7 +1648,7 @@ public class GameView implements View {
         }
         Tile targetTile = controller.getTileByCoordinates(x, y);
         if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
-            !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
+                !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
             printer.printlnError("You can only attack target that are seen and within range!");
             return;
         }

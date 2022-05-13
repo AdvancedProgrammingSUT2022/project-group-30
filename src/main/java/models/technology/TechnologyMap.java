@@ -1,9 +1,9 @@
 package models.technology;
 
+import utilities.Debugger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import utilities.Debugger;
 
 public class TechnologyMap {
     private HashMap<Technology, Boolean> map = new HashMap<Technology, Boolean>();

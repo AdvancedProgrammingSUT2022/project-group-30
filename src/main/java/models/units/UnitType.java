@@ -1,11 +1,10 @@
 package models.units;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import models.interfaces.Producible;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+
+import java.util.HashMap;
 
 public enum UnitType implements Producible {
     ARCHER("Archer", 70, CombatType.ARCHERY,

@@ -12,6 +12,7 @@ public class ProductionPanelCommands extends Commands {
     public static ProductionPanelCommands PURCHASE = new ProductionPanelCommands("purchase", "purchase");
 
     private final String name;
+
     private ProductionPanelCommands(String regex, String name) {
         super(regex);
         this.name = name;

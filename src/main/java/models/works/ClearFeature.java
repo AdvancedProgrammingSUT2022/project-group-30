@@ -2,7 +2,6 @@ package models.works;
 
 import models.Feature;
 import models.Tile;
-import models.improvements.Improvement;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -10,7 +9,7 @@ public class ClearFeature extends Work {
 
     private Feature feature;
 
-    public ClearFeature(Feature feature, Unit worker){
+    public ClearFeature(Feature feature, Unit worker) {
         this.feature = feature;
         this.worker = worker;
         turnsRemaining = calculateRequiredTurns();

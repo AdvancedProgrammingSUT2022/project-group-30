@@ -1,19 +1,18 @@
 package models;
 
+import models.interfaces.TileImage;
+import models.resources.BonusResource;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
+import utilities.Debugger;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
-
-import models.interfaces.TileImage;
-import models.resources.BonusResource;
-import models.resources.LuxuryResource;
-import models.resources.Resource;
-import models.resources.StrategicResource;
-import models.units.Unit;
-import utilities.Debugger;
 
 public class GameMap {
     private static GameMap gameMap;
@@ -27,7 +26,7 @@ public class GameMap {
 
     }
 
-    public void loadMapFromFile(){
+    public void loadMapFromFile() {
         this.initializeMap();
         this.initializeRivers();
         this.initializeFeatures();
@@ -113,197 +112,197 @@ public class GameMap {
 
     }
 
-    private void initializeStrategicResources(){
+    private void initializeStrategicResources() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.COAL);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.COAL, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.HORSE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.HORSE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.IRON);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.IRON, 1);
             }
         }
 
     }
 
-    private void initializeLuxuryResources(){
+    private void initializeLuxuryResources() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.COTTON);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.COTTON, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.DYE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.DYE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.FUR);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.FUR, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.GEM);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.GEM, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.GOLD);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.GOLD, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.INCENSE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.INCENSE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.IVORY);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.IVORY, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.MARBLE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.MARBLE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SILK);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SILK, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SILVER);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SILVER, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SUGAR);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3){
+            if (chance < 3) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SUGAR, 1);
             }
         }
     }
 
-    private void initializeBonusResources(){
+    private void initializeBonusResources() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.BANANA);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4){
+            if (chance < 4) {
                 compatiblTiles.get(i).getResources().put(BonusResource.BANANA, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.COW);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4){
+            if (chance < 4) {
                 compatiblTiles.get(i).getResources().put(BonusResource.COW, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.GAZELLE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4){
+            if (chance < 4) {
                 compatiblTiles.get(i).getResources().put(BonusResource.GAZELLE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.SHEEP);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4){
+            if (chance < 4) {
                 compatiblTiles.get(i).getResources().put(BonusResource.SHEEP, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.WHEAT);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4){
+            if (chance < 4) {
                 compatiblTiles.get(i).getResources().put(BonusResource.WHEAT, 1);
             }
         }
     }
 
-    private void initializeFeatures(){
+    private void initializeFeatures() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.FLOOD_PLAINS);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 8 && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 8 && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.FLOOD_PLAINS);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.FOREST);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.FOREST);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.ICE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 3 && (compatiblTiles.get(i).getTerrainType() == TerrainType.SNOW || compatiblTiles.get(i).getTerrainType() == TerrainType.TUNDRA) && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 3 && (compatiblTiles.get(i).getTerrainType() == TerrainType.SNOW || compatiblTiles.get(i).getTerrainType() == TerrainType.TUNDRA) && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.ICE);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.JUNGLE);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.GRASSLAND || compatiblTiles.get(i).getTerrainType() == TerrainType.MOUNTAIN || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.JUNGLE);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.MARSH);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 4 && (compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT || compatiblTiles.get(i).getTerrainType() == TerrainType.PLAINS) && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.MARSH);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAFeature(Feature.OASIS);
-        for(int i = 0; i < compatiblTiles.size(); i++){
+        for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if(chance < 4 && compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT && compatiblTiles.get(i).getFeatures().size() < 3){
+            if (chance < 4 && compatiblTiles.get(i).getTerrainType() == TerrainType.DESERT && compatiblTiles.get(i).getFeatures().size() < 3) {
                 compatiblTiles.get(i).addFeatureAndApplyChanges(Feature.OASIS);
             }
         }
@@ -388,11 +387,11 @@ public class GameMap {
         return this.rivers;
     }
 
-    private ArrayList<Tile> findAllCompatibleTilesForAFeature(Feature feature){
+    private ArrayList<Tile> findAllCompatibleTilesForAFeature(Feature feature) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        for(int i = 0; i < this.map.length; i++){
-            for(int j = 0; j < this.map[i].length; j++){
-                if(Feature.isTileCompatibleWithFeature(feature, this.map[i][j])){
+        for (int i = 0; i < this.map.length; i++) {
+            for (int j = 0; j < this.map[i].length; j++) {
+                if (Feature.isTileCompatibleWithFeature(feature, this.map[i][j])) {
                     tiles.add(this.map[i][j]);
                 }
             }
@@ -400,11 +399,11 @@ public class GameMap {
         return tiles;
     }
 
-    private ArrayList<Tile> findAllCompatibleTilesForAResource(Resource resource){
+    private ArrayList<Tile> findAllCompatibleTilesForAResource(Resource resource) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        for(int i = 0; i < this.map.length; i++){
-            for(int j = 0; j < this.map[i].length; j++){
-                if(resource.isTileValid(this.map[i][j])){
+        for (int i = 0; i < this.map.length; i++) {
+            for (int j = 0; j < this.map[i].length; j++) {
+                if (resource.isTileValid(this.map[i][j])) {
                     tiles.add(this.map[i][j]);
                 }
             }

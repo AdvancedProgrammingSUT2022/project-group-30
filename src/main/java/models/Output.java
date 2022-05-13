@@ -23,7 +23,7 @@ public class Output {
         production -= other.getProduction();
     }
 
-    public void times(Output other){
+    public void times(Output other) {
         food *= (100 + other.getFood()) / 100.0;
         gold *= (100 + other.getGold()) / 100.0;
         production *= (100 + other.getProduction()) / 100.0;
@@ -36,8 +36,8 @@ public class Output {
     }
 
     @Override
-    public boolean equals(Object o){
-        if(!(o instanceof Output))
+    public boolean equals(Object o) {
+        if (!(o instanceof Output))
             return false;
         return this.food == ((Output) o).getFood() && this.gold == ((Output) o).getGold() && this.production == ((Output) o).getProduction();
     }

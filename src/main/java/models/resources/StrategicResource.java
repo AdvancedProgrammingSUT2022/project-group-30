@@ -1,15 +1,15 @@
 package models.resources;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 import models.Civilization;
 import models.Output;
 import models.TerrainType;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.technology.Technology;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class StrategicResource extends Resource {
     private static ArrayList<StrategicResource> allTypes = new ArrayList<>();

@@ -11,7 +11,7 @@ public enum BuildingType implements Producible {
     LIBRARY(80, 1, Technology.WRITING, 0, "Library"),
     MONUMENT(60, 1, Technology.AGRICULTURE, 0, "Monument"),
     WALLS(100, 1, Technology.MASONRY, 0, "Walls"),
-    WATER_MILL(120, 2, Technology.THE_WHEEL, true,0, "Water Mill"),
+    WATER_MILL(120, 2, Technology.THE_WHEEL, true, 0, "Water Mill"),
     ARMORY(130, 3, Technology.IRON_WORKING, createArrayList(BARRACKS), 0, "Armory"),
     BURIAL_TOMB(120, 0, Technology.PHILOSOPHY, 2, "Burial Tomb"),
     CIRCUS(150, 3, Technology.HORSEBACK_RIDING, 3, "Circus"),
@@ -29,7 +29,7 @@ public enum BuildingType implements Producible {
     WORKSHOP(100, 2, Technology.METAL_CASTING, 0, "Workshop"),
     BANK(220, 0, Technology.BANKING, createArrayList(MARKET), 0, "Bank"),
     MILITARY_ACADEMY(350, 3, Technology.MILITARY_SCIENCE, createArrayList(BARRACKS), 0, "Military Academy"),
-    OPERA_HOUSE(220, 3, Technology.ACOUSTICS, createArrayList(TEMPLE, BURIAL_TOMB),0, "Opera House"),
+    OPERA_HOUSE(220, 3, Technology.ACOUSTICS, createArrayList(TEMPLE, BURIAL_TOMB), 0, "Opera House"),
     MUSEUM(350, 3, Technology.ARCHAEOLOGY, createArrayList(OPERA_HOUSE), 0, "Museum"),
     PUBLIC_SCHOOL(350, 3, Technology.SCIENTIFIC_THEORY, createArrayList(UNIVERSITY), 0, "Public School"),
     SATRAPS_COURT(220, 0, Technology.BANKING, createArrayList(MARKET), 2, "Satrap's Court"),
@@ -72,7 +72,7 @@ public enum BuildingType implements Producible {
         this.name = name;
     }
 
-    private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology,  boolean shouldBeNearRiver,
+    private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, boolean shouldBeNearRiver,
                          double happiness, String name) {
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;

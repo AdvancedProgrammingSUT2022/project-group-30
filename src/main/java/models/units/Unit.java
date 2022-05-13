@@ -1,15 +1,14 @@
 package models.units;
 
-import java.util.ArrayList;
-
 import controllers.GameController;
 import models.City;
 import models.Civilization;
 import models.Tile;
-import models.interfaces.Producible;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.combative;
+
+import java.util.ArrayList;
 
 public class Unit implements Selectable, TurnHandler, combative {
     private final Civilization owner;
@@ -55,9 +54,9 @@ public class Unit implements Selectable, TurnHandler, combative {
         return image;
     }
 
-    public boolean isUnitInItsCivilizationCities(){
+    public boolean isUnitInItsCivilizationCities() {
         City city = this.location.getCityOfTile();
-        if(city != null && city.getOwner().equals(this.getOwner()) && city.getCentralTile().equals(this.location)){
+        if (city != null && city.getOwner().equals(this.getOwner()) && city.getCentralTile().equals(this.location)) {
             return true;
         }
         return false;
@@ -99,7 +98,7 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
-                                   // rest all return true
+        // rest all return true
         if (type.needsAssmbly()) {
             return isAssembled;
         } else {
@@ -162,8 +161,8 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.movePointsLeft = movePointsLeft;
     }
 
-    public void setState(UnitState state){
-        if(state != UnitState.AWAKE){
+    public void setState(UnitState state) {
+        if (state != UnitState.AWAKE) {
             this.path = null;
         }
         if (this.state != state) {
@@ -196,7 +195,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         return path;
     }
 
-    public UnitType getType(){
+    public UnitType getType() {
         return this.type;
     }
 

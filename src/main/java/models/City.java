@@ -1,18 +1,9 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
 import controllers.GameController;
 import models.buildings.Building;
 import models.buildings.BuildingType;
-import models.interfaces.Producible;
-import models.interfaces.Selectable;
-import models.interfaces.TurnHandler;
-import models.interfaces.Workable;
-import models.interfaces.combative;
-import models.resources.BonusResource;
+import models.interfaces.*;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -21,6 +12,10 @@ import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
 import utilities.Debugger;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class City implements Selectable, TurnHandler, combative {
     private static final int MAXHITPOINTS = 20;

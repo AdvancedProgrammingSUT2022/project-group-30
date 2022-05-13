@@ -1,10 +1,9 @@
 package models;
 
-import java.util.ArrayList;
-
-import models.improvements.Improvement;
 import models.interfaces.TileImage;
 import models.units.Unit;
+
+import java.util.ArrayList;
 
 public class TileHistory implements TileImage {
     private Tile tile;

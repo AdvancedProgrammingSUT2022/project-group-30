@@ -1,8 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import controllers.GameController;
 import models.diplomacy.StepWiseGoldTransferContract;
 import models.improvements.Improvement;
@@ -12,13 +9,15 @@ import models.interfaces.Selectable;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
 import models.resources.LuxuryResource;
-import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
 import models.units.CombatType;
 import models.units.Unit;
 import utilities.Debugger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Civilization implements TurnHandler {
     private final String name;
@@ -93,8 +92,8 @@ public class Civilization implements TurnHandler {
     public ArrayList<Unit> getMilitaryUnits() {
         ArrayList<Unit> allUnits = this.getUnits();
         ArrayList<Unit> militaryUnits = new ArrayList<>();
-        for(int i = 0; i < allUnits.size(); i++){
-            if(allUnits.get(i).getType().getCombatType() != CombatType.CIVILIAN){
+        for (int i = 0; i < allUnits.size(); i++) {
+            if (allUnits.get(i).getType().getCombatType() != CombatType.CIVILIAN) {
                 militaryUnits.add(allUnits.get(i));
             }
         }
@@ -145,8 +144,8 @@ public class Civilization implements TurnHandler {
 
     public void goToNextTurn() {
         this.beakerCount += this.calculateTotalBeakers();
-        if(this.researchProject != null){
-            if(this.beakerCount >= this.researchProject.getCost()){
+        if (this.researchProject != null) {
+            if (this.beakerCount >= this.researchProject.getCost()) {
                 this.beakerCount -= this.researchProject.getCost();
                 this.technologies.learnTechnology(this.researchProject);
                 this.addNotificationForResearch(this.researchProject);
@@ -408,13 +407,13 @@ public class Civilization implements TurnHandler {
         return null;
     }
 
-    public void addNotificationForResearch(Technology researchProject){
+    public void addNotificationForResearch(Technology researchProject) {
         String technologyName = researchProject.getName();
         String notificationText = "You have learned " + technologyName + " technology!";
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
     }
 
-    public void addNotificationForProduction(Producible production){
+    public void addNotificationForProduction(Producible production) {
         String productionName = production.getName();
         String notificationText = "City production is finished : " + productionName + " !";
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
@@ -425,15 +424,15 @@ public class Civilization implements TurnHandler {
         notifications.add(notification);
     }
 
-    public void setNotifications(ArrayList<Notification> notifications){
+    public void setNotifications(ArrayList<Notification> notifications) {
         this.notifications = notifications;
     }
 
-    public ArrayList<Notification> getNotifications(){
+    public ArrayList<Notification> getNotifications() {
         return this.notifications;
     }
 
-    public int calculateTotalFoodFromCities(){
+    public int calculateTotalFoodFromCities() {
         ArrayList<City> cities = this.getCities();
         int sum = 0;
         for (City city : cities) {
@@ -442,15 +441,15 @@ public class Civilization implements TurnHandler {
         return sum;
     }
 
-    public ArrayList<Improvement> getAllImprovements(){
+    public ArrayList<Improvement> getAllImprovements() {
         ArrayList<Improvement> improvements = new ArrayList<>();
         GameMap map = GameMap.getGameMap();
-        Tile [][] tiles = map.getMap();
-        for(int i = 0; i < tiles.length; i++){
-            for(int j = 0; j < tiles[i].length; j++){
+        Tile[][] tiles = map.getMap();
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
                 ArrayList<Improvement> tilesImprovements = tiles[i][j].getImprovements();
-                for(int k = 0; k < tilesImprovements.size(); k++){
-                    if(tilesImprovements.get(k).getFounder().equals(this)){
+                for (int k = 0; k < tilesImprovements.size(); k++) {
+                    if (tilesImprovements.get(k).getFounder().equals(this)) {
                         improvements.add(tilesImprovements.get(k));
                     }
                 }

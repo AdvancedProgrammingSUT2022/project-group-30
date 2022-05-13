@@ -1,9 +1,5 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-
 import controllers.GameController;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -18,6 +14,10 @@ import models.units.Unit;
 import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class Tile implements Workable, TileImage, TurnHandler {
     private TerrainType terrainType;
@@ -101,10 +101,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         if (!this.hasCitizen())
             return output;
         output.add(this.output);
-        for(Resource resource : this.resources.keySet()){
-            if(this.isImprovementTypeAccessible(resource.getPrerequisiteImprovement())){
-                for(int i=0 ; i< this.resources.get(resource); i++)
-                  output.add(resource.getOutput());
+        for (Resource resource : this.resources.keySet()) {
+            if (this.isImprovementTypeAccessible(resource.getPrerequisiteImprovement())) {
+                for (int i = 0; i < this.resources.get(resource); i++)
+                    output.add(resource.getOutput());
             }
         }
         for (Improvement improvement : this.getImprovements()) {
@@ -262,10 +262,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return null;
     }
 
-    public boolean isImprovementTypeAccessible(ImprovementType type){
-        if(this.containsImprovment(type)){
+    public boolean isImprovementTypeAccessible(ImprovementType type) {
+        if (this.containsImprovment(type)) {
             for (Improvement improvement : improvements) {
-                if(improvement.getType() == type && improvement.getIsPillaged())
+                if (improvement.getType() == type && improvement.getIsPillaged())
                     return true;
             }
         }
@@ -276,19 +276,18 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.improvements.add(improvement);
     }
 
-    public void removeImprovement(ImprovementType improvementType){
-        for(int i=0; i<this.improvements.size(); i++){
-            if(this.improvements.get(i).getType() == improvementType)
-            {
+    public void removeImprovement(ImprovementType improvementType) {
+        for (int i = 0; i < this.improvements.size(); i++) {
+            if (this.improvements.get(i).getType() == improvementType) {
                 this.improvements.remove(i);
                 return;
             }
         }
     }
 
-    public Improvement getImprovementByType(ImprovementType type){
-        for(Improvement improvement : this.improvements){
-            if(improvement.getType() == type)
+    public Improvement getImprovementByType(ImprovementType type) {
+        for (Improvement improvement : this.improvements) {
+            if (improvement.getType() == type)
                 return improvement;
         }
         Debugger.debug("There is no improvement with this type");

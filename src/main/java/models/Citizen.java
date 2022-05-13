@@ -17,7 +17,7 @@ public class Citizen {
         return workPlace;
     }
 
-    public boolean isWorkless(){
+    public boolean isWorkless() {
         if (workPlace == null)
             return true;
         return false;

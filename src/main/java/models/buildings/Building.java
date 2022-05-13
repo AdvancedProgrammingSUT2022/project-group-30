@@ -2,11 +2,7 @@ package models.buildings;
 
 import models.City;
 import models.TerrainType;
-import models.Tile;
-import models.interfaces.Producible;
 import models.interfaces.Workable;
-import models.resources.Resource;
-import models.technology.Technology;
 
 public class Building implements Workable {
     private final BuildingType type;
@@ -92,7 +88,7 @@ public class Building implements Workable {
         } else if (type == BuildingType.STOCK_EXCHANGE) {
             if (city.hasBuildingType(BuildingType.BANK) || city.hasBuildingType(BuildingType.SATRAPS_COURT))
                 return true;
-        } else {/*there is no more condition to check for this specific type*/
+        } else {//there is no more condition to check for this specific type
             return true;
         }
         return false;

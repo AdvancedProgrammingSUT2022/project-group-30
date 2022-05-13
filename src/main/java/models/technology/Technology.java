@@ -1,10 +1,10 @@
 package models.technology;
 
+import utilities.Debugger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import utilities.Debugger;
 
 /*
 IMPORTANT NOTE:
@@ -105,7 +105,7 @@ public enum Technology {
         return cost;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 

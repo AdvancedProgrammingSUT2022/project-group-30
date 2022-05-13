@@ -1,7 +1,6 @@
 package models.works;
 
 import models.Tile;
-import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 

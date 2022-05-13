@@ -9,147 +9,119 @@ public class RiverSegment {
         this.secondTile = secondTile;
     }
 
-    public String findRiverSegmentDirectionForTile(Tile tile){
-        if(tile == firstTile){
+    public String findRiverSegmentDirectionForTile(Tile tile) {
+        if (tile == firstTile) {
             return findRiverSegmentDirectionForFirstTile();
-        }
-        else{
+        } else {
             return findRiverSegmentDirectionForSecondTile();
         }
     }
 
     //bellow two functions return : LU -> left up, LD -> left down, RU -> right up, RD -> right down
-    private String findRiverSegmentDirectionForFirstTile(){
-        if(this.firstTile.findTileXCoordinateInMap() % 2 == 0){
-            if(this.secondTile.findTileXCoordinateInMap() > this.firstTile.findTileXCoordinateInMap()){
-                if(this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()){
+    private String findRiverSegmentDirectionForFirstTile() {
+        if (this.firstTile.findTileXCoordinateInMap() % 2 == 0) {
+            if (this.secondTile.findTileXCoordinateInMap() > this.firstTile.findTileXCoordinateInMap()) {
+                if (this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()) {
                     return "RD";
-                }
-                else{
+                } else {
                     return "RU";
                 }
-            }
-            else{
-                if(this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()){
+            } else {
+                if (this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()) {
                     return "LD";
-                }
-                else{
+                } else {
                     return "LU";
                 }
             }
-        }
-        else{
-            if(this.secondTile.findTileXCoordinateInMap() > this.firstTile.findTileXCoordinateInMap()){
-                if(this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()){
+        } else {
+            if (this.secondTile.findTileXCoordinateInMap() > this.firstTile.findTileXCoordinateInMap()) {
+                if (this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()) {
                     return "RU";
-                }
-                else{
+                } else {
                     return "RD";
                 }
-            }
-            else{
-                if(this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()){
+            } else {
+                if (this.secondTile.findTileYCoordinateInMap() == this.firstTile.findTileYCoordinateInMap()) {
                     return "LU";
-                }
-                else{
+                } else {
                     return "LD";
                 }
             }
         }
     }
 
-    private String findRiverSegmentDirectionForSecondTile(){
-        if(this.secondTile.findTileXCoordinateInMap() % 2 == 0){
-            if(this.firstTile.findTileXCoordinateInMap() > this.secondTile.findTileXCoordinateInMap()){
-                if(this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()){
+    private String findRiverSegmentDirectionForSecondTile() {
+        if (this.secondTile.findTileXCoordinateInMap() % 2 == 0) {
+            if (this.firstTile.findTileXCoordinateInMap() > this.secondTile.findTileXCoordinateInMap()) {
+                if (this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()) {
                     return "RD";
-                }
-                else{
+                } else {
                     return "RU";
                 }
-            }
-            else{
-                if(this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()){
+            } else {
+                if (this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()) {
                     return "LD";
-                }
-                else{
+                } else {
                     return "LU";
                 }
             }
-        }
-        else{
-            if(this.firstTile.findTileXCoordinateInMap() > this.secondTile.findTileXCoordinateInMap()){
-                if(this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()){
+        } else {
+            if (this.firstTile.findTileXCoordinateInMap() > this.secondTile.findTileXCoordinateInMap()) {
+                if (this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()) {
                     return "RU";
-                }
-                else{
+                } else {
                     return "RD";
                 }
-            }
-            else{
-                if(this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()){
+            } else {
+                if (this.firstTile.findTileYCoordinateInMap() == this.secondTile.findTileYCoordinateInMap()) {
                     return "LU";
-                }
-                else{
+                } else {
                     return "LD";
                 }
             }
         }
     }
 
-    public static boolean checkTilesCoordinatesValidity(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate){
-        if(firstTileXCoordinate % 2 == 0){
+    public static boolean checkTilesCoordinatesValidity(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate) {
+        if (firstTileXCoordinate % 2 == 0) {
             return checkTilesCoordinatesValidityWithFirstTileEvenXCoordinate(firstTileXCoordinate, firstTileYCoordinate, secondTileXCoordinate, secondTileYCoordinate);
-        }
-        else{
+        } else {
             return checkTilesCoordinatesValidityWithFirstTileOddXCoordinate(firstTileXCoordinate, firstTileYCoordinate, secondTileXCoordinate, secondTileYCoordinate);
         }
     }
 
-    private static boolean checkTilesCoordinatesValidityWithFirstTileOddXCoordinate(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate){
-        if(secondTileYCoordinate == firstTileYCoordinate-1 && secondTileXCoordinate == firstTileXCoordinate){
+    private static boolean checkTilesCoordinatesValidityWithFirstTileOddXCoordinate(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate) {
+        if (secondTileYCoordinate == firstTileYCoordinate - 1 && secondTileXCoordinate == firstTileXCoordinate) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate+1 && secondTileXCoordinate == firstTileXCoordinate){
+        } else if (secondTileYCoordinate == firstTileYCoordinate + 1 && secondTileXCoordinate == firstTileXCoordinate) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate-1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate - 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate+1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate + 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate+1 && secondTileXCoordinate == firstTileXCoordinate-1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate + 1 && secondTileXCoordinate == firstTileXCoordinate - 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate+1 && secondTileXCoordinate == firstTileXCoordinate+1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate + 1 && secondTileXCoordinate == firstTileXCoordinate + 1) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    private static boolean checkTilesCoordinatesValidityWithFirstTileEvenXCoordinate(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate){
-        if(secondTileYCoordinate == firstTileYCoordinate-1 && secondTileXCoordinate == firstTileXCoordinate){
+    private static boolean checkTilesCoordinatesValidityWithFirstTileEvenXCoordinate(int firstTileXCoordinate, int firstTileYCoordinate, int secondTileXCoordinate, int secondTileYCoordinate) {
+        if (secondTileYCoordinate == firstTileYCoordinate - 1 && secondTileXCoordinate == firstTileXCoordinate) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate+1 && secondTileXCoordinate == firstTileXCoordinate){
+        } else if (secondTileYCoordinate == firstTileYCoordinate + 1 && secondTileXCoordinate == firstTileXCoordinate) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate-1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate - 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate+1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate && secondTileXCoordinate == firstTileXCoordinate + 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate-1 && secondTileXCoordinate == firstTileXCoordinate-1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate - 1 && secondTileXCoordinate == firstTileXCoordinate - 1) {
             return true;
-        }
-        else if(secondTileYCoordinate == firstTileYCoordinate-1 && secondTileXCoordinate == firstTileXCoordinate+1){
+        } else if (secondTileYCoordinate == firstTileYCoordinate - 1 && secondTileXCoordinate == firstTileXCoordinate + 1) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

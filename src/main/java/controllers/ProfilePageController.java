@@ -1,10 +1,10 @@
 package controllers;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import models.ProgramDatabase;
 import models.User;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProfilePageController {
     private static ProfilePageController profilePageController;

@@ -1,10 +1,10 @@
 package models;
 
-import java.util.ArrayList;
-
 import models.diplomacy.Diplomacy;
 import models.diplomacy.WarInfo;
 import models.units.Unit;
+
+import java.util.ArrayList;
 
 public class GameDataBase {
     private static GameDataBase gameDataBase = null;
@@ -87,9 +87,9 @@ public class GameDataBase {
         this.turnNumber = turnNumber;
     }
 
-    public ArrayList<Civilization> getCivilizations(){
+    public ArrayList<Civilization> getCivilizations() {
         ArrayList<Civilization> civilizations = new ArrayList<>();
-        for(Player player : this.players){
+        for (Player player : this.players) {
             civilizations.add(player.getCivilization());
         }
         return civilizations;

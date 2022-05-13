@@ -1,6 +1,5 @@
 package models.works;
 
-import controllers.GameController;
 import models.Tile;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;

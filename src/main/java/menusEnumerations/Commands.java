@@ -9,7 +9,7 @@ public class Commands {
     protected Commands(String regex) {
         this.regex = regex;
     }
-    
+
     public Matcher getCommandMatcher(String command) {
         Matcher matcher = Pattern.compile(regex).matcher(command);
         if (matcher.matches()) {

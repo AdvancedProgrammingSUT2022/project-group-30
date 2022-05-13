@@ -1,7 +1,7 @@
 package models.units;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public enum UnitState {
     AWAKE(true),

@@ -9,9 +9,6 @@ import models.units.UnitState;
 import models.units.UnitType;
 
 import java.util.ArrayList;
-import models.units.UnitType;
-
-import java.util.ArrayList;
 
 public class CombatController {
     private static CombatController combatController = null;
@@ -124,7 +121,7 @@ public class CombatController {
             percentage += myLocation.getTerrainType().getCombatModifier();
         if (unit.getOwner().getHappiness() < 0)
             percentage -= 25;
-        if ((unit.getState() == UnitState.FORTIFY || unit.getState() == UnitState.FORTIFYUNTILHEALED || unit.getState() == UnitState.ALERT) && !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)){
+        if ((unit.getState() == UnitState.FORTIFY || unit.getState() == UnitState.FORTIFYUNTILHEALED || unit.getState() == UnitState.ALERT) && !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
             if (unit.getStateDuration() == 1)
                 percentage += 25;
             else if (unit.getStateDuration() > 1)
@@ -216,7 +213,7 @@ public class CombatController {
 
     private void applyMeleeCombatEndEffects(combative winner, combative loser) {
         Unit capturedUnit = null;
-        if (loser instanceof Unit && winner instanceof  Unit) {
+        if (loser instanceof Unit && winner instanceof Unit) {
             Unit loserUnit = (Unit) loser;
             capturedUnit = gameController.getCivilianUnitInTile(loserUnit.getLocation());
         }
@@ -234,7 +231,7 @@ public class CombatController {
     public void executeMeleeAttack(Unit attacker, combative defender) {
         applyAttackChangesOnUnit(attacker);
 
-        if (defender instanceof Unit && ((Unit)defender).isCivilian()) {
+        if (defender instanceof Unit && ((Unit) defender).isCivilian()) {
             captureUnit(attacker, (Unit) defender);
         }
 
@@ -263,7 +260,7 @@ public class CombatController {
     }
 
     public void executeRangedAttack(combative attacker, combative defender) {
-        if (attacker instanceof  Unit) {
+        if (attacker instanceof Unit) {
             applyAttackChangesOnUnit((Unit) attacker);
         } else {
             applyAttackChangesOnCity((City) attacker);
@@ -284,12 +281,12 @@ public class CombatController {
         }
     }
 
-    public boolean isCityDestructible(City city, Unit unit){
+    public boolean isCityDestructible(City city, Unit unit) {
         Civilization civilization = unit.getOwner();
-        if(civilization == city.getFounder())
+        if (civilization == city.getFounder())
             return false;
-        for(Civilization civilization1 : GameDataBase.getGameDataBase().getCivilizations()){
-            if(civilization1.getCapital() == city || civilization1.getOriginCapital() == city)
+        for (Civilization civilization1 : GameDataBase.getGameDataBase().getCivilizations()) {
+            if (civilization1.getCapital() == city || civilization1.getOriginCapital() == city)
                 return false;
         }
         return true;

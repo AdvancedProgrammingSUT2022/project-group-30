@@ -1,15 +1,5 @@
 package controllers;
 
-import java.util.*;
-import java.time.LocalTime;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import models.*;
 import models.buildings.Building;
 import models.buildings.BuildingType;
@@ -23,8 +13,6 @@ import models.interfaces.combative;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
-import models.resources.Resource;
-import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
@@ -32,6 +20,10 @@ import models.units.UnitState;
 import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class GameController {
     private static GameController gameController;
@@ -125,11 +117,11 @@ public class GameController {
         if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
             return false;
         }
-        if(getTypeOfPillagedImprovement(worker) != null) return true;
+        if (getTypeOfPillagedImprovement(worker) != null) return true;
         return false;
     }
 
-    public ImprovementType getTypeOfPillagedImprovement(Unit worker){
+    public ImprovementType getTypeOfPillagedImprovement(Unit worker) {
         for (Improvement improvement : worker.getLocation().getImprovements()) {
             if (improvement.getIsPillaged() && (improvement.getType() != ImprovementType.RAILROAD || improvement.getType() != ImprovementType.ROAD)) {
                 return improvement.getType();

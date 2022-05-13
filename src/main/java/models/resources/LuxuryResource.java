@@ -1,15 +1,14 @@
 package models.resources;
 
-import java.sql.Array;
+import models.Feature;
+import models.Output;
+import models.TerrainType;
+import models.improvements.ImprovementType;
+import models.interfaces.TerrainProperty;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import models.Feature;
-import models.Output;
-import models.interfaces.TerrainProperty;
-import models.TerrainType;
-import models.improvements.ImprovementType;
 
 public class LuxuryResource extends Resource {
     private static ArrayList<LuxuryResource> allTypes = new ArrayList<>();

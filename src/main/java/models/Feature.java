@@ -1,10 +1,10 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import models.interfaces.MPCostInterface;
 import models.interfaces.TerrainProperty;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public enum Feature implements TerrainProperty {
     FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33,
@@ -27,7 +27,7 @@ public enum Feature implements TerrainProperty {
     private final String name;
 
     private Feature(Output output, ArrayList<TerrainType> terrainTypes, int combatModifier,
-            MPCostInterface movementCost, String name) {
+                    MPCostInterface movementCost, String name) {
         this.output = output;
         this.terrainTypes = terrainTypes;
         this.combatModifier = combatModifier;
