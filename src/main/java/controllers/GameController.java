@@ -125,8 +125,28 @@ public class GameController {
         if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
             return false;
         }
+        if(getTypeOfPillagedImprovement(worker) != null) return true;
+        return false;
+    }
+
+    public ImprovementType getTypeOfPillagedImprovement(Unit worker){
         for (Improvement improvement : worker.getLocation().getImprovements()) {
-            if (improvement.getIsPillaged()) {
+            if (improvement.getIsPillaged() && (improvement.getType() != ImprovementType.RAILROAD || improvement.getType() != ImprovementType.ROAD)) {
+                return improvement.getType();
+            }
+        }
+        return null;
+    }
+
+    public boolean canWorkerFixRoute(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
+            return false;
+        }
+        for (Improvement improvement : worker.getLocation().getImprovements()) {
+            if (improvement.getIsPillaged() && (improvement.getType() == ImprovementType.RAILROAD || improvement.getType() == ImprovementType.ROAD)) {
                 return true;
             }
         }

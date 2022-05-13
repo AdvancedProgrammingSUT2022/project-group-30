@@ -1234,7 +1234,7 @@ public class GameView implements View {
                 buildImprovement(worker, ImprovementType.PASTURE);
             } else if ((matcher = WorkerCommands.BUILD_PLANTATION.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_PLANTATION)) {
                 buildImprovement(worker, ImprovementType.PLANTATION);
-            }else if ((matcher = WorkerCommands.BUILD_QUARRY.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_QUARRY)) {
+            } else if ((matcher = WorkerCommands.BUILD_QUARRY.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_QUARRY)) {
                 buildImprovement(worker, ImprovementType.QUARRY);
             } else if ((matcher = WorkerCommands.BUILD_CAMP.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_CAMP)) {
                 buildImprovement(worker, ImprovementType.CAMP);
@@ -1247,7 +1247,9 @@ public class GameView implements View {
             } else if ((matcher = WorkerCommands.CLEAR_ROUTES.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_ROUTES)) {
                 clearRoutes(worker);
             } else if ((matcher = WorkerCommands.FIX_IMPROVEMENT.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.FIX_IMPROVEMENT)) {
-                fixImprovement(ImprovementType.getImprovementTypeByName(matcher.group("name")), worker);
+                fixImprovement(worker, false);
+            } else if ((matcher = WorkerCommands.FIX_ROUTE.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.FIX_ROUTE)) {
+                fixImprovement(worker, true);
             } else if ((matcher = WorkerCommands.STOP_WORK.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.STOP_WORK)) {
                 stopWork(worker);
                 break;
@@ -1293,7 +1295,7 @@ public class GameView implements View {
         if (location.getWork() != null) {
             if (location.getWork() instanceof BuildImprovementAndRemoveFeature &&
                     (((BuildImprovementAndRemoveFeature) location.getWork()).getImprovement() == type)) {
-                ((BuildImprovementAndRemoveFeature)location.getWork()).startWork(worker);
+                ((BuildImprovementAndRemoveFeature) location.getWork()).startWork(worker);
                 printer.println("Resumed " + type.getName().toLowerCase() + " construction here");
                 return;
             }
@@ -1322,9 +1324,9 @@ public class GameView implements View {
                 ((BuildImprovement) location.getWork()).startWork(worker);
                 printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
             }
-            if (location.getWork() instanceof  BuildImprovement &&
-                    ((BuildImprovement)location.getWork()).getImprovement() == improvementType) {
-                ((BuildImprovement)location.getWork()).startWork(worker);
+            if (location.getWork() instanceof BuildImprovement &&
+                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
+                ((BuildImprovement) location.getWork()).startWork(worker);
                 printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
                 return;
             }
@@ -1379,12 +1381,15 @@ public class GameView implements View {
         printer.println("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
     }
 
-    private void fixImprovement(ImprovementType improvementType, Unit worker) {
+    private void fixImprovement(Unit worker, boolean isRoute) {
         Tile location = worker.getLocation();
-        if (!worker.getLocation().containsImprovment(improvementType) || !worker.getLocation().getImprovementByType(improvementType).getIsPillaged()) {
-            printer.println("There is no pillaged improvement with requested type");
-            return;
-        }
+        ImprovementType improvementType;
+        if (!isRoute)
+            improvementType = controller.getTypeOfPillagedImprovement(worker);
+        else if (worker.getLocation().containsImprovment(ImprovementType.ROAD))
+            improvementType = ImprovementType.ROAD;
+        else
+            improvementType = ImprovementType.RAILROAD;
         if (location.getWork() != null) {
             if (location.getWork() instanceof FixPillage &&
                     ((FixPillage) location.getWork()).getImprovementType() == improvementType) {
@@ -1449,6 +1454,9 @@ public class GameView implements View {
         }
         if (controller.canWorkerFixImprovement(worker)) {
             result.add(WorkerCommands.FIX_IMPROVEMENT);
+        }
+        if (controller.canWorkerFixRoute(worker)) {
+            result.add(WorkerCommands.FIX_ROUTE);
         }
         if (controller.isWorkerWorking(worker)) {
             result.add(WorkerCommands.STOP_WORK);
