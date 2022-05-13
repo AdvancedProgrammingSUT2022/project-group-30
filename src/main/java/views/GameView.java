@@ -920,8 +920,29 @@ public class GameView implements View {
         }
     }
 
+    private boolean askToReplace(Tile location) {
+        Improvement nonRouteImprovement;
+        if ((nonRouteImprovement = location.getNonRouteImprovement()) != null) {
+            printer.println("There is already an improvement (" + nonRouteImprovement.getType().getName()
+                    + ") on this tile, do you wish to replace it? y/n");
+            String input = scanner.nextLine();
+            if (input.startsWith("y") || input.startsWith("Y")) {
+                location.removeImprovement(nonRouteImprovement);
+                printer.printlnRed("Removed " + nonRouteImprovement.getType().getName() + " improvement!");
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void buildFarmOrMine(Unit worker, ImprovementType type) {
         Tile location = worker.getLocation();
+        if (!askToReplace(location)) {
+            printer.println("Building " + type.getName() + "canceled");
+            return;
+        }
         if (location.getWork() != null) {
             if (location.getWork() instanceof BuildImprovementAndRemoveFeature &&
                     (((BuildImprovementAndRemoveFeature) location.getWork()).getImprovement() == type)) {
@@ -943,6 +964,10 @@ public class GameView implements View {
 
     private void buildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
+        if (!askToReplace(location)) {
+            printer.println("Building " + improvementType.getName() + "canceled");
+            return;
+        }
         if (location.getWork() != null) {
             if (location.getWork() instanceof  BuildImprovement &&
                     ((BuildImprovement)location.getWork()).getImprovement() == improvementType) {

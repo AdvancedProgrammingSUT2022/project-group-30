@@ -30,7 +30,7 @@ public class BuildImprovementAndRemoveFeature extends BuildImprovement {
 
     @Override
     public int calculateRequiredTurns() {
-        Tile location = this.findLocation();
+        Tile location = worker.getLocation();
         if (location.getFeatures().contains(Feature.FOREST)) {
             return 10;
         } else if (location.getFeatures().contains(Feature.JUNGLE)) {

@@ -175,6 +175,19 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return false;
     }
 
+    public Improvement getNonRouteImprovement() {
+        for (Improvement improvement : improvements) {
+            if (improvement.getType() != ImprovementType.ROAD && improvement.getType() != ImprovementType.RAILROAD) {
+                return improvement;
+            }
+        }
+        return null;
+    }
+
+    public void removeImprovement(Improvement improvement) {
+        improvements.remove(improvement);
+    }
+
     public boolean isOfType(TerrainProperty property) {
         if (this.terrainType.equals(property) || this.features.contains(property))
             return true;
