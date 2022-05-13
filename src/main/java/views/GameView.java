@@ -1491,7 +1491,7 @@ public class GameView implements View {
                 }
             } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
                 meleeAttack(matcher, unit);
-            } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
+            } else if ((matcher = UnitCommands.RANGED_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.RANGED_ATTACK)) {
                 rangedAttack(matcher, unit);
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
