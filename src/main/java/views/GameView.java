@@ -18,6 +18,7 @@ import models.resources.StrategicResource;
 import models.units.UnitType;
 import models.works.BuildImprovement;
 import models.works.BuildImprovementAndRemoveFeature;
+import models.works.Work;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -945,6 +946,9 @@ public class GameView implements View {
                 buildImprovement(worker, ImprovementType.PASTURE);
             } else if ((matcher = WorkerCommands.BUILD_PLANTATION.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_PLANTATION)) {
                 buildImprovement(worker, ImprovementType.PLANTATION);
+            } else if ((matcher = WorkerCommands.STOP_WORK.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.STOP_WORK)) {
+                stopWork(worker);
+                break;
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -952,6 +956,12 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void stopWork(Unit worker) {
+        Work work = controller.getWorkersWork(worker);
+        work.stopWork();
+        printer.println("Stopped this units work!");
     }
 
     private boolean askToReplace(Tile location) {
@@ -1069,6 +1079,9 @@ public class GameView implements View {
         }
         if (controller.canWorkerFixImprovement(worker)) {
             result.add(WorkerCommands.FIX_IMPROVEMENT);
+        }
+        if (controller.isWorkerWorking(worker)) {
+            result.add(WorkerCommands.STOP_WORK);
         }
         return result;
     }

@@ -238,7 +238,7 @@ public class GameController {
 
     public boolean isWorkerWorking(Unit worker) {
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
-            if (tile.getWork() != null && tile.getWork().getWorker() == worker) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker && tile.getWork().isInProgress()) {
                 return true;
             }
         }

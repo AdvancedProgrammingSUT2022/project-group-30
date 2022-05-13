@@ -27,11 +27,9 @@ public abstract class Work implements TurnHandler {
         isInProgress = true;
     }
     public void startWork() {
-        // TODO
         isInProgress = true;
     }
     public void stopWork() {
-        // TODO
         isInProgress = false;
     }
 
