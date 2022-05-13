@@ -3,6 +3,9 @@ package controllers;
 import models.City;
 import models.interfaces.combative;
 import models.units.Unit;
+import models.units.UnitType;
+
+import java.util.ArrayList;
 
 public class CombatController {
     private static CombatController combatController = null;
@@ -12,6 +15,12 @@ public class CombatController {
         }
         return combatController;
     }
+
+    private CombatController() {
+        gameController = GameController.getGameController();
+    }
+
+    private final GameController gameController;
 
     public int calculateEffectiveMeleeCombatStrengthForUnit(Unit unit, combative target) {
         // TODO
@@ -60,11 +69,15 @@ public class CombatController {
     }
 
     private void kill(City city) {
-        // TODO
+        ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
+        for (Unit unit : units) {
+            gameController.removeUnit(unit);
+        }
+        gameController.destroyCity(city);
     }
 
     private void kill(Unit unit) {
-
+        gameController.removeUnit(unit);
     }
 
     private void kill(combative entityToKill) {
@@ -75,16 +88,37 @@ public class CombatController {
         }
     }
 
+    private void captureUnit(Unit attacker, Unit defender) {
+        gameController.removeUnit(defender);
+        gameController.createUnit(UnitType.WORKER, attacker.getOwner(), defender.getLocation());
+        gameController.moveUnit(attacker, defender.getLocation());
+    }
+
     public void executeMeleeAttack(Unit attacker, combative defender) {
+        if (defender instanceof Unit && ((Unit)defender).isCivilian()) {
+            captureUnit(attacker, (Unit) defender);
+        }
+
         int attackerStrength = calculateEffectiveMeleeCombatStrengthForUnit(attacker, defender);
         int defenderStrength = calculateEffectiveMeleeCombatStrength(defender, attacker);
         int defenderDefensiveBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);
         int attackerDefensiveBonus = calculateNetDefensiveBonusForUnit(attacker, defender);
         int damageDoneToDefender = attackerStrength * (100 - defenderDefensiveBonus) / 100;
         int damageDoneToAttacker = defenderStrength * (100 - attackerDefensiveBonus) / 100;
-        if (defender.getHitPointsLeft() < damageDoneToDefender) {
-            kill(defender);
 
+        if (defender.getHitPointsLeft() <= damageDoneToDefender) {
+            kill(defender);
+            attacker.reduceHitPoints(damageDoneToAttacker);
+            if (attacker.getHitPointsLeft() <= 0) {
+                attacker.setHitPointsLeft(1);
+            }
+            gameController.moveUnit(attacker, defender.getLocation());
+        } else if (attacker.getHitPointsLeft() <= damageDoneToAttacker) {
+            kill(attacker);
+            defender.reduceHitPoints(damageDoneToDefender);
+            if (defender instanceof Unit) {
+                gameController.moveUnit((Unit) defender, attacker.getLocation());
+            }
         }
 
         // TODO

@@ -142,6 +142,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         return this.owner;
     }
 
+    @Override
     public Tile getLocation() {
         return this.location;
     }

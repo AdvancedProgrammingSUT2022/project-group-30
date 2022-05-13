@@ -528,6 +528,17 @@ public class GameController {
         setMapImageOfCivilization(unit.getOwner());
     }
 
+    public void destroyCity(City city) {
+        if (city.getOwner().getSelectedEntity() == city) {
+            city.getOwner().setSelectedEntity(null);
+        }
+        for (Tile tile : city.getTerritories()) {
+            tile.removeAllImprovements();
+        }
+        gameDataBase.getCities().remove(city);
+        setMapImageOfCivilization(city.getOwner());
+    }
+
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
         ArrayList<Unit> result = new ArrayList<>();
         Civilization player = getCurrentPlayer();

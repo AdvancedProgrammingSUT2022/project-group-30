@@ -640,6 +640,11 @@ public class City implements Selectable, TurnHandler, combative {
         return centralTile;
     }
 
+    @Override
+    public Tile getLocation() {
+        return getCentralTile();
+    }
+
     public void setTerritories(ArrayList<Tile> territories) {
         this.territories = territories;
     }
