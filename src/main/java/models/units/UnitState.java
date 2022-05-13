@@ -29,6 +29,6 @@ public enum UnitState {
     }
 
     public boolean waitsForCommand() {
-        return waitsForCommand();
+        return waitsForCommand;
     }
 }
