@@ -1,6 +1,8 @@
 package controllers;
 
 import models.City;
+import models.Feature;
+import models.Tile;
 import models.interfaces.combative;
 import models.units.Unit;
 
@@ -13,14 +15,58 @@ public class CombatController {
         return combatController;
     }
 
+    //1
+    public int calculateEffectiveMeleeCombatStrengthForCity(City city, combative target) {
+        // TODO
+        Tile myLocation = city.getCentralTile();
+        double percentage = 0;
+        for(Feature feature : myLocation.getFeatures())
+            percentage += feature.getCombatModifier();
+        percentage += myLocation.getTerrainType().getCombatModifier();
+        if(city.getOwner().getHappiness() < 0)
+            percentage -= 25;
+        percentage += city.getTerritories().size() * 2;
+        percentage = Math.max(-100, percentage);
+        return (int) (city.getCombatStrength() * (percentage + 100) / 100);
+    }
+
+    //2
+    public int calculateEffectiveRangedCombatStrengthForCity(City city, combative target) {
+        // TODO
+        Tile myLocation = city.getCentralTile();
+        double percentage = 0;
+        for(Feature feature : myLocation.getFeatures())
+            percentage += feature.getCombatModifier();
+        percentage += myLocation.getTerrainType().getCombatModifier();
+        if(city.getOwner().getHappiness() < 0)
+            percentage -= 25;
+        percentage += city.getTerritories().size() * 2;
+        percentage = Math.max(-100, percentage);
+        return (int) (city.getRangedCombatStrength() * (percentage + 100) / 100);
+    }
+
+    //3
+    public int calculateNetDefensiveBonusForCity(City city, combative attacker) {
+        // TODO: return percentage defensive bonus between -50 and 50
+        return 0;
+    }
+
+    //4
     public int calculateEffectiveMeleeCombatStrengthForUnit(Unit unit, combative target) {
         // TODO
         return unit.getType().getCombatStrength();
     }
 
-    public int calculateEffectiveMeleeCombatStrengthForCity(City city, combative target) {
+    //5
+    public int calculateEffectiveRangedCombatStrengthForUnit(Unit unit, combative target) {
         // TODO
-        return (int) city.getCombatStrength();
+        return unit.getType().getRangedCombatStrength();
+    }
+
+    //6
+    public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
+        // TODO: return percentage defensive bonus between -50 and 50
+        return 0;
     }
 
     private int calculateEffectiveMeleeCombatStrength(combative attacker, combative defender) {
@@ -31,32 +77,12 @@ public class CombatController {
         }
     }
 
-    public int calculateEffectiveRangedCombatStrengthForUnit(Unit unit, combative target) {
-        // TODO
-        return unit.getType().getRangedCombatStrength();
-    }
-
-    public int calculateEffectiveRangedCombatStrengthForCity(City city, combative target) {
-        // TODO
-        return (int) city.getRangedCombatStrength();
-    }
-
     private int calculateEffectiveNetDefensiveBonus(combative defender, combative attacker) {
         if (defender instanceof City) {
             return calculateNetDefensiveBonusForCity((City) defender, attacker);
         } else {
             return calculateNetDefensiveBonusForUnit((Unit) defender, attacker);
         }
-    }
-
-    public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
-        // TODO: return percentage defensive bonus between -50 and 50
-        return 0;
-    }
-
-    public int calculateNetDefensiveBonusForCity(City city, combative attacker) {
-        // TODO: return percentage defensive bonus between -50 and 50
-        return 0;
     }
 
     private void kill(City city) {
