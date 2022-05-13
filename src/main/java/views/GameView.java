@@ -1066,6 +1066,7 @@ public class GameView implements View {
 
         printer.printlnBlue("This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
                 + " of them are workless.");
+        printer.println("Hit Points Left: " + city.getHitPointsLeft());
         printer.println("City's food balance:");
         if (city.getFoodCount() >= 0) {
             printer.printlnBlue(city.getFoodCount());
