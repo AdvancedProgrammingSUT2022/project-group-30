@@ -895,6 +895,8 @@ public class GameView implements View {
                 buildImprovement(worker, ImprovementType.RAILROAD);
             } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
                 buildFarmOrMine(worker, ImprovementType.FARM);
+            } else if ((matcher = WorkerCommands.BUILD_MINE.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_MINE)) {
+                buildFarmOrMine(worker, ImprovementType.MINE);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
