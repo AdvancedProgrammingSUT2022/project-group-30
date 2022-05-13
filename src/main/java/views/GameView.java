@@ -1626,7 +1626,7 @@ public class GameView implements View {
 
     private void setUpForRangedAttack(Unit unit) {
         unit.assemble();
-        unit.setMovePointsLeft(Math.max(unit.getMovePointsLeft() - 1, 0));
+        unit.setMovePointsLeft(0);
         unit.setPath(null);
         printer.println("Unit successfully assembled!");
     }
