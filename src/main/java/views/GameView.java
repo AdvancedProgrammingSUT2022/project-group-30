@@ -17,6 +17,7 @@ import models.resources.StrategicResource;
 import models.units.UnitType;
 import models.works.BuildImprovement;
 import models.works.ClearFeature;
+import models.works.ClearRoadOrRailRoad;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -1221,22 +1222,20 @@ public class GameView implements View {
     private void clearRoadOrRailRoad(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         if (location.getWork() != null) {
-            if (location.getWork() instanceof  &&
-                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
-                ((BuildImprovement) location.getWork()).startWork(worker);
-                printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
+            if (location.getWork() instanceof ClearRoadOrRailRoad &&
+                    ((ClearRoadOrRailRoad) location.getWork()).getImprovement() == improvementType) {
+                ((ClearRoadOrRailRoad) location.getWork()).startWork(worker);
                 return;
             }
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Building " + improvementType.getName().toLowerCase() + " canceled");
+                printer.println("Clearace " + improvementType.getName().toLowerCase() + " canceled");
                 return;
             }
         }
-        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
-        location.setWork(newWork);
-        printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
+        location.setWork(new ClearRoadOrRailRoad(improvementType, worker));
+        printer.println("Started the clearance of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
     private void clearFeature(Unit worker, Feature feature) {
@@ -1245,13 +1244,13 @@ public class GameView implements View {
             if (location.getWork() instanceof ClearFeature &&
                     ((ClearFeature) location.getWork()).getFeature() == feature) {
                 ((ClearFeature) location.getWork()).startWork(worker);
-                printer.println("Resumed " + feature.getName().toLowerCase() + " construction here");
+                printer.println("Resumed " + feature.getName().toLowerCase() + " clearance here");
                 return;
             }
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Building " + feature.getName().toLowerCase() + " canceled");
+                printer.println("Clearance " + feature.getName().toLowerCase() + " canceled");
                 return;
             }
         }
