@@ -139,6 +139,9 @@ public class CombatController {
             if (defender instanceof Unit) {
                 gameController.moveUnit((Unit) defender, attacker.getLocation());
             }
+        } else {
+            attacker.reduceHitPoints(damageDoneToAttacker);
+            defender.reduceHitPoints(damageDoneToDefender);
         }
 
         // TODO
