@@ -16,6 +16,7 @@ import models.resources.LuxuryResource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
 import models.works.BuildImprovement;
+import models.works.ClearFeature;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -1181,6 +1182,12 @@ public class GameView implements View {
                 buildImprovement(worker, ImprovementType.QUARRY);
             } else if ((matcher = WorkerCommands.BUILD_CAMP.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_CAMP)) {
                 buildImprovement(worker, ImprovementType.CAMP);
+            } else if ((matcher = WorkerCommands.CLEAR_FOREST.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_FOREST)) {
+                clearFeature(worker, Feature.FOREST);
+            } else if ((matcher = WorkerCommands.CLEAR_JUNGLE.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_JUNGLE)) {
+                clearFeature(worker, Feature.JUNGLE);
+            } else if ((matcher = WorkerCommands.CLEAR_MARSH.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_MARSH)) {
+                clearFeature(worker, Feature.MARSH);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -1209,6 +1216,47 @@ public class GameView implements View {
         BuildImprovement newWork = new BuildImprovement(improvementType, worker);
         location.setWork(newWork);
         printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
+    }
+
+    private void clearRoadOrRailRoad(Unit worker, ImprovementType improvementType) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof  &&
+                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
+                ((BuildImprovement) location.getWork()).startWork(worker);
+                printer.println("Resumed " + improvementType.getName().toLowerCase() + " construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Building " + improvementType.getName().toLowerCase() + " canceled");
+                return;
+            }
+        }
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
+        location.setWork(newWork);
+        printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
+    }
+
+    private void clearFeature(Unit worker, Feature feature) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof ClearFeature &&
+                    ((ClearFeature) location.getWork()).getFeature() == feature) {
+                ((ClearFeature) location.getWork()).startWork(worker);
+                printer.println("Resumed " + feature.getName().toLowerCase() + " construction here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Building " + feature.getName().toLowerCase() + " canceled");
+                return;
+            }
+        }
+        location.setWork(new ClearFeature(feature, worker));
+        printer.println("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {

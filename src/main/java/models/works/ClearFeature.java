@@ -1,6 +1,8 @@
 package models.works;
 
 import models.Feature;
+import models.Tile;
+import models.improvements.Improvement;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -17,7 +19,10 @@ public class ClearFeature extends Work {
 
     @Override
     public void applyChange() {
-        // TODO
+        Tile myLocation = this.findLocation();
+        myLocation.getFeatures().remove(this.feature);
+        myLocation.setTerrainTypeAndFeaturesAndApplyOutputChanges(myLocation.getTerrainType(), myLocation.getFeatures());
+        myLocation.removeWork();
     }
 
     @Override
