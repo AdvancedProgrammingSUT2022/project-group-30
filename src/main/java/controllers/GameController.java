@@ -131,7 +131,7 @@ public class GameController {
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     public boolean canWorkerClearRoutes(Unit worker) {
