@@ -99,6 +99,8 @@ public class CombatController {
 
 
     private void captureUnit(Unit attacker, Unit defender) {
+        defender.getOwner().addNotification("Your " + defender.getType().getName() + " at " + defender.getLocation().findTileYCoordinateInMap() +
+                ", " + defender.getLocation().findTileXCoordinateInMap() + " was captured by " + attacker.getOwner().getName());
         gameController.removeUnit(defender);
         gameController.createUnit(UnitType.WORKER, attacker.getOwner(), defender.getLocation());
         gameController.moveUnit(attacker, defender.getLocation());
