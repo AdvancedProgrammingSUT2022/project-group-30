@@ -1540,7 +1540,7 @@ public class GameView implements View {
         }
 
         boolean isUnitAWorkingWorker = unit.getType() == UnitType.WORKER && controller.isWorkerWorking(unit);
-        if (unit.getType().getCombatType() == CombatType.SIEGE && unit.isAssembled() == false && unit.getMovePointsLeft() >= 1) {
+        if (controller.canUnitSetUpForRangedAttack(unit)) {
             result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
         }
         if (controller.canUnitMeleeAttack(unit)) {

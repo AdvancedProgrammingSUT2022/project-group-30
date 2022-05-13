@@ -630,8 +630,14 @@ public class GameController {
         return true;
     }
 
+    public boolean canUnitSetUpForRangedAttack(Unit unit) {
+        return (unit.getType().getCombatType() == CombatType.SIEGE &&
+                unit.isAssembled() == false && unit.getMovePointsLeft() >= 1 &&
+                unit.getState().waitsForCommand());
+    }
+
     public boolean canUnitMeleeAttack(Unit unit) {
-        if (unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
+        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() || unit.getMovePointsLeft() == 0) {
             return false;
         }
         ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
@@ -653,7 +659,7 @@ public class GameController {
     }
 
     public boolean canUnitRangedAttack(Unit unit) {
-        if (unit.isCivilian() || !unit.getType().isRanged() || unit.getMovePointsLeft() == 0 || !unit.isAssembled()) {
+        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() || unit.getMovePointsLeft() == 0 || !unit.isAssembled()) {
             return false;
         }
         return true;
