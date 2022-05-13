@@ -259,6 +259,15 @@ public class Tile implements Workable, TileImage, TurnHandler {
         }
     }
 
+    public Improvement getImprovementByType(ImprovementType type){
+        for(Improvement improvement : this.improvements){
+            if(improvement.getType() == type)
+                return improvement;
+        }
+        Debugger.debug("There is no improvement with this type");
+        return null;
+    }
+
     public void removeWork() {
         this.work = null;
     }

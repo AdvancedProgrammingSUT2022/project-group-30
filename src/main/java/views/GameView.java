@@ -18,6 +18,7 @@ import models.units.UnitType;
 import models.works.BuildImprovement;
 import models.works.ClearFeature;
 import models.works.ClearRoutes;
+import models.works.FixPillage;
 import utilities.Debugger;
 import utilities.PrintableCharacters;
 import utilities.Printer;
@@ -1190,7 +1191,9 @@ public class GameView implements View {
             } else if ((matcher = WorkerCommands.CLEAR_MARSH.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_MARSH)) {
                 clearFeature(worker, Feature.MARSH);
             } else if ((matcher = WorkerCommands.CLEAR_ROUTES.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.CLEAR_ROUTES)) {
-                //clearRoadOrRailRoad();
+                clearRoutes(worker);
+            } else if ((matcher = WorkerCommands.FIX_IMPROVEMENT.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.FIX_IMPROVEMENT)) {
+                fixImprovement(ImprovementType.getImprovementTypeByName(matcher.group("name")), worker);
             }
             else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
@@ -1258,6 +1261,30 @@ public class GameView implements View {
         }
         location.setWork(new ClearFeature(feature, worker));
         printer.println("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
+    }
+
+    private void fixImprovement(ImprovementType improvementType, Unit worker) {
+        Tile location = worker.getLocation();
+        if (!worker.getLocation().containsImprovment(improvementType) || !worker.getLocation().getImprovementByType(improvementType).getIsPillaged()) {
+            printer.println("There is no pillaged improvement with requested type");
+            return;
+        }
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof FixPillage &&
+                    ((FixPillage) location.getWork()).getImprovementType() == improvementType) {
+                ((FixPillage) location.getWork()).startWork(worker);
+                printer.println("Resumed " + improvementType.getName().toLowerCase() + " fixation here");
+                return;
+            }
+            printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("n")) {
+                printer.println("Fixation " + improvementType.getName().toLowerCase() + " canceled");
+                return;
+            }
+        }
+        location.setWork(new FixPillage(improvementType, worker));
+        printer.println("Started the fixation of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
     private ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {

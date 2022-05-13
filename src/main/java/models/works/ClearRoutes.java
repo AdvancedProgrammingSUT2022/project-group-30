@@ -23,8 +23,6 @@ public class ClearRoutes extends Work {
 
     @Override
     public int calculateRequiredTurns() {
-        if (this.worker.getLocation().containsImprovment(ImprovementType.ROAD) && this.worker.getLocation().containsImprovment(ImprovementType.RAILROAD))
-            return 6;
         return 3;
     }
 }

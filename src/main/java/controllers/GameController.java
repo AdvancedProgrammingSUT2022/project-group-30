@@ -125,6 +125,10 @@ public class GameController {
         if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
             return false;
         }
+/*        if (!worker.getLocation().containsImprovment(type) || !worker.getLocation().getImprovementByType(type).getIsPillaged()) {
+            return false;
+        }*/
+        //what is the applocation of following piece of code??
         for (Improvement improvement : worker.getLocation().getImprovements()) {
             if (improvement.getIsPillaged()) {
                 return true;
@@ -137,8 +141,8 @@ public class GameController {
         if (isWorkerWorking(worker)) {
             return false;
         }
-        if (!(worker.getLocation().containsImprovment(ImprovementType.ROAD) ||
-                worker.getLocation().containsImprovment(ImprovementType.RAILROAD))) {
+        if (!(worker.getLocation().isImprovementTypeAccessible(ImprovementType.ROAD) ||
+                worker.getLocation().isImprovementTypeAccessible(ImprovementType.RAILROAD))) {
             return false;
         }
         return true;
@@ -1064,25 +1068,25 @@ public class GameController {
         return warInfos;
     }
 
-    public ArrayList<Notification> getCivilizationNewNotification(){
+    public ArrayList<Notification> getCivilizationNewNotification() {
         ArrayList<Notification> allNotifications = this.getCurrentPlayer().getNotifications();
         ArrayList<Notification> newNotifications = new ArrayList<>();
-        for (int i = 0; i < allNotifications.size(); i++){
-            if(!allNotifications.get(i).getIsSeen()){
+        for (int i = 0; i < allNotifications.size(); i++) {
+            if (!allNotifications.get(i).getIsSeen()) {
                 newNotifications.add(allNotifications.get(i));
             }
         }
         return newNotifications;
     }
 
-    public void seenAllNotifications(){
+    public void seenAllNotifications() {
         ArrayList<Notification> notifications = this.getCurrentPlayer().getNotifications();
-        for(int i = 0; i < notifications.size(); i++){
+        for (int i = 0; i < notifications.size(); i++) {
             notifications.get(i).setIsSeen(true);
         }
     }
 
-    public int calculateScoreForCivilization(Civilization civilization){
+    public int calculateScoreForCivilization(Civilization civilization) {
         int score = 0;
         score += this.calculateCivilizationTerritorySize(civilization) * 10;
         score += this.calculateSumOfMilitaryUnitsCostsForCivilization(civilization);
@@ -1094,7 +1098,7 @@ public class GameController {
         return score;
     }
 
-    public int calculateCivilizationTerritorySize(Civilization civilization){
+    public int calculateCivilizationTerritorySize(Civilization civilization) {
         ArrayList<City> cities = civilization.getCities();
         int territorySize = 0;
         for (City city : cities) {
@@ -1103,7 +1107,7 @@ public class GameController {
         return territorySize;
     }
 
-    public int calculateSumOfMilitaryUnitsCostsForCivilization(Civilization civilization){
+    public int calculateSumOfMilitaryUnitsCostsForCivilization(Civilization civilization) {
         ArrayList<Unit> units = civilization.getMilitaryUnits();
         int sum = 0;
         for (Unit unit : units) {
@@ -1112,36 +1116,36 @@ public class GameController {
         return sum;
     }
 
-    public int calculateEffectOfOutputOnScore(Civilization civilization){
+    public int calculateEffectOfOutputOnScore(Civilization civilization) {
         return (int) civilization.calculateNetGoldProduction() * 10 + (int) civilization.calculateTotalBeakers() * 10 + civilization.calculateTotalFoodFromCities() * 10;
     }
 
-    public int calculateNumberOfResourcesForCivilization(Civilization civilization){
+    public int calculateNumberOfResourcesForCivilization(Civilization civilization) {
         HashMap<LuxuryResource, Integer> luxuryResources = civilization.getLuxuryResources();
         HashMap<StrategicResource, Integer> strategicResources = civilization.getStrategicResources();
         int count = 0;
-        for(Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()){
-            if(entry.getValue() > 0){
+        for (Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()) {
+            if (entry.getValue() > 0) {
                 count += entry.getValue();
             }
         }
-        for(Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()){
-            if(entry.getValue() > 0){
+        for (Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()) {
+            if (entry.getValue() > 0) {
                 count += entry.getValue();
             }
         }
         return count;
     }
 
-    public void sortPlayersInOrderOfScore(){
+    public void sortPlayersInOrderOfScore() {
         GameDataBase gameDatabase = GameDataBase.getGameDataBase();
-        for(int i = 0; i < gameDatabase.getPlayers().size(); i++){
-            for(int j = i + 1; j < gameDatabase.getPlayers().size(); j++){
+        for (int i = 0; i < gameDatabase.getPlayers().size(); i++) {
+            for (int j = i + 1; j < gameDatabase.getPlayers().size(); j++) {
                 Player firstPlayer = gameDatabase.getPlayers().get(i);
                 Player secondPlayer = gameDatabase.getPlayers().get(j);
                 int firstCivScore = this.calculateScoreForCivilization(firstPlayer.getCivilization());
                 int secondCivScore = this.calculateScoreForCivilization(secondPlayer.getCivilization());
-                if(firstCivScore < secondCivScore){
+                if (firstCivScore < secondCivScore) {
                     Player temp = firstPlayer;
                     firstPlayer = secondPlayer;
                     secondPlayer = temp;
@@ -1150,29 +1154,29 @@ public class GameController {
         }
     }
 
-    public int calculateHighestScore(){
+    public int calculateHighestScore() {
         ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
         int highestScore = 0;
         for (Player player : players) {
-            if(this.calculateScoreForCivilization(player.getCivilization()) > highestScore){
+            if (this.calculateScoreForCivilization(player.getCivilization()) > highestScore) {
                 highestScore = this.calculateScoreForCivilization(player.getCivilization());
             }
         }
         return highestScore;
     }
 
-    public int calculateLowestScore(){
+    public int calculateLowestScore() {
         ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
         int lowestScore = this.calculateScoreForCivilization(players.get(0).getCivilization());
         for (Player player : players) {
-            if(this.calculateScoreForCivilization(player.getCivilization()) < lowestScore){
+            if (this.calculateScoreForCivilization(player.getCivilization()) < lowestScore) {
                 lowestScore = this.calculateScoreForCivilization(player.getCivilization());
             }
         }
         return lowestScore;
     }
 
-    public double calculateAverageScore(){
+    public double calculateAverageScore() {
         ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
         int averageScore = 0;
         for (Player player : players) {
