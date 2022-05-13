@@ -71,6 +71,9 @@ public class CombatController {
 
 
     private void kill(City city) {
+        city.getOwner().addNotification("Your city at " + city.getCentralTile().findTileYCoordinateInMap() + ", " +
+                city.getCentralTile().findTileXCoordinateInMap() + " was destroyed!");
+
         ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
         for (Unit unit : units) {
             gameController.removeUnit(unit);
@@ -79,6 +82,10 @@ public class CombatController {
     }
 
     private void kill(Unit unit) {
+        unit.getOwner().addNotification("Your " + unit.getType().getName() + " at " +
+                unit.getLocation().findTileYCoordinateInMap() + ", " + unit.getLocation().findTileXCoordinateInMap() +
+                " was destroyed!");
+
         gameController.removeUnit(unit);
     }
 

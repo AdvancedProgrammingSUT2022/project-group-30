@@ -1618,7 +1618,6 @@ public class GameView implements View {
             printer.printlnError("You can't attack this tile because there are no hostile units in it!");
             return;
         }
-        // TODO: attack
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
         CombatController.getCombatController().executeMeleeAttack(unit, target);
     }
