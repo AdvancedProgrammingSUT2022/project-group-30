@@ -121,6 +121,11 @@ public class CombatController {
         attacker.resetInactivityDuration();
     }
 
+    private void applyAttackChangesOnCity(City attacker) {
+        attacker.setHasAttackedThisTurn(true);
+        // TODO
+    }
+
     private void applyMeleeCombatEndEffects(combative winner, combative loser) {
         Unit capturedUnit = null;
         if (loser instanceof Unit && winner instanceof  Unit) {
@@ -184,8 +189,12 @@ public class CombatController {
          */
     }
 
-    public void executeRangedAttack(Unit attacker, combative defender) {
-        applyAttackChangesOnUnit(attacker);
+    public void executeRangedAttack(combative attacker, combative defender) {
+        if (attacker instanceof  Unit) {
+            applyAttackChangesOnUnit((Unit) attacker);
+        } else {
+            applyAttackChangesOnCity((City) attacker);
+        }
 
         int attackerStrength = calculateEffectiveRangedCombatStrength(attacker, defender);
         int defenderDefenseBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);

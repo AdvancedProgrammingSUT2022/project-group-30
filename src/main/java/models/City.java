@@ -39,6 +39,7 @@ public class City implements Selectable, TurnHandler, combative {
     private double rangedCombatStrength;
     private double range;
     private double hitPoints;
+    private boolean hasAttackedThisTurn;
     // TODO initialize 5 following fields with proper number
     private double expansionProgress;
     private double expansionLimit;
@@ -55,6 +56,7 @@ public class City implements Selectable, TurnHandler, combative {
         this.territories.add(tile);
         this.hammerCount = 0;
         this.foodCount = 0;
+        this.hasAttackedThisTurn = false;
         this.combatStrength = 8;
         this.rangedCombatStrength = 5;
         this.hitPoints = 20;
@@ -114,6 +116,7 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
+        hasAttackedThisTurn = false;
         // TODO: increments HPs with if (maedeh nakhoonde bood ino)
     }
 
@@ -778,5 +781,13 @@ public class City implements Selectable, TurnHandler, combative {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return hasAttackedThisTurn;
+    }
+
+    public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 }

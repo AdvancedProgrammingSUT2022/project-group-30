@@ -769,10 +769,40 @@ public class GameView implements View {
                 runProductionPanel(city);
             } else if ((matcher = CityCommands.PURCHASE_TILE.getCommandMatcher(command)) != null) {
                 purchaseTile(city);
+            } else if ((matcher = CityCommands.ATTACK.getCommandMatcher(command)) != null) {
+                cityRangedAttack(matcher, city);
             } else {
                 printer.printlnError("Invalid command for city!");
             }
         }
+    }
+
+    private void cityRangedAttack(Matcher matcher, City city) {
+        if (city.hasAttackedThisTurn()) {
+            printer.printlnError("This city has already attacked in this turn!");
+            return;
+        }
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (targetTile.calculateDistance(city.getCentralTile()) >= city.getRange()) {
+            printer.printlnError("This target is not within city's range!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, city.getOwner())) {
+            printer.printlnError("There are no hostile entities in this tile!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, city.getOwner());
+        if (target instanceof City) {
+            printer.printlnError("You can't attack another city!");
+            return;
+        }
+        CombatController.getCombatController().executeRangedAttack(city, target);
     }
 
     private void purchaseTile(City city) {
