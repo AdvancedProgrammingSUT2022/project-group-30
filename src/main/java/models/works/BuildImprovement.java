@@ -26,11 +26,7 @@ public class BuildImprovement extends Work {
 
     @Override
     public int calculateRequiredTurns() {
-        if (improvementType == ImprovementType.ROAD) {
-            return 3;
-        }
-        // TODO
-        return 0;
+        return improvementType.getConstructionDuration();
     }
 
     @Override
