@@ -1491,6 +1491,8 @@ public class GameView implements View {
                 }
             } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
                 meleeAttack(matcher, unit);
+            } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
+                rangedAttack(matcher, unit);
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else if ((matcher = UnitCommands.FOUND_CITY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FOUND_CITY)) {
@@ -1605,6 +1607,27 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void rangedAttack(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
+            !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
+            printer.printlnError("You can only attack target that are seen and within range!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            printer.printlnError("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeUnitRangedAttack(unit, target);
     }
 
     private void meleeAttack(Matcher matcher, Unit unit) {

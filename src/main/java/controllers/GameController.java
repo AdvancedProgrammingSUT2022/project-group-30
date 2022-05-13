@@ -917,6 +917,10 @@ public class GameController {
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
 
+    public ArrayList<Tile> getVisibleTilesByUnit(Unit unit) {
+        return getVisibleTilesFromTile(unit.getLocation(), unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2);
+    }
+
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
         tiles.addAll(getVisibleTilesByCities(civilization));
