@@ -1482,6 +1482,8 @@ public class GameView implements View {
                 if (unit.getOwner().getSelectedEntity() == null) {
                     break;
                 }
+            } else if ((matcher = UnitCommands.MELEE_ATTACK.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.MELEE_ATTACK)) {
+                meleeAttack(matcher, unit);
             } else if ((matcher = UnitCommands.SHOW_INFO.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.SHOW_INFO)) {
                 showUnitInfo(unit);
             } else if ((matcher = UnitCommands.FOUND_CITY.getCommandMatcher(command)) != null && allowedCommands.get(UnitCommands.FOUND_CITY)) {
@@ -1596,6 +1598,25 @@ public class GameView implements View {
         // TODO : consider all commands
 
         return result;
+    }
+
+    private void meleeAttack(Matcher matcher, Unit unit) {
+        int y = Integer.parseInt(matcher.group("y"));
+        int x = Integer.parseInt(matcher.group("x"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile targetTile = controller.getTileByCoordinates(x, y);
+        if (!controller.areTwoTilesAdjacent(targetTile, unit.getLocation())) {
+            printer.printlnError("You can only melee attack adjacent tiles!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            printer.printlnError("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        // TODO: attack
     }
 
     private void pillage(Unit unit) {

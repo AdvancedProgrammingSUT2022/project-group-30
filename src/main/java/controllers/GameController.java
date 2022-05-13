@@ -421,6 +421,19 @@ public class GameController {
         return null;
     }
 
+    public boolean doesTileContainEnemyCombative(Tile tile, Civilization reference) {
+        ArrayList<Unit> tileUnits = getUnitsInTile(tile);
+        for (Unit unit : tileUnits) {
+            if (unit.getOwner() != reference) {
+                return true;
+            }
+        }
+        if (getCityCenteredInTile(tile) != null) {
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         ArrayList<Unit> units = new ArrayList<>();
         for (Unit unit : gameDataBase.getUnits()) {
