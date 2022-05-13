@@ -26,11 +26,8 @@ public class City implements Selectable, TurnHandler, combative {
     private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;
-    // Should I delete following field??
-    private boolean isPuppet;
     private final Tile centralTile;
     private ArrayList<Building> buildings = new ArrayList<>();
-    // should I add it in constructor??
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
     private Producible entityInProduction;
@@ -41,7 +38,6 @@ public class City implements Selectable, TurnHandler, combative {
     private double range;
     private double hitPoints;
     private boolean hasAttackedThisTurn;
-    // TODO initialize 5 following fields with proper number
     private double expansionProgress;
     private double expansionLimit;
     private double populationProgress;
@@ -52,7 +48,6 @@ public class City implements Selectable, TurnHandler, combative {
     public City(Civilization founder, Tile tile) {
         this.founder = founder;
         this.owner = founder;
-        this.isPuppet = false;
         this.centralTile = tile;
         this.territories.add(tile);
         this.hammerCount = 0;
@@ -73,7 +68,6 @@ public class City implements Selectable, TurnHandler, combative {
     public City createImage() {
         City image = new City(founder, centralTile);
         image.setOwner(owner);
-        image.setIsPuppet(isPuppet);
         image.territories = new ArrayList<>(territories);
         image.setHammerCount(hammerCount);
         image.setFoodCount(foodCount);
@@ -542,25 +536,11 @@ public class City implements Selectable, TurnHandler, combative {
         return (owner.getCapital() == this);
     }
 
-    public void attack(Unit target) {
-        // TODO
-    }
-
-    public void defend(Unit attacker) {
-        // TODO
-    }
-
     public void addCitizen() {
-        // MINETODO check it
-        //TODO
         this.citizens.add(new Citizen());
     }
 
     public void killACitizen() {
-        // MINETODO check it
-        // which one??
-        //TODO
-
         if (citizens.isEmpty()) {
             return;
         }
@@ -568,16 +548,10 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
-        // MineTODO check it & check errors
         citizen.setWorkPlace(null);
     }
 
-    public void emptyWorkable(Workable workable) {
-        // MINETODO
-    }
-
     public void assignCitizenToWorkplace(Workable workPlace, Citizen citizen) {
-        // MINETODO check it check errors...    Amir: errors have been checked in view: the citizen passed is guaranteed to be workless and the tile is guaranteed to be unworked
         citizen.setWorkPlace(workPlace);
     }
 
@@ -590,17 +564,6 @@ public class City implements Selectable, TurnHandler, combative {
         return null;
     }
 
-    private void expandSelf() {
-        // TODO
-    }
-
-    public boolean isDestructible() {
-        // MINETODO check it
-        if (!owner.equals(founder)) return true;
-        return false;
-    }
-
-
     public Civilization getFounder() {
         return founder;
     }
@@ -611,14 +574,6 @@ public class City implements Selectable, TurnHandler, combative {
 
     public void setOwner(Civilization owner) {
         this.owner = owner;
-    }
-
-    public boolean getIsPuppet() {
-        return this.isPuppet;
-    }
-
-    public void setIsPuppet(boolean isPuppet) {
-        this.isPuppet = isPuppet;
     }
 
     public Tile getCentralTile() {

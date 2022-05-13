@@ -70,7 +70,6 @@ public class GameMap {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -109,7 +108,6 @@ public class GameMap {
 
             scanner.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -379,26 +377,6 @@ public class GameMap {
             return false;
         }
         return true;
-    }
-
-    public ArrayList<Tile> findClosestPath(Tile origin, Tile destination) {
-        // TODO
-        return null;
-    }
-
-    public int findMovementCost(Unit unit, Tile destination) {
-        // TODO
-        return 0;
-    }
-
-    public Tile findTileToAppendToCity(City city) {
-        // TODO
-        return null;
-    }
-
-    public ArrayList<Tile> getZOCTilesForCivilization(Civilization civilization) {
-        // TODO
-        return null;
     }
 
     public Tile[][] getMap() {

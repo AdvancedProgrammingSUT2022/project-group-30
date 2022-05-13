@@ -7,7 +7,6 @@ import models.interfaces.TileImage;
 import models.units.Unit;
 
 public class TileHistory implements TileImage {
-    // TODO : Save works in it, and save whether tile was in a city's territory or not
     private Tile tile;
     private ArrayList<Unit> units;
     private City city;

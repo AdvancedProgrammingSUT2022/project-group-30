@@ -1,8 +1,6 @@
 package controllers;
 
-import models.City;
-import models.Feature;
-import models.Tile;
+import models.*;
 import models.buildings.BuildingType;
 import models.interfaces.combative;
 import models.units.CombatType;
@@ -116,7 +114,6 @@ public class CombatController {
 
     public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
         Tile myLocation = unit.getLocation();
-        //   if( || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE))
         double percentage = 0;
         for (Feature feature : myLocation.getFeatures()) {
             if (feature.getCombatModifier() < 0 || !(unit.getType().getCombatType() == CombatType.ARMORED || unit.getType().getCombatType() == CombatType.MOUNTED || unit.getType().getCombatType() == CombatType.SIEGE)) {
@@ -215,7 +212,6 @@ public class CombatController {
 
     private void applyAttackChangesOnCity(City attacker) {
         attacker.setHasAttackedThisTurn(true);
-        // TODO
     }
 
     private void applyMeleeCombatEndEffects(combative winner, combative loser) {
@@ -286,5 +282,16 @@ public class CombatController {
         } else {
             defender.reduceHitPoints(totalDamageDone);
         }
+    }
+
+    public boolean isCityDestructible(City city, Unit unit){
+        Civilization civilization = unit.getOwner();
+        if(civilization == city.getFounder())
+            return false;
+        for(Civilization civilization1 : GameDataBase.getGameDataBase().getCivilizations()){
+            if(civilization1.getCapital() == city || civilization1.getOriginCapital() == city)
+                return false;
+        }
+        return true;
     }
 }

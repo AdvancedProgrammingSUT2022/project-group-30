@@ -17,7 +17,6 @@ public class Unit implements Selectable, TurnHandler, combative {
     private Tile location;
     private int hitPointsLeft;
     private int movePointsLeft;
-    private int experiencePoints; // note : won't be used if we don't implement unit upgrades
     private UnitState state;
     private boolean isAssembled;
     private boolean hasAttackedThisTurn;
@@ -33,7 +32,6 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.location = location;
         hitPointsLeft = type.getHitPoints();
         movePointsLeft = type.getMovementSpeed();
-        experiencePoints = 0;
         state = UnitState.AWAKE;
         hasAttackedThisTurn = false;
         inactivityDuration = 0;
@@ -50,7 +48,6 @@ public class Unit implements Selectable, TurnHandler, combative {
         Unit image = new Unit(owner, type, location);
         image.hitPointsLeft = hitPointsLeft;
         image.movePointsLeft = movePointsLeft;
-        image.experiencePoints = experiencePoints;
         image.state = state;
         image.inactivityDuration = inactivityDuration;
         image.stateDuration = stateDuration;
@@ -67,7 +64,6 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO : very much incomplete
         if (!hasAttackedThisTurn && movePointsLeft == type.movementSpeed) {
             inactivityDuration++;
         }
@@ -111,30 +107,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         }
     }
 
-    public void attack(Unit target){
-        //TODO
-    }
-
-    public void defend(Unit attacker){
-        //TODO
-    }
-
-    public double calculateEffectiveCombatStrength() {
-        // TODO : handle FORTIFY state on defensiveStrength and garrison effect
-        return 0;
-    }
-
-    public double calculateEffectiveRangedCombatStrength() {
-        // TODO
-        return 0;
-    }
-
-    public void heal() { // replaces the setter for hitPointsLeft
-        // TODO
-    }
-
     public boolean isWaitingForCommand() {
-        // TODO : might be incomplete
         if (type == UnitType.WORKER && GameController.getGameController().isWorkerWorking(this)) {
             return false;
         }
@@ -187,14 +160,6 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public void setMovePointsLeft(int movePointsLeft) {
         this.movePointsLeft = movePointsLeft;
-    }
-
-    public int getExperiencePoints() {
-        return this.experiencePoints;
-    }
-
-    public void setExperiencePoints(int experiencePoints) {
-        this.experiencePoints = experiencePoints;
     }
 
     public void setState(UnitState state){

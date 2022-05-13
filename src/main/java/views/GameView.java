@@ -1228,7 +1228,6 @@ public class GameView implements View {
         if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
                 !controller.getCurrentPlayer().isTurnBreakDisabled()) {
             printer.printlnError("You should start a research project!");
-            // TODO : FOR MY SELF
             return;
         }
 
@@ -1647,8 +1646,6 @@ public class GameView implements View {
         if (unit.getPath() != null) {
             result.put(UnitCommands.CANCEL_MOVE, true);
         }
-        // TODO : consider all commands
-
         return result;
     }
 
@@ -1825,7 +1822,6 @@ public class GameView implements View {
                 printer.println("Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
             }
         }
-        // TODO : show state and xp
     }
 
     private void moveTo(Matcher matcher) {  // you can only move to visible tiles!
@@ -1929,7 +1925,6 @@ public class GameView implements View {
     }
 
     private void printTileInfo(Matcher matcher) {
-        // TODO : show city territory for revealed tiles, show works
         int x = Integer.parseInt(matcher.group("x"));
         int y = Integer.parseInt(matcher.group("y"));
         printer.println("printing info for tile : " + x + ", " + y);

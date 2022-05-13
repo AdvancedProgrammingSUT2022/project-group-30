@@ -6,7 +6,6 @@ import models.interfaces.TurnHandler;
 import models.units.Unit;
 
 public abstract class Work implements TurnHandler {
-    //private or protected??
     protected int turnsRemaining;
     protected Unit worker;
     protected boolean isInProgress;

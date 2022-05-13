@@ -46,9 +46,7 @@ public class GameDataBase {
     }
 
     public void addWar(WarInfo war) {
-        // TODO .. add other effects
-        // let me know about best practice -> should I have if?? what about else and
-        // debugger??
+        // MINETODO .. add other effects
         if (!this.wars.contains(war))
             this.wars.add(war);
     }

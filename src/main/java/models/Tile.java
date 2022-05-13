@@ -34,11 +34,9 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.resources = resources;
         this.ruins = ruins;
-        // TODO add "this.works = new Work();"
     }
 
     public TileHistory createTileHistory() {
-        // TODO : doesn't save works in history
         TileHistory history = new TileHistory();
         Tile tile = new Tile(terrainType, new HashMap<Resource, Integer>(resources), null);
         tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
@@ -275,12 +273,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public void addImprovement(Improvement improvement) {
-        // TODO ... what else?
         this.improvements.add(improvement);
     }
 
     public void removeImprovement(ImprovementType improvementType){
-        //TODO ... what else?
         for(int i=0; i<this.improvements.size(); i++){
             if(this.improvements.get(i).getType() == improvementType)
             {
@@ -307,7 +303,6 @@ public class Tile implements Workable, TileImage, TurnHandler {
         if (work != null) {
             work.goToNextTurn();
         }
-        // TODO
     }
 
     public boolean hasCitizen() {

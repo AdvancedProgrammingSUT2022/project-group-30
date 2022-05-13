@@ -29,7 +29,7 @@ public class Civilization implements TurnHandler {
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
     private TechnologyMap technologies = new TechnologyMap();
     private double goldCount;
-    private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
+    private double beakerCount;
     private Technology researchProject;
     private HashMap<Technology, Double> researchReserve = new HashMap<>();
     private double happiness;
@@ -45,9 +45,7 @@ public class Civilization implements TurnHandler {
         this.name = name;
         this.goldCount = 0;
         this.beakerCount = 0;
-        // 20?? manteghie?
         this.happiness = 20;
-        // 20??
         this.diplomaticCredit = 20;
         this.score = 0;
         this.capital = null;
@@ -146,8 +144,6 @@ public class Civilization implements TurnHandler {
     }
 
     public void goToNextTurn() {
-        // TODO
-
         this.beakerCount += this.calculateTotalBeakers();
         if(this.researchProject != null){
             if(this.beakerCount >= this.researchProject.getCost()){
@@ -175,14 +171,6 @@ public class Civilization implements TurnHandler {
             }
             strategicResources.put(strategicResource, newValue);
         }
-    }
-
-    public void setNextResearchProject(Technology technology) {
-        //TODO
-    }
-
-    private void updateStrategicResources() {
-        // TODO
     }
 
     public double calculateHappiness() {
@@ -237,31 +225,6 @@ public class Civilization implements TurnHandler {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
-    public ArrayList<Producible> findUnlockedProducibles() {
-        // TODO
-        return null;
-    }
-
-    public double calculateTotalPopulation() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateCityCount() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateAnnexedCityCount() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateLuxuryResourceType() {
-        // TODO
-        return 0;
-    }
-
     public boolean hasTechnology(Technology technology) {
         return technologies.isTechnologyLearned(technology);
     }
@@ -274,7 +237,6 @@ public class Civilization implements TurnHandler {
         }
         return true;
     }
-
 
     public double getGoldCount() {
         return this.goldCount;

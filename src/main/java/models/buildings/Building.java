@@ -16,7 +16,6 @@ public class Building implements Workable {
     }
 
     public Building createImage() { // create a deep copy of the object
-        // TODO
         return null;
     }
 
@@ -46,7 +45,6 @@ public class Building implements Workable {
             if (city.hasBuildingType(BuildingType.WALLS))
                 return true;
         } else if (type == BuildingType.FORGE) {
-            //MINETODO tell me more about resources Mr.Kooshky
             if (city.hasResourceByName("Horse"))
                 return true;
         } else if (type == BuildingType.GARDEN) {

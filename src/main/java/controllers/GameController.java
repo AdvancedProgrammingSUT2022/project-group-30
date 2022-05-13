@@ -341,9 +341,6 @@ public class GameController {
             Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
             City city = getCityCenteredInTile(path.get(i));
             if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
-                if (unit.isCivilian() == false && i == path.size() - 1) {
-                    // TODO : attack that tile
-                }
                 continue;
             } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
                 if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
@@ -352,9 +349,6 @@ public class GameController {
             }
 
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
-                if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
-                    // TODO : attack that tile
-                }
                 continue;
             }
 
@@ -549,7 +543,6 @@ public class GameController {
         for (Tile tile : territory) {
             newCity.addTileToTerritory(tile);
         }
-        // TODO : Create palace in city
         newCity.getBuildings().add(new Building(BuildingType.PALACE));
         gameDataBase.getCities().add(newCity);
         if (unit.getOwner().getOriginCapital() == null) {
@@ -1154,7 +1147,6 @@ public class GameController {
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
-        // OVERWRITE THE FOLLOWING CHANGES WITH WHATEVER MAEDEH WRITES:
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
         for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
