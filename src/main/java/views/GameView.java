@@ -959,6 +959,7 @@ public class GameView implements View {
         }
         BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
         location.setWork(newWork);
+        worker.setPath(null);
         printer.println("Started the construction of a " + type.getName().toLowerCase() + " here!");
     }
 
@@ -984,6 +985,7 @@ public class GameView implements View {
         }
         BuildImprovement newWork = new BuildImprovement(improvementType, worker);
         location.setWork(newWork);
+        worker.setPath(null);
         printer.println("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
     }
 
@@ -1120,7 +1122,7 @@ public class GameView implements View {
             result.put(command, false);
         }
 
-
+        boolean isUnitAWorkingWorker = unit.getType() == UnitType.WORKER && controller.isWorkerWorking(unit);
         if (unit.getType().getCombatType() == CombatType.SIEGE && unit.isAssembled() == false && unit.getMovePointsLeft() >= 1) {
             result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
         }
@@ -1135,8 +1137,10 @@ public class GameView implements View {
         }
         result.put(UnitCommands.DESELECT, true);
         result.put(UnitCommands.SHOW_INFO, true);
-        result.put(UnitCommands.DELETE, true);
-        if (unit.getState().waitsForCommand && controller.canUnitMove(unit)) {
+        if (!isUnitAWorkingWorker) {
+            result.put(UnitCommands.DELETE, true);
+        }
+        if (unit.getState().waitsForCommand && controller.canUnitMove(unit) && !isUnitAWorkingWorker) {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
@@ -1151,8 +1155,10 @@ public class GameView implements View {
                     result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
                 }
             }
-            result.put(UnitCommands.SLEEP, true);
-            result.put(UnitCommands.ALERT, true);
+            if (!isUnitAWorkingWorker) {
+                result.put(UnitCommands.ALERT, true);
+                result.put(UnitCommands.SLEEP, true);
+            }
         } else {
             result.put(UnitCommands.AWAKE, true);
         }
