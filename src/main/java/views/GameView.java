@@ -892,6 +892,8 @@ public class GameView implements View {
                 buildImprovement(worker, ImprovementType.ROAD);
             } else if ((matcher = WorkerCommands.BUILD_RAILROAD.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_RAILROAD)) {
                 buildImprovement(worker, ImprovementType.RAILROAD);
+            } else if ((matcher = WorkerCommands.BUILD_FARM.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_FARM)) {
+                buildFarm(worker);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
@@ -899,6 +901,11 @@ public class GameView implements View {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void buildFarm(Unit worker) {
+        Tile location = worker.getLocation();
+
     }
 
     private void buildImprovement(Unit worker, ImprovementType improvementType) {
@@ -930,10 +937,10 @@ public class GameView implements View {
         if (controller.canWorkerBuildRoute(worker, ImprovementType.RAILROAD)) {
             result.add(WorkerCommands.BUILD_RAILROAD);
         }
-        if (controller.canWorkerBuildImprovement(worker, ImprovementType.FARM)) {
+        if (controller.canWorkerBuildFarmOrMine(worker, ImprovementType.FARM)) {
             result.add(WorkerCommands.BUILD_FARM);
         }
-        if (controller.canWorkerBuildImprovement(worker, ImprovementType.MINE)) {
+        if (controller.canWorkerBuildFarmOrMine(worker, ImprovementType.MINE)) {
             result.add(WorkerCommands.BUILD_MINE);
         }
         if (controller.canWorkerBuildImprovement(worker, ImprovementType.TRADING_POST)) {

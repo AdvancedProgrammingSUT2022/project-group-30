@@ -158,6 +158,40 @@ public class GameController {
         return true;
     }
 
+    public boolean canWorkerBuildFarmOrMine(Unit worker, ImprovementType type) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(type.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if ((location.getFeatures().contains(Feature.FOREST) && !owner.hasTechnology(Technology.MINING)) ||
+                (location.getFeatures().contains(Feature.JUNGLE) && !owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                (location.getFeatures().contains(Feature.MARSH) && !owner.hasTechnology(Technology.MASONRY))) {
+            return false;
+        }
+
+        if (!type.isCompatibleWithTile(worker.getLocation())) {
+            if (!((location.getFeatures().contains(Feature.FOREST) && owner.hasTechnology(Technology.MINING)) ||
+                    (location.getFeatures().contains(Feature.JUNGLE) && owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                    (location.getFeatures().contains(Feature.MARSH) && owner.hasTechnology(Technology.MASONRY)))) {
+                return false;
+            }
+        }
+        for (Resource resource : location.getResourcesAsArrayList()) {
+            if (resource.getPrerequisiteImprovement() == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();
