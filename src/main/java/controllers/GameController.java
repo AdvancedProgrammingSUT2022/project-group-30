@@ -102,7 +102,6 @@ public class GameController {
 
     public void createUnit(UnitType type, Civilization owner, Tile location, int initialXP) {
         Unit newUnit = new Unit(owner, type, location);
-        newUnit.setExperiencePoints(initialXP);
         gameDataBase.getUnits().add(newUnit);
         setMapImageOfCivilization(owner);
     }

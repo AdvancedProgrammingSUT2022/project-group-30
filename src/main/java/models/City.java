@@ -182,7 +182,7 @@ public class City implements Selectable, TurnHandler, combative {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
             if (type == UnitType.SETTLER) {
-                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                if (citizens.size() < 2 || owner.getHappiness() < 0) {
                     continue;
                 }
             }
@@ -201,7 +201,7 @@ public class City implements Selectable, TurnHandler, combative {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
             if (type == UnitType.SETTLER) {
-                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                if (citizens.size() < 2 || owner.getHappiness() < 0) {
                     continue;
                 }
             }

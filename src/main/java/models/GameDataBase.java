@@ -46,7 +46,7 @@ public class GameDataBase {
     }
 
     public void addWar(WarInfo war) {
-        // MINETODO .. add other effects
+        // TODO .. add other effects
         if (!this.wars.contains(war))
             this.wars.add(war);
     }

@@ -719,7 +719,7 @@ public class GameView implements View {
         printer.printlnBlue(civilization.getName());
         printer.println("Science: " + civilization.getBeakerCount());
         printer.println("Gold: " + civilization.getGoldCount());
-        int happiness = (int) civilization.calculateHappiness();
+        int happiness = (int) civilization.getHappiness();
         printer.print("Happiness: ");
         if (happiness >= 0) {
             printer.printlnBlue(happiness);

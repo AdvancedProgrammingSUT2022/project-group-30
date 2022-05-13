@@ -160,6 +160,7 @@ public class Civilization implements TurnHandler {
             beakerCount = Math.max(0, beakerCount);
             goldCount = 0;
         }
+        this.happiness += this.calculateHappinessChanges();
     }
 
     public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
@@ -173,7 +174,7 @@ public class Civilization implements TurnHandler {
         }
     }
 
-    public double calculateHappiness() {
+    public double calculateHappinessChanges() {
         double happiness = 0;
         for (City city : this.getCities()) {
             happiness += city.calculateHappiness();
