@@ -165,6 +165,9 @@ public class GameController {
         if (isWorkerWorking(worker)) {
             return false;
         }
+        if (worker.getLocation().containsImprovment(type)) {
+            return false;
+        }
         if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
             return false;
         }
@@ -197,6 +200,9 @@ public class GameController {
         Civilization owner = worker.getOwner();
 
         if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(improvementType)) {
             return false;
         }
         if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
