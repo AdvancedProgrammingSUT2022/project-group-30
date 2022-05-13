@@ -267,6 +267,11 @@ public class GameView implements View {
 
     private void learnTechnology(Matcher matcher) {
         String techName = matcher.group("name");
+        if (techName.equalsIgnoreCase("all")) {
+            controller.getCurrentPlayer().getTechnologies().learnAllTechnologies();
+            printer.printlnBlue("You have learned all technologies!");
+            return;
+        }
         Technology chosenTech = Technology.getTechnologyByName(techName);
         if (chosenTech == null) {
             printer.printlnError("Technology not recognized");

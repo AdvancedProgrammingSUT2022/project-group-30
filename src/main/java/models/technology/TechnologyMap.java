@@ -70,4 +70,10 @@ public class TechnologyMap {
         }
         return result;
     }
+
+    public void learnAllTechnologies() {
+        for (Technology technology : map.keySet()) {
+            map.put(technology, true);
+        }
+    }
 }
