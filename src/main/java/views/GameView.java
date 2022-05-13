@@ -6,6 +6,7 @@ import java.util.HashMap;
 import controllers.GameController;
 import menusEnumerations.*;
 import models.*;
+import models.buildings.Building;
 import models.buildings.BuildingType;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
@@ -897,6 +898,14 @@ public class GameView implements View {
                 buildFarmOrMine(worker, ImprovementType.FARM);
             } else if ((matcher = WorkerCommands.BUILD_MINE.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_MINE)) {
                 buildFarmOrMine(worker, ImprovementType.MINE);
+            } else if ((matcher = WorkerCommands.BUILD_TRADING_POST.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_TRADING_POST)) {
+                buildImprovement(worker, ImprovementType.TRADING_POST);
+            } else if ((matcher = WorkerCommands.BUILD_LUMBER_MILL.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_LUMBER_MILL)) {
+                buildImprovement(worker, ImprovementType.LUMBER_MILL);
+            } else if ((matcher = WorkerCommands.BUILD_PASTURE.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_PASTURE)) {
+                buildImprovement(worker, ImprovementType.PASTURE);
+            } else if ((matcher = WorkerCommands.BUILD_PLANTATION.getCommandMatcher(command)) != null && allowedCommands.contains(WorkerCommands.BUILD_PLANTATION)) {
+                buildImprovement(worker, ImprovementType.PLANTATION);
             } else if (command.equals("cancel") || command.equals("back")) {
                 printer.println("You have exited Work Actions Panel");
                 break;
