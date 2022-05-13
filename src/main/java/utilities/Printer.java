@@ -110,4 +110,17 @@ public class Printer {
     public void printPurple(int text) {
         System.out.print(PrintableCharacters.ANSI_PURPLE_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
     }
+
+    public void printlnYellow(String text) {
+        System.out.println(PrintableCharacters.ANSI_YELLOW_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+    public void printlnYellow(int text) {
+        System.out.println(PrintableCharacters.ANSI_YELLOW_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+    public void printYellow(String text) {
+        System.out.print(PrintableCharacters.ANSI_YELLOW_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
+    public void printYellow(int text) {
+        System.out.print(PrintableCharacters.ANSI_YELLOW_BACKGROUND + text + PrintableCharacters.ANSI_RESET);
+    }
 }

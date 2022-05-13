@@ -1,6 +1,5 @@
 package models;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,20 +12,22 @@ import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.Workable;
 import models.interfaces.combative;
+import models.resources.BonusResource;
+import models.resources.LuxuryResource;
 import models.resources.Resource;
+import models.resources.StrategicResource;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
 import utilities.Debugger;
 
 public class City implements Selectable, TurnHandler, combative {
+    private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;
-    // Should I delete following field??
-    private boolean isPuppet;
     private final Tile centralTile;
     private ArrayList<Building> buildings = new ArrayList<>();
-    // should I add it in constructor??
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
     private Producible entityInProduction;
@@ -36,7 +37,7 @@ public class City implements Selectable, TurnHandler, combative {
     private double rangedCombatStrength;
     private double range;
     private double hitPoints;
-    // TODO initialize 5 following fields with proper number
+    private boolean hasAttackedThisTurn;
     private double expansionProgress;
     private double expansionLimit;
     private double populationProgress;
@@ -47,14 +48,14 @@ public class City implements Selectable, TurnHandler, combative {
     public City(Civilization founder, Tile tile) {
         this.founder = founder;
         this.owner = founder;
-        this.isPuppet = false;
         this.centralTile = tile;
         this.territories.add(tile);
         this.hammerCount = 0;
         this.foodCount = 0;
+        this.hasAttackedThisTurn = false;
         this.combatStrength = 8;
         this.rangedCombatStrength = 5;
-        this.hitPoints = 20;
+        this.hitPoints = MAXHITPOINTS;
         this.range = 2;
         this.populationGrowthLimit = 10;
         this.populationShrinkageLimit = -10;
@@ -67,7 +68,6 @@ public class City implements Selectable, TurnHandler, combative {
     public City createImage() {
         City image = new City(founder, centralTile);
         image.setOwner(owner);
-        image.setIsPuppet(isPuppet);
         image.territories = new ArrayList<>(territories);
         image.setHammerCount(hammerCount);
         image.setFoodCount(foodCount);
@@ -79,8 +79,9 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        int production = calculateOutput().getProduction();
-        hammerCount += production;
+        double production = calculateOutput().getProduction();
+        production *= calculateBuildingEffectCoefficientForProduction();
+        hammerCount += (int) production;
         if (entityInProduction != null && hammerCount >= entityInProduction.calculateHammerCost()) {
             finishProduction();
         }
@@ -101,14 +102,46 @@ public class City implements Selectable, TurnHandler, combative {
                 growTerritory();
             }
         }
+        for (Tile tile : territories) {
+            for (Resource resource : tile.calculateCollectibeResourcesOutput()) {
+                if (resource instanceof LuxuryResource) {
+                    owner.addLuxuryResource((LuxuryResource) resource);
+                } else if (resource instanceof StrategicResource) {
+                    owner.addStrategicResource((StrategicResource) resource);
+                }
+            }
+        }
+        hasAttackedThisTurn = false;
+        hitPoints = Math.min(hitPoints + 1, MAXHITPOINTS);
+    }
+
+    private double calculateBuildingEffectCoefficientForProduction() {
+        double coeff = 1;
+        if (hasBuildingType(BuildingType.STABLE) && entityInProduction instanceof UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MOUNTED) {
+            coeff += 0.25;
+        }
+        if (hasBuildingType(BuildingType.FORGE) && entityInProduction instanceof UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.15;
+        }
+        if (hasBuildingType(BuildingType.WORKSHOP) && entityInProduction instanceof BuildingType) {
+            coeff += 0.20;
+        }
+        if (hasBuildingType(BuildingType.ARSENAL) && entityInProduction instanceof UnitType &&
+                ((UnitType) entityInProduction).getCombatType() == CombatType.MELEE) {
+            coeff += 0.20;
+        }
+        return coeff;
     }
 
     private void finishProduction() {
-        if (entityInProduction instanceof  BuildingType) {
+        if (entityInProduction instanceof BuildingType) {
             addBuilding((BuildingType) entityInProduction);
         } else if (entityInProduction instanceof UnitType) {
             if (centralTile.doesPackingLetUnitEnter((UnitType) entityInProduction)) {
-                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile);
+                GameController.getGameController().createUnit((UnitType) entityInProduction, owner, centralTile,
+                        calculateInitialXPForUnitType((UnitType) entityInProduction));
             } else {
                 Debugger.debug("finishProduction of City.java: central tile shouldn't be full!");
                 return;
@@ -116,9 +149,24 @@ public class City implements Selectable, TurnHandler, combative {
         }
 
         hammerCount -= entityInProduction.calculateHammerCost();
+        this.owner.addNotificationForProduction(entityInProduction);
         entityInProduction = null;
+    }
 
-        // TODO : send notification to the player informing them of the end of production
+    private int calculateInitialXPForUnitType(UnitType type) {
+        int result = 0;
+        if (type.getCombatType() == CombatType.MELEE) {
+            if (hasBuildingType(BuildingType.BARRACKS)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.ARMORY)) {
+                result += 15;
+            }
+            if (hasBuildingType(BuildingType.MILITARY_ACADEMY)) {
+                result += 15;
+            }
+        }
+        return result;
     }
 
     public ArrayList<Resource> calculateCollectibleResourceOutput() {
@@ -134,11 +182,11 @@ public class City implements Selectable, TurnHandler, combative {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
             if (type == UnitType.SETTLER) {
-                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                if (citizens.size() < 2 || owner.getHappiness() < 0) {
                     continue;
                 }
             }
-            if (owner.hasTechnology(type.getPrerequisitTechnology())) {
+            if (owner.getTechnologies().isTechnologyLearned(type.getPrerequisitTechnology())) {
                 result.add(type);
             }
         }
@@ -146,14 +194,14 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public ArrayList<BuildingType> calculatePurchasableBuildingTypes() {    // DOESN'T CHECK IF CITY HAS ENOUGH GOLD TO PURCHASE BUILDING
-        return calculateProductionReadyBuildingTypes();
+        return calculateProductionReadyBuildingTypes(true);
     }
 
     public ArrayList<UnitType> calculateProductionReadyUnitTypes() {
         ArrayList<UnitType> result = new ArrayList<>();
         for (UnitType type : UnitType.values()) {
             if (type == UnitType.SETTLER) {
-                if (citizens.size() < 2 || owner.calculateHappiness() < 0) {
+                if (citizens.size() < 2 || owner.getHappiness() < 0) {
                     continue;
                 }
             }
@@ -165,9 +213,56 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public ArrayList<BuildingType> calculateProductionReadyBuildingTypes() {
+        return calculateProductionReadyBuildingTypes(false);
+    }
+
+    public ArrayList<BuildingType> calculateProductionReadyBuildingTypes(boolean isForPurchase) {
         ArrayList<BuildingType> result = new ArrayList<BuildingType>();
         for (BuildingType type : BuildingType.values()) {
             if (owner.hasTechnology(type.getPrerequisiteTechnology()) && hasBuildingType(type) == false) {
+                if (type.shouldBeNearRiver()) {
+                    if (!isNearTheRiver()) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.STOCK_EXCHANGE) {
+                    if (!(hasBuildingType(BuildingType.BANK) || hasBuildingType(BuildingType.SATRAPS_COURT))) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.CIRCUS) {
+                    if (!(hasExploitableResourceNearby(StrategicResource.HORSE) || hasExploitableResourceNearby(LuxuryResource.IVORY))) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.STABLE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.HORSE)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.FORGE) {
+                    if (!hasExploitableResourceNearby(StrategicResource.IRON)) {
+                        continue;
+                    }
+                }
+                if (type == BuildingType.WINDMILL) {
+                    if (centralTile.isOfType(TerrainType.HILLS)) {
+                        continue;
+                    }
+                }
+
+                if (!isForPurchase && type == BuildingType.FACTORY) {
+                    if (!owner.hasStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL))) {
+                        continue;
+                    }
+                }
+
+                for (BuildingType prerequisite : type.getPrerequisiteBuildingTypes()) {
+                    if (!hasBuildingType(prerequisite)) {
+                        continue;
+                    }
+                }
+
                 result.add(type);
             }
         }
@@ -179,11 +274,15 @@ public class City implements Selectable, TurnHandler, combative {
             if (productionReserve.containsKey(producible)) {
                 hammerCount += productionReserve.get(producible);
                 productionReserve.remove(producible);
+            } else {
+                if (producible instanceof UnitType) {
+                    owner.payStrategicResources(((UnitType) producible).getPrerequisiteResources());
+                } else if (producible == BuildingType.FACTORY) {
+                    owner.payStrategicResources(StrategicResource.getRequiredResourceHashMap(StrategicResource.COAL));
+                }
             }
         } else {
-            productionReserve.put(entityInProduction, (int) hammerCount);
-            hammerCount = 0;
-            entityInProduction = null;
+            stopProduction();
             changeProduction(producible);
         }
         entityInProduction = producible;
@@ -216,6 +315,33 @@ public class City implements Selectable, TurnHandler, combative {
                 }
             }
         }
+    }
+
+    public int calculateNextTilePrice() {
+        int price = 50;
+        price *= territories.size();
+        return price;
+    }
+
+    public ArrayList<Tile> findPurchasableTiles() {
+        ArrayList<Tile> result = new ArrayList<>();
+        for (Tile territory : territories) {
+            for (Tile adjacentTile : GameController.getGameController().getAdjacentTiles(territory)) {
+                if (!territories.contains(adjacentTile) && GameController.getGameController().whoseTerritoryIsTileIn(adjacentTile) == null) {
+                    result.add(adjacentTile);
+                }
+            }
+        }
+        return result;
+    }
+
+    public boolean hasExploitableResourceNearby(Resource resource) {    // check if a tile in the territory has the resource and the required improvement to use it
+        for (Tile territory : territories) {
+            if (territory.hasExploitableResource(resource)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isTileBeingWorked(Tile tile) {
@@ -410,37 +536,11 @@ public class City implements Selectable, TurnHandler, combative {
         return (owner.getCapital() == this);
     }
 
-    public void attack(Unit target) {
-        // TODO
-    }
-
-    public void defend(Unit attacker) {
-        // TODO
-    }
-
-    public double calculateEffectiveCombatStrength() {
-        // TODO
-        //TODO +5 Defense if the city has Walls  -> you can use "if(this.hasBuildingType(BuildingType.WALLS))"
-        //TODO +7.5 Defense if the city has Castle
-        return 0;
-    }
-
-    public double calculateEffectiveRangedCombatStrength() {
-        // TODO
-        return 0;
-    }
-
     public void addCitizen() {
-        // MINETODO check it
-        //TODO
         this.citizens.add(new Citizen());
     }
 
     public void killACitizen() {
-        // MINETODO check it
-        // which one??
-        //TODO
-
         if (citizens.isEmpty()) {
             return;
         }
@@ -448,16 +548,10 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public void removeCitizenFromWork(Citizen citizen) {
-        // MineTODO check it & check errors
         citizen.setWorkPlace(null);
     }
 
-    public void emptyWorkable(Workable workable) {
-        // MINETODO
-    }
-
     public void assignCitizenToWorkplace(Workable workPlace, Citizen citizen) {
-        // MINETODO check it check errors...    Amir: errors have been checked in view: the citizen passed is guaranteed to be workless and the tile is guaranteed to be unworked
         citizen.setWorkPlace(workPlace);
     }
 
@@ -469,17 +563,6 @@ public class City implements Selectable, TurnHandler, combative {
         }
         return null;
     }
-
-    private void expandSelf() {
-        // TODO
-    }
-
-    public boolean isDestructible() {
-        // MINETODO check it
-        if (!owner.equals(founder)) return true;
-        return false;
-    }
-
 
     public Civilization getFounder() {
         return founder;
@@ -493,16 +576,13 @@ public class City implements Selectable, TurnHandler, combative {
         this.owner = owner;
     }
 
-    public boolean isIsPuppet() {
-        return isPuppet;
-    }
-
-    public void setIsPuppet(boolean isPuppet) {
-        this.isPuppet = isPuppet;
-    }
-
     public Tile getCentralTile() {
         return centralTile;
+    }
+
+    @Override
+    public Tile getLocation() {
+        return getCentralTile();
     }
 
     public void setTerritories(ArrayList<Tile> territories) {
@@ -549,8 +629,19 @@ public class City implements Selectable, TurnHandler, combative {
         this.range = range;
     }
 
-    public double getHitPoints() {
-        return hitPoints;
+    @Override
+    public int getHitPointsLeft() {
+        return (int) this.hitPoints;
+    }
+
+    @Override
+    public void setHitPoints(int hitPointsLeft) {
+        this.hitPoints = hitPointsLeft;
+    }
+
+    @Override
+    public void reduceHitPoints(int amount) {
+        hitPoints -= amount;
     }
 
     public void setHitPoints(double hitPoints) {
@@ -627,5 +718,13 @@ public class City implements Selectable, TurnHandler, combative {
 
     public ArrayList<Building> getBuildings() {
         return buildings;
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return hasAttackedThisTurn;
+    }
+
+    public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 }

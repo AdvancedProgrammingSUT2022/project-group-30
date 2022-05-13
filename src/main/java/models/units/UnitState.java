@@ -11,7 +11,7 @@ public enum UnitState {
     FORTIFYUNTILHEALED(false),
     GARRISON(false);
 
-    public boolean waitsForCommand;
+    public final boolean waitsForCommand;
 
     private UnitState(boolean waitsForCommand) {
         this.waitsForCommand = waitsForCommand;
@@ -26,5 +26,9 @@ public enum UnitState {
             result.add(state);
         }
         return result;
+    }
+
+    public boolean waitsForCommand() {
+        return waitsForCommand;
     }
 }

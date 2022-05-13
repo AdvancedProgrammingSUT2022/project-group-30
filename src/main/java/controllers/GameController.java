@@ -1,5 +1,7 @@
 package controllers;
 
+import java.util.*;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -7,11 +9,6 @@ import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.LinkedList;
-import java.util.List;
 
 import models.*;
 import models.buildings.Building;
@@ -22,6 +19,12 @@ import models.improvements.ImprovementType;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TileImage;
 import models.interfaces.TurnHandler;
+import models.interfaces.combative;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.technology.Technology;
 import models.units.CombatType;
 import models.units.Unit;
@@ -42,9 +45,8 @@ public class GameController {
     }
 
     public static GameController getGameController() {
-        if (gameController == null) {
+        if (gameController == null)
             gameController = new GameController();
-        }
         return gameController;
     }
 
@@ -98,6 +100,12 @@ public class GameController {
         setMapImageOfCivilization(owner);
     }
 
+    public void createUnit(UnitType type, Civilization owner, Tile location, int initialXP) {
+        Unit newUnit = new Unit(owner, type, location);
+        gameDataBase.getUnits().add(newUnit);
+        setMapImageOfCivilization(owner);
+    }
+
     public void addPlayers(User[] players) {
         gameDataBase.addPlayers(players);
     }
@@ -110,6 +118,161 @@ public class GameController {
         return gameDataBase.getMap().getTile(x, y);
     }
 
+    public boolean canWorkerFixImprovement(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
+            return false;
+        }
+        if(getTypeOfPillagedImprovement(worker) != null) return true;
+        return false;
+    }
+
+    public ImprovementType getTypeOfPillagedImprovement(Unit worker){
+        for (Improvement improvement : worker.getLocation().getImprovements()) {
+            if (improvement.getIsPillaged() && (improvement.getType() != ImprovementType.RAILROAD || improvement.getType() != ImprovementType.ROAD)) {
+                return improvement.getType();
+            }
+        }
+        return null;
+    }
+
+    public boolean canWorkerFixRoute(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
+            return false;
+        }
+        for (Improvement improvement : worker.getLocation().getImprovements()) {
+            if (improvement.getIsPillaged() && (improvement.getType() == ImprovementType.RAILROAD || improvement.getType() == ImprovementType.ROAD)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canWorkerClearRoutes(Unit worker) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (!(worker.getLocation().isImprovementTypeAccessible(ImprovementType.ROAD) ||
+                worker.getLocation().isImprovementTypeAccessible(ImprovementType.RAILROAD))) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canWorkerClearFeature(Unit worker, Feature feature) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (!worker.getLocation().getFeatures().contains(feature)) {
+            return false;
+        }
+        if (worker.getLocation().getCityOfTile() == null || worker.getLocation().getCityOfTile().getOwner() != worker.getOwner()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canWorkerBuildFarmOrMine(Unit worker, ImprovementType type) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(type)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(type.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if ((location.getFeatures().contains(Feature.FOREST) && !owner.hasTechnology(Technology.MINING)) ||
+                (location.getFeatures().contains(Feature.JUNGLE) && !owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                (location.getFeatures().contains(Feature.MARSH) && !owner.hasTechnology(Technology.MASONRY))) {
+            return false;
+        }
+
+        if (!type.isCompatibleWithTile(worker.getLocation())) {
+            if (!((location.getFeatures().contains(Feature.FOREST) && owner.hasTechnology(Technology.MINING)) ||
+                    (location.getFeatures().contains(Feature.JUNGLE) && owner.hasTechnology(Technology.BRONZE_WORKING)) ||
+                    (location.getFeatures().contains(Feature.MARSH) && owner.hasTechnology(Technology.MASONRY)))) {
+                return false;
+            }
+        }
+        for (Resource resource : location.getResourcesAsArrayList()) {
+            if (resource.getPrerequisiteImprovement() == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
+        Tile location = worker.getLocation();
+        Civilization owner = worker.getOwner();
+
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(improvementType)) {
+            return false;
+        }
+        if (location.getCityOfTile() == null || location.getCityOfTile().getOwner() != owner) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(improvementType.getPrerequisiteTechnology())) {
+            return false;
+        }
+        if (!improvementType.isCompatibleWithTile(worker.getLocation())) {
+            return false;
+        }
+        for (Resource resource : location.getResourcesAsArrayList()) {
+            if (resource.getPrerequisiteImprovement() == improvementType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canWorkerBuildRoute(Unit worker, ImprovementType routeType) {
+        if (isWorkerWorking(worker)) {
+            return false;
+        }
+        if (worker.getLocation().containsImprovment(ImprovementType.ROAD) ||
+                worker.getLocation().containsImprovment(ImprovementType.RAILROAD)) {
+            return false;
+        }
+        if (!worker.getOwner().hasTechnology(routeType.getPrerequisiteTechnology())) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isWorkerWorking(Unit worker) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker && tile.getWork().isInProgress()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Work getWorkersWork(Unit worker) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getWork() != null && tile.getWork().getWorker() == worker) {
+                return tile.getWork();
+            }
+        }
+        return null;
+    }
+
     public TileVisibility getTileVisibilityForPlayer(Tile tile) { // returns Visible, Fog of War, or Revealed
         return gameDataBase.getCurrentPlayer().getTileVisibility(tile);
     }
@@ -118,16 +281,44 @@ public class GameController {
         unit.setLocation(destination);
         setMapImageOfCivilization(unit.getOwner());
         awakeAllNearAlertedUnits(unit);
+        unit.resetInactivityDuration();
     }
 
-    private void awakeAllNearAlertedUnits(Unit unit){
+    public boolean canUnitTeleportToTile(UnitType unit, Civilization owner, Tile tile) {
+        if (isTileImpassable(tile)) {
+            return false;
+        }
+        Unit militaryUnitInTile = getMilitaryUnitInTile(tile);
+        Unit civilianUnitInTile = getCivilianUnitInTile(tile);
+        City city = getCityCenteredInTile(tile);
+        if (militaryUnitInTile != null) {
+            if (militaryUnitInTile.getOwner() != owner) {
+                return false;
+            } else if (!unit.isCivilian()) {
+                return false;
+            }
+        }
+        if (civilianUnitInTile != null) {
+            if (civilianUnitInTile.getOwner() != owner) {
+                return false;
+            } else if (unit.isCivilian()) {
+                return false;
+            }
+        }
+        if (city != null && city.getOwner() != owner) {
+            return false;
+        }
+        return true;
+    }
+
+    private void awakeAllNearAlertedUnits(Unit unit) {
         Tile tile = unit.getLocation();
         ArrayList<Tile> adjacetTiles = this.getAdjacentTiles(tile);
-        for(int i = 0; i < adjacetTiles.size(); i++){
+        for (int i = 0; i < adjacetTiles.size(); i++) {
             ArrayList<Unit> units = this.getUnitsInTile(adjacetTiles.get(i));
-            for(int j = 0; j < units.size(); j++){
-                if(!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
-                    units.get(i).setState(UnitState.AWAKE);
+            for (int j = 0; j < units.size(); j++) {
+                if (units.get(j).getOwner() != unit.getOwner() && units.get(j).getState() == UnitState.ALERT) {
+                    units.get(j).setState(UnitState.AWAKE);
                 }
             }
         }
@@ -149,9 +340,6 @@ public class GameController {
             Unit generalUnit = (units.isEmpty() == false) ? units.get(0) : null;
             City city = getCityCenteredInTile(path.get(i));
             if (generalUnit != null && generalUnit.getOwner() != unit.getOwner()) {
-                if (unit.isCivilian() == false && i == path.size() - 1) {
-                    // TODO : attack that tile
-                }
                 continue;
             } else if (generalUnit != null && generalUnit.getOwner() == unit.getOwner()) {
                 if ((generalUnit.isCivilian() && unit.isCivilian()) || (!generalUnit.isCivilian() && !unit.isCivilian())) {
@@ -159,19 +347,28 @@ public class GameController {
                 }
             }
 
-
             if (city != null && city.getOwner() != unit.getOwner()) {   // if there is a hostile city on the path
-                if (unit.isCivilian() != true && i == path.size() - 1) {    // attack it if it was the destination, cancel if not
-                    // TODO : attack that tile
-                }
                 continue;
             }
+
+            if (city != null && city.getOwner() == unit.getOwner()) {
+                if (city.getEntityInProduction() instanceof UnitType) {
+                    UnitType producible = (UnitType) city.getEntityInProduction();
+                    if (producible.isCivilian() == unit.getType().isCivilian()) {
+                        continue;
+                    }
+                }
+            }
+
             destination = path.get(i);
             break;
         }
 
         if (destination != null) {
             moveUnit(unit, destination);
+            if (unit.getType().needsAssmbly()) {
+                unit.disassemble();
+            }
             expendMPForMovementAlongPath(unit, destination);
             updateUnitPath(unit, destination);
         } else {
@@ -182,7 +379,7 @@ public class GameController {
     private void updateUnitPath(Unit unit, Tile destination) {
         ArrayList<Tile> newPath = new ArrayList<>(unit.getPath());
         int index = newPath.indexOf(destination);
-        for(int i = 0; i < index; i++){
+        for (int i = 0; i < index; i++) {
             newPath.remove(0);
         }
         if (newPath.size() == 1) {
@@ -235,6 +432,36 @@ public class GameController {
             if (city.getCentralTile() == tile & city.getOwner() == civilization) {
                 return city;
             }
+        }
+        return null;
+    }
+
+    public boolean doesTileContainEnemyCombative(Tile tile, Civilization reference) {
+        ArrayList<Unit> tileUnits = getUnitsInTile(tile);
+        for (Unit unit : tileUnits) {
+            if (unit.getOwner() != reference) {
+                return true;
+            }
+        }
+        if (getCityCenteredInTile(tile) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public combative getPriorityTargetInTile(Tile tile, Civilization reference) {
+        City city = getCityCenteredInTile(tile);
+        if (city != null && city.getOwner() != reference) {
+            return city;
+        }
+
+        Unit militaryUnit = getMilitaryUnitInTile(tile);
+        if (militaryUnit != null && militaryUnit.getOwner() != reference) {
+            return militaryUnit;
+        }
+        Unit civilianUnit = getCivilianUnitInTile(tile);
+        if (civilianUnit != null && civilianUnit.getOwner() != reference) {
+            return civilianUnit;
         }
         return null;
     }
@@ -315,21 +542,48 @@ public class GameController {
         for (Tile tile : territory) {
             newCity.addTileToTerritory(tile);
         }
-        // TODO : Create palace in city
         newCity.getBuildings().add(new Building(BuildingType.PALACE));
         gameDataBase.getCities().add(newCity);
         if (unit.getOwner().getOriginCapital() == null) {
             unit.getOwner().setCapital(newCity);
         }
 
-        deleteUnit(unit);
+        removeUnit(unit);
     }
 
-    private void deleteUnit(Unit unit) {
+    public void disableTurnBreak() {
+        Civilization player = getCurrentPlayer();
+        player.setisTurnBreakDisabled(true);
+    }
+
+    public void deleteUnit(Unit unit) {     // deletes unit and REFUNDS ITS OWNER
+        unit.getOwner().setGoldCount(unit.getOwner().getGoldCount() + (double) unit.getType().getCost() / (double) 10);
+        for (StrategicResource strategicResource : unit.getType().getPrerequisiteResources().keySet()) {
+            unit.getOwner().addStrategicResource(strategicResource, unit.getType().getPrerequisiteResources().get(strategicResource));
+        }
+        removeUnit(unit);
+    }
+
+    public void removeUnit(Unit unit) {     // just removes the unit, updates fog of war, and nothing else
         if (unit.getOwner().getSelectedEntity() == unit) {
             unit.getOwner().setSelectedEntity(null);
         }
+        if (unit.getType() == UnitType.WORKER && getWorkersWork(unit) != null) {
+            getWorkersWork(unit).stopWork();
+        }
         gameDataBase.getUnits().remove(unit);
+        setMapImageOfCivilization(unit.getOwner());
+    }
+
+    public void destroyCity(City city) {
+        if (city.getOwner().getSelectedEntity() == city) {
+            city.getOwner().setSelectedEntity(null);
+        }
+        for (Tile tile : city.getTerritories()) {
+            tile.removeAllImprovements();
+        }
+        gameDataBase.getCities().remove(city);
+        setMapImageOfCivilization(city.getOwner());
     }
 
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {    // returns an arraylist of all units waiting for commands for the current player
@@ -421,7 +675,60 @@ public class GameController {
         }
     }
 
-    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts too)
+    public boolean canUnitPillage(Unit unit) {
+        if (unit.isCivilian()) {
+            return false;
+        }
+        if (unit.getMovePointsLeft() == 0) {
+            return false;
+        }
+        if (unit.getLocation().getUnpillagedImprovements().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canUnitSetUpForRangedAttack(Unit unit) {
+        return (unit.getType().getCombatType() == CombatType.SIEGE &&
+                !unit.isAssembled() && unit.getMovePointsLeft() >= 1 &&
+                unit.getState().waitsForCommand());
+    }
+
+    public boolean canUnitMeleeAttack(Unit unit) {
+        if (!unit.getState().waitsForCommand() || unit.isCivilian() || unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || unit.hasAttackedThisTurn()) {
+            return false;
+        }
+        ArrayList<Tile> unitVicinity = getAdjacentTiles(unit.getLocation());
+        for (Tile tile : unitVicinity) {
+            if (doesTileContainEnemyCombative(tile, unit.getOwner())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canUnitRangedAttack(Unit unit) {
+        if (!unit.getState().waitsForCommand || unit.isCivilian() || !unit.getType().isRanged() ||
+                unit.getMovePointsLeft() == 0 || !unit.isAssembled() || unit.hasAttackedThisTurn()) {
+            return false;
+        }
+        return true;
+    }
+
+    public void addImprovementToTile(Tile tile, ImprovementType improvementType) {  // Ignores stacking and everything else!
+        Improvement newImprovement = new Improvement(improvementType, getCurrentPlayer());
+        tile.addImprovement(newImprovement);
+    }
+
+    public void pillageUnitsTile(Unit unit) {
+        for (Improvement improvement : unit.getLocation().getImprovements()) {
+            improvement.setIsPillaged(true);
+        }
+        unit.setMovePointsLeft(0);
+    }
+
+    public City whoseTerritoryIsTileInButIsNotTheCenterOf(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center does not count)
         for (City city : gameDataBase.getCities()) {
             if (city.getTerritories().contains(tile) && city.getCentralTile() != tile) {
                 return city;
@@ -430,23 +737,31 @@ public class GameController {
         return null;
     }
 
+    public City whoseTerritoryIsTileIn(Tile tile) {     // If the tile is located in the citie's territory, returns the city(city center counts)
+        for (City city : gameDataBase.getCities()) {
+            if (city.getTerritories().contains(tile)) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public void addTileToCityTerritory(City city, Tile tile) {
+        city.addTileToTerritory(tile);
+        setMapImageOfCivilization(city.getOwner());
+    }
+
     public boolean areTwoTilesAdjacent(Tile tile1, Tile tile2) {
         int x = tile1.findTileXCoordinateInMap();
         int y = tile1.findTileYCoordinateInMap();
         int x2 = tile2.findTileXCoordinateInMap();
         int y2 = tile2.findTileYCoordinateInMap();
-        if (Math.abs(x - x2) > 1 || Math.abs(y - y2) > 1) {
-            return false;
-        }
+        if (Math.abs(x - x2) > 1 || Math.abs(y - y2) > 1) return false;
         if (x % 2 == 0) {
-            if (y2 - y == 1 && x != x2) {
-                return false;
-            }
+            if (y2 - y == 1 && x != x2) return false;
             return true;
         } else {
-            if (y - y2 == 1 && x != x2) {
-                return false;
-            }
+            if (y - y2 == 1 && x != x2) return false;
             return true;
         }
     }
@@ -507,7 +822,7 @@ public class GameController {
             return MPCostEnum.IMPASSABLE;
         if (hasCommonRoadOrRailRoad(sourceTile, destinationTile) && ((getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRoadOfTile().getFounder())).getFriendliness() >= 0) || (getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), sourceTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0 && getDiplomaticRelationsMap(new CivilizationPair(unit.getOwner(), destinationTile.getRailRoadOfTile().getFounder())).getFriendliness() >= 0)))
             hasCommonRoadOrRailRoad = true;
-        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad && unit.getOwner().getTechnologies().contains(Technology.CONSTRUCTION)))
+        if (hasCommonRiver(sourceTile, destinationTile) && !(hasCommonRoadOrRailRoad && unit.getOwner().getTechnologies().getLearnedTechnologies().contains(Technology.CONSTRUCTION)))
             return MPCostEnum.EXPENSIVE;
         if (isInZOC(unit, sourceTile) && isInZOC(unit, destinationTile)) return MPCostEnum.EXPENSIVE;
         if (!unit.getType().equals(UnitType.SCOUT))
@@ -614,6 +929,10 @@ public class GameController {
         return deleteRepetitiveElementsFromArrayList(tiles);
     }
 
+    public ArrayList<Tile> getVisibleTilesByUnit(Unit unit) {
+        return getVisibleTilesFromTile(unit.getLocation(), unit.getType().getCombatType().equals(CombatType.SIEGE) ? 1 : 2);
+    }
+
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         ArrayList<Tile> tiles = new ArrayList<>();
         tiles.addAll(getVisibleTilesByCities(civilization));
@@ -656,7 +975,7 @@ public class GameController {
         return GameMap.getGameMap().getMap().length;
     }
 
-    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile){
+    public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         ArrayList<Tile> pathTiles = new ArrayList<>();
         TileGraph graph = this.makeTilesGraph(unit, sourceTile, destinationTile);
         GraphNode destinationNode = graph.getNodeByTile(destinationTile);
@@ -667,16 +986,16 @@ public class GameController {
         return pathTiles;
     }
 
-    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source){
+    private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source) {
         source.setDistance(0);
         HashSet<GraphNode> settledNodes = new HashSet<>();
         HashSet<GraphNode> unsettledNodes = new HashSet<>();
         unsettledNodes.add(source);
-        while(!unsettledNodes.isEmpty()){
+        while (!unsettledNodes.isEmpty()) {
             GraphNode currentNode = this.getLowestDistanceNode(unsettledNodes);
             unsettledNodes.remove(currentNode);
-            for(Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()){
-                if(!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()){
+            for (Map.Entry<GraphNode, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()) {
+                if (!settledNodes.contains(adjacencyPair.getKey()) && currentNode.getDistance() + adjacencyPair.getValue() < adjacencyPair.getKey().getDistance()) {
                     adjacencyPair.getKey().setDistance(currentNode.getDistance() + adjacencyPair.getValue());
                     List<GraphNode> shortestPath = new LinkedList<>(currentNode.getShortestPath());
                     shortestPath.add(currentNode);
@@ -689,11 +1008,11 @@ public class GameController {
         return graph;
     }
 
-    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes){
+    private GraphNode getLowestDistanceNode(HashSet<GraphNode> unsettledNodes) {
         GraphNode lowestDistanceNode = null;
         int lowestDistance = Integer.MAX_VALUE;
         for (GraphNode unsettledNode : unsettledNodes) {
-            if(unsettledNode.getDistance() < lowestDistance){
+            if (unsettledNode.getDistance() < lowestDistance) {
                 lowestDistance = unsettledNode.getDistance();
                 lowestDistanceNode = unsettledNode;
             }
@@ -701,17 +1020,17 @@ public class GameController {
         return lowestDistanceNode;
     }
 
-    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination){
+    private TileGraph makeTilesGraph(Unit unit, Tile origin, Tile destination) {
         TileGraph graph = new TileGraph();
         GraphNode sourceNode = new GraphNode(origin);
         graph.addNode(sourceNode);
-        while(!graph.isTileAddedToGraph(destination)){
+        while (!graph.isTileAddedToGraph(destination)) {
             ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
-            for (int i = 0 ; i < nodes.size(); i++) {
+            for (int i = 0; i < nodes.size(); i++) {
                 GraphNode node = nodes.get(i);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                    if (!graph.isTileAddedToGraph(adjacentTile)) {
                         MPCostInterface mpCost;
                         if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
                             GraphNode newNode = new GraphNode(adjacentTile);
@@ -726,13 +1045,13 @@ public class GameController {
                 }
             }
         }
-        for(int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
-            for (int j = 0 ; j < nodes.size(); j++) {
+            for (int j = 0; j < nodes.size(); j++) {
                 GraphNode node = nodes.get(j);
                 ArrayList<Tile> adjacentTiles = this.getAdjacentTiles(node.getTile());
                 for (Tile adjacentTile : adjacentTiles) {
-                    if(!graph.isTileAddedToGraph(adjacentTile)) {
+                    if (!graph.isTileAddedToGraph(adjacentTile)) {
                         MPCostInterface mpCost;
                         if ((mpCost = this.calculateRequiredMps(unit, node.getTile(), adjacentTile)) != MPCostEnum.IMPASSABLE) {
                             GraphNode newNode = new GraphNode(adjacentTile);
@@ -843,4 +1162,123 @@ public class GameController {
         }
         return warInfos;
     }
+
+    public ArrayList<Notification> getCivilizationNewNotification() {
+        ArrayList<Notification> allNotifications = this.getCurrentPlayer().getNotifications();
+        ArrayList<Notification> newNotifications = new ArrayList<>();
+        for (int i = 0; i < allNotifications.size(); i++) {
+            if (!allNotifications.get(i).getIsSeen()) {
+                newNotifications.add(allNotifications.get(i));
+            }
+        }
+        return newNotifications;
+    }
+
+    public void seenAllNotifications() {
+        ArrayList<Notification> notifications = this.getCurrentPlayer().getNotifications();
+        for (int i = 0; i < notifications.size(); i++) {
+            notifications.get(i).setIsSeen(true);
+        }
+    }
+
+    public int calculateScoreForCivilization(Civilization civilization) {
+        int score = 0;
+        score += this.calculateCivilizationTerritorySize(civilization) * 10;
+        score += this.calculateSumOfMilitaryUnitsCostsForCivilization(civilization);
+        score += this.calculateEffectOfOutputOnScore(civilization);
+        score += civilization.getGoldCount();
+        score += this.calculateNumberOfResourcesForCivilization(civilization) * 10;
+        score += civilization.getTechnologies().getLearnedTechnologies().size() * 10;
+        score += civilization.getAllImprovements().size() * 5;
+        return score;
+    }
+
+    public int calculateCivilizationTerritorySize(Civilization civilization) {
+        ArrayList<City> cities = civilization.getCities();
+        int territorySize = 0;
+        for (City city : cities) {
+            territorySize += city.getTerritories().size();
+        }
+        return territorySize;
+    }
+
+    public int calculateSumOfMilitaryUnitsCostsForCivilization(Civilization civilization) {
+        ArrayList<Unit> units = civilization.getMilitaryUnits();
+        int sum = 0;
+        for (Unit unit : units) {
+            sum += unit.getType().getCost();
+        }
+        return sum;
+    }
+
+    public int calculateEffectOfOutputOnScore(Civilization civilization) {
+        return (int) civilization.calculateNetGoldProduction() * 10 + (int) civilization.calculateTotalBeakers() * 10 + civilization.calculateTotalFoodFromCities() * 10;
+    }
+
+    public int calculateNumberOfResourcesForCivilization(Civilization civilization) {
+        HashMap<LuxuryResource, Integer> luxuryResources = civilization.getLuxuryResources();
+        HashMap<StrategicResource, Integer> strategicResources = civilization.getStrategicResources();
+        int count = 0;
+        for (Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()) {
+            if (entry.getValue() > 0) {
+                count += entry.getValue();
+            }
+        }
+        for (Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()) {
+            if (entry.getValue() > 0) {
+                count += entry.getValue();
+            }
+        }
+        return count;
+    }
+
+    public void sortPlayersInOrderOfScore() {
+        GameDataBase gameDatabase = GameDataBase.getGameDataBase();
+        for (int i = 0; i < gameDatabase.getPlayers().size(); i++) {
+            for (int j = i + 1; j < gameDatabase.getPlayers().size(); j++) {
+                Player firstPlayer = gameDatabase.getPlayers().get(i);
+                Player secondPlayer = gameDatabase.getPlayers().get(j);
+                int firstCivScore = this.calculateScoreForCivilization(firstPlayer.getCivilization());
+                int secondCivScore = this.calculateScoreForCivilization(secondPlayer.getCivilization());
+                if (firstCivScore < secondCivScore) {
+                    Player temp = firstPlayer;
+                    firstPlayer = secondPlayer;
+                    secondPlayer = temp;
+                }
+            }
+        }
+    }
+
+    public int calculateHighestScore() {
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int highestScore = 0;
+        for (Player player : players) {
+            if (this.calculateScoreForCivilization(player.getCivilization()) > highestScore) {
+                highestScore = this.calculateScoreForCivilization(player.getCivilization());
+            }
+        }
+        return highestScore;
+    }
+
+    public int calculateLowestScore() {
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int lowestScore = this.calculateScoreForCivilization(players.get(0).getCivilization());
+        for (Player player : players) {
+            if (this.calculateScoreForCivilization(player.getCivilization()) < lowestScore) {
+                lowestScore = this.calculateScoreForCivilization(player.getCivilization());
+            }
+        }
+        return lowestScore;
+    }
+
+    public double calculateAverageScore() {
+        ArrayList<Player> players = GameDataBase.getGameDataBase().getPlayers();
+        int averageScore = 0;
+        for (Player player : players) {
+            averageScore += this.calculateScoreForCivilization(player.getCivilization());
+        }
+        averageScore /= players.size();
+        return averageScore;
+    }
+
 }

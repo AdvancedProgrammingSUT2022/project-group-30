@@ -17,10 +17,9 @@ public class Unit implements Selectable, TurnHandler, combative {
     private Tile location;
     private int hitPointsLeft;
     private int movePointsLeft;
-    private int experiencePoints; // note : won't be used if we don't implement unit upgrades
     private UnitState state;
     private boolean isAssembled;
-    private boolean hasBeenInactive;
+    private boolean hasAttackedThisTurn;
     private int inactivityDuration; // measured in turns, starts at 0 when unit makes any move(attacks, moves, etc.)
     private int stateDuration;
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
@@ -33,9 +32,8 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.location = location;
         hitPointsLeft = type.getHitPoints();
         movePointsLeft = type.getMovementSpeed();
-        experiencePoints = 0;
         state = UnitState.AWAKE;
-        hasBeenInactive = true;
+        hasAttackedThisTurn = false;
         inactivityDuration = 0;
         stateDuration = 0;
         path = null;
@@ -50,9 +48,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         Unit image = new Unit(owner, type, location);
         image.hitPointsLeft = hitPointsLeft;
         image.movePointsLeft = movePointsLeft;
-        image.experiencePoints = experiencePoints;
         image.state = state;
-        image.hasBeenInactive = hasBeenInactive;
         image.inactivityDuration = inactivityDuration;
         image.stateDuration = stateDuration;
         image.isAssembled = isAssembled;
@@ -68,14 +64,38 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        // TODO : very much incomplete
+        if (!hasAttackedThisTurn && movePointsLeft == type.movementSpeed) {
+            inactivityDuration++;
+        }
+
+        stateDuration++;
+        hasAttackedThisTurn = false;
         movePointsLeft = type.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
-        // TODO : handle state duration, inactivity time, and healing(if the state is FORTIFYUNTILHEALED)
+
+        if (inactivityDuration >= 1) {
+            City central = GameController.getGameController().getCityCenteredInTile(location);
+            City territorial = GameController.getGameController().whoseTerritoryIsTileInButIsNotTheCenterOf(location);
+            if (central != null && central.getOwner() == owner) {
+                hitPointsLeft += 3;
+            } else if (territorial != null && territorial.getOwner() != owner) {
+                hitPointsLeft += 2;
+            } else {
+                hitPointsLeft += 1;
+            }
+            hitPointsLeft = Math.min(hitPointsLeft, type.getHitPoints());
+            if (hitPointsLeft == type.getHitPoints() && state == UnitState.FORTIFYUNTILHEALED) {
+                setState(UnitState.AWAKE);
+            }
+        }
     }
 
     public void assemble() {
         isAssembled = true;
+    }
+
+    public void disassemble() {
+        isAssembled = false;
     }
 
     public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
@@ -87,31 +107,10 @@ public class Unit implements Selectable, TurnHandler, combative {
         }
     }
 
-    public void attack(Unit target){
-        //TODO
-    }
-
-    public void defend(Unit attacker){
-        //TODO
-    }
-
-    public double calculateEffectiveCombatStrength() {
-        // TODO : handle FORTIFY state on defensiveStrength and garrison effect
-        return 0;
-    }
-
-    public double calculateEffectiveRangedCombatStrength() {
-        // TODO
-        return 0;
-    }
-
-    public void heal() { // replaces the setter for hitPointsLeft
-        // TODO
-    }
-
     public boolean isWaitingForCommand() {
-        // TODO : might be incomplete
-
+        if (type == UnitType.WORKER && GameController.getGameController().isWorkerWorking(this)) {
+            return false;
+        }
         if (state.waitsForCommand == false || path != null) { // if it is in an inactive state like fortified or sleeping, return false
             return false;
         }
@@ -122,15 +121,11 @@ public class Unit implements Selectable, TurnHandler, combative {
         }
     }
 
-    public void move() { // like a setter for location : but it handles other things as well
-        // TODO
-        hasBeenInactive = false;
-    }
-
     public Civilization getOwner() {
         return this.owner;
     }
 
+    @Override
     public Tile getLocation() {
         return this.location;
     }
@@ -139,9 +134,21 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.location = location;
     }
 
+    @Override
     public int getHitPointsLeft() {
         return this.hitPointsLeft;
     }
+
+    @Override
+    public void setHitPoints(int hitPointsLeft) {
+        this.hitPointsLeft = hitPointsLeft;
+    }
+
+    @Override
+    public void reduceHitPoints(int amount) {
+        hitPointsLeft -= amount;
+    }
+
 
     public void setHitPointsLeft(int hitPointsLeft) {
         this.hitPointsLeft = hitPointsLeft;
@@ -155,15 +162,13 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.movePointsLeft = movePointsLeft;
     }
 
-    public int getExperiencePoints() {
-        return this.experiencePoints;
-    }
-
-    public void setExperiencePoints(int experiencePoints) {
-        this.experiencePoints = experiencePoints;
-    }
-
     public void setState(UnitState state){
+        if(state != UnitState.AWAKE){
+            this.path = null;
+        }
+        if (this.state != state) {
+            stateDuration = 0;
+        }
         this.state = state;
     }
 
@@ -173,6 +178,10 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public int getInactivityDuration() {
         return this.inactivityDuration;
+    }
+
+    public void resetInactivityDuration() {
+        this.inactivityDuration = 0;
     }
 
     public int getStateDuration() {
@@ -193,5 +202,13 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public boolean isCivilian() {
         return (type.getCombatType() == CombatType.CIVILIAN);
+    }
+
+    public boolean hasAttackedThisTurn() {
+        return hasAttackedThisTurn;
+    }
+
+    public void setHasAttackedThisTurns(boolean hasAttackedThisTurn) {
+        this.hasAttackedThisTurn = hasAttackedThisTurn;
     }
 }

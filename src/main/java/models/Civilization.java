@@ -1,7 +1,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import controllers.GameController;
@@ -16,6 +15,8 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
+import models.units.CombatType;
 import models.units.Unit;
 import utilities.Debugger;
 
@@ -23,13 +24,14 @@ public class Civilization implements TurnHandler {
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
+    private boolean isTurnBreakDisabled = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
     private HashMap<StrategicResource, Integer> strategicResources = StrategicResource.makeRawHashMap();
-    private ArrayList<Technology> technologies = new ArrayList<>();
+    private TechnologyMap technologies = new TechnologyMap();
     private double goldCount;
-    private double beakerCount; // NOTE TO MAHYAR: read goToNextTurn(): the part about gold.
+    private double beakerCount;
     private Technology researchProject;
-    private HashMap<Technology, Integer> researchReserve = new HashMap<>();
+    private HashMap<Technology, Double> researchReserve = new HashMap<>();
     private double happiness;
     private double diplomaticCredit;
     private double score;
@@ -37,14 +39,13 @@ public class Civilization implements TurnHandler {
     private City originCapital;
     private Tile frameBase;
     private Selectable selectedEntity;
+    private ArrayList<Notification> notifications = new ArrayList<>();
 
     public Civilization(String name) {
         this.name = name;
         this.goldCount = 0;
         this.beakerCount = 0;
-        // 20?? manteghie?
         this.happiness = 20;
-        // 20??
         this.diplomaticCredit = 20;
         this.score = 0;
         this.capital = null;
@@ -87,6 +88,17 @@ public class Civilization implements TurnHandler {
                 units.add(unit);
         }
         return units;
+    }
+
+    public ArrayList<Unit> getMilitaryUnits() {
+        ArrayList<Unit> allUnits = this.getUnits();
+        ArrayList<Unit> militaryUnits = new ArrayList<>();
+        for(int i = 0; i < allUnits.size(); i++){
+            if(allUnits.get(i).getType().getCombatType() != CombatType.CIVILIAN){
+                militaryUnits.add(allUnits.get(i));
+            }
+        }
+        return militaryUnits;
     }
 
     public ArrayList<City> getCities() {
@@ -132,9 +144,15 @@ public class Civilization implements TurnHandler {
     }
 
     public void goToNextTurn() {
-        // TODO
-        // TODO FOR MAHYAR: get total beaker count(science output) for this civ with the calculate totalBeakers method and use it for research
-
+        this.beakerCount += this.calculateTotalBeakers();
+        if(this.researchProject != null){
+            if(this.beakerCount >= this.researchProject.getCost()){
+                this.beakerCount -= this.researchProject.getCost();
+                this.technologies.learnTechnology(this.researchProject);
+                this.addNotificationForResearch(this.researchProject);
+                this.researchProject = null;
+            }
+        }
         int goldChange = (int) calculateGoldChange();
         goldCount += goldChange;
         if (goldCount < 0) {
@@ -142,29 +160,21 @@ public class Civilization implements TurnHandler {
             beakerCount = Math.max(0, beakerCount);
             goldCount = 0;
         }
+        this.happiness += this.calculateHappinessChanges();
+    }
 
-        for (City city : getCities()) {
-            ArrayList<Resource> collectibleResourcesInput = city.calculateCollectibleResourceOutput();
-            for (Resource resource : collectibleResourcesInput) {
-                if (resource instanceof LuxuryResource) {
-                    luxuryResources.put((LuxuryResource) resource, luxuryResources.get(resource) + 1);
-                }
-                if (resource instanceof StrategicResource) {
-                    strategicResources.put((StrategicResource) resource, strategicResources.get(resource) + 1);
-                }
+    public void payStrategicResources(HashMap<StrategicResource, Integer> amount) {
+        for (StrategicResource strategicResource : amount.keySet()) {
+            int newValue = strategicResources.get(strategicResource) - amount.get(strategicResource);
+            if (newValue < 0) {
+                Debugger.debug("Civilization.java payStrategicResources method is making a value negative!");
+                return;
             }
+            strategicResources.put(strategicResource, newValue);
         }
     }
 
-    public void setNextResearchProject(Technology technology) {
-        //TODO
-    }
-
-    private void updateStrategicResources() {
-        // TODO
-    }
-
-    public double calculateHappiness() {
+    public double calculateHappinessChanges() {
         double happiness = 0;
         for (City city : this.getCities()) {
             happiness += city.calculateHappiness();
@@ -216,37 +226,8 @@ public class Civilization implements TurnHandler {
         return this.calculateNetGoldProduction() - this.calculateTotalCosts();
     }
 
-    public ArrayList<Producible> findUnlockedProducibles() {
-        // TODO
-        return null;
-    }
-
-    public double calculateTotalPopulation() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateCityCount() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateAnnexedCityCount() {
-        // TODO
-        return 0;
-    }
-
-    public double calculateLuxuryResourceType() {
-        // TODO
-        return 0;
-    }
-
     public boolean hasTechnology(Technology technology) {
-        // TODO : THIS IS FOR DEBUGGING, DELETE THIS
-        // TODO
-        ArrayList<Technology> techs = new ArrayList<>();
-        techs.addAll(Arrays.asList(Technology.AGRICULTURE, Technology.ARCHERY));
-        return techs.contains(technology);
+        return technologies.isTechnologyLearned(technology);
     }
 
     public boolean hasStrategicResources(HashMap<StrategicResource, Integer> resources) {
@@ -258,7 +239,6 @@ public class Civilization implements TurnHandler {
         return true;
     }
 
-
     public double getGoldCount() {
         return this.goldCount;
     }
@@ -269,6 +249,30 @@ public class Civilization implements TurnHandler {
 
     public HashMap<LuxuryResource, Integer> getLuxuryResources() {
         return luxuryResources;
+    }
+
+    public void addLuxuryResource(LuxuryResource resource) {
+        luxuryResources.put(resource, luxuryResources.get(resource) + 1);
+    }
+
+    public void addLuxuryResource(LuxuryResource resource, int amount) {
+        luxuryResources.put(resource, luxuryResources.get(resource) + amount);
+    }
+
+    public void addStrategicResource(StrategicResource resource) {
+        strategicResources.put(resource, strategicResources.get(resource) + 1);
+    }
+
+    public void addStrategicResource(StrategicResource resource, int amount) {
+        strategicResources.put(resource, strategicResources.get(resource) + amount);
+    }
+
+    public void addGold(int amount) {
+        goldCount += amount;
+    }
+
+    public void decreaseGold(int amount) {
+        goldCount -= amount;
     }
 
     public void setLuxuryResources(HashMap<LuxuryResource, Integer> luxuryResources) {
@@ -283,11 +287,11 @@ public class Civilization implements TurnHandler {
         this.strategicResources = strategicResources;
     }
 
-    public ArrayList<Technology> getTechnologies() {
+    public TechnologyMap getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(ArrayList<Technology> technologies) {
+    public void setTechnologies(TechnologyMap technologies) {
         this.technologies = technologies;
     }
 
@@ -307,11 +311,11 @@ public class Civilization implements TurnHandler {
         this.researchProject = researchProject;
     }
 
-    public HashMap<Technology, Integer> getResearchReserve() {
+    public HashMap<Technology, Double> getResearchReserve() {
         return researchReserve;
     }
 
-    public void setResearchReserve(HashMap<Technology, Integer> researchReserve) {
+    public void setResearchReserve(HashMap<Technology, Double> researchReserve) {
         this.researchReserve = researchReserve;
     }
 
@@ -352,6 +356,14 @@ public class Civilization implements TurnHandler {
 
     public City getOriginCapital() {
         return originCapital;
+    }
+
+    public void setisTurnBreakDisabled(boolean isTurnBreakDisabled) {
+        this.isTurnBreakDisabled = isTurnBreakDisabled;
+    }
+
+    public boolean isTurnBreakDisabled() {
+        return isTurnBreakDisabled;
     }
 
     public void setFrameBase(Tile tile) {
@@ -395,4 +407,57 @@ public class Civilization implements TurnHandler {
         }
         return null;
     }
+
+    public void addNotificationForResearch(Technology researchProject){
+        String technologyName = researchProject.getName();
+        String notificationText = "You have learned " + technologyName + " technology!";
+        Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+    }
+
+    public void addNotificationForProduction(Producible production){
+        String productionName = production.getName();
+        String notificationText = "City production is finished : " + productionName + " !";
+        Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+    }
+
+    public void addNotification(String text) {
+        Notification notification = new Notification(text, false, GameDataBase.getGameDataBase().getTurnNumber());
+        notifications.add(notification);
+    }
+
+    public void setNotifications(ArrayList<Notification> notifications){
+        this.notifications = notifications;
+    }
+
+    public ArrayList<Notification> getNotifications(){
+        return this.notifications;
+    }
+
+    public int calculateTotalFoodFromCities(){
+        ArrayList<City> cities = this.getCities();
+        int sum = 0;
+        for (City city : cities) {
+            sum += city.calculateOutput().getFood();
+        }
+        return sum;
+    }
+
+    public ArrayList<Improvement> getAllImprovements(){
+        ArrayList<Improvement> improvements = new ArrayList<>();
+        GameMap map = GameMap.getGameMap();
+        Tile [][] tiles = map.getMap();
+        for(int i = 0; i < tiles.length; i++){
+            for(int j = 0; j < tiles[i].length; j++){
+                ArrayList<Improvement> tilesImprovements = tiles[i][j].getImprovements();
+                for(int k = 0; k < tilesImprovements.size(); k++){
+                    if(tilesImprovements.get(k).getFounder().equals(this)){
+                        improvements.add(tilesImprovements.get(k));
+                    }
+                }
+            }
+        }
+        return improvements;
+    }
+
+
 }

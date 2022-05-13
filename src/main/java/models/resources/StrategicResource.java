@@ -33,7 +33,7 @@ public class StrategicResource extends Resource {
             Technology.IRON_WORKING, "Iron");
 
     public StrategicResource(Output output, ImprovementType prerequisiteImprovement,
-            ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
+                             ArrayList<TerrainProperty> allowedTerrains, Technology prerequisTechnology, String name) {
         super(output, prerequisiteImprovement, allowedTerrains, name);
         this.prerequisiteTechnology = prerequisTechnology;
         if (allTypes == null) {
@@ -62,12 +62,7 @@ public class StrategicResource extends Resource {
         return new ArrayList<StrategicResource>(allTypes);
     }
 
-    public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) { // utility
-                                                                                                                   // function
-                                                                                                                   // used
-                                                                                                                   // in
-                                                                                                                   // UnitType
-                                                                                                                   // constructor
+    public static HashMap<StrategicResource, Integer> getRequiredResourceHashMap(StrategicResource... resources) {
         HashMap<StrategicResource, Integer> result = new HashMap<>();
         for (StrategicResource resource : resources) {
             if (result.containsKey(resource)) {
@@ -77,5 +72,14 @@ public class StrategicResource extends Resource {
             }
         }
         return result;
+    }
+
+    public static StrategicResource getStrategicResourceByName(String name) {
+        for (StrategicResource type : allTypes) {
+            if (type.getName().equalsIgnoreCase(name)) {
+                return type;
+            }
+        }
+        return null;
     }
 }

@@ -16,53 +16,53 @@ the difference between unlocking and learning are important, because the methods
 */
 
 public enum Technology {
-    AGRICULTURE(0, new ArrayList<Technology>()),
-    ANIMAL_HUSBANDRY(0, new ArrayList<Technology>(Arrays.asList(AGRICULTURE))),
-    ARCHERY(0, new ArrayList<Technology>(Arrays.asList(AGRICULTURE))),
-    MINING(0, new ArrayList<Technology>(Arrays.asList(AGRICULTURE))),
-    BRONZE_WORKING(0, new ArrayList<Technology>(Arrays.asList(MINING))),
-    POTTERY(0, new ArrayList<Technology>(Arrays.asList(AGRICULTURE))),
-    CALENDAR(0, new ArrayList<Technology>(Arrays.asList(POTTERY))),
-    MASONRY(0, new ArrayList<Technology>(Arrays.asList(MINING))),
-    THE_WHEEL(0, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY))),
-    TRAPPING(0, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY))),
-    WRITING(0, new ArrayList<Technology>(Arrays.asList(POTTERY))),
-    CONSTRUCTION(0, new ArrayList<Technology>(Arrays.asList(MASONRY))),
-    HORSEBACK_RIDING(0, new ArrayList<Technology>(Arrays.asList(THE_WHEEL))),
-    IRON_WORKING(0, new ArrayList<Technology>(Arrays.asList(BRONZE_WORKING))),
-    MATHEMATICS(0, new ArrayList<Technology>(Arrays.asList(THE_WHEEL, ARCHERY))),
-    PHILOSOPHY(0, new ArrayList<Technology>(Arrays.asList(WRITING))),
-    CIVIL_SERVICE(0, new ArrayList<Technology>(Arrays.asList(PHILOSOPHY, TRAPPING))),
-    CURRENCY(0, new ArrayList<Technology>(Arrays.asList(MATHEMATICS))),
-    CHIVALRY(0, new ArrayList<Technology>(Arrays.asList(CIVIL_SERVICE, HORSEBACK_RIDING, CURRENCY))),
-    ENGINEERING(0, new ArrayList<Technology>(Arrays.asList(MATHEMATICS, CONSTRUCTION))),
-    MACHINERY(0, new ArrayList<Technology>(Arrays.asList(ENGINEERING))),
-    METAL_CASTING(0, new ArrayList<Technology>(Arrays.asList(IRON_WORKING))),
-    PHYSICS(0, new ArrayList<Technology>(Arrays.asList(ENGINEERING, METAL_CASTING))),
-    STEEL(0, new ArrayList<Technology>(Arrays.asList(METAL_CASTING))),
-    THEOLOGY(0, new ArrayList<Technology>(Arrays.asList(CALENDAR, PHILOSOPHY))),
-    EDUCATION(0, new ArrayList<Technology>(Arrays.asList(THEOLOGY))),
-    ACOUSTICS(0, new ArrayList<Technology>(Arrays.asList(EDUCATION))),
-    ARCHAEOLOGY(0, new ArrayList<Technology>(Arrays.asList(ACOUSTICS))),
-    BANKING(0, new ArrayList<Technology>(Arrays.asList(EDUCATION, CHIVALRY))),
-    GUNPOWDER(0, new ArrayList<Technology>(Arrays.asList(PHYSICS, STEEL))),
-    CHEMISTRY(0, new ArrayList<Technology>(Arrays.asList(GUNPOWDER))),
-    PRINTING_PRESS(0, new ArrayList<Technology>(Arrays.asList(MACHINERY, PHYSICS))),
-    ECONOMICS(0, new ArrayList<Technology>(Arrays.asList(BANKING, PRINTING_PRESS))),
-    FERTILIZER(0, new ArrayList<Technology>(Arrays.asList(CHEMISTRY))),
-    METALLURGY(0, new ArrayList<Technology>(Arrays.asList(GUNPOWDER))),
-    MILITARY_SCIENCE(0, new ArrayList<Technology>(Arrays.asList(ECONOMICS, CHEMISTRY))),
-    RIFLING(0, new ArrayList<Technology>(Arrays.asList(METALLURGY))),
-    SCIENTIFIC_THEORY(0, new ArrayList<Technology>(Arrays.asList(ACOUSTICS))),
-    BIOLOGY(0, new ArrayList<Technology>(Arrays.asList(ARCHAEOLOGY, SCIENTIFIC_THEORY))),
-    STEAM_POWER(0, new ArrayList<Technology>(Arrays.asList(SCIENTIFIC_THEORY, MILITARY_SCIENCE))),
-    DYNAMITE(0, new ArrayList<Technology>(Arrays.asList(FERTILIZER, RIFLING))),
-    ELECTRICITY(0, new ArrayList<Technology>(Arrays.asList(BIOLOGY, STEAM_POWER))),
-    RADIO(0, new ArrayList<Technology>(Arrays.asList(ELECTRICITY))),
-    RAILROAD(0, new ArrayList<Technology>(Arrays.asList(STEAM_POWER))),
-    REPLACEABLE_PARTS(0, new ArrayList<Technology>(Arrays.asList(STEAM_POWER))),
-    COMBUSTION(0, new ArrayList<Technology>(Arrays.asList(REPLACEABLE_PARTS, RAILROAD, DYNAMITE))),
-    TELEGRAPH(0, new ArrayList<Technology>(Arrays.asList(ELECTRICITY)));
+    AGRICULTURE(10, new ArrayList<Technology>(), "Agriculture"),
+    ANIMAL_HUSBANDRY(1000, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Animal Husbandry"),
+    ARCHERY(10, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Archery"),
+    MINING(10, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Mining"),
+    BRONZE_WORKING(10, new ArrayList<Technology>(Arrays.asList(MINING)), "Bronze Working"),
+    POTTERY(10, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Pottery"),
+    CALENDAR(10, new ArrayList<Technology>(Arrays.asList(POTTERY)), "Calendar"),
+    MASONRY(10, new ArrayList<Technology>(Arrays.asList(MINING)), "Masonry"),
+    THE_WHEEL(10, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY)), "The Wheel"),
+    TRAPPING(10, new ArrayList<Technology>(Arrays.asList(ANIMAL_HUSBANDRY)), "Trapping"),
+    WRITING(10, new ArrayList<Technology>(Arrays.asList(POTTERY)), "Writing"),
+    CONSTRUCTION(10, new ArrayList<Technology>(Arrays.asList(MASONRY)), "Construction"),
+    HORSEBACK_RIDING(10, new ArrayList<Technology>(Arrays.asList(THE_WHEEL)), "Horseback Riding"),
+    IRON_WORKING(10, new ArrayList<Technology>(Arrays.asList(BRONZE_WORKING)), "Iron Working"),
+    MATHEMATICS(10, new ArrayList<Technology>(Arrays.asList(THE_WHEEL, ARCHERY)), "Mathematics"),
+    PHILOSOPHY(10, new ArrayList<Technology>(Arrays.asList(WRITING)), "Philosophy"),
+    CIVIL_SERVICE(10, new ArrayList<Technology>(Arrays.asList(PHILOSOPHY, TRAPPING)), "Civil Service"),
+    CURRENCY(10, new ArrayList<Technology>(Arrays.asList(MATHEMATICS)), "Currency"),
+    CHIVALRY(10, new ArrayList<Technology>(Arrays.asList(CIVIL_SERVICE, HORSEBACK_RIDING, CURRENCY)), "Chivalry"),
+    ENGINEERING(10, new ArrayList<Technology>(Arrays.asList(MATHEMATICS, CONSTRUCTION)), "Engineering"),
+    MACHINERY(10, new ArrayList<Technology>(Arrays.asList(ENGINEERING)), "Machinery"),
+    METAL_CASTING(10, new ArrayList<Technology>(Arrays.asList(IRON_WORKING)), "Metal Casting"),
+    PHYSICS(10, new ArrayList<Technology>(Arrays.asList(ENGINEERING, METAL_CASTING)), "Physics"),
+    STEEL(10, new ArrayList<Technology>(Arrays.asList(METAL_CASTING)), "Steel"),
+    THEOLOGY(10, new ArrayList<Technology>(Arrays.asList(CALENDAR, PHILOSOPHY)), "Theology"),
+    EDUCATION(10, new ArrayList<Technology>(Arrays.asList(THEOLOGY)), "Education"),
+    ACOUSTICS(10, new ArrayList<Technology>(Arrays.asList(EDUCATION)), "Acoustics"),
+    ARCHAEOLOGY(10, new ArrayList<Technology>(Arrays.asList(ACOUSTICS)), "Archaeology"),
+    BANKING(10, new ArrayList<Technology>(Arrays.asList(EDUCATION, CHIVALRY)), "Banking"),
+    GUNPOWDER(10, new ArrayList<Technology>(Arrays.asList(PHYSICS, STEEL)), "Gunpowder"),
+    CHEMISTRY(10, new ArrayList<Technology>(Arrays.asList(GUNPOWDER)), "Chemistry"),
+    PRINTING_PRESS(10, new ArrayList<Technology>(Arrays.asList(MACHINERY, PHYSICS)), "Printing Press"),
+    ECONOMICS(10, new ArrayList<Technology>(Arrays.asList(BANKING, PRINTING_PRESS)), "Economics"),
+    FERTILIZER(10, new ArrayList<Technology>(Arrays.asList(CHEMISTRY)), "Fertilizer"),
+    METALLURGY(10, new ArrayList<Technology>(Arrays.asList(GUNPOWDER)), "Metallurgy"),
+    MILITARY_SCIENCE(10, new ArrayList<Technology>(Arrays.asList(ECONOMICS, CHEMISTRY)), "Military Science"),
+    RIFLING(10, new ArrayList<Technology>(Arrays.asList(METALLURGY)), "Rifling"),
+    SCIENTIFIC_THEORY(10, new ArrayList<Technology>(Arrays.asList(ACOUSTICS)), "Scientific Theory"),
+    BIOLOGY(10, new ArrayList<Technology>(Arrays.asList(ARCHAEOLOGY, SCIENTIFIC_THEORY)), "Biology"),
+    STEAM_POWER(10, new ArrayList<Technology>(Arrays.asList(SCIENTIFIC_THEORY, MILITARY_SCIENCE)), "Steam Powder"),
+    DYNAMITE(10, new ArrayList<Technology>(Arrays.asList(FERTILIZER, RIFLING)), "Dynamite"),
+    ELECTRICITY(10, new ArrayList<Technology>(Arrays.asList(BIOLOGY, STEAM_POWER)), "Electricity"),
+    RADIO(10, new ArrayList<Technology>(Arrays.asList(ELECTRICITY)), "Radio"),
+    RAILROAD(10, new ArrayList<Technology>(Arrays.asList(STEAM_POWER)), "Railroad"),
+    REPLACEABLE_PARTS(10, new ArrayList<Technology>(Arrays.asList(STEAM_POWER)), "Replaceable Parts"),
+    COMBUSTION(10, new ArrayList<Technology>(Arrays.asList(REPLACEABLE_PARTS, RAILROAD, DYNAMITE)), "Combustion"),
+    TELEGRAPH(10, new ArrayList<Technology>(Arrays.asList(ELECTRICITY)), "Telegraph");
 
     private static class Relations {
         public static HashMap<Technology, ArrayList<Technology>> forwardRelations = new HashMap<Technology, ArrayList<Technology>>();
@@ -70,8 +70,11 @@ public enum Technology {
     }
 
     private int cost;
+    private String name;
 
-    private Technology(int cost, ArrayList<Technology> prerequisiteTechnologies) {
+    private Technology(int cost, ArrayList<Technology> prerequisiteTechnologies, String name) {
+        this.name = name;
+        this.cost = cost;
         if (prerequisiteTechnologies == null) {
             Debugger.debug("Error in Technology class : cannot pass null arrayList to constructor!");
             return;
@@ -100,5 +103,18 @@ public enum Technology {
 
     public int getCost() {
         return cost;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public static Technology getTechnologyByName(String name) {
+        for (Technology technology : values()) {
+            if (technology.getName().equalsIgnoreCase(name)) {
+                return technology;
+            }
+        }
+        return null;
     }
 }

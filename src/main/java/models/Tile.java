@@ -34,11 +34,9 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.resources = resources;
         this.ruins = ruins;
-        // TODO add "this.works = new Work();"
     }
 
     public TileHistory createTileHistory() {
-        // TODO : doesn't save works in history
         TileHistory history = new TileHistory();
         Tile tile = new Tile(terrainType, new HashMap<Resource, Integer>(resources), null);
         tile.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, features);
@@ -175,6 +173,23 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return false;
     }
 
+    public Improvement getNonRouteImprovement() {
+        for (Improvement improvement : improvements) {
+            if (improvement.getType() != ImprovementType.ROAD && improvement.getType() != ImprovementType.RAILROAD) {
+                return improvement;
+            }
+        }
+        return null;
+    }
+
+    public void removeImprovement(Improvement improvement) {
+        improvements.remove(improvement);
+    }
+
+    public void removeAllImprovements() {
+        improvements = new ArrayList<>();
+    }
+
     public boolean isOfType(TerrainProperty property) {
         if (this.terrainType.equals(property) || this.features.contains(property))
             return true;
@@ -194,7 +209,7 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return -1;
     }
 
-    public void addFeature(Feature feature) {
+    public void addFeatureAndApplyChanges(Feature feature) {
         if (this.features.contains(feature)) {
             Debugger.debug("feature already exists");
             return;
@@ -202,6 +217,20 @@ public class Tile implements Workable, TileImage, TurnHandler {
         ArrayList<Feature> featuresCopy = new ArrayList<>(features);
         featuresCopy.add(feature);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
+    }
+
+    public void removeFeatureAndApplyChanges(Feature feature) {
+        if (!this.features.contains(feature)) {
+            Debugger.debug("feature does not exist");
+            return;
+        }
+        ArrayList<Feature> featuresCopy = new ArrayList<>(features);
+        featuresCopy.remove(feature);
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, featuresCopy);
+    }
+
+    public void removeAllFeaturesAndApplyChanges() {
+        this.setTerrainTypeAndFeaturesAndApplyOutputChanges(this.terrainType, new ArrayList<Feature>());
     }
 
 
@@ -244,8 +273,26 @@ public class Tile implements Workable, TileImage, TurnHandler {
     }
 
     public void addImprovement(Improvement improvement) {
-        // TODO ... what else?
         this.improvements.add(improvement);
+    }
+
+    public void removeImprovement(ImprovementType improvementType){
+        for(int i=0; i<this.improvements.size(); i++){
+            if(this.improvements.get(i).getType() == improvementType)
+            {
+                this.improvements.remove(i);
+                return;
+            }
+        }
+    }
+
+    public Improvement getImprovementByType(ImprovementType type){
+        for(Improvement improvement : this.improvements){
+            if(improvement.getType() == type)
+                return improvement;
+        }
+        Debugger.debug("There is no improvement with this type");
+        return null;
     }
 
     public void removeWork() {
@@ -256,7 +303,6 @@ public class Tile implements Workable, TileImage, TurnHandler {
         if (work != null) {
             work.goToNextTurn();
         }
-        // TODO
     }
 
     public boolean hasCitizen() {
@@ -290,8 +336,42 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return this.resources;
     }
 
+    public ArrayList<Resource> getResourcesAsArrayList() {
+        ArrayList<Resource> result = new ArrayList<>();
+        for (Resource resource : resources.keySet()) {
+            if (resources.get(resource) > 0) {
+                result.add(resource);
+            }
+        }
+        return result;
+    }
+
+    public boolean hasExploitableResource(Resource resource) {  // check if the tile has a resource and the proper improvement to use it
+        if (hasResource(resource) && resource.canBeExploited(this)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasResource(Resource resource) {
+        if (resources.containsKey(resource) && resources.get(resource) > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<Improvement> getImprovements() {
         return this.improvements;
+    }
+
+    public ArrayList<Improvement> getUnpillagedImprovements() {
+        ArrayList<Improvement> result = new ArrayList<Improvement>();
+        for (Improvement improvement : improvements) {
+            if (!improvement.getIsPillaged()) {
+                result.add(improvement);
+            }
+        }
+        return result;
     }
 
     public Ruins getRuins() {
@@ -300,6 +380,10 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public Work getWork() {
         return this.work;
+    }
+
+    public void setWork(Work work) {
+        this.work = work;
     }
 
     public Output getOutput() {
