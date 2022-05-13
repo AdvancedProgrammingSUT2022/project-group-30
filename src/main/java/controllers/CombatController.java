@@ -97,7 +97,6 @@ public class CombatController {
         }
     }
 
-
     private void captureUnit(Unit attacker, Unit defender) {
         defender.getOwner().addNotification("Your " + defender.getType().getName() + " at " + defender.getLocation().findTileYCoordinateInMap() +
                 ", " + defender.getLocation().findTileXCoordinateInMap() + " was captured by " + attacker.getOwner().getName());
@@ -112,6 +111,23 @@ public class CombatController {
         }
         attacker.setHasAttackedThisTurns(true);
         attacker.resetInactivityDuration();
+    }
+
+    private void applyMeleeCombatEndEffects(combative winner, combative loser) {
+        Unit capturedUnit = null;
+        if (loser instanceof Unit && winner instanceof  Unit) {
+            Unit loserUnit = (Unit) loser;
+            capturedUnit = gameController.getCivilianUnitInTile(loserUnit.getLocation());
+        }
+
+        kill(loser);
+        if (capturedUnit != null) {
+            captureUnit((Unit) winner, capturedUnit);
+        }
+
+        if (winner instanceof Unit) {
+            gameController.moveUnit((Unit) winner, loser.getLocation());
+        }
     }
 
     public void executeMeleeAttack(Unit attacker, combative defender) {
@@ -129,18 +145,16 @@ public class CombatController {
         int damageDoneToAttacker = defenderStrength * (100 - attackerDefensiveBonus) / 100;
 
         if (defender.getHitPointsLeft() <= damageDoneToDefender) {
-            kill(defender);
             attacker.reduceHitPoints(damageDoneToAttacker);
             if (attacker.getHitPointsLeft() <= 0) {
                 attacker.setHitPointsLeft(1);
             }
-            gameController.moveUnit(attacker, defender.getLocation());
+
+            applyMeleeCombatEndEffects(attacker, defender);
         } else if (attacker.getHitPointsLeft() <= damageDoneToAttacker) {
-            kill(attacker);
             defender.reduceHitPoints(damageDoneToDefender);
-            if (defender instanceof Unit) {
-                gameController.moveUnit((Unit) defender, attacker.getLocation());
-            }
+
+            applyMeleeCombatEndEffects(defender, attacker);
         } else {
             attacker.reduceHitPoints(damageDoneToAttacker);
             defender.reduceHitPoints(damageDoneToDefender);
