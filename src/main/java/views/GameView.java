@@ -117,10 +117,44 @@ public class GameView implements View {
                 killUnit(matcher);
             } else if ((matcher = GameMainPageCommands.MAKE_IMPROVEMENT.getCommandMatcher(command)) != null) {
                 makeImprovement(matcher);
+            } else if ((matcher = GameMainPageCommands.DEPLOY_FEATURE.getCommandMatcher(command)) != null) {
+                deployFeature(matcher);
+            } else if ((matcher = GameMainPageCommands.CLEAR_ALL_FEATURES.getCommandMatcher(command)) != null) {
+                clearAllFeatures(matcher);
             } else {
                 printer.printlnError("Invalid Command!");
             }
         }
+    }
+
+    private void clearAllFeatures(Matcher matcher) {
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        tile.removeAllFeaturesAndApplyChanges();
+        printer.printlnRed("All features were removed from this tile!");
+    }
+
+    private void deployFeature(Matcher matcher) {
+        String name = matcher.group("name");
+        int x = Integer.parseInt(matcher.group("x"));
+        int y = Integer.parseInt(matcher.group("y"));
+        if (!controller.areCoordinatesValid(x, y)) {
+            printer.printlnError("Invalid coordinates!");
+            return;
+        }
+        Tile tile = controller.getTileByCoordinates(x, y);
+        Feature chosenFeature = Feature.getFeatureByName(name);
+        if (chosenFeature == null) {
+            printer.printlnError("Not a valid feature!");
+            return;
+        }
+        tile.addFeatureAndApplyChanges(chosenFeature);
+        printer.println("added feature " + chosenFeature.getName() + " to this tile!");
     }
 
     private void makeImprovement(Matcher matcher) {

@@ -30,6 +30,10 @@ public class GameMainPageCommands extends Commands {
     public static GameMainPageCommands KILL_UNIT = new GameMainPageCommands("avada kedavra (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");
     public static GameMainPageCommands MAKE_IMPROVEMENT =
             new GameMainPageCommands("do you wanna build a snowman (?<name>.*) (?<y>\\d+)\\s*[:, ](?<x>\\d+)");
+    public static GameMainPageCommands DEPLOY_FEATURE =
+            new GameMainPageCommands("deploy feature (?<name>.*) (?<y>\\d+)\\s*[:, ](?<x>\\d+)");
+    public static GameMainPageCommands CLEAR_ALL_FEATURES =
+            new GameMainPageCommands("smite (?<y>\\d+)\\s*[:, ](?<x>\\d+)");
 
     GameMainPageCommands(String regex) {
         super(regex);
