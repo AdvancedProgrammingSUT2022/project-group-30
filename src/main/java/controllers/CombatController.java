@@ -6,6 +6,7 @@ import models.Tile;
 import models.buildings.BuildingType;
 import models.interfaces.combative;
 import models.units.Unit;
+import models.units.UnitState;
 
 import java.util.ArrayList;
 
@@ -109,7 +110,22 @@ public class CombatController {
     //6
     public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
         // TODO: return percentage defensive bonus between -50 and 50
-        return 0;
+        Tile myLocation = unit.getLocation();
+        double percentage = 0;
+        for(Feature feature : myLocation.getFeatures())
+            percentage += feature.getCombatModifier();
+        percentage += myLocation.getTerrainType().getCombatModifier();
+        if(unit.getOwner().getHappiness() < 0)
+            percentage -= 25;
+        if(unit.getState() == UnitState.FORTIFY || unit.getState() == UnitState.FORTIFYUNTILHEALED || unit.getState() == UnitState.ALERT){
+            if(unit.getStateDuration() == 1)
+                percentage += 25;
+            else if(unit.getStateDuration() > 1)
+                percentage += 50;
+        }
+        percentage = Math.max(-50, percentage);
+        percentage = Math.min(50, percentage);
+        return (int)percentage;
     }
 
     private int calculateEffectiveMeleeCombatStrength(combative attacker, combative defender) {
