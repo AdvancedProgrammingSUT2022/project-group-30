@@ -298,8 +298,8 @@ public class GameController {
         for (int i = 0; i < adjacetTiles.size(); i++) {
             ArrayList<Unit> units = this.getUnitsInTile(adjacetTiles.get(i));
             for (int j = 0; j < units.size(); j++) {
-                if (!units.get(j).getOwner().equals(unit.getOwner()) && units.get(i).getState() == UnitState.ALERT) {
-                    units.get(i).setState(UnitState.AWAKE);
+                if (units.get(j).getOwner() != unit.getOwner() && units.get(j).getState() == UnitState.ALERT) {
+                    units.get(j).setState(UnitState.AWAKE);
                 }
             }
         }
