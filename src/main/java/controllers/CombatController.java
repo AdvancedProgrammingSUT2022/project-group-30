@@ -15,22 +15,38 @@ public class CombatController {
 
     public int calculateEffectiveMeleeCombatStrengthForUnit(Unit unit, combative target) {
         // TODO
-        return 0;
+        return unit.getType().getCombatStrength();
     }
 
-    public int calculateEffectiveMeleeCombatStrengthForCity(Unit unit, combative target) {
+    public int calculateEffectiveMeleeCombatStrengthForCity(City city, combative target) {
         // TODO
-        return 0;
+        return (int) city.getCombatStrength();
+    }
+
+    private int calculateEffectiveMeleeCombatStrength(combative attacker, combative defender) {
+        if (attacker instanceof  Unit) {
+            return calculateEffectiveMeleeCombatStrengthForUnit((Unit) attacker, defender);
+        } else {
+            return calculateEffectiveMeleeCombatStrengthForCity((City) attacker, defender);
+        }
     }
 
     public int calculateEffectiveRangedCombatStrengthForUnit(Unit unit, combative target) {
         // TODO
-        return 0;
+        return unit.getType().getRangedCombatStrength();
     }
 
     public int calculateEffectiveRangedCombatStrengthForCity(City city, combative target) {
         // TODO
-        return 0;
+        return (int) city.getRangedCombatStrength();
+    }
+
+    private int calculateEffectiveNetDefensiveBonus(combative defender, combative attacker) {
+        if (defender instanceof City) {
+            return calculateNetDefensiveBonusForCity((City) defender, attacker);
+        } else {
+            return calculateNetDefensiveBonusForUnit((Unit) defender, attacker);
+        }
     }
 
     public int calculateNetDefensiveBonusForUnit(Unit unit, combative attacker) {
@@ -43,7 +59,34 @@ public class CombatController {
         return 0;
     }
 
+    private void kill(City city) {
+        // TODO
+    }
+
+    private void kill(Unit unit) {
+
+    }
+
+    private void kill(combative entityToKill) {
+        if (entityToKill instanceof  Unit) {
+            kill((Unit) entityToKill);
+        } else {
+            kill((City) entityToKill);
+        }
+    }
+
     public void executeMeleeAttack(Unit attacker, combative defender) {
+        int attackerStrength = calculateEffectiveMeleeCombatStrengthForUnit(attacker, defender);
+        int defenderStrength = calculateEffectiveMeleeCombatStrength(defender, attacker);
+        int defenderDefensiveBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);
+        int attackerDefensiveBonus = calculateNetDefensiveBonusForUnit(attacker, defender);
+        int damageDoneToDefender = attackerStrength * (100 - defenderDefensiveBonus) / 100;
+        int damageDoneToAttacker = defenderStrength * (100 - attackerDefensiveBonus) / 100;
+        if (defender.getHitPointsLeft() < damageDoneToDefender) {
+            kill(defender);
+
+        }
+
         // TODO
         /*
         NOTES:

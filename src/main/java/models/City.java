@@ -684,8 +684,19 @@ public class City implements Selectable, TurnHandler, combative {
         this.range = range;
     }
 
-    public double getHitPoints() {
-        return hitPoints;
+    @Override
+    public int getHitPointsLeft() {
+        return (int) this.hitPoints;
+    }
+
+    @Override
+    public void setHitPoints(int hitPointsLeft) {
+        this.hitPoints = hitPointsLeft;
+    }
+
+    @Override
+    public void reduceHitPoints(int amount) {
+        hitPoints -= amount;
     }
 
     public void setHitPoints(double hitPoints) {

@@ -150,9 +150,21 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.location = location;
     }
 
+    @Override
     public int getHitPointsLeft() {
         return this.hitPointsLeft;
     }
+
+    @Override
+    public void setHitPoints(int hitPointsLeft) {
+        this.hitPointsLeft = hitPointsLeft;
+    }
+
+    @Override
+    public void reduceHitPoints(int amount) {
+        hitPointsLeft -= amount;
+    }
+
 
     public void setHitPointsLeft(int hitPointsLeft) {
         this.hitPointsLeft = hitPointsLeft;
