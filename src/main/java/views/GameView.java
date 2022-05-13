@@ -1627,7 +1627,7 @@ public class GameView implements View {
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        CombatController.getCombatController().executeUnitRangedAttack(unit, target);
+        CombatController.getCombatController().executeRangedAttack(unit, target);
     }
 
     private void meleeAttack(Matcher matcher, Unit unit) {

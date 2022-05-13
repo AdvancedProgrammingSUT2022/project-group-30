@@ -51,6 +51,14 @@ public class CombatController {
         return (int) city.getRangedCombatStrength();
     }
 
+    public int calculateEffectiveRangedCombatStrength(combative attacker, combative defender) {
+        if (attacker instanceof City) {
+            return calculateEffectiveRangedCombatStrengthForCity((City) attacker, defender);
+        } else {
+            return calculateEffectiveRangedCombatStrengthForUnit((Unit) attacker, defender);
+        }
+    }
+
     private int calculateEffectiveNetDefensiveBonus(combative defender, combative attacker) {
         if (defender instanceof City) {
             return calculateNetDefensiveBonusForCity((City) defender, attacker);
@@ -176,19 +184,33 @@ public class CombatController {
          */
     }
 
-    public void executeUnitRangedAttack(Unit attacker, combative defender) {
+    public void executeRangedAttack(Unit attacker, combative defender) {
+        applyAttackChangesOnUnit(attacker);
+
+        int attackerStrength = calculateEffectiveRangedCombatStrength(attacker, defender);
+        int defenderDefenseBonus = calculateEffectiveNetDefensiveBonus(defender, attacker);
+
+        int totalDamageDone = attackerStrength * (100 - defenderDefenseBonus) / 100;
+        if (totalDamageDone >= defender.getHitPointsLeft()) {
+            if (defender instanceof City) {
+                ((City) defender).setHitPoints(1);
+            } else {
+                kill(defender);
+            }
+        } else {
+            defender.reduceHitPoints(totalDamageDone);
+        }
+
         // TODO
         /*
         NOTES:
-        - HANDLE BOTH DYING AT THE SAME TIME
-
         if defender is civilian, do a normal attack
         calculate ranged combat strength and defensive bonus
         apply damage and check HP -> don't let city hp fall below 1
         if defender reached 0 HPs -> it's a unit, just kill it and move the other one into it.
-        modify unit's hasAttackedField
-        modify unit's inactivityDuration field and make sure the same thing is done with move
-        drain Unit's MPs (doesn't apply to some types)
+        modify unit's hasAttackedField  C
+        modify unit's inactivityDuration field and make sure the same thing is done with move   C
+        drain Unit's MPs (doesn't apply to some types)  C
          */
     }
 }
