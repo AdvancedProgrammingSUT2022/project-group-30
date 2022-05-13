@@ -1132,7 +1132,7 @@ public class GameView implements View {
             result.put(UnitCommands.AWAKE, true);
         }
 
-        if (unit.getType() == UnitType.WORKER) {
+        if (unit.getState().waitsForCommand && unit.getType() == UnitType.WORKER) {
             result.put(UnitCommands.WORK_ACTIONS, true);
         }
 
