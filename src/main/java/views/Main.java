@@ -20,7 +20,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         loadFxmlFile("LoginPage");
         stage.setScene(scene);
-        stage.setTitle("civilization");
+        stage.setTitle("test");
         stage.setResizable(false);
         stage.show();
 
