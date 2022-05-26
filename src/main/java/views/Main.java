@@ -23,7 +23,6 @@ public class Main extends Application {
         stage.setTitle("Civilization V");
         stage.setResizable(false);
         stage.show();
-
     }
 
     public static void loadFxmlFile(String name) throws IOException {

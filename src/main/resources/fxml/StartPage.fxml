@@ -6,11 +6,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
+<?import java.net.URL?>
+<?import javafx.scene.text.Text?>
+<Pane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="views.controllers.StartPageController"
-            prefHeight="720" prefWidth="1280">
+            prefHeight="720" prefWidth="1280" fx:id="pane" styleClass="root">
+
+
+        <VBox spacing="20" prefWidth="200" prefHeight="50">
+            <ProgressBar fx:id="loadingProgressBar" prefWidth="300" prefHeight="20"/>
+        </VBox>
 
 
 
-</BorderPane>
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
+</Pane>
