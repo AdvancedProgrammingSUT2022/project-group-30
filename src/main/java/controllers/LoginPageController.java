@@ -94,7 +94,7 @@ public class LoginPageController {
 
     public static void readUsersListFromFile() {
         try {
-            String input = new String(Files.readAllBytes(Paths.get("src", "main", "java", "resources", "Users.json")));
+            String input = new String(Files.readAllBytes(Paths.get("src", "main", "resources", "json", "Users.json")));
             ArrayList<User> users = new Gson().fromJson(input, new TypeToken<List<User>>() {
             }.getType());
             if (users == null) {
@@ -108,9 +108,9 @@ public class LoginPageController {
 
     public static void writeUsersListToFile() {
         File main = new File("src", "main");
-        File java = new File(main, "java");
-        File resources = new File(java, "resources");
-        File usersFile = new File(resources, "Users.json");
+        File resources = new File(main, "resources");
+        File json = new File(resources, "json");
+        File usersFile = new File(json, "Users.json");
         try {
             FileWriter userWriter = new FileWriter(usersFile);
             userWriter.write(new Gson().toJson(ProgramDatabase.getProgramDatabase().getUsers()));

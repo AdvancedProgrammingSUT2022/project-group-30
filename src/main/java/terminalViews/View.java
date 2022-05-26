@@ -1,4 +1,4 @@
-package views;
+package terminalViews;
 
 public interface View {
     public void run();

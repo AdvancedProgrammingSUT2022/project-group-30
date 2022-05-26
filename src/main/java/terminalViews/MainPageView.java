@@ -1,4 +1,4 @@
-package views;
+package terminalViews;
 
 import controllers.MainPageController;
 import controllers.SceneController;

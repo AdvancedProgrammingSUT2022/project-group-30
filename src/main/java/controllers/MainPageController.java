@@ -1,9 +1,9 @@
 package controllers;
 
 import models.ProgramDatabase;
-import views.GameView;
-import views.ProfilePageView;
-import views.View;
+import terminalViews.GameView;
+import terminalViews.ProfilePageView;
+import terminalViews.View;
 
 public class MainPageController {
     private static MainPageController mainPageController;

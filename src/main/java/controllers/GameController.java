@@ -58,9 +58,9 @@ public class GameController {
 
     private void assignCivsToPlayersAndInitializePrimaryUnits() {
         File main = new File("src", "main");
-        File java = new File(main, "java");
-        File resources = new File(java, "resources");
-        File civilizationsFile = new File(resources, "civilizations.txt");
+        File resources = new File(main, "resources");
+        File textFiles = new File(resources, "textFiles");
+        File civilizationsFile = new File(textFiles, "civilizations.txt");
         try {
             Scanner scanner = new Scanner(civilizationsFile);
             ArrayList<String> fileLines = new ArrayList<>();

@@ -1,4 +1,4 @@
-package views;
+package terminalViews;
 
 import controllers.CombatController;
 import controllers.GameController;

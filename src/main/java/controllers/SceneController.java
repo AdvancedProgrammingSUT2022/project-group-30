@@ -1,6 +1,6 @@
 package controllers;
 
-import views.View;
+import terminalViews.View;
 
 public class SceneController {
     private static SceneController sceneController;
