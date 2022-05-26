@@ -17,15 +17,11 @@ public class StartPageController {
 
     @FXML
     public void initialize(){
-        //loadingProgressBar.setScaleX(640 - loadingProgressBar.getPrefWidth());
-        //loadingProgressBar.setTranslateX(640);
-       // ProgressBar loadingProgressBar = new ProgressBar(50);
         loadingProgressBar.setProgress(0);
         VBox box = (VBox) pane.getChildren().get(0);
         box.setLayoutX(pane.getPrefWidth() / 2 - box.getPrefWidth() / 2);
         box.setLayoutY(600);
         LoadingProgressBarAnimation animation = new LoadingProgressBarAnimation(loadingProgressBar);
-        //pane.getChildren().add(loadingProgressBar);
         animation.play();
     }
 }

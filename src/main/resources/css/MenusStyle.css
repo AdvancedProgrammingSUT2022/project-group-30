@@ -1,6 +1,28 @@
 .root{
-    -fx-background-size: contain;
+    -fx-background-size: cover;
     -fx-background-image: url("../images/backgrounds/startingPage.jpeg");
     -fx-opacity: 0.9;
+}
+
+.secondPage{
+    -fx-background-size: cover;
+    -fx-background-image: url("../images/backgrounds/18.png");
+    -fx-background-repeat: repeat-x;
+}
+
+.enteringMenus{
+    -fx-background-size: cover;
+    -fx-background-image: url("../images/backgrounds/Background_B.png");
+    -fx-background-repeat: repeat-x;
+}
+
+@font-face {
+    -fx-font-family: "Academy Engraved LET";
+    src: url("../fonts/AcademyEngravedLETFonts.ttf");
+}
+
+.font{
+    -fx-font-family: "Academy Engraved LET";
+    -fx-font-size: 30;
 }
 
