@@ -18,9 +18,9 @@ public class Main extends Application {
     }
     @Override
     public void start(Stage stage) throws Exception {
-        loadFxmlFile("LoginPage");
+        loadFxmlFile("StartPage");
         stage.setScene(scene);
-        stage.setTitle("test");
+        stage.setTitle("Civilization V");
         stage.setResizable(false);
         stage.show();
 
