@@ -6,10 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="views.controllers.LoginPageGraphicalController"
-            prefHeight="720" prefWidth="1280">
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus">
 
     <center>
         <VBox spacing="30" alignment="CENTER" fx:id="box">
@@ -19,5 +20,9 @@
             <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
         </VBox>
     </center>
+
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
 
 </BorderPane>
