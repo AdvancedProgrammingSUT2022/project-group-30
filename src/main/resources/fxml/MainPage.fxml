@@ -6,9 +6,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="views.controllers.MainPageGraphicalController"
-            prefHeight="720" prefWidth="1280">
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus">
+
+    <center>
+        <VBox spacing="30" alignment="CENTER" fx:id="box">
+            <Button text="Profile Menu" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#profileMenu"/>
+            <Button text="Logout" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#logout"/>
+        </VBox>
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
 
 </BorderPane>
