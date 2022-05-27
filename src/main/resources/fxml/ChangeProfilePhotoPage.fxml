@@ -6,9 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<?import java.net.URL?>
+<Pane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="fxml.ChangeProfilePhotoPage"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="views.controllers.ChangeProfilePhotoPageController"
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus" fx:id="pane">
 
-</AnchorPane>
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
+</Pane>

@@ -66,6 +66,10 @@ public class ProfilePageController {
         return user == null ? true : false;
     }
 
+    public String getLoggedInUserImageName(){
+        return this.programDatabase.getLoggedInUser().getImageName();
+    }
+
     public void setProgramDatabase() {
         this.programDatabase = ProgramDatabase.getProgramDatabase();
     }
