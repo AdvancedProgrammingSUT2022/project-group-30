@@ -90,6 +90,7 @@ public class RegisterPageGraphicalController {
         }
         User user = new User(username.getText(), password.getText(), nickname.getText(), 0);
         this.controller.addUser(user);
+        this.controller.loginUser(username.getText());
         showPopup("user created successfully!");
         Main.loadFxmlFile("MainPage");
     }
