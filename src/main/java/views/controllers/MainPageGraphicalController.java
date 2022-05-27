@@ -15,6 +15,11 @@ public class MainPageGraphicalController {
     @FXML
     private VBox box;
 
+    @FXML
+    public void initialize(){
+        controller.setProgramDatabase();
+    }
+
     public void logout(MouseEvent mouseEvent) throws IOException {
         this.controller.logoutUser();
         Main.loadFxmlFile("SecondPage");

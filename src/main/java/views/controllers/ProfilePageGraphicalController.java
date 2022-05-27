@@ -26,10 +26,12 @@ public class ProfilePageGraphicalController {
     public void changeProfilePhoto(MouseEvent mouseEvent) {
     }
 
-    public void changePassword(MouseEvent mouseEvent) {
+    public void changePassword(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ChangePasswordPage");
     }
 
-    public void changeNickname(MouseEvent mouseEvent) {
+    public void changeNickname(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ChangeNickname");
     }
 
     public void back(MouseEvent mouseEvent) throws IOException {
