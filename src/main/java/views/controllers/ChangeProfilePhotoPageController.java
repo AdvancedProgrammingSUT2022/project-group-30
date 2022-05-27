@@ -1,5 +1,6 @@
 package views.controllers;
 
+import controllers.ProfilePageController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,10 +12,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import views.Main;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ChangeProfilePhotoPageController {
+
+    private ProfilePageController controller = ProfilePageController.getProfilePageController();
 
     @FXML
     private Pane pane;
@@ -34,15 +38,19 @@ public class ChangeProfilePhotoPageController {
         ImageView firstImage = new ImageView(new Image(new URL(Main.class.getResource("/images/avatars/0.jpeg").toExternalForm()).toExternalForm(), 150, 150, false, false));
         firstImage.setX(415);
         firstImage.setY(100);
+        chooseDefaultPicture(firstImage);
         ImageView secondImage = new ImageView(new Image(new URL(Main.class.getResource("/images/avatars/1.jpeg").toExternalForm()).toExternalForm(), 150, 150, false, false));
         secondImage.setX(715);
         secondImage.setY(100);
+        chooseDefaultPicture(secondImage);
         ImageView thirdImage = new ImageView(new Image(new URL(Main.class.getResource("/images/avatars/2.jpeg").toExternalForm()).toExternalForm(), 150, 150, false, false));
         thirdImage.setX(415);
         thirdImage.setY(300);
+        chooseDefaultPicture(thirdImage);
         ImageView fourthImage = new ImageView(new Image(new URL(Main.class.getResource("/images/avatars/3.jpeg").toExternalForm()).toExternalForm(), 150, 150, false, false));
         fourthImage.setX(715);
         fourthImage.setY(300);
+        chooseDefaultPicture(fourthImage);
         pane.getChildren().add(firstImage);
         pane.getChildren().add(secondImage);
         pane.getChildren().add(thirdImage);
@@ -63,11 +71,33 @@ public class ChangeProfilePhotoPageController {
         back.getStyleClass().add("menu-button");
         back.setLayoutX(540);
         back.setLayoutY(620);
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    Main.loadFxmlFile("ProfilePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         pane.getChildren().add(upload);
         pane.getChildren().add(back);
     }
 
-    public void setReturnToProfileMenuForObject(Node node){
-        //node.setOnMouseClicked();
+    public void chooseDefaultPicture(ImageView imageView){
+        imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                String[] tokens = imageView.getImage().getUrl().toString().split("/");
+                String imageName = tokens[tokens.length - 1];
+                ChangeProfilePhotoPageController.this.controller.changeLoggedInUsersProfileImage(imageName);
+                try {
+                    Main.loadFxmlFile("ProfilePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 }

@@ -70,6 +70,11 @@ public class ProfilePageController {
         return this.programDatabase.getLoggedInUser().getImageName();
     }
 
+    public void changeLoggedInUsersProfileImage(String imageName){
+        this.programDatabase.getLoggedInUser().setImageName(imageName);
+        LoginPageController.writeUsersListToFile();
+    }
+
     public void setProgramDatabase() {
         this.programDatabase = ProgramDatabase.getProgramDatabase();
     }
