@@ -16,10 +16,10 @@
     <center>
         <VBox spacing="30" alignment="CENTER" fx:id="box">
             <ImageView fx:id="profilePhoto"/>
-            <Button text="Change Profile Photo" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#profileMenu"/>
-            <Button text="Change Password" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#logout"/>
-            <Button text="Change Nickname" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#logout"/>
-            <Button text="back"
+            <Button text="Change Profile Photo" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#changeProfilePhoto"/>
+            <Button text="Change Password" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#changePassword"/>
+            <Button text="Change Nickname" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#changeNickname"/>
+            <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
         </VBox>
     </center>
 
