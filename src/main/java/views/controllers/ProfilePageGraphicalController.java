@@ -26,7 +26,7 @@ public class ProfilePageGraphicalController {
         controller.setProgramDatabase();
         String imageName = controller.getLoggedInUserImageName();
         box.getChildren().remove(profilePhoto);
-        profilePhoto = new ImageView(new Image(new URL(Main.class.getResource("/images/avatars/" + imageName).toExternalForm()).toExternalForm(), 150, 150, false, false));
+        profilePhoto = new ImageView(new Image("file:src/main/resources/images/avatars/" + imageName, 150, 150, false, false));
         box.getChildren().add(0, profilePhoto);
     }
 

@@ -99,10 +99,3 @@ public class RegisterPageGraphicalController {
         Main.loadFxmlFile("SecondPage");
     }
 }
-
-/* for profile menu sample code
-        FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(Main.getStage());
-        System.out.println(file.getAbsoluteFile().getAbsolutePath());
-        Files.copy(Paths.get(file.getAbsoluteFile().getAbsolutePath()), Paths.get("src/main/resources/images/14.png"));
- */

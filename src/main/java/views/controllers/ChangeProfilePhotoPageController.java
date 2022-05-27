@@ -10,11 +10,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import views.Main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ChangeProfilePhotoPageController {
 
@@ -65,6 +69,16 @@ public class ChangeProfilePhotoPageController {
         upload.getStyleClass().add("menu-button");
         upload.setLayoutX(540);
         upload.setLayoutY(520);
+        upload.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    chooseImageFileAndSaveItInResources();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
         Button back = new Button("Back");
         back.setPrefHeight(50);
         back.setPrefWidth(200);
@@ -100,4 +114,15 @@ public class ChangeProfilePhotoPageController {
             }
         });
     }
+
+    public void chooseImageFileAndSaveItInResources() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(Main.getStage());
+        String[] tokens = Paths.get(file.getAbsoluteFile().getAbsolutePath()).toString().split("/");
+        String imageName = tokens[tokens.length - 1];
+        this.controller.changeLoggedInUsersProfileImage(imageName);
+        Files.copy(Paths.get(file.getAbsoluteFile().getAbsolutePath()), Paths.get("src/main/resources/images/avatars/" + imageName));
+        Main.loadFxmlFile("ProfilePage");
+    }
+
 }
