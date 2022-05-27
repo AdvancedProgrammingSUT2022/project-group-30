@@ -12,12 +12,14 @@ import java.net.URL;
 public class Main extends Application {
 
     private static Scene scene;
+    private static Stage stage;
 
     public static void main(String[] args) {
         launch();
     }
     @Override
     public void start(Stage stage) throws Exception {
+        Main.stage = stage;
         loadFxmlFile("StartPage");
         stage.setScene(scene);
         stage.setTitle("Civilization V");
@@ -36,6 +38,10 @@ public class Main extends Application {
 
     public static Scene getScene(){
         return scene;
+    }
+
+    public static Stage getStage(){
+        return stage;
     }
 }
 
