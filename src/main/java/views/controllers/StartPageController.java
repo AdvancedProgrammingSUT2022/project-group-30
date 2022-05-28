@@ -1,5 +1,6 @@
 package views.controllers;
 
+import javafx.animation.Animation;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -18,6 +19,7 @@ public class StartPageController {
     @FXML
     private ProgressBar loadingProgressBar;
 
+    private Animation myanimation;
     @FXML
     public void initialize(){
         loadingProgressBar.setProgress(0);
@@ -25,12 +27,14 @@ public class StartPageController {
         box.setLayoutX(pane.getPrefWidth() / 2 - box.getPrefWidth() / 2);
         box.setLayoutY(600);
         LoadingProgressBarAnimation animation = new LoadingProgressBarAnimation(loadingProgressBar);
+        myanimation = animation;
         animation.play();
     }
 
     @FXML
     protected void goToChat() throws IOException {
         Main.loadFxmlFile("ChatMainPage");
+        myanimation.pause();
     }
 
 }

@@ -1,7 +1,9 @@
 .blueBackground {
     -fx-fill: blue;
+    -fx-background-color: blue;
 }
 
 .greenBackground {
     -fx-fill: green;
+    -fx-background-color: green;
 }
