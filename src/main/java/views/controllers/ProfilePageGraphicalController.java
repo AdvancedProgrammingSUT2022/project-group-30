@@ -22,7 +22,7 @@ public class ProfilePageGraphicalController {
     private ImageView profilePhoto;
 
     @FXML
-    public void initialize() throws MalformedURLException {
+    public void initialize() {
         controller.setProgramDatabase();
         String imageName = controller.getLoggedInUserImageName();
         box.getChildren().remove(profilePhoto);
