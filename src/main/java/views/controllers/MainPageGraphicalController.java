@@ -32,4 +32,8 @@ public class MainPageGraphicalController {
     public void scoreboardPage(MouseEvent mouseEvent) throws IOException {
         Main.loadFxmlFile("ScoreboardPage");
     }
+
+    public void chatRoomPage(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ChatMainPage");
+    }
 }
