@@ -7,3 +7,10 @@
     -fx-fill: green;
     -fx-background-color: green;
 }
+
+.sidebutton {
+    -fx-background-color: transparent;
+}
+.sidebutton:hover {
+    -fx-cursor: hand;
+}
