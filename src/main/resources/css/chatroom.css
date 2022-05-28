@@ -10,7 +10,10 @@
 
 .sidebutton {
     -fx-background-color: transparent;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 13;
 }
 .sidebutton:hover {
     -fx-cursor: hand;
+    -fx-fill: white;
 }
