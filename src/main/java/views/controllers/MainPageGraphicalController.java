@@ -28,4 +28,8 @@ public class MainPageGraphicalController {
     public void profileMenu(MouseEvent mouseEvent) throws IOException {
         Main.loadFxmlFile("ProfilePage");
     }
+
+    public void scoreboardPage(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ScoreboardPage");
+    }
 }

@@ -1,10 +1,14 @@
 package views;
 
+import controllers.LoginPageController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import models.ProgramDatabase;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +28,15 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setTitle("Civilization V");
         stage.setResizable(false);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                if(ProgramDatabase.getProgramDatabase().getLoggedInUser() != null) {
+                    ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
+                    LoginPageController.writeUsersListToFile();
+                }
+            }
+        });
         stage.show();
     }
 

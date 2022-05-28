@@ -1,5 +1,7 @@
 package models;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ProgramDatabase {
@@ -33,6 +35,20 @@ public class ProgramDatabase {
             }
         }
         return null;
+    }
+
+    public void updateLoggedInUserLastLoginTime(){
+        this.loggedInUser.setLastLoginTime(this.getCurrentDate());
+    }
+
+    public void updateUserLastScoreChangeTime(User user){
+        user.setLastScoreChangeTime(this.getCurrentDate());
+    }
+
+    private String getCurrentDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        return formatter.format(now);
     }
 
     public void setUsers(ArrayList<User> users) {

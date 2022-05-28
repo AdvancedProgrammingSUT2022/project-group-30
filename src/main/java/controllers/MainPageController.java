@@ -1,9 +1,14 @@
 package controllers;
 
 import models.ProgramDatabase;
+import models.User;
 import terminalViews.GameView;
 import terminalViews.ProfilePageView;
 import terminalViews.View;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MainPageController {
     private static MainPageController mainPageController;
@@ -19,6 +24,8 @@ public class MainPageController {
     }
 
     public void logoutUser() {
+        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
+        LoginPageController.writeUsersListToFile();
         this.programDatabase.setLoggedInUser(null);
     }
 
@@ -34,6 +41,12 @@ public class MainPageController {
             return GameView.getGameView();
         }
         return null;
+    }
+
+    public void sortUsersArrayList(){
+        ArrayList<User> users = ProgramDatabase.getProgramDatabase().getUsers();
+        Comparator<User> comparator = Comparator.comparing(User::getScore).reversed().thenComparing(User::getLastScoreChangeTime).thenComparing(User::getUsername);
+        Collections.sort(users, comparator);
     }
 
     public void setProgramDatabase() {
