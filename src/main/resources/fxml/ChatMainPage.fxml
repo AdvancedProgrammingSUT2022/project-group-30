@@ -6,9 +6,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import java.net.URL?>
 <HBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="views.controllers.ChatMainPageController"
-            prefHeight="720.0" prefWidth="1280.0">
-    <Label text="hello"/>
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.ChatMainPageController"
+      prefHeight="720.0" prefWidth="1280.0">
+    <VBox fx:id="sidebar" prefWidth="300">
+        <Label text="hello"/>
+    </VBox>
+    <VBox fx:id="chatlist">
+    </VBox>
+
+    <stylesheets>
+        <URL value="@../css/chatroom.css"/>
+    </stylesheets>
 </HBox>
