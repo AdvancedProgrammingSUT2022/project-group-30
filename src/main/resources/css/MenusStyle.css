@@ -17,17 +17,17 @@
 }
 
 @font-face {
-    -fx-font-family: "Academy Engraved LET";
+    -fx-font-family: "Times New Roman";
     src: url("../fonts/AcademyEngravedLETFonts.ttf");
 }
 
 .font{
-    -fx-font-family: "Academy Engraved LET";
+    -fx-font-family: "Times New Roman";
     -fx-font-size: 30;
 }
 
 .text-field{
-    -fx-font-family: "Academy Engraved LET";
+    -fx-font-family: "Times New Roman";
     -fx-font-size: 15;
     -fx-prompt-text-fill: #e50000;
     -fx-background-color: #74bfc7;
@@ -35,14 +35,14 @@
 }
 
 .menu-button{
-    -fx-font-family: "Academy Engraved LET";
+    -fx-font-family: "Times New Roman";
     -fx-background-color: #00e1ff;
     -fx-arc-width: 30;
     -fx-arc-height: 30;
 }
 
 .label{
-    -fx-font-family: "Academy Engraved LET"; -fx-text-fill: #e50000;
+    -fx-font-family: "Times New Roman"; -fx-text-fill: #e50000;
 }
 
 .pop-up{
