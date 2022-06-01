@@ -6,7 +6,7 @@ module com.example.civilization {
 
     
     opens controllers to javafx.fxml, com.google.gson;
-    opens models to javafx.fxml, com.google.gson;
+    opens models to javafx.fxml, com.google.gson, javafx.base;
     opens terminalViews to javafx.fxml;
     opens views to javafx.fxml;
     opens views.controllers to javafx.fxml;

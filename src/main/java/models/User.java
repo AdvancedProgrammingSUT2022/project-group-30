@@ -4,6 +4,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class User {
+
+    private int rank; // this field will only change when user click on the scoreboard page button
     private String username;
     private String password;
     private String nickname;
@@ -13,6 +15,7 @@ public class User {
     private String lastScoreChangeTime;  // note : be careful of updating this field after each game and score change using updateUserLastScoreChangeTime() function in ProgramDatabase.java
 
     public User(String username, String password, String nickname, int score) {
+        this.rank = -1; // initialize ranking into -1
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -78,5 +81,13 @@ public class User {
 
     public String getLastScoreChangeTime(){
         return this.lastScoreChangeTime;
+    }
+
+    public void setRank(int rank){
+        this.rank = rank;
+    }
+
+    public int getRank(){
+        return this.rank;
     }
 }
