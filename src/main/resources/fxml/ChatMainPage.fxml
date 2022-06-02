@@ -15,7 +15,7 @@
       fx:controller="views.controllers.ChatMainPageController"
       prefHeight="720.0" prefWidth="1280.0" alignment="CENTER">
 
-    <VBox fx:id="sidebar" maxWidth="120" styleClass="blueBackground" spacing="20" alignment="TOP_CENTER">
+    <VBox fx:id="sidebar" maxWidth="120" styleClass="sidebar" spacing="20" alignment="TOP_CENTER">
         <padding>
             <Insets top="10" bottom="10" right="5" left="5"/>
         </padding>
@@ -28,7 +28,6 @@
         <Button fx:id="privateChatButton" prefWidth="90" styleClass="sidebutton"/>
         <Button fx:id="globalChatButton" prefWidth="90" styleClass="sidebutton"/>
         <Button fx:id="groupChatButton" prefWidth="90" styleClass="sidebutton"/>
-
     </VBox>
 
     <VBox fx:id="chatlist" styleClass="greenBackground">

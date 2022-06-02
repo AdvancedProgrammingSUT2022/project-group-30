@@ -3,6 +3,10 @@
     -fx-background-color: blue;
 }
 
+.sidebar {
+    -fx-background-color: #9f9ffd;
+}
+
 .greenBackground {
     -fx-fill: green;
     -fx-background-color: green;
