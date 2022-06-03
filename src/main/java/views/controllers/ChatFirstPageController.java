@@ -13,6 +13,7 @@ public class ChatFirstPageController {
 
     @FXML
     protected void onBackButtonClick() throws IOException {
+        Main.getStage().setWidth(1294);
         Main.loadFxmlFile("MainPage");
     }
 }

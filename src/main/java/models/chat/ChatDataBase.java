@@ -14,6 +14,4 @@ public class ChatDataBase {
 
     private ArrayList<PrivateChat> privateChats;
     private ArrayList<Room> rooms;
-
-
 }
