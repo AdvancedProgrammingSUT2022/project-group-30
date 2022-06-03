@@ -44,7 +44,7 @@ public class GameController {
 
     public void initializeGame(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
-        assignCivsToPlayersAndInitializePrimaryUnits();
+        assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
 
@@ -56,7 +56,7 @@ public class GameController {
         GameDataBase.getGameDataBase().getCivilizations().add(newCivilization);
     }
 
-    private void assignCivsToPlayersAndInitializePrimaryUnits() {
+    private void assignCivsToPlayersAndInitializePrimaryUnits(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -67,23 +67,37 @@ public class GameController {
             while (scanner.hasNextLine()) {
                 fileLines.add(scanner.nextLine());
             }
+            fileLines = getAppropriateStartingPoints(fileLines, mapHeight, mapWidth, startingYPosition, startingXPosition);
             Random rand = new Random();
             for (int i = 0; i < this.gameDataBase.getPlayers().size(); i++) {
                 int fileLineIndex = rand.nextInt(fileLines.size());
                 String tokens[] = fileLines.get(fileLineIndex).split("-");
                 Civilization civilization = new Civilization(tokens[2]);
                 this.gameDataBase.getPlayers().get(i).setCivilization(civilization);
-                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[0]));
-                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1, Integer.parseInt(tokens[0]));
+                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - startingYPosition, Integer.parseInt(tokens[0]) - startingXPosition);
+                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1 - startingYPosition, Integer.parseInt(tokens[0]) - startingXPosition);
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
-                civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3, Integer.parseInt(tokens[0]) - 1));
+                civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3 - startingYPosition, Integer.parseInt(tokens[0]) - 1 - startingXPosition));
                 fileLines.remove(fileLineIndex);
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<String> getAppropriateStartingPoints(ArrayList<String> fileLines, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition){
+        ArrayList<String> appropriateLines = new ArrayList<>();
+        for(int i = 0; i < fileLines.size(); i++){
+            String tokens[] = fileLines.get(i).split("-");
+            int xPosition = Integer.parseInt(tokens[1]);
+            int yPosition = Integer.parseInt(tokens[0]);
+            if(!(yPosition < startingYPosition || yPosition > startingYPosition + mapHeight - 1 || xPosition < startingYPosition || xPosition > startingXPosition + mapWidth - 1)){
+                appropriateLines.add(fileLines.get(i));
+            }
+        }
+        return appropriateLines;
     }
 
     public void createUnit(UnitType type, Civilization owner, Tile location) {
