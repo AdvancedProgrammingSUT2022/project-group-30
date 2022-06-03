@@ -12,6 +12,11 @@ public class ChooseMapPageController {
     @FXML
     private VBox box;
 
+    @FXML
+    public void initialize(){
+
+    }
+
     public void back(MouseEvent mouseEvent) throws IOException {
         Main.loadFxmlFile("PlayersCountPage");
     }

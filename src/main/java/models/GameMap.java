@@ -26,9 +26,9 @@ public class GameMap {
 
     }
 
-    public void loadMapFromFile() {
-        this.initializeMap();
-        this.initializeRivers();
+    public void loadMapFromFile(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
+        this.initializeMap(mapHeight, mapWidth, startingYPosition, startingXPosition);
+        this.initializeRivers(mapHeight, mapWidth, startingYPosition, startingXPosition);
         this.initializeFeatures();
         this.initializeBonusResources();
         this.initializeLuxuryResources();
@@ -43,7 +43,7 @@ public class GameMap {
         return gameMap;
     }
 
-    private void initializeMap() {
+    private void initializeMap(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -61,10 +61,10 @@ public class GameMap {
                 String tokens[] = fileLines.get(i).split("\\s+");
                 mapTerrainTypes[i] = tokens;
             }
-            this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
+            this.map = new Tile[mapHeight][mapWidth];
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
-                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), new HashMap<>(), null);
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[startingYPosition + i][startingXPosition + j]), new HashMap<>(), null);
                 }
             }
             scanner.close();
@@ -74,7 +74,7 @@ public class GameMap {
 
     }
 
-    private void initializeRivers() {
+    private void initializeRivers(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -95,9 +95,9 @@ public class GameMap {
                     int secondTileYCoordinate = Integer.parseInt(coordinates[2]);
                     int secondTileXCoordinate = Integer.parseInt(coordinates[3]);
                     if (RiverSegment.checkTilesCoordinatesValidity(firstTileXCoordinate, firstTileYCoordinate,
-                            secondTileXCoordinate, secondTileYCoordinate)) {
-                        Tile firstTile = this.map[firstTileYCoordinate][firstTileXCoordinate];
-                        Tile secondTile = this.map[secondTileYCoordinate][secondTileXCoordinate];
+                            secondTileXCoordinate, secondTileYCoordinate) && areCoordinatesInRange(firstTileYCoordinate, firstTileXCoordinate, secondTileYCoordinate, secondTileXCoordinate, mapHeight, mapWidth, startingYPosition, startingXPosition)) {
+                        Tile firstTile = this.map[firstTileYCoordinate - startingYPosition][firstTileXCoordinate - startingXPosition];
+                        Tile secondTile = this.map[secondTileYCoordinate - startingYPosition][secondTileXCoordinate - startingXPosition];
                         RiverSegment river = new RiverSegment(firstTile, secondTile);
                         this.rivers.add(river);
                     }
@@ -110,6 +110,22 @@ public class GameMap {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean areCoordinatesInRange(int firstTileYCoordinate, int firstTileXCoordinate, int secondTileYCoordinate, int secondTileXCoordinate, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition){
+        if(firstTileXCoordinate < startingXPosition || firstTileXCoordinate > startingXPosition + mapWidth - 1){
+            return false;
+        }
+        if(secondTileXCoordinate < startingXPosition || secondTileXCoordinate > startingXPosition + mapWidth - 1){
+            return false;
+        }
+        if(firstTileYCoordinate < startingYPosition || firstTileYCoordinate > startingYPosition + mapHeight - 1){
+            return false;
+        }
+        if(secondTileYCoordinate < startingYPosition || secondTileYCoordinate > startingYPosition + mapHeight - 1){
+            return false;
+        }
+        return true;
     }
 
     private void initializeStrategicResources() {

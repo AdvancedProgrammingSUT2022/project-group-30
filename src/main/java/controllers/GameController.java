@@ -42,8 +42,8 @@ public class GameController {
         return gameController;
     }
 
-    public void initializeGame() {
-        GameMap.getGameMap().loadMapFromFile();
+    public void initializeGame(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
+        GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
         assignCivsToPlayersAndInitializePrimaryUnits();
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }

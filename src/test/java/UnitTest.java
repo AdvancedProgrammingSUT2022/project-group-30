@@ -47,7 +47,7 @@ public class UnitTest {
 
     @BeforeEach
     public void setup() {
-        GameMap.getGameMap().loadMapFromFile();
+        GameMap.getGameMap().loadMapFromFile(52, 80, 0, 0);
     }
 
     @Test
