@@ -1,10 +1,14 @@
 package views.controllers;
 
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -47,6 +51,10 @@ public class ReceivedInvitationsController {
             });
             return cell;
         });
+
+        ObservableList<Notification> list = FXCollections.observableArrayList(invitations);
+        notifications.setItems(list);
+
 
     }
 
