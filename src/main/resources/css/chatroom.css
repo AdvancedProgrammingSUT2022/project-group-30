@@ -46,6 +46,23 @@
     -fx-background-color: #ab0000;
 }
 
+.greenButton {
+    -fx-background-color: #00ca00;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 10px;
+}
+.greenButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: green;
+}
+
+.timesNewRoman20 {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+}
+
 .firstMenu {
     -fx-background-image: url("../images/backgrounds/chatroomFirstPageBackground.png");
     -fx-background-size: cover;

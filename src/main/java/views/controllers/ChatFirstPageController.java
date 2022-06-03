@@ -12,6 +12,11 @@ public class ChatFirstPageController {
     }
 
     @FXML
+    protected void onPrivateChatsButtonClick() throws IOException {
+        Main.loadFxmlFile("PrivateChatsList");
+    }
+
+    @FXML
     protected void onBackButtonClick() throws IOException {
         Main.getStage().setWidth(1294);
         Main.loadFxmlFile("MainPage");
