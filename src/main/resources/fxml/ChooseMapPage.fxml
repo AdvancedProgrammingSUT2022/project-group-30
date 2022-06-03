@@ -10,10 +10,12 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="views.controllers.ChooseMapPageController"
-            prefHeight="720" prefWidth="1280" styleClass="enteringMenus">
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus" fx:id="pane">
 
     <center>
         <VBox spacing="30" alignment="CENTER" fx:id="box">
+            <Button text="Start The Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#start"/>
+            <Button text="Set Map Dimensions" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#mapDimensions"/>
             <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
         </VBox>
     </center>

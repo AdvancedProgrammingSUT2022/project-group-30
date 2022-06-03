@@ -62,6 +62,8 @@ public class GameMap {
                 mapTerrainTypes[i] = tokens;
             }
             this.map = new Tile[mapHeight][mapWidth];
+            System.out.println(mapHeight);
+            System.out.println(mapWidth);
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
                     map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[startingYPosition + i][startingXPosition + j]), new HashMap<>(), null);
@@ -352,6 +354,18 @@ public class GameMap {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
                 tiles[i][j] = this.map[i + startingYPoint][j + startingXPoint];
+            }
+        }
+        return tiles;
+    }
+
+    public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
+        TileImage tiles[][] = new TileImage[20][30];
+        int startingXPoint = civ.getFrameBase().findTileXCoordinateInMap();
+        int startingYPoint = civ.getFrameBase().findTileYCoordinateInMap();
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                tiles[i][j] = civ.getTileImage(this.map[i + startingYPoint][j + startingXPoint]);
             }
         }
         return tiles;
