@@ -84,11 +84,11 @@ public class GameController {
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
                 int yFixDifference = 0;
-                while(Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference + 19 > GameMap.getGameMap().getMap().length - 1){
+                while(Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference + 9 > GameMap.getGameMap().getMap().length - 1){
                     yFixDifference += 1;
                 }
                 int xFixDifference = 0;
-                while(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference + 29 > GameMap.getGameMap().getMap()[0].length - 1){
+                while(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference + 19 > GameMap.getGameMap().getMap()[0].length - 1){
                     xFixDifference += 1;
                 }
                 civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference, Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference));

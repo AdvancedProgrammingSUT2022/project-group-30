@@ -360,7 +360,7 @@ public class GameMap {
     }
 
     public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
-        TileImage tiles[][] = new TileImage[20][30];
+        TileImage tiles[][] = new TileImage[10][20];
         int startingXPoint = civ.getFrameBase().findTileXCoordinateInMap();
         int startingYPoint = civ.getFrameBase().findTileYCoordinateInMap();
         for (int i = 0; i < tiles.length; i++) {

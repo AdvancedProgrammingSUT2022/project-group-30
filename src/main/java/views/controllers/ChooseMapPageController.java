@@ -46,7 +46,7 @@ public class ChooseMapPageController {
                 this.mapHeight = 20;
                 this.mapWidth = 30;
                 this.startingYPosition = 0;
-                this.startingXPosition = 9;
+                this.startingXPosition = 8;
                 break;
             case 3:
                 this.mapHeight = 40;
@@ -58,7 +58,7 @@ public class ChooseMapPageController {
                 this.mapHeight = 52;
                 this.mapWidth = 57;
                 this.startingYPosition = 0;
-                this.startingXPosition = 23;
+                this.startingXPosition = 22;
                 break;
             case 5:
                 this.mapHeight = 52;
