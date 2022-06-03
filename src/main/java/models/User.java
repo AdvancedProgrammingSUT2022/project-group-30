@@ -1,6 +1,7 @@
 package models;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class User {
@@ -13,6 +14,7 @@ public class User {
     private String imageName;
     private String lastLoginTime;
     private String lastScoreChangeTime;  // note : be careful of updating this field after each game and score change using updateUserLastScoreChangeTime() function in ProgramDatabase.java
+    private ArrayList<Notification> invitations;
 
     public User(String username, String password, String nickname, int score) {
         this.rank = -1; // initialize ranking into -1
@@ -21,6 +23,7 @@ public class User {
         this.nickname = nickname;
         this.score = score;
         this.lastLoginTime = null;
+        this.invitations = new ArrayList<>();
         ProgramDatabase.getProgramDatabase().updateUserLastScoreChangeTime(this);
         Random rand = new Random();
         int pictureNumber = rand.nextInt(4);
@@ -89,5 +92,13 @@ public class User {
 
     public int getRank(){
         return this.rank;
+    }
+
+    public void setInvitations(ArrayList<Notification> invitations){
+        this.invitations = invitations;
+    }
+
+    public ArrayList<Notification> getInvitations(){
+        return this.invitations;
     }
 }

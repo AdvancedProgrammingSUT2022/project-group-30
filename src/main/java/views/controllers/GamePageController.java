@@ -30,4 +30,12 @@ public class GamePageController {
 
     public void autoSave(MouseEvent mouseEvent) {
     }
+
+    public void invite(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("InvitationPage");
+    }
+
+    public void showReceivedInvitations(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ReceivedInvitationsPage");
+    }
 }
