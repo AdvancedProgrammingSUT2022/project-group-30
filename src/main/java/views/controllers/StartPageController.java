@@ -33,7 +33,7 @@ public class StartPageController {
 
     @FXML
     protected void goToChat() throws IOException {
-        Main.loadFxmlFile("ChatMainPage");
+        Main.loadFxmlFile("ChatFirstPage");
         myanimation.pause();
     }
 

@@ -21,3 +21,36 @@
     -fx-cursor: hand;
     -fx-fill: white;
 }
+
+.blackButton {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 15px;
+}
+.blackButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #2f2f2f;
+}
+
+.redButton {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 15px;
+}
+.redButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #ab0000;
+}
+
+.firstMenu {
+    -fx-background-image: url("../images/backgrounds/chatroomFirstPageBackground.png");
+    -fx-background-size: cover;
+}
+
+.transparentRect {
+    -fx-background-color: rgba(255, 255, 255, 0.38);
+}
