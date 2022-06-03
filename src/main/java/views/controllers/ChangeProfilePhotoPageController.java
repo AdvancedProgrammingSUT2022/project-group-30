@@ -35,7 +35,7 @@ public class ChangeProfilePhotoPageController {
 
     public void showDefaultProfilePhotos() throws MalformedURLException {
         Text text = new Text("Select the profile photo you want by clicking on it, or you can upload your own profile photo!");
-        text.setStyle("-fx-font-family: 'Academy Engraved LET'; -fx-fill: #ad5a5a");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-fill: #ad5a5a");
         text.setX((pane.getPrefWidth() - text.getLayoutBounds().getWidth()) / 2);
         text.setY(50);
         pane.getChildren().add(text);

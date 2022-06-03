@@ -26,6 +26,12 @@
     -fx-font-size: 30;
 }
 
+.upperPageText{
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+    -fx-fill: #00bbff;
+}
+
 .text-field{
     -fx-font-family: "Times New Roman";
     -fx-font-size: 15;

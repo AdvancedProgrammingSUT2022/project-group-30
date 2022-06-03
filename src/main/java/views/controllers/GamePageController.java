@@ -16,7 +16,8 @@ public class GamePageController {
         Main.loadFxmlFile("MainPage");
     }
 
-    public void startNewGame(MouseEvent mouseEvent) {
+    public void startNewGame(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("PlayersCountPage");
     }
 
     public void resumeGame(MouseEvent mouseEvent) {
