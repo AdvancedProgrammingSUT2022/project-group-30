@@ -51,7 +51,7 @@ public class PlayersCountPageController {
         else if(thirdButton.equals(mouseEvent.getSource())){
             this.opponentsNumber = 3;
         }
-        else{
+        else if(fourthButton.equals(mouseEvent.getSource())){
             this.opponentsNumber = 4;
         }
         enterPlayersUsernames();
