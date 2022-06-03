@@ -14,4 +14,6 @@ public class ChatDataBase {
 
     private ArrayList<PrivateChat> privateChats;
     private ArrayList<Room> rooms;
+    private PrivateChat currentPrivateChat; // don't save this
+
 }

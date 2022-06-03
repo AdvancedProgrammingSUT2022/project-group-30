@@ -62,6 +62,10 @@
     -fx-font-family: "Times New Roman";
     -fx-font-size: 20;
 }
+.timesNewRoman30 {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+}
 
 .firstMenu {
     -fx-background-image: url("../images/backgrounds/chatroomFirstPageBackground.png");
@@ -70,4 +74,31 @@
 
 .transparentRect {
     -fx-background-color: rgba(255, 255, 255, 0.38);
+}
+
+.chatTopBar {
+    -fx-background-color: #000543;
+    -fx-padding: 10;
+}
+
+.chatNameLabel {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+    -fx-text-fill: white;
+}
+
+.chatBackground {
+    -fx-background-image: url("../images/backgrounds/chatBackground.png");
+    -fx-background-size: stretch;
+}
+
+.backButton {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 25;
+}
+.backButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: rgba(255, 255, 255, 0.7);
 }

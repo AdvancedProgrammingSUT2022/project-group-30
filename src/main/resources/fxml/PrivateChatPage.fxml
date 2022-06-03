@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.skin.SplitPaneSkin.Content?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.PrivateChatPageController" alignment="TOP_CENTER" styleClass="chatBackground">
+
+    <BorderPane styleClass="chatTopBar">
+        <left>
+            <Button text="Back" BorderPane.alignment="CENTER" styleClass="backButton"/>
+        </left>
+        <center>
+            <HBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10">
+                <Circle radius="30"/>
+                <Label text="Amir Kooshky CE SUT" styleClass="timesNewRoman30, chatNameLabel"/>
+            </HBox>
+        </center>
+    </BorderPane>
+
+
+
+
+    <HBox styleClass="blueBackground" spacing="5">
+        <padding>
+            <Insets topRightBottomLeft="5"/>
+        </padding>
+        <TextField text="meow" HBox.hgrow="ALWAYS" styleClass="timesNewRoman20"/>
+        <Button text="send" styleClass="timesNewRoman20"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/chatroom.css"/>
+    </stylesheets>
+</VBox>
