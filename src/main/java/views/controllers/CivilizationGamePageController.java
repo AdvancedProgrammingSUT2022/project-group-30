@@ -15,17 +15,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
-import models.GameMap;
-import models.RiverSegment;
-import models.Tile;
-import models.TileHistory;
+import models.*;
 import models.interfaces.TileImage;
+import models.resources.Resource;
 import views.Main;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CivilizationGamePageController {
 
@@ -40,6 +39,7 @@ public class CivilizationGamePageController {
     @FXML
     public void initialize() throws MalformedURLException {
         //controller.makeEverythingVisible();
+        //printAllTilesInfo();
         drawMap();
         setSceneOnKeyPressed();
     }
@@ -92,6 +92,7 @@ public class CivilizationGamePageController {
                 pane.getChildren().add(hexagon);
             }
         }
+        drawFeatures();
         drawRiverSegments();
     }
 
@@ -148,6 +149,29 @@ public class CivilizationGamePageController {
     public void goRight(int yPosition, int xPosition){
         if(xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1){
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition + 1, yPosition));
+        }
+    }
+
+    public void drawFeatures() throws MalformedURLException {
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
+                int isOdd = 1;
+                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                    isOdd = -1;
+                }
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                if(tilesToShow[i][j] instanceof Tile){
+                    ArrayList<Feature> features = ((Tile) tilesToShow[i][j]).getFeatures();
+                    for(int k = 0; k < features.size(); k++){
+                        Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
+                        hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + features.get(k).getName() + ".png").toExternalForm()).toExternalForm())));
+                        pane.getChildren().add(hexagon);
+                    }
+
+                }
+            }
         }
     }
 
@@ -208,6 +232,34 @@ public class CivilizationGamePageController {
             }
         }
         return coordinates;
+    }
+
+
+    // this function is only for debugging purposes
+    private void printAllTilesInfo(){
+        Tile[][] map = GameMap.getGameMap().getMap();
+        for(int i = 0; i < map.length; i++){
+            for(int j = 0; j < map[i].length; j++){
+                System.out.println("********************");
+                System.out.println("Tile located in i: " + i + " and j: " + j);
+                System.out.println();
+                System.out.println("FEATURES:");
+                ArrayList<Feature> features = map[i][j].getFeatures();
+                for(int k = 0; k < features.size(); k++){
+                    System.out.println(features.get(k).getName());
+                }
+                System.out.println();
+                System.out.println("RESOURCES:");
+                HashMap<Resource, Integer> resources = map[i][j].getResources();
+                for (Resource resource : resources.keySet()) {
+                    for (int k = 0; k < resources.get(resource); k++)
+                        System.out.println(resource.getName());
+                }
+                System.out.println();
+                System.out.println("********************");
+            }
+        }
+
     }
 
 
