@@ -1,20 +1,35 @@
 package views.controllers;
 
 import controllers.GameController;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import models.*;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -38,8 +53,9 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-        //controller.makeEverythingVisible();
-        //printAllTilesInfo();
+        controller.makeEverythingVisible();
+        printAllTilesInfo();
+        showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
         setSceneOnKeyPressed();
     }
@@ -262,5 +278,231 @@ public class CivilizationGamePageController {
 
     }
 
+    public void showTileValues(Tile tile) throws MalformedURLException {
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
 
+        Text text = new Text();
+        text.setText("Tile coordinates: i = " + tile.findTileYCoordinateInMap() + " , j = " + tile.findTileXCoordinateInMap());
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(text);
+
+        Circle terrainTypeCircle = new Circle();
+        terrainTypeCircle.setRadius(20);
+        terrainTypeCircle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + tile.getTerrainType().getName() + ".png").toExternalForm()).toExternalForm())));
+        Text terrainType = new Text();
+        terrainType.setText("Terrain Type : " + tile.getTerrainType().getName());
+        terrainType.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(terrainTypeCircle);
+        vbox.getChildren().add(terrainType);
+
+        TableView<Feature> featuresTable = getFeaturesTable(tile.getFeatures());
+        vbox.getChildren().add(featuresTable);
+
+        TableView<Resource> resourcesTable = getResourcesTable(tile, tile.getResourcesAsArrayList());
+        vbox.getChildren().add(resourcesTable);
+
+
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private TableView<Feature> getFeaturesTable(ArrayList<Feature> features){
+        TableView<Feature> tableView = new TableView<>();
+        TableColumn<Feature, String> imageColumn = new TableColumn<>();
+        imageColumn.setText("Feature");
+        TableColumn<Feature, String> nameColumn = new TableColumn<>();
+        nameColumn.setText("Name");
+        TableColumn<Feature, Output> goldColumn = new TableColumn<>();
+        goldColumn.setText("Gold");
+        TableColumn<Feature, Output> foodColumn = new TableColumn<>();
+        foodColumn.setText("Food");
+        TableColumn<Feature, Output> productionColumn = new TableColumn<>();
+        productionColumn.setText("Production");
+        tableView.getColumns().add(imageColumn);
+        tableView.getColumns().add(nameColumn);
+        tableView.getColumns().add(goldColumn);
+        tableView.getColumns().add(foodColumn);
+        tableView.getColumns().add(productionColumn);
+        tableView.setFixedCellSize(40);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+        imageColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        goldColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        foodColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        productionColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+
+        imageColumn.setCellFactory(col -> {
+            TableCell<Feature, String> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Circle circle = new Circle();
+                    circle.setRadius(20);
+                    try {
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + newValue + ".png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
+                }
+            });
+            return cell;
+        });
+
+        goldColumn.setCellFactory(col -> {
+            TableCell<Feature, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getGold());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        foodColumn.setCellFactory(col -> {
+            TableCell<Feature, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getFood());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        productionColumn.setCellFactory(col -> {
+            TableCell<Feature, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getProduction());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+
+        ObservableList<Feature> list = FXCollections.observableArrayList(features);
+        tableView.setItems(list);
+
+        return tableView;
+    }
+
+    private TableView<Resource> getResourcesTable(Tile tile, ArrayList<Resource> resources){
+        TableView<Resource> tableView = new TableView<>();
+        TableColumn<Resource, String> imageColumn = new TableColumn<>();
+        imageColumn.setText("Resource");
+        TableColumn<Resource, String> nameColumn = new TableColumn<>();
+        nameColumn.setText("Name");
+        TableColumn<Resource, Output> goldColumn = new TableColumn<>();
+        goldColumn.setText("Gold");
+        TableColumn<Resource, Output> foodColumn = new TableColumn<>();
+        foodColumn.setText("Food");
+        TableColumn<Resource, Output> productionColumn = new TableColumn<>();
+        productionColumn.setText("Production");
+        tableView.getColumns().add(imageColumn);
+        tableView.getColumns().add(nameColumn);
+        tableView.getColumns().add(goldColumn);
+        tableView.getColumns().add(foodColumn);
+        tableView.getColumns().add(productionColumn);
+        tableView.setFixedCellSize(40);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+        imageColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        goldColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        foodColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        productionColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+
+        imageColumn.setCellFactory(col -> {
+            TableCell<Resource, String> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Circle circle = new Circle();
+                    circle.setRadius(20);
+                    try {
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Resources/" + newValue + ".png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
+                }
+            });
+            return cell;
+        });
+
+        goldColumn.setCellFactory(col -> {
+            TableCell<Resource, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getGold());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        foodColumn.setCellFactory(col -> {
+            TableCell<Resource, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getFood());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        productionColumn.setCellFactory(col -> {
+            TableCell<Resource, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getProduction());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+
+        ObservableList<Resource> list = FXCollections.observableArrayList(resources);
+        tableView.setItems(list);
+
+        PseudoClass higlighted = PseudoClass.getPseudoClass("highlighted");
+
+        tableView.setRowFactory(view -> {
+            TableRow<Resource> row = new TableRow<>();
+            row.itemProperty().addListener((obs, oldOrder, newOrder) ->
+                    row.pseudoClassStateChanged(higlighted, newOrder != null && newOrder.canBeExploited(tile)));
+            return row;
+        });
+
+        return tableView;
+    }
 }
+
+
+

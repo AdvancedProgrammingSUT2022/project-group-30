@@ -15,6 +15,7 @@
 
     <stylesheets>
         <URL value="@../css/MenusStyle.css"/>
+        <URL value="@../css/TilesInfoStyle.css"/>
     </stylesheets>
 
 </Pane>

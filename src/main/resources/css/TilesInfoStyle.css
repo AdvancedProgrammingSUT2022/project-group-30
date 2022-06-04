@@ -51,7 +51,7 @@
     -fx-background-color: transparent;
     -fx-alignment: CENTER;
     -fx-font-family: "Times New Roman";
-    -fx-font-size: 30;
+    -fx-font-size: 15;
     -fx-text-fill: #00ffa6;
 }
 
@@ -101,7 +101,7 @@
 }
 
 .table-row-cell:highlighted {
-    -fx-background-color: #1c82c2;
+    -fx-background-color: #a8ecc6;
     -fx-background-radius: 15px;
 }
 
