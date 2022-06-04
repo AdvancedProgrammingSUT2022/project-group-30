@@ -6,6 +6,15 @@ public class Message {
     private boolean seen;
     private int hour, minute, year, month, day;
 
+    public Message(String text) {
+        this.text = text;
+    }
+    public Message() {
+        this.text = "default";
+    }
+
+
+
 
     public int getSenderId() {
         return senderId;

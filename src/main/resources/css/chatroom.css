@@ -102,3 +102,9 @@
     -fx-cursor: hand;
     -fx-background-color: rgba(255, 255, 255, 0.7);
 }
+
+.messageBox {
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+}
