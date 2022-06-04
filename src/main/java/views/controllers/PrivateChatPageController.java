@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import models.ProgramDatabase;
 import models.chat.Message;
 import views.customcomponents.MessageComponent;
 
@@ -57,7 +58,11 @@ public class PrivateChatPageController {
                 AnchorPane pane = new AnchorPane();
                 MessageComponent box = new MessageComponent(item);
                 pane.getChildren().add(box);
-                AnchorPane.setRightAnchor(box, 10.0);
+                if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+                    AnchorPane.setRightAnchor(box, 10.0);
+                } else {
+                    AnchorPane.setLeftAnchor(box, 10.0);
+                }
                 setGraphic(pane);
                 ContextMenu contextMenu = new ContextMenu();
                 MenuItem deleteForMeItem = new MenuItem();
