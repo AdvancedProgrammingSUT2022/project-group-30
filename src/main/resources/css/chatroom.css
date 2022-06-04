@@ -104,11 +104,7 @@
 }
 
 .messageBox {
-    -fx-background-color: #ffffff;
+    -fx-background-color: transparent;
     -fx-font-family: "Times New Roman";
     -fx-font-size: 20;
-}
-
-.lsfls {
-    -fx-background-color: #7272ff;
 }

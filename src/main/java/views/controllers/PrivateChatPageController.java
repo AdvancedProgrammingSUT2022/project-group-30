@@ -5,6 +5,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import models.chat.Message;
 import views.customcomponents.MessageComponent;
@@ -35,6 +37,7 @@ public class PrivateChatPageController {
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setFocusTraversable(false);
+        messageList.setStyle("-fx-background-color: transparent");
         scrollToBottom();
 
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
