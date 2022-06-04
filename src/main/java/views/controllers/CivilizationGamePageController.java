@@ -8,24 +8,18 @@ import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
@@ -35,7 +29,6 @@ import models.interfaces.TileImage;
 import models.resources.Resource;
 import views.Main;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -53,9 +46,9 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-        controller.makeEverythingVisible();
-        printAllTilesInfo();
-        showTileValues(controller.getCurrentPlayer().getFrameBase());
+        //controller.makeEverythingVisible();
+        //printAllTilesInfo();
+        //showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
         setSceneOnKeyPressed();
     }
@@ -99,6 +92,7 @@ public class CivilizationGamePageController {
                 else if(tilesToShow[i][j] instanceof Tile){
                     String terrainTypeName = ((Tile) tilesToShow[i][j]).getTerrainType().getName();
                     hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
+                    setVisibleTilesHexagonsOnMouseClicked(hexagon);
                 }
                 else if(tilesToShow[i][j] instanceof TileHistory){
                     String terrainTypeName = ((TileHistory) tilesToShow[i][j]).getTile().getTerrainType().getName();
@@ -183,9 +177,9 @@ public class CivilizationGamePageController {
                     for(int k = 0; k < features.size(); k++){
                         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
                         hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + features.get(k).getName() + ".png").toExternalForm()).toExternalForm())));
+                        setVisibleTilesHexagonsOnMouseClicked(hexagon);
                         pane.getChildren().add(hexagon);
                     }
-
                 }
             }
         }
@@ -231,6 +225,7 @@ public class CivilizationGamePageController {
         else{
             hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomLeft.png").toExternalForm()).toExternalForm())));
         }
+        setVisibleTilesHexagonsOnMouseClicked(hexagon);
         pane.getChildren().add(hexagon);
     }
 
@@ -303,6 +298,9 @@ public class CivilizationGamePageController {
         terrainType.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(terrainTypeCircle);
         vbox.getChildren().add(terrainType);
+
+        TableView<Output> outputTableView = getOutputTableForTile(tile);
+        vbox.getChildren().add(outputTableView);
 
         TableView<Feature> featuresTable = getFeaturesTable(tile.getFeatures());
         vbox.getChildren().add(featuresTable);
@@ -410,6 +408,58 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
+    private TableView<Output> getOutputTableForTile(Tile tile){
+        ArrayList<Output> outputs = new ArrayList<>();
+        outputs.add(tile.calculateTheoreticalOutput());
+        TableView<Output> tableView = new TableView<>();
+        TableColumn<Output, Integer> goldColumn = new TableColumn<>();
+        goldColumn.setText("Gold");
+        TableColumn<Output, Integer> foodColumn = new TableColumn<>();
+        foodColumn.setText("Food");
+        TableColumn<Output, Integer> productionColumn = new TableColumn<>();
+        productionColumn.setText("Production");
+        tableView.getColumns().add(goldColumn);
+        tableView.getColumns().add(foodColumn);
+        tableView.getColumns().add(productionColumn);
+        tableView.setFixedCellSize(40);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        goldColumn.setCellValueFactory(new PropertyValueFactory<>("gold"));
+        foodColumn.setCellValueFactory(new PropertyValueFactory<>("food"));
+        productionColumn.setCellValueFactory(new PropertyValueFactory<>("production"));
+        setTableColumnData(goldColumn, "Gold");
+        setTableColumnData(foodColumn, "Food");
+        setTableColumnData(productionColumn, "Production");
+        ObservableList<Output> list = FXCollections.observableArrayList(outputs);
+        tableView.setItems(list);
+        return tableView;
+    }
+
+
+    private void setTableColumnData(TableColumn<Output, Integer> tableColumn, String name){
+        tableColumn.setCellFactory(col -> {
+            TableCell<Output, Integer> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Circle circle = new Circle();
+                    circle.setRadius(20);
+                    try {
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/" + name + ".png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Text text = new Text("" + newValue);
+                    HBox hBox = new HBox();
+                    hBox.setSpacing(10);
+                    hBox.setAlignment(Pos.CENTER);
+                    hBox.getChildren().add(circle);
+                    hBox.getChildren().add(text);
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(hBox));
+                }
+            });
+            return cell;
+        });
+    }
+
     private TableView<Resource> getResourcesTable(Tile tile, ArrayList<Resource> resources){
         TableView<Resource> tableView = new TableView<>();
         TableColumn<Resource, String> imageColumn = new TableColumn<>();
@@ -501,6 +551,40 @@ public class CivilizationGamePageController {
         });
 
         return tableView;
+    }
+
+    private TileImage getTileImageFromHexagon(Polygon hexagon){
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        double startXCoordinate = hexagon.getPoints().get(0);
+        double startYCoordinate = hexagon.getPoints().get(1);
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
+                int isOdd = 1;
+                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                    isOdd = -1;
+                }
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                if(startXCoordinate == xCoordinate &&  startYCoordinate == yCoordinate){
+                    return tilesToShow[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
+    private void setVisibleTilesHexagonsOnMouseClicked(Polygon hexagon){
+        hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    System.out.println("how are you!");
+                    showTileValues((Tile) getTileImageFromHexagon(hexagon));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 }
 
