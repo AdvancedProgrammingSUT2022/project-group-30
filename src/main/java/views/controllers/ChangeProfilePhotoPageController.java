@@ -118,6 +118,9 @@ public class ChangeProfilePhotoPageController {
     public void chooseImageFileAndSaveItInResources() throws IOException {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(Main.getStage());
+        if(file == null){
+            return;
+        }
         String[] tokens = Paths.get(file.getAbsoluteFile().getAbsolutePath()).toString().split("/");
         String imageName = tokens[tokens.length - 1];
         this.controller.changeLoggedInUsersProfileImage(imageName);

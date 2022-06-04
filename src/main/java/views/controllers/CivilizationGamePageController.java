@@ -3,15 +3,20 @@ package views.controllers;
 import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Polygon;
 import models.GameMap;
+import models.RiverSegment;
 import models.Tile;
 import models.TileHistory;
 import models.interfaces.TileImage;
@@ -34,6 +39,7 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
+        //controller.makeEverythingVisible();
         drawMap();
         setSceneOnKeyPressed();
     }
@@ -86,6 +92,7 @@ public class CivilizationGamePageController {
                 pane.getChildren().add(hexagon);
             }
         }
+        drawRiverSegments();
     }
 
     public void setSceneOnKeyPressed(){
@@ -142,6 +149,65 @@ public class CivilizationGamePageController {
         if(xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1){
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition + 1, yPosition));
         }
+    }
+
+    public void drawRiverSegments() throws MalformedURLException {
+        ArrayList<RiverSegment> rivers = GameMap.getGameMap().getRivers();
+        for(int i = 0; i < rivers.size(); i++){
+            Tile firstTile = rivers.get(i).getFirstTile();
+            Tile secondTile = rivers.get(i).getSecondTile();
+            if(rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("RD")){
+                drawRiverForTile(firstTile, "RD");
+            }
+            else if(rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("LD")){
+                drawRiverForTile(firstTile, "LD");
+            }
+            else if(rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("RD")){
+                drawRiverForTile(secondTile, "RD");
+            }
+            else if(rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("LD")){
+                drawRiverForTile(secondTile, "LD");
+            }
+        }
+    }
+
+    private void drawRiverForTile(Tile tile, String direction) throws MalformedURLException {
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        if(findTileCoordinatesInScene(tile, tilesToShow).isEmpty()){
+            return;
+        }
+        int xPosition = findTileCoordinatesInScene(tile, tilesToShow).get(0);
+        int yPosition = findTileCoordinatesInScene(tile, tilesToShow).get(1);
+        double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * xPosition);
+        int isOdd = 1;
+        if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+            isOdd = -1;
+        }
+        double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (yPosition +isOdd * (double) (xPosition % 2) / (double) 2);
+        Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
+        if(direction.equals("RD")) {
+            hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomRight.png").toExternalForm()).toExternalForm())));
+        }
+        else{
+            hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomLeft.png").toExternalForm()).toExternalForm())));
+        }
+        pane.getChildren().add(hexagon);
+    }
+
+    //this functions returns x and y coordinates in an ArrayList if the tile is in the scene and visible, returns empty arrayList otherwise
+    private ArrayList<Integer> findTileCoordinatesInScene(Tile tile, TileImage[][] tilesToShow){
+        ArrayList<Integer> coordinates = new ArrayList<>();
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                if(tilesToShow[i][j] instanceof Tile){
+                    if(((Tile) tilesToShow[i][j]).equals(tile)){
+                        coordinates.add(j);
+                        coordinates.add(i);
+                    }
+                }
+            }
+        }
+        return coordinates;
     }
 
 
