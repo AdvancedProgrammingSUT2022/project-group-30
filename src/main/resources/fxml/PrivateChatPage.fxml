@@ -35,8 +35,8 @@
         <padding>
             <Insets topRightBottomLeft="5"/>
         </padding>
-        <TextArea text="meow" HBox.hgrow="ALWAYS" styleClass="timesNewRoman20"/>
-        <Button text="send" styleClass="timesNewRoman20"/>
+        <TextArea text="meow" HBox.hgrow="ALWAYS" prefRowCount="3" styleClass="timesNewRoman20"/>
+        <Button text="send" styleClass="timesNewRoman20" minWidth="80"/>
     </HBox>
 
     <stylesheets>

@@ -38,7 +38,7 @@ public class MessageComponent extends VBox {
         text.setMinSize(200, 60);
         text.setMaxWidth(350);
 
-        setStyle("-fx-border-radius: 10px; -fx-background-color: #3c3cff; -fx-padding: 10px");
+        setStyle("-fx-border-radius: 10px; -fx-background-color: #7272ff; -fx-padding: 10px");
 
         getChildren().addAll(senderInfo, text);
         setSpacing(5.0);

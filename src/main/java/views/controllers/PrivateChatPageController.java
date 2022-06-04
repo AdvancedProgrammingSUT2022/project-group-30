@@ -28,6 +28,7 @@ public class PrivateChatPageController {
         messages.add(new Message("3"));
         messages.add(new Message("4"));
         messages.add(new Message("I hanshf hlsfhel hosdfh sfn efhfndn jldhfdls hflsdh foe"));
+        messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;"));
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
