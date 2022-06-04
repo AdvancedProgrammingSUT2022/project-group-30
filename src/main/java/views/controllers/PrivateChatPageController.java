@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import models.chat.Message;
@@ -15,10 +16,14 @@ import java.util.ArrayList;
 public class PrivateChatPageController {
     @FXML
     private ListView<Message> messageList;
+    @FXML
+    private TextArea textArea;
+
+    private ObservableList<Message> data;
 
     @FXML
     public void initialize() {
-        ObservableList<Message> data = FXCollections.observableArrayList();
+        data = FXCollections.observableArrayList();
         ArrayList<Message> messages = new ArrayList<>();
         messages.add(new Message("meow"));
         messages.add(new Message("Hi"));
@@ -31,6 +36,8 @@ public class PrivateChatPageController {
         messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;"));
         data.setAll(messages);
         messageList.setItems(data);
+        scrollToBottom();
+
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
             @Override
             public ListCell<Message> call(ListView<Message> messageListView) {
@@ -52,5 +59,16 @@ public class PrivateChatPageController {
                 setGraphic(pane);
             }
         }
+    }
+
+    @FXML
+    protected void onSendButtonClick() {
+        data.add(new Message(textArea.getText()));
+        textArea.setText("");
+        scrollToBottom();
+    }
+
+    private void scrollToBottom() {
+        messageList.scrollTo(data.size() - 1);
     }
 }
