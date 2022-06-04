@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,18 +16,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.*;
 import models.interfaces.TileImage;
 import models.resources.Resource;
+import models.units.Unit;
 import views.Main;
 
 import java.net.MalformedURLException;
@@ -51,6 +51,7 @@ public class CivilizationGamePageController {
         //showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
         setSceneOnKeyPressed();
+        createStatusBar();
     }
 
     private Polygon createHexagon(double xCoordinate, double yCoordinate){
@@ -104,6 +105,7 @@ public class CivilizationGamePageController {
         }
         drawFeatures();
         drawRiverSegments();
+        putUnitsOnMap();
     }
 
     public void setSceneOnKeyPressed(){
@@ -160,6 +162,38 @@ public class CivilizationGamePageController {
         if(xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1){
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition + 1, yPosition));
         }
+    }
+
+    public void putUnitsOnMap() throws MalformedURLException {
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
+                int isOdd = 1;
+                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                    isOdd = -1;
+                }
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                if(tilesToShow[i][j] instanceof Tile){
+                    ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
+                    for(int k = 0; k < units.size(); k++){
+                        Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
+                        hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        pane.getChildren().add(hexagon);
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeAllCirclesFromPane(){
+        ArrayList<Circle> toRemove = new ArrayList<>();
+        for(int i = 0; i < pane.getChildren().size(); i++){
+            if(pane.getChildren().get(i) instanceof Circle){
+                toRemove.add((Circle) pane.getChildren().get(i));
+            }
+        }
+        pane.getChildren().removeAll(toRemove);
     }
 
     public void drawFeatures() throws MalformedURLException {
@@ -585,6 +619,64 @@ public class CivilizationGamePageController {
                 }
             }
         });
+    }
+
+    public void createStatusBar() throws MalformedURLException {
+        HBox hBox = new HBox();
+        hBox.setLayoutX(0);
+        hBox.setLayoutY(0);
+        hBox.setPrefWidth(1280);
+        hBox.setPrefHeight(20);
+        hBox.setStyle("-fx-background-color: #02cefc");
+
+        HBox data = new HBox();
+        HBox buttons = new HBox();
+
+        Circle science = new Circle();
+        science.setRadius(10);
+        science.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Science.png").toExternalForm()).toExternalForm())));
+        Text scienceText = new Text("" + controller.getCurrentPlayer().getBeakerCount());
+
+        Circle gold = new Circle();
+        gold.setRadius(10);
+        gold.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Gold.png").toExternalForm()).toExternalForm())));
+        Text goldText = new Text("" + controller.getCurrentPlayer().getGoldCount());
+
+        Circle happiness = new Circle();
+        happiness.setRadius(10);
+        happiness.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Happiness.png").toExternalForm()).toExternalForm())));
+        Text happinessText = new Text("" + controller.getCurrentPlayer().getHappiness());
+
+        data.setSpacing(20);
+        data.getChildren().add(science);
+        data.getChildren().add(scienceText);
+        data.getChildren().add(gold);
+        data.getChildren().add(goldText);
+        data.getChildren().add(happiness);
+        data.getChildren().add(happinessText);
+
+        Rectangle pause = new Rectangle();
+        pause.setHeight(20);
+        pause.setWidth(20);
+        pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+
+        Rectangle settings = new Rectangle();
+        settings.setHeight(20);
+        settings.setWidth(20);
+        settings.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Settings.png").toExternalForm()).toExternalForm())));
+
+        buttons.getChildren().add(pause);
+        buttons.getChildren().add(settings);
+        buttons.setAlignment(Pos.CENTER_RIGHT);
+        buttons.setSpacing(20);
+
+        HBox.setHgrow(buttons, Priority.ALWAYS);
+
+        hBox.getChildren().add(data);
+        hBox.getChildren().add(buttons);
+        hBox.setPadding(new Insets(2));
+
+        pane.getChildren().add(hBox);
     }
 }
 
