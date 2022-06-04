@@ -3,9 +3,7 @@ package views.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import models.chat.Message;
@@ -36,6 +34,7 @@ public class PrivateChatPageController {
         messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;"));
         data.setAll(messages);
         messageList.setItems(data);
+        messageList.setFocusTraversable(false);
         scrollToBottom();
 
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
@@ -51,12 +50,24 @@ public class PrivateChatPageController {
         public void updateItem(Message item, boolean empty) {
             super.updateItem(item, empty);
             this.getStyleClass().add("messageBox");
-            if (item != null) {
+            if (item != null && empty != true) {
                 AnchorPane pane = new AnchorPane();
                 MessageComponent box = new MessageComponent(item);
                 pane.getChildren().add(box);
                 AnchorPane.setRightAnchor(box, 10.0);
                 setGraphic(pane);
+                ContextMenu contextMenu = new ContextMenu();
+                MenuItem deleteForMeItem = new MenuItem();
+                deleteForMeItem.setText("Delete for me");
+                deleteForMeItem.setOnAction(event -> {
+                    RegisterPageGraphicalController.showPopup(item.getText());
+                });
+                MenuItem deleteForEveryoneItem = new MenuItem();
+                deleteForEveryoneItem.setText("Delete for everybody");
+                MenuItem editItem = new MenuItem();
+                editItem.setText("Edit");
+                contextMenu.getItems().addAll(deleteForMeItem, deleteForEveryoneItem, editItem);
+                this.setContextMenu(contextMenu);
             }
         }
     }

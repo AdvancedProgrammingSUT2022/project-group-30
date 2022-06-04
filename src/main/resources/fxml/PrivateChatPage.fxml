@@ -28,7 +28,6 @@
 
 
     <ListView fx:id="messageList" VBox.vgrow="ALWAYS">
-
     </ListView>
 
     <HBox styleClass="blueBackground" spacing="5">
