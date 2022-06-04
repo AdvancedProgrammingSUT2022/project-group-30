@@ -1,13 +1,10 @@
 package models;
 
-import com.google.gson.Gson;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class User {
@@ -21,7 +18,7 @@ public class User {
     private String lastScoreChangeTime;  // note : be careful of updating this field after each game and score change using updateUserLastScoreChangeTime() function in ProgramDatabase.java
 
     public User(String username, String password, String nickname, int score) {
-         this.id = getId();
+        this.id = findNextId();
         this.username = username;
         this.password = password;
         this.nickname = nickname;
@@ -85,11 +82,15 @@ public class User {
         this.lastScoreChangeTime = lastScoreChangeTime;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getLastScoreChangeTime() {
         return this.lastScoreChangeTime;
     }
 
-    private static int getId() {
+    private static int findNextId() {
         int nextId = 0;
 
         try {

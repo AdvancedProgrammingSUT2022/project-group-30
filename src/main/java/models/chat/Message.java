@@ -8,9 +8,11 @@ public class Message {
 
     public Message(String text) {
         this.text = text;
+        senderId = 0;
     }
     public Message() {
         this.text = "default";
+        senderId = 0;
     }
 
 

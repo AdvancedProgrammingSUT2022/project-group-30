@@ -108,3 +108,7 @@
     -fx-font-family: "Times New Roman";
     -fx-font-size: 20;
 }
+
+.lsfls {
+    -fx-background-color: #3c3cff;
+}

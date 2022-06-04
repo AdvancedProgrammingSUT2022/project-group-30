@@ -1,7 +1,5 @@
 package models;
 
-import models.chat.ChatDataBase;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -67,6 +65,15 @@ public class ProgramDatabase {
 
     public User getLoggedInUser() {
         return this.loggedInUser;
+    }
+
+    public User getUserById(int id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 
 }

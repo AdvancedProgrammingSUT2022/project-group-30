@@ -35,7 +35,7 @@
         <padding>
             <Insets topRightBottomLeft="5"/>
         </padding>
-        <TextField text="meow" HBox.hgrow="ALWAYS" styleClass="timesNewRoman20"/>
+        <TextArea text="meow" HBox.hgrow="ALWAYS" styleClass="timesNewRoman20"/>
         <Button text="send" styleClass="timesNewRoman20"/>
     </HBox>
 
