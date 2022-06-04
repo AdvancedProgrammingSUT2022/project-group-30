@@ -108,3 +108,9 @@
     -fx-font-family: "Times New Roman";
     -fx-font-size: 20;
 }
+
+.messageContextMenu {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 15;
+    -fx-background-color: #bdbdff;
+}

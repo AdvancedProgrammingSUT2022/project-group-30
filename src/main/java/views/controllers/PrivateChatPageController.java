@@ -70,6 +70,7 @@ public class PrivateChatPageController {
                 MenuItem editItem = new MenuItem();
                 editItem.setText("Edit");
                 contextMenu.getItems().addAll(deleteForMeItem, deleteForEveryoneItem, editItem);
+                contextMenu.getStyleClass().add("messageContextMenu");
                 this.setContextMenu(contextMenu);
             }
         }
