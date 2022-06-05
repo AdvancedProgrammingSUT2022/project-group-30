@@ -16,12 +16,12 @@
 
     <BorderPane styleClass="chatTopBar">
         <left>
-            <Button text="Back" BorderPane.alignment="CENTER" styleClass="backButton"/>
+            <Button text="Back" BorderPane.alignment="CENTER" styleClass="backButton" onAction="#onBackButtonClick"/>
         </left>
         <center>
             <HBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10">
-                <Circle radius="30"/>
-                <Label text="Amir Kooshky CE SUT" styleClass="timesNewRoman30, chatNameLabel"/>
+                <Circle fx:id="contactImage" radius="30"/>
+                <Label fx:id="contactUsernameField" styleClass="timesNewRoman30, chatNameLabel"/>
             </HBox>
         </center>
     </BorderPane>
@@ -34,7 +34,7 @@
         <padding>
             <Insets topRightBottomLeft="5"/>
         </padding>
-        <TextArea fx:id="textArea" text="meow" HBox.hgrow="ALWAYS" prefRowCount="3" styleClass="timesNewRoman20"/>
+        <TextArea fx:id="textArea" text="" HBox.hgrow="ALWAYS" prefRowCount="3" styleClass="timesNewRoman20"/>
         <Button text="send" styleClass="timesNewRoman20" minWidth="80" onAction="#onSendButtonClick"/>
     </HBox>
 

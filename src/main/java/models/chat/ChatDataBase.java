@@ -1,5 +1,7 @@
 package models.chat;
 
+import models.User;
+
 import java.util.ArrayList;
 
 public class ChatDataBase {
@@ -14,6 +16,22 @@ public class ChatDataBase {
 
     private ArrayList<PrivateChat> privateChats;
     private ArrayList<Room> rooms;
-    private PrivateChat currentPrivateChat; // don't save this
+    private int currentPrivateContactId;    // id of the user whose private chat page should be opened.
+    private int currentRoomIndex;
 
+    public int getCurrentPrivateContactId() {
+        return currentPrivateContactId;
+    }
+
+    public void setCurrentPrivateContactId(int currentPrivateContactId) {
+        this.currentPrivateContactId = currentPrivateContactId;
+    }
+
+    public int getCurrentRoomIndex() {
+        return currentRoomIndex;
+    }
+
+    public void setCurrentRoomIndex(int currentRoomIndex) {
+        this.currentRoomIndex = currentRoomIndex;
+    }
 }

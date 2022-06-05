@@ -9,6 +9,7 @@ import java.util.SimpleTimeZone;
 
 public class Message {
     private int senderId;
+    private boolean isHiddenToSender;
     private String text;
     private boolean seen;
     private String timeSent;
@@ -77,5 +78,21 @@ public class Message {
             e.printStackTrace();
         }
         return date;
+    }
+
+    public boolean isHiddenToSender() {
+        return isHiddenToSender;
+    }
+
+    public void setHiddenToSender(boolean hiddenToSender) {
+        isHiddenToSender = hiddenToSender;
+    }
+
+    public String getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(String timeSent) {
+        this.timeSent = timeSent;
     }
 }
