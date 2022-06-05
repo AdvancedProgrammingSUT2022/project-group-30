@@ -4,13 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
-import models.ProgramDatabase;
 import models.chat.Message;
-import views.customcomponents.MessageComponent;
+import views.customcomponents.MessageBox;
 
 import java.util.ArrayList;
 
@@ -47,38 +43,6 @@ public class PrivateChatPageController {
                 return new MessageBox();
             }
         });
-    }
-
-    private static class MessageBox extends ListCell<Message> {
-        @Override
-        public void updateItem(Message item, boolean empty) {
-            super.updateItem(item, empty);
-            this.getStyleClass().add("messageBox");
-            if (item != null && !empty) {
-                AnchorPane pane = new AnchorPane();
-                MessageComponent box = new MessageComponent(item);
-                pane.getChildren().add(box);
-                if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
-                    AnchorPane.setRightAnchor(box, 10.0);
-                } else {
-                    AnchorPane.setLeftAnchor(box, 10.0);
-                }
-                setGraphic(pane);
-                ContextMenu contextMenu = new ContextMenu();
-                MenuItem deleteForMeItem = new MenuItem();
-                deleteForMeItem.setText("Delete for me");
-                deleteForMeItem.setOnAction(event -> {
-                    RegisterPageGraphicalController.showPopup(item.getText());
-                });
-                MenuItem deleteForEveryoneItem = new MenuItem();
-                deleteForEveryoneItem.setText("Delete for everybody");
-                MenuItem editItem = new MenuItem();
-                editItem.setText("Edit");
-                contextMenu.getItems().addAll(deleteForMeItem, deleteForEveryoneItem, editItem);
-                contextMenu.getStyleClass().add("messageContextMenu");
-                this.setContextMenu(contextMenu);
-            }
-        }
     }
 
     @FXML
