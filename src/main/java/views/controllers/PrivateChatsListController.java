@@ -33,4 +33,9 @@ public class PrivateChatsListController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    protected void onBackButtonClick() throws IOException {
+        Main.loadFxmlFile("ChatFirstPage");
+    }
 }

@@ -14,8 +14,8 @@ public class ChatDataBase {
     }
     private ChatDataBase() {}
 
-    private ArrayList<PrivateChat> privateChats;
-    private ArrayList<Room> rooms;
+    private ArrayList<PrivateChat> privateChats = new ArrayList<>();
+    private ArrayList<Room> rooms = new ArrayList<>();
     private int currentPrivateContactId;    // id of the user whose private chat page should be opened.
     private int currentRoomIndex;
 
@@ -33,5 +33,27 @@ public class ChatDataBase {
 
     public void setCurrentRoomIndex(int currentRoomIndex) {
         this.currentRoomIndex = currentRoomIndex;
+    }
+
+    public void setCurrentRoom(Room room) {
+        this.currentRoomIndex = rooms.indexOf(room);
+    }
+
+    public Room getRoomByName(String name) {
+        for (Room room : rooms) {
+            if (room.getName().equals(name)) {
+                return room;
+            }
+        }
+        return null;
+    }
+
+    public void createNewRoom(User owner, String name) {
+        Room newRoom = new Room();
+        newRoom.setParticipants(new ArrayList<>());
+        newRoom.getParticipants().add(owner.getId());
+        newRoom.setOwner(owner.getId());
+        newRoom.setName(name);
+        rooms.add(newRoom);
     }
 }

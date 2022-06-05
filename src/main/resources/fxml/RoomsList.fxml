@@ -6,11 +6,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import java.net.URL?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="views.controllers.PrivateChatsListController"
+      fx:controller="views.controllers.RoomsListController"
       prefHeight="400.0" prefWidth="600.0" spacing="20" alignment="TOP_CENTER">
 
     <padding>
@@ -18,10 +18,12 @@
     </padding>
 
     <HBox alignment="CENTER" spacing="20">
-        <Label text="Contact:" styleClass="timesNewRoman20"/>
-        <TextField styleClass="timesNewRoman20" prefWidth="200" fx:id="contactUsernameField"/>
+        <Label text="Room Name:" styleClass="timesNewRoman20"/>
+        <TextField styleClass="timesNewRoman20" prefWidth="200" fx:id="roomNameField"/>
     </HBox>
-    <Button text="Chat!" prefWidth="300" styleClass="greenButton" onAction="#onChatButtonClick"/>
+
+    <Button text="Enter Room" prefWidth="300" styleClass="greenButton" onAction="#onEnterRoomButtonClick"/>
+    <Button text="Create Room" prefWidth="300" styleClass="greenButton" onAction="#onCreateRoomButtonClick"/>
     <Button text="Back" prefWidth="300" styleClass="redButton" onAction="#onBackButtonClick"/>
 
     <stylesheets>

@@ -3,10 +3,10 @@ package models.chat;
 import java.util.ArrayList;
 
 public class Room {
-    private ArrayList<Integer> participants;
+    private String name;
+    private ArrayList<Integer> participants = new ArrayList<>();
     private int owner;
-    private ArrayList<Message> messages;
-
+    private ArrayList<Message> messages = new ArrayList<>();
 
     public ArrayList<Integer> getParticipants() {
         return participants;
@@ -31,4 +31,13 @@ public class Room {
     public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
