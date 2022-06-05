@@ -30,7 +30,9 @@ public class MessageBox extends ListCell<Message> {
                 AnchorPane.setLeftAnchor(box, 10.0);
             }
             setGraphic(pane);
-            this.setContextMenu(createContextMenu(item));
+            if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+                this.setContextMenu(createContextMenu(item));
+            }
         }
     }
 

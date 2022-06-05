@@ -19,6 +19,12 @@ public class Message {
         setDefaults();
     }
 
+    public Message(String text, int id) {
+        this.text = text;
+        senderId = id;
+        setDefaults();
+    }
+
     public Message() {
         this.text = "default";
         senderId = 0;
