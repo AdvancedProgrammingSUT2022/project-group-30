@@ -1,21 +1,35 @@
 package models.chat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.SimpleTimeZone;
+
 public class Message {
     private int senderId;
     private String text;
     private boolean seen;
-    private int hour, minute, year, month, day;
+    private String timeSent;
 
     public Message(String text) {
         this.text = text;
         senderId = 0;
+        setDefaults();
     }
+
     public Message() {
         this.text = "default";
         senderId = 0;
+        setDefaults();
     }
 
-
+    private void setDefaults() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        timeSent = dtf.format(now);
+    }
 
 
     public int getSenderId() {
@@ -42,43 +56,20 @@ public class Message {
         this.seen = seen;
     }
 
-    public int getHour() {
-        return hour;
+    public String getTimeSentAsHHMM() {
+        Date date = getDateSent();
+        SimpleDateFormat dtf = new SimpleDateFormat("hh:mm");
+        String result = dtf.format(date);
+        return result;
     }
 
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public void setDay(int day) {
-        this.day = day;
+    public Date getDateSent() {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(timeSent);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

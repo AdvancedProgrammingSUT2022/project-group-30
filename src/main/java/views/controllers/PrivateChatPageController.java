@@ -54,7 +54,7 @@ public class PrivateChatPageController {
         public void updateItem(Message item, boolean empty) {
             super.updateItem(item, empty);
             this.getStyleClass().add("messageBox");
-            if (item != null && empty != true) {
+            if (item != null && !empty) {
                 AnchorPane pane = new AnchorPane();
                 MessageComponent box = new MessageComponent(item);
                 pane.getChildren().add(box);
