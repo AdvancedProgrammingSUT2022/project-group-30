@@ -70,7 +70,7 @@ public class RoomChatPageController {
 
     @FXML
     protected void onSendButtonClick() {
-        data.add(ProgramDatabase.getProgramDatabase().getLoggedInUser().getId(), new Message(textArea.getText()));
+        data.add(new Message(textArea.getText(), ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()));
         textArea.setText("");
         scrollToBottom();
     }

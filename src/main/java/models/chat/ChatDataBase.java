@@ -46,7 +46,6 @@ public class ChatDataBase {
     }
 
     public void setCurrentRoom(Room room) {
-        System.out.println("index is " + rooms.indexOf(room));
         System.out.println(rooms.contains(room));
         this.currentRoomIndex = rooms.indexOf(room);
     }
@@ -67,6 +66,5 @@ public class ChatDataBase {
         newRoom.setOwner(owner.getId());
         newRoom.setName(name);
         rooms.add(newRoom);
-        System.out.println(rooms);
     }
 }
