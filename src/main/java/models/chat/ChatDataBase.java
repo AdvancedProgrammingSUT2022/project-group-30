@@ -6,18 +6,28 @@ import java.util.ArrayList;
 
 public class ChatDataBase {
     private static ChatDataBase chatDatabase;
+
     public static ChatDataBase getChatDatabase() {
         if (chatDatabase == null) {
             chatDatabase = new ChatDataBase();
         }
         return chatDatabase;
     }
-    private ChatDataBase() {}
+
+    private ChatDataBase() {
+    }
 
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();
     private ArrayList<Room> rooms = new ArrayList<>();
     private int currentPrivateContactId;    // id of the user whose private chat page should be opened.
     private int currentRoomIndex;
+
+    public Room getCurrentRoom() {
+        if (rooms.isEmpty()) {
+            return null;
+        }
+        return rooms.get(currentRoomIndex);
+    }
 
     public int getCurrentPrivateContactId() {
         return currentPrivateContactId;
@@ -36,6 +46,8 @@ public class ChatDataBase {
     }
 
     public void setCurrentRoom(Room room) {
+        System.out.println("index is " + rooms.indexOf(room));
+        System.out.println(rooms.contains(room));
         this.currentRoomIndex = rooms.indexOf(room);
     }
 
@@ -55,5 +67,6 @@ public class ChatDataBase {
         newRoom.setOwner(owner.getId());
         newRoom.setName(name);
         rooms.add(newRoom);
+        System.out.println(rooms);
     }
 }

@@ -26,7 +26,11 @@ public class RoomsListController {
             return;
         }
         ChatDataBase.getChatDatabase().setCurrentRoom(room);
-        // TODO: connect to room page
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -43,8 +47,12 @@ public class RoomsListController {
         }
         ChatDataBase.getChatDatabase().createNewRoom(ProgramDatabase.getProgramDatabase().getLoggedInUser(), roomName);
         RegisterPageGraphicalController.showPopup("Room " + roomName + " has been created!");
-        ChatDataBase.getChatDatabase().setCurrentRoom(room);
-        // TODO: connect to room page
+        ChatDataBase.getChatDatabase().setCurrentRoom(ChatDataBase.getChatDatabase().getRoomByName(roomName));
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.RoomChatPageController" alignment="TOP_CENTER" styleClass="chatBackground">
+
+    <BorderPane styleClass="chatTopBar">
+        <left>
+            <Button text="Back" BorderPane.alignment="CENTER" styleClass="backButton" onAction="#onBackButtonClick"/>
+        </left>
+        <center>
+            <Label fx:id="roomNameField" styleClass="timesNewRoman30, chatNameLabel"/>
+        </center>
+    </BorderPane>
+
+
+    <ListView fx:id="messageList" VBox.vgrow="ALWAYS">
+    </ListView>
+
+    <HBox styleClass="blueBackground" spacing="5">
+        <padding>
+            <Insets topRightBottomLeft="5"/>
+        </padding>
+        <TextArea fx:id="textArea" text="" HBox.hgrow="ALWAYS" prefRowCount="3" styleClass="timesNewRoman20"/>
+        <Button text="send" styleClass="timesNewRoman20" minWidth="80" onAction="#onSendButtonClick"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/chatroom.css"/>
+    </stylesheets>
+</VBox>
