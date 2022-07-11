@@ -7,12 +7,14 @@ import java.util.HashMap;
 
 public class TechnologyMap {
     private HashMap<Technology, Boolean> map = new HashMap<Technology, Boolean>();
+    private Technology lastUnlocked;
 
     public TechnologyMap() {
         for (Technology type : Technology.values()) {
             map.put(type, false);
         }
         map.put(Technology.AGRICULTURE, true);
+        lastUnlocked = Technology.AGRICULTURE;
     }
 
     public void learnTechnology(Technology technology) {
@@ -22,6 +24,7 @@ public class TechnologyMap {
         }
 
         map.put(technology, true);
+        lastUnlocked = technology;
     }
 
     public void learnTechnologyAndPrerequisites(Technology technology) { // discovers the technology and any of its prerequisites that are not yet unlocked
@@ -31,6 +34,7 @@ public class TechnologyMap {
             }
         }
         map.put(technology, true);
+        lastUnlocked = technology;
     }
 
     public boolean isTechnologyLearned(Technology type) {
@@ -74,5 +78,13 @@ public class TechnologyMap {
         for (Technology technology : map.keySet()) {
             map.put(technology, true);
         }
+    }
+
+    public Technology getLastUnlocked() {
+        return lastUnlocked;
+    }
+
+    public void setLastUnlocked(Technology lastUnlocked) {
+        this.lastUnlocked = lastUnlocked;
     }
 }

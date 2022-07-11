@@ -28,6 +28,7 @@ import models.interfaces.TileImage;
 import models.resources.Resource;
 import models.units.Unit;
 import views.Main;
+import views.customcomponents.TechnologyPopup;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +43,8 @@ public class CivilizationGamePageController {
 
     @FXML
     private Pane pane;
+
+    private TechnologyPopup techPopup;
 
     @FXML
     public void initialize() throws MalformedURLException {
@@ -105,6 +108,15 @@ public class CivilizationGamePageController {
         drawFeatures();
         drawRiverSegments();
         putUnitsOnMap();
+        createTechnologyPopup();
+    }
+
+    private void createTechnologyPopup() {
+        techPopup = new TechnologyPopup();
+        pane.getChildren().add(techPopup);
+        techPopup.setLayoutX(20);
+        techPopup.setLayoutY(20);
+        techPopup.updateInfo(controller.getCurrentPlayer().getTechnologies());
     }
 
     public void setSceneOnKeyPressed(){
