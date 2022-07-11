@@ -75,6 +75,11 @@ public class RoomChatPageController {
         scrollToBottom();
     }
 
+    @FXML
+    protected void onAddMemberButtonClick() {
+        RegisterPageGraphicalController.showPopup("hello");
+    }
+
     private void scrollToBottom() {
         messageList.scrollTo(data.size() - 1);
     }

@@ -20,6 +20,9 @@
         <center>
             <Label fx:id="roomNameField" styleClass="timesNewRoman30, chatNameLabel"/>
         </center>
+        <right>
+            <Button text="add member" BorderPane.alignment="CENTER" styleClass="backButton" onAction="#onAddMemberButtonClick"/>
+        </right>
     </BorderPane>
 
 
