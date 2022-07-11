@@ -51,7 +51,7 @@ public class GameView implements View {
 
     public void run() {
         askUserForPlayers();
-        controller.initializeGame();
+        controller.initializeGame(52, 80, 0, 0);
 
         showMap();
 

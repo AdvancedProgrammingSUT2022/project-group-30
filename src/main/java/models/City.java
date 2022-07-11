@@ -57,7 +57,6 @@ public class City implements Selectable, TurnHandler, combative {
         this.expansionLimit = 1;
         this.populationProgress = 0;
         this.expansionProgress = 0;
-        this.expansionProgress = 0;
     }
 
     public City createImage() {

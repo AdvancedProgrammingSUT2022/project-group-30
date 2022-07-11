@@ -47,6 +47,9 @@ public class MainPageController {
         ArrayList<User> users = ProgramDatabase.getProgramDatabase().getUsers();
         Comparator<User> comparator = Comparator.comparing(User::getScore).reversed().thenComparing(User::getLastScoreChangeTime).thenComparing(User::getUsername);
         Collections.sort(users, comparator);
+        for(int i = 0; i < users.size(); i++){
+            users.get(i).setRank(i + 1);
+        }
     }
 
     public void setProgramDatabase() {

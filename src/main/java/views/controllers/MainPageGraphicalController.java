@@ -36,4 +36,8 @@ public class MainPageGraphicalController {
     public void chatRoomPage(MouseEvent mouseEvent) throws IOException {
         Main.loadFxmlFile("ChatFirstPage");
     }
+
+    public void gameMenu(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("GamePage");
+    }
 }
