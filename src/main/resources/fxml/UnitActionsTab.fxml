@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<Pane xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.UnitsGraphicalController"
+      prefHeight="720" prefWidth="1280" styleClass="enteringMenus" fx:id="pane">
+
+
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+        <URL value="@../css/TilesInfoStyle.css"/>
+    </stylesheets>
+
+</Pane>

@@ -29,6 +29,7 @@ import models.resources.Resource;
 import models.units.Unit;
 import views.Main;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -179,10 +180,22 @@ public class CivilizationGamePageController {
                     ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
                     for(int k = 0; k < units.size(); k++){
                         Circle circle = new Circle();
-                        circle.setCenterY(yCoordinate + 10);
+                        circle.setCenterY(yCoordinate + 10 + 20 * k);
                         circle.setCenterX(xCoordinate + 16);
                         circle.setRadius(10);
                         circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units2/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        Unit unit = units.get(k);
+                        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
+                                try {
+                                    Main.loadFxmlFile("UnitActionsTab");
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        });
                         pane.getChildren().add(circle);
                     }
                 }
