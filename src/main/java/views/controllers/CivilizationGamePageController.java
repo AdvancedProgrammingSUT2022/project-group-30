@@ -46,7 +46,7 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-        //controller.makeEverythingVisible();
+        controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
@@ -78,6 +78,7 @@ public class CivilizationGamePageController {
     public void drawMap() throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
+        removeAllCirclesFromPane();
         for(int i = 0; i < tilesToShow.length; i++){
             for(int j = 0; j < tilesToShow[i].length; j++){
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
@@ -177,9 +178,12 @@ public class CivilizationGamePageController {
                 if(tilesToShow[i][j] instanceof Tile){
                     ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
                     for(int k = 0; k < units.size(); k++){
-                        Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
-                        hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
-                        pane.getChildren().add(hexagon);
+                        Circle circle = new Circle();
+                        circle.setCenterY(yCoordinate + 10);
+                        circle.setCenterX(xCoordinate + 16);
+                        circle.setRadius(10);
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units2/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        pane.getChildren().add(circle);
                     }
                 }
             }
