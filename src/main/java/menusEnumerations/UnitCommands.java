@@ -20,7 +20,7 @@ public class UnitCommands extends Commands {
     public static UnitCommands DELETE = new UnitCommands("delete", "delete");
     public static UnitCommands CANCEL_MOVE = new UnitCommands("cancel move", "cancel move");
     public static UnitCommands WORK_ACTIONS = new UnitCommands("work actions", "work actions");
-    // if you add a command, make the appropriate changes to the calculateAllwedCommands method of GameView
+    // if you add a command, make the appropriate changes to the calculateAllowedCommands method of GameView
 
     // Cheat Codes
     public static UnitCommands TELEPORT = new UnitCommands("mig mig (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)");

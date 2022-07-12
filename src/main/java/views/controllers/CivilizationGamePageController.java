@@ -189,11 +189,7 @@ public class CivilizationGamePageController {
                             @Override
                             public void handle(MouseEvent mouseEvent) {
                                 CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
-                                try {
-                                    Main.loadFxmlFile("UnitActionsTab");
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                // TODO...
                             }
                         });
                         pane.getChildren().add(circle);
@@ -634,6 +630,18 @@ public class CivilizationGamePageController {
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+        hexagon.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hexagon.setOpacity(0.5);
+            }
+        });
+        hexagon.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hexagon.setOpacity(1);
             }
         });
     }
