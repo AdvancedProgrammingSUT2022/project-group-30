@@ -1,11 +1,16 @@
 package views.customcomponents;
 
+import controllers.GameController;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import models.Civilization;
+import models.GameDataBase;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
 
@@ -43,6 +48,22 @@ public class TechnologyPopup extends VBox {
         techLabel.setText(tech.getName());
         techLabel.setStyle("-fx-background-color: white; -fx-text-fill: black; -fx-font-size: 15; -fx-cursor: hand; -fx-alignment: CENTER");
         techLabel.setMaxWidth(Double.MAX_VALUE);
+        Tooltip tooltip = new Tooltip();
+        StringBuilder tipBuilder = new StringBuilder("Unlocks:\n");
+        for (Technology dependentTechnology : tech.getDependentTechnologies()) {
+            tipBuilder.append(dependentTechnology.getName()).append("\n");
+        }
+        tooltip.setText(tipBuilder.toString());
+        techLabel.setTooltip(tooltip);
+        techLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getClickCount() > 1) {
+                    GameController.getGameController().stopResearch(GameDataBase.getGameDataBase().getCurrentPlayer());
+                    GameController.getGameController().startResearch(GameDataBase.getGameDataBase().getCurrentPlayer(), tech);
+                }
+            }
+        });
         researchOptions.getChildren().add(techLabel);
     }
 }

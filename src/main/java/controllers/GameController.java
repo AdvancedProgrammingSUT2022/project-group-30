@@ -235,6 +235,21 @@ public class GameController {
         return false;
     }
 
+    public void startResearch(Civilization civilization, Technology researchProject) {
+        if (civilization.getResearchReserve().containsKey(researchProject)) {
+            civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
+            civilization.getResearchReserve().remove(researchProject);
+        }
+        civilization.setResearchProject(researchProject);
+    }
+
+    public void stopResearch(Civilization civilization) {
+        Technology researchProject = civilization.getResearchProject();
+        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
+        civilization.setResearchProject(null);
+        civilization.setBeakerCount(0);
+    }
+
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();
