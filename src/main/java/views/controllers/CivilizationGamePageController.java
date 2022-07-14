@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CivilizationGamePageController {
+    private final boolean debugMode = true; // for debugging purposes only
 
     private GameController controller = GameController.getGameController();
 
@@ -54,6 +55,9 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
+        if (debugMode || (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty())) {
+            createTechnologyPopup();
+        }
     }
 
     private Polygon createHexagon(double xCoordinate, double yCoordinate){
@@ -108,7 +112,6 @@ public class CivilizationGamePageController {
         drawFeatures();
         drawRiverSegments();
         putUnitsOnMap();
-        createTechnologyPopup();
     }
 
     private void createTechnologyPopup() {
@@ -117,6 +120,10 @@ public class CivilizationGamePageController {
         techPopup.setLayoutX(20);
         techPopup.setLayoutY(20);
         techPopup.updateInfo(controller.getCurrentPlayer().getTechnologies());
+    }
+
+    private void removeTechnologyPopup() {
+        pane.getChildren().remove(techPopup);
     }
 
     public void setSceneOnKeyPressed(){

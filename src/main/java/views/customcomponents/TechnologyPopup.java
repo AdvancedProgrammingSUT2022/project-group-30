@@ -1,6 +1,7 @@
 package views.customcomponents;
 
 import controllers.GameController;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +14,9 @@ import models.Civilization;
 import models.GameDataBase;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
+import views.Main;
+
+import java.io.IOException;
 
 public class TechnologyPopup extends VBox {
     private Label lastResearchedBox;
@@ -30,6 +34,16 @@ public class TechnologyPopup extends VBox {
         openTechnologyTreeButton = new Button();
         openTechnologyTreeButton.setStyle("-fx-background-color: white; -fx-font-family: 'Times New Roman'; -fx-font-size: 20;");
         openTechnologyTreeButton.setText("Open Technology Tree");
+        openTechnologyTreeButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    Main.loadFxmlFile("TechnologyTree");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         researchOptions = new VBox();
 
         getChildren().addAll(lastResearchedBox, openTechnologyTreeButton, researchOptions);
