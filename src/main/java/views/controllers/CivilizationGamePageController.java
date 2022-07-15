@@ -53,6 +53,7 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
+        UnitsGraphicalController.initializeUnitActionTab(this.pane);
     }
 
     private Polygon createHexagon(double xCoordinate, double yCoordinate){
@@ -190,6 +191,7 @@ public class CivilizationGamePageController {
                             public void handle(MouseEvent mouseEvent) {
                                 CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
                                 // TODO...
+                                UnitsGraphicalController.makeTheUnitActionTab(unit);
                             }
                         });
                         pane.getChildren().add(circle);
