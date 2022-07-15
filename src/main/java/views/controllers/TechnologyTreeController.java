@@ -2,11 +2,11 @@ package views.controllers;
 
 import controllers.GameController;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -21,11 +21,18 @@ public class TechnologyTreeController {
     @FXML
     private BorderPane topBar;
     @FXML
-    private Pane techPane;
-    @FXML
     private TextField searchField;
-
+    @FXML
+    private Label learnedColorGuide;
+    @FXML
+    private Label unlockedColorGuide;
+    @FXML
+    private Label lockedColorGuide;
+    @FXML
     private ScrollPane scrollPane;
+
+    private Pane techPane;
+
 
 
     private final int padding = 15;
@@ -36,18 +43,15 @@ public class TechnologyTreeController {
 
     @FXML
     public void initialize() {
-        topBar.setStyle("-fx-border-color: blue");
-
-        scrollPane = new ScrollPane();
+        techPane = new Pane();
+        techPane.setStyle("-fx-background-color: #4c4c4c;");
         scrollPane.setContent(techPane);
         scrollPane.setPannable(true);
         scrollPane.setFitToHeight(true);
 
         addTechnologyBlocks();
         addDependecyLines();
-
-//        parent.setStyle("-fx-border-color: yellow");
-        parent.getChildren().add(scrollPane);
+        createColorGuide();
     }
 
     private void addTechnologyBlocks() {
@@ -88,6 +92,15 @@ public class TechnologyTreeController {
                 }
             }
         }
+    }
+
+    private void createColorGuide() {
+        learnedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.LEARNED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        learnedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
+        unlockedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.UNLOCKED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        unlockedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
+        lockedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.LOCKED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
+        lockedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
     }
 
     @FXML

@@ -28,8 +28,19 @@
         </center>
     </BorderPane>
 
-    <Pane fx:id="techPane">
-    </Pane>
+    <ScrollPane fx:id="scrollPane"/>
+
+    <HBox spacing="10" fx:id="bottomBar">
+        <padding>
+            <Insets topRightBottomLeft="5"/>
+        </padding>
+
+        <VBox>
+            <Label fx:id="learnedColorGuide" text="Learned" styleClass="colorGuideLabel"/>
+            <Label fx:id="unlockedColorGuide" text="Unlocked (learnable)" styleClass="colorGuideLabel"/>
+            <Label fx:id="lockedColorGuide" text="Locked" styleClass="colorGuideLabel"/>
+        </VBox>
+    </HBox>
 
     <stylesheets>
         <URL value="@../css/TechnologyTree.css"/>
