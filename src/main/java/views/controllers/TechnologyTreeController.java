@@ -3,9 +3,9 @@ package views.controllers;
 import controllers.GameController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import models.technology.Technology;
@@ -15,9 +15,10 @@ import java.util.HashMap;
 
 public class TechnologyTreeController {
     @FXML
-    private HBox parent;
+    private VBox parent;
     @FXML
     private Pane techPane;
+
 
     private final int padding = 15;
     private final int hspace = 60;

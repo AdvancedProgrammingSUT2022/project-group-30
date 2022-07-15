@@ -3,11 +3,13 @@ package views.customcomponents;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import models.buildings.BuildingType;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
+import models.units.UnitType;
 
 public class TechnologyBlock extends HBox {
     public static Color LEARNED_COLOR = Color.GREEN;
@@ -17,7 +19,8 @@ public class TechnologyBlock extends HBox {
     public static int WIDTH = 200;
     public static int HEIGHT = 50;
 
-    Label techName;
+    private Tooltip tooltip;
+    private Label techName;
 
     public TechnologyBlock() {
         setPadding(new Insets(15));
@@ -27,6 +30,9 @@ public class TechnologyBlock extends HBox {
 
         techName = new Label();
         techName.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 20; -fx-text-fill: white");
+
+        tooltip = new Tooltip();
+        Tooltip.install(this, tooltip);
 
         getChildren().addAll(techName);
     }
@@ -48,6 +54,25 @@ public class TechnologyBlock extends HBox {
         } else {
             changeColor(LOCKED_COLOR);
         }
+
+        StringBuilder tipTextBuilder = new StringBuilder();
+        tipTextBuilder.append("Unlocks Technologies:\n");
+        for (Technology dependentTechnology : technology.getDependentTechnologies()) {
+            tipTextBuilder.append(dependentTechnology.getName() + "\n");
+        }
+        tipTextBuilder.append("Unlocks Units:\n");
+        for (UnitType value : UnitType.values()) {
+            if (value.getPrerequisitTechnology() == technology) {
+                tipTextBuilder.append(value.getName() + "\n");
+            }
+        }
+        tipTextBuilder.append("Unlocks Buildings:\n");
+        for (BuildingType value : BuildingType.values()) {
+            if (value.getPrerequisiteTechnology() == technology) {
+                tipTextBuilder.append(value.getName() + "\n");
+            }
+        }
+        tooltip.setText(tipTextBuilder.toString());
     }
 
     public int findCenterRightX() {

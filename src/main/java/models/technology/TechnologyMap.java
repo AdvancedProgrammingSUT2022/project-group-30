@@ -1,5 +1,6 @@
 package models.technology;
 
+import javafx.scene.control.Tooltip;
 import utilities.Debugger;
 
 import java.util.ArrayList;
