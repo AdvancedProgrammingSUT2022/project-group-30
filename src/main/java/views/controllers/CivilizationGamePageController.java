@@ -191,7 +191,11 @@ public class CivilizationGamePageController {
                             public void handle(MouseEvent mouseEvent) {
                                 CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
                                 // TODO...
-                                UnitsGraphicalController.makeTheUnitActionTab(unit);
+                                try {
+                                    UnitsGraphicalController.makeTheUnitActionTab(unit, CivilizationGamePageController.this.pane);
+                                } catch (MalformedURLException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         });
                         pane.getChildren().add(circle);
