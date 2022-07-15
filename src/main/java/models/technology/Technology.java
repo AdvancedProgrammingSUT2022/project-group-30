@@ -142,4 +142,20 @@ public enum Technology {
         }
         return result;
     }
+
+    public static int findMostPopulousGradesPopulation() {
+        int maxPopulation = 0;
+        for (int i = 0; i <= findMaxGrade(); i++) {
+            int population = 0;
+            for (Technology value : values()) {
+                if (value.getGrade() == i) {
+                    population++;
+                }
+            }
+            if (population > maxPopulation) {
+                maxPopulation = population;
+            }
+        }
+        return maxPopulation;
+    }
 }

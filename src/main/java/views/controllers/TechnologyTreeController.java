@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import models.technology.Technology;
 import views.customcomponents.TechnologyBlock;
 
@@ -16,6 +17,8 @@ import java.util.HashMap;
 public class TechnologyTreeController {
     @FXML
     private VBox parent;
+    @FXML
+    private HBox topBar;
     @FXML
     private Pane techPane;
 
@@ -31,7 +34,16 @@ public class TechnologyTreeController {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(techPane);
         scrollPane.setPannable(true);
+        scrollPane.setFitToHeight(true);
 
+        addTechnologyBlocks();
+        addDependecyLines();
+
+        parent.setStyle("-fx-border-color: yellow");
+        parent.getChildren().add(scrollPane);
+    }
+
+    private void addTechnologyBlocks() {
         techBlocks = new HashMap<>();
         int[] nextFreeRowIndex = new int[Technology.findMaxGrade() + 1];
         for (int i = 0; i < Technology.values().length; i++) {
@@ -46,7 +58,13 @@ public class TechnologyTreeController {
         }
         techPane.setMinWidth(padding * 2 + (Technology.findMaxGrade() + 1) * (hspace + TechnologyBlock.WIDTH) - hspace);
 
+        Rectangle bottomPadding = new Rectangle();
+        bottomPadding.setHeight(padding);
+        bottomPadding.setLayoutY(padding + Technology.findMostPopulousGradesPopulation() * (vspace + TechnologyBlock.HEIGHT));
+        techPane.getChildren().add(bottomPadding);
+    }
 
+    private void addDependecyLines() {
         for (Technology technology : Technology.values()) {
             for (Technology dependentTechnology : technology.getDependentTechnologies()) {
                 Line line = new Line();
@@ -63,8 +81,5 @@ public class TechnologyTreeController {
                 }
             }
         }
-
-        parent.setStyle("-fx-border-color: yellow");
-        parent.getChildren().add(scrollPane);
     }
 }

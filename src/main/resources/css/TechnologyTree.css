@@ -1,0 +1,9 @@
+.backButton {
+    -fx-background-color: #ba0000;
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+}
+
+#techPane {
+    -fx-background-color: #4c4c4c;
+}
