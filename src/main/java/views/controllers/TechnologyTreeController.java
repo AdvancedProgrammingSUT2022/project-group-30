@@ -6,6 +6,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import models.technology.Technology;
 import views.customcomponents.TechnologyBlock;
 
@@ -28,8 +30,6 @@ public class TechnologyTreeController {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(techPane);
         scrollPane.setPannable(true);
-//        scrollPane.fitToHeightProperty().set(true);
-//        scrollPane.setStyle("-fx-border-color: blue;");
 
         techBlocks = new HashMap<>();
         int[] nextFreeRowIndex = new int[Technology.findMaxGrade() + 1];
@@ -45,32 +45,25 @@ public class TechnologyTreeController {
         }
         techPane.setMinWidth(padding * 2 + (Technology.findMaxGrade() + 1) * (hspace + TechnologyBlock.WIDTH) - hspace);
 
-//        Line linel = new Line();
-//        linel.setStartX(0);
-//        linel.setStartY(0);
-//        linel.setEndX(400);
-//        linel.setEndY(400);
-//        linel.setFill(Color.GREEN);
-//        linel.setStroke(Color.GREEN);
-//        parent.getChildren().add(0, linel);
-//        linel.toFront();
-//
-//        for (Technology technology : Technology.values()) {
-//            for (Technology dependentTechnology : technology.getDependentTechnologies()) {
-//                Line line = new Line();
-//                line.setStartX(techBlocks.get(technology).getLayoutX());
-//                line.setStartY(techBlocks.get(technology).getLayoutY());
-//                line.setEndX(techBlocks.get(dependentTechnology).getLayoutX());
-//                line.setEndY(techBlocks.get(dependentTechnology).getLayoutY());
-//                line.setFill(Color.RED);
-//                parent.getChildren().add(0, line);
-//                line.toFront();
-//            }
-//        }
+
+        for (Technology technology : Technology.values()) {
+            for (Technology dependentTechnology : technology.getDependentTechnologies()) {
+                Line line = new Line();
+                line.setStartX(techBlocks.get(technology).findCenterRightX());
+                line.setStartY(techBlocks.get(technology).findCenterRightY());
+                line.setEndX(techBlocks.get(dependentTechnology).findCenterLeftX());
+                line.setEndY(techBlocks.get(dependentTechnology).findCenterLeftY());
+                techPane.getChildren().add(line);
+                if (dependentTechnology.getGrade() - technology.getGrade() == 1) {
+                    line.setStroke(Color.BLUEVIOLET);
+                } else {
+                    line.getStrokeDashArray().addAll(5.0, 5.0);
+                    line.setStroke(Color.rgb(0, 0, 255, 0.5));
+                }
+            }
+        }
 
         parent.setStyle("-fx-border-color: yellow");
         parent.getChildren().add(scrollPane);
-
-//        parent.setMaxWidth(Double.MAX_VALUE);
     }
 }

@@ -49,4 +49,20 @@ public class TechnologyBlock extends HBox {
             changeColor(LOCKED_COLOR);
         }
     }
+
+    public int findCenterRightX() {
+        return ((int) getLayoutX() + WIDTH);
+    }
+
+    public int findCenterRightY() {
+        return ((int) getLayoutY() + HEIGHT / 2);
+    }
+
+    public int findCenterLeftX() {
+        return ((int) getLayoutX());
+    }
+
+    public int findCenterLeftY() {
+        return ((int) getLayoutY() + HEIGHT / 2);
+    }
 }
