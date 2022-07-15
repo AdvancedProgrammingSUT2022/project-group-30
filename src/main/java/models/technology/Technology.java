@@ -71,6 +71,8 @@ public enum Technology {
 
     private int cost;
     private String name;
+    private int grade;
+
 
     private Technology(int cost, ArrayList<Technology> prerequisiteTechnologies, String name) {
         this.name = name;
@@ -91,6 +93,15 @@ public enum Technology {
                 Relations.forwardRelations.get(tech).add(this);
             }
         }
+
+        // set grade
+        grade = 0;
+        for (Technology prerequisiteTechnology : prerequisiteTechnologies) {
+            if (grade <= prerequisiteTechnology.getGrade()) {
+                grade = prerequisiteTechnology.getGrade() + 1;
+            }
+        }
+
     }
 
     public ArrayList<Technology> getDependentTechnologies() {
@@ -109,6 +120,10 @@ public enum Technology {
         return this.name;
     }
 
+    public int getGrade() {
+        return grade;
+    }
+
     public static Technology getTechnologyByName(String name) {
         for (Technology technology : values()) {
             if (technology.getName().equalsIgnoreCase(name)) {
@@ -116,5 +131,15 @@ public enum Technology {
             }
         }
         return null;
+    }
+
+    public static int findMaxGrade() {
+        int result = 0;
+        for (Technology value : values()) {
+            if (value.getGrade() > result) {
+                result = value.getGrade();
+            }
+        }
+        return result;
     }
 }
