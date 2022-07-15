@@ -23,7 +23,7 @@
         <center>
             <HBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10">
                 <TextField fx:id="searchField"/>
-                <Button fx:id="searchButton" text="search"/>
+                <Button fx:id="searchButton" text="search" onAction="#onSearchButtonPressed"/>
             </HBox>
         </center>
     </BorderPane>
