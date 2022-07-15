@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.skin.SplitPaneSkin.Content?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <VBox xmlns="http://javafx.com/javafx"
@@ -40,6 +36,8 @@
             <Label fx:id="unlockedColorGuide" text="Unlocked (learnable)" styleClass="colorGuideLabel"/>
             <Label fx:id="lockedColorGuide" text="Locked" styleClass="colorGuideLabel"/>
         </VBox>
+
+        <Label fx:id="currentResearchLabel"/>
     </HBox>
 
     <stylesheets>

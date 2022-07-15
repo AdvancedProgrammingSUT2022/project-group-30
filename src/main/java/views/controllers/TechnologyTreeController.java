@@ -30,9 +30,10 @@ public class TechnologyTreeController {
     private Label lockedColorGuide;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Label currentResearchLabel;
 
     private Pane techPane;
-
 
 
     private final int padding = 15;
@@ -51,7 +52,7 @@ public class TechnologyTreeController {
 
         addTechnologyBlocks();
         addDependecyLines();
-        createColorGuide();
+        createBottomBar();
     }
 
     private void addTechnologyBlocks() {
@@ -94,13 +95,35 @@ public class TechnologyTreeController {
         }
     }
 
-    private void createColorGuide() {
+    private void createBottomBar() {
         learnedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.LEARNED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         learnedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
         unlockedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.UNLOCKED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         unlockedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
         lockedColorGuide.setBackground(new Background(new BackgroundFill(TechnologyBlock.LOCKED_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         lockedColorGuide.setPrefSize(300, TechnologyBlock.HEIGHT);
+
+
+        StringBuilder sb = new StringBuilder();
+        Technology currentResearch = GameController.getGameController().getCurrentPlayer().getResearchProject();
+        sb.append("Currently being researched: ");
+        if (currentResearch == null) {
+            sb.append("nothing!\n");
+        } else {
+            sb.append(currentResearch.getName());
+            sb.append("\n");
+            sb.append("Beakers: ")
+                    .append((int) GameController.getGameController().getCurrentPlayer().getBeakerCount())
+                    .append(" out of the ").append(currentResearch.getCost())
+                    .append(" required have been collected\n");
+
+            int turnsLeft = (int) ((((double) currentResearch.getCost() - GameController.getGameController().getCurrentPlayer().getBeakerCount()))
+                    / GameController.getGameController().getCurrentPlayer().calculateTotalBeakers());
+            if (GameController.getGameController().getCurrentPlayer().calculateTotalBeakers() > 0) {
+                sb.append("Turns left at current pace: ").append(turnsLeft);
+            }
+        }
+        currentResearchLabel.setText(sb.toString());
     }
 
     @FXML
@@ -111,7 +134,7 @@ public class TechnologyTreeController {
             TechnologyBlock block = techBlocks.get(technology);
             double width = scrollPane.getContent().getBoundsInLocal().getWidth();
             double x = block.getBoundsInParent().getMaxX();
-            scrollPane.setHvalue(x/width);
+            scrollPane.setHvalue(x / width);
             block.requestFocus();
         }
     }

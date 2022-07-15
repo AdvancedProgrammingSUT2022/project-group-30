@@ -5,6 +5,11 @@
     -fx-cursor: hand;
 }
 
+#currentResearchLabel {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+}
+
 #searchField {
     -fx-font-family: "Times New Roman";
     -fx-font-size: 20;
