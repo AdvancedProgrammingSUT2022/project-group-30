@@ -3,7 +3,7 @@ package views.controllers;
 import controllers.GameController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -18,7 +18,7 @@ public class TechnologyTreeController {
     @FXML
     private VBox parent;
     @FXML
-    private HBox topBar;
+    private BorderPane topBar;
     @FXML
     private Pane techPane;
 
@@ -31,6 +31,8 @@ public class TechnologyTreeController {
 
     @FXML
     public void initialize() {
+        topBar.setStyle("-fx-border-color: blue");
+
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(techPane);
         scrollPane.setPannable(true);
@@ -39,7 +41,7 @@ public class TechnologyTreeController {
         addTechnologyBlocks();
         addDependecyLines();
 
-        parent.setStyle("-fx-border-color: yellow");
+//        parent.setStyle("-fx-border-color: yellow");
         parent.getChildren().add(scrollPane);
     }
 

@@ -1,9 +1,25 @@
-.backButton {
+#backButton {
     -fx-background-color: #ba0000;
     -fx-text-fill: white;
     -fx-font-size: 20;
+    -fx-cursor: hand;
 }
 
 #techPane {
     -fx-background-color: #4c4c4c;
+}
+
+#searchField {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+#searchButton {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-cursor: hand;
 }
