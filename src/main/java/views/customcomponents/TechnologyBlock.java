@@ -14,10 +14,16 @@ public class TechnologyBlock extends HBox {
     public static Color UNLOCKED_COLOR = Color.BLUE;
     public static Color LOCKED_COLOR = Color.BLACK;
 
+    public static int WIDTH = 200;
+    public static int HEIGHT = 50;
+
     Label techName;
 
     public TechnologyBlock() {
         setPadding(new Insets(15));
+        setPrefWidth(WIDTH);
+        setPrefHeight(HEIGHT);
+        setAlignment(Pos.CENTER);
 
         techName = new Label();
         techName.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 20; -fx-text-fill: white");
