@@ -28,6 +28,7 @@ import models.City;
 import models.GameMap;
 import models.Tile;
 import models.buildings.BuildingType;
+import models.interfaces.Producible;
 import models.interfaces.TileImage;
 import models.resources.StrategicResource;
 import models.units.UnitType;
@@ -187,7 +188,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    makePurchaseProductionPanel(city, pane);
                 }
             });
         }
@@ -203,6 +204,112 @@ public class CitiesGraphicalController {
         RegisterPageGraphicalController.showPopup("Production stopped.");
         makeTheCityActionTab(city, pane);
         return;
+    }
+
+    public static void makePurchaseProductionPanel(City city, Pane pane){
+        cityCommandsBox.getChildren().clear();
+        cityActionTabPane.setVisible(true);
+        cityCommandsBox.setDisable(false);
+        Text text = new Text("Choose what you wish to purchase with gold.");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(text);
+        Text unitsText = new Text("Purchasable Units:");
+        unitsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(unitsText);
+
+
+
+        ArrayList<UnitType> purchasableUnits = city.calculatePurchasableUnitTypes();
+        for (UnitType unit : purchasableUnits) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(10);
+            Circle circle = new Circle();
+            circle.setRadius(15);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + unit.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    purchase(city, pane, unit);
+                }
+            });
+            hBox.getChildren().add(circle);
+            Text infoText = new Text(unit.getName() + "\t\t\t" + unit.getCost() + " Gold");
+            infoText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+            hBox.getChildren().add(infoText);
+            cityCommandsBox.getChildren().add(hBox);
+
+        }
+
+        Text buildingsText = new Text("Purchasable Buildings:");
+        buildingsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(buildingsText);
+        ArrayList<BuildingType> purchasableBuildings = city.calculatePurchasableBuildingTypes();
+        for (BuildingType building : purchasableBuildings) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(10);
+            Circle circle = new Circle();
+            circle.setRadius(15);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + building.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    purchase(city, pane, building);
+                }
+            });
+            hBox.getChildren().add(circle);
+            Text info = new Text(building.getName() + "\t\t\t" + building.getCost() + " Gold");
+            info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+            hBox.getChildren().add(info);
+            cityCommandsBox.getChildren().add(hBox);
+
+        }
+
+        Button back = new Button("back");
+        back.getStyleClass().add("menu-button");
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                makeProductionPanel(city, pane);
+            }
+        });
+        cityCommandsBox.getChildren().add(back);
+
+    }
+
+    private static void purchase(City city, Pane pane, Producible chosenPurchasable){
+        if (city.getOwner().getGoldCount() < chosenPurchasable.getCost()) {
+            RegisterPageGraphicalController.showPopup("You don't have enough gold to purchase this item!");
+            makeProductionPanel(city, pane);
+            return;
+        }
+
+        if (chosenPurchasable instanceof BuildingType) {
+            city.addBuilding((BuildingType) chosenPurchasable);
+            RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
+            makeProductionPanel(city, pane);
+        }
+        if (chosenPurchasable instanceof UnitType) {
+            if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
+                controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
+                RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
+                makeProductionPanel(city, pane);
+            } else {
+                RegisterPageGraphicalController.showPopup("Your city is full! A new unit can't enter. Move the existing units and try again");
+                makeProductionPanel(city, pane);
+                return;
+            }
+        }
+
     }
 
     public static void makeChooseProductionPanel(City city, Pane pane){
@@ -299,6 +406,7 @@ public class CitiesGraphicalController {
                 makeProductionPanel(city, pane);
             }
         });
+        cityCommandsBox.getChildren().add(back);
     }
 
     public static void makeCitizenManagementPanel(City city, Pane pane){
