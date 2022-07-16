@@ -39,7 +39,7 @@ public class CivilizationGamePageController {
 
     private GameController controller = GameController.getGameController();
 
-    private double hexagonsSideLength = 32;
+    private static double hexagonsSideLength = 32;
 
     @FXML
     private Pane pane;
@@ -54,9 +54,10 @@ public class CivilizationGamePageController {
         setSceneOnKeyPressed();
         createStatusBar();
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
+        CitiesGraphicalController.initializeCityActionTab(this.pane);
     }
 
-    private Polygon createHexagon(double xCoordinate, double yCoordinate){
+    public static Polygon createHexagon(double xCoordinate, double yCoordinate){
         Polygon hexagon = new Polygon();
         hexagon.getPoints().addAll(xCoordinate, yCoordinate,
                 xCoordinate + hexagonsSideLength, yCoordinate,
@@ -109,6 +110,7 @@ public class CivilizationGamePageController {
         drawFeatures();
         drawRiverSegments();
         putUnitsOnMap();
+        putCitiesOnMap();
     }
 
     public void setSceneOnKeyPressed(){
@@ -184,25 +186,83 @@ public class CivilizationGamePageController {
                         circle.setCenterY(yCoordinate + 10 + 20 * k);
                         circle.setCenterX(xCoordinate + 16);
                         circle.setRadius(10);
-                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units2/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
                         Unit unit = units.get(k);
-                        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
-                                // TODO...
-                                try {
-                                    UnitsGraphicalController.makeTheUnitActionTab(unit, CivilizationGamePageController.this.pane);
-                                } catch (MalformedURLException e) {
-                                    throw new RuntimeException(e);
+                        if(unit.getOwner().equals(controller.getCurrentPlayer())) {
+                            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
+                                    // TODO...
+                                    try {
+                                        UnitsGraphicalController.makeTheUnitActionTab(unit, CivilizationGamePageController.this.pane);
+                                    } catch (MalformedURLException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                         pane.getChildren().add(circle);
                     }
                 }
             }
         }
+    }
+
+    public void putCitiesOnMap() throws MalformedURLException {
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
+                int isOdd = 1;
+                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                    isOdd = -1;
+                }
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                if(tilesToShow[i][j] instanceof Tile){
+                    City city = controller.getCityCenteredInTile((Tile) tilesToShow[i][j]);
+                    if(city != null){
+                        Circle circle = new Circle();
+                        circle.setCenterY(yCoordinate + hexagonsSideLength * Math.sqrt(3) / 2);
+                        circle.setCenterX(xCoordinate - 5);
+                        circle.setRadius(15);
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/City/cityBanner.png").toExternalForm()).toExternalForm())));
+                        if(city.getOwner().equals(controller.getCurrentPlayer())) {
+                            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(city);
+                                    //TODO...
+                                    CitiesGraphicalController.makeTheCityActionTab(city, pane);
+                                }
+                            });
+                        }
+                        Text text = new Text(String.valueOf(city.getCitizens().size()));
+                        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+                        text.setX(circle.getCenterX());
+                        text.setY(circle.getCenterY() - 15);
+                        circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                pane.getChildren().add(text);
+                            }
+                        });
+                        circle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                pane.getChildren().remove(text);
+                            }
+                        });
+
+
+                        pane.getChildren().add(circle);
+
+                    }
+
+                }
+            }
+        }
+
     }
 
     public void removeAllCirclesFromPane(){

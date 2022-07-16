@@ -68,16 +68,16 @@ public class UnitsGraphicalController {
         }
         Circle circle = new Circle();
         circle.setRadius(30);
-        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units2/" + unit.getType().getName() + ".png").toExternalForm()).toExternalForm())));
+        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + unit.getType().getName() + ".png").toExternalForm()).toExternalForm())));
         unitCommandsBox.getChildren().add(circle);
         Text name = new Text(controller.getCurrentPlayer().getName() + "'s " + unit.getType().getName());
-        name.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ec9898;");
+        name.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(name);
         Text mp = new Text("MP: " + unit.getMovePointsLeft());
-        mp.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ec9898;");
+        mp.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(mp);
         Text cs = new Text("CS: " + unit.getType().getCombatStrength());
-        cs.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ec9898;");
+        cs.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(cs);
 
     }
@@ -173,6 +173,36 @@ public class UnitsGraphicalController {
                 }
             });
         }
+        else if(command.getName().equals(UnitCommands.FOUND_CITY.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    foundCity(unit);
+                }
+            });
+        }
+    }
+
+    private static void foundCity(Unit unit) {
+        if (unit.getMovePointsLeft() == 0) {
+            RegisterPageGraphicalController.showPopup("Settler has no movepoints!");
+            return;
+        }
+        if (controller.isTileTooNearCity(unit.getLocation())) {
+            RegisterPageGraphicalController.showPopup("You can't found a city within a 3-tile distance of another city");
+            return;
+        }
+        controller.foundCityWithSettler(unit);
+        controller.getCurrentPlayer().setSelectedEntity(null);
+        unitCommandsBox.getChildren().clear();
+        unitActionTabPane.setVisible(false);
+        unitCommandsBox.setDisable(true);
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private static void cancelUnitMove(Unit unit, Pane pane) {
