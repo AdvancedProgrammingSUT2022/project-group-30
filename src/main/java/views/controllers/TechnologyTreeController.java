@@ -4,17 +4,23 @@ import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
 import views.Main;
+import views.customcomponents.CheatBox;
 import views.customcomponents.TechnologyBlock;
 
 import java.io.IOException;
@@ -58,6 +64,26 @@ public class TechnologyTreeController {
         addTechnologyBlocks();
         addDependecyLines();
         createBottomBar();
+        setCheatTab();
+    }
+
+    private void setCheatTab() {
+        KeyCombination combination = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN);
+        Main.getScene().getAccelerators().put(combination, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("cheat box should be up");
+                CheatBox cheatBox = new CheatBox() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        if (textField.getText().equals("hello")) {
+                            textField.setText("meow");
+                        }
+                    }
+                };
+                cheatBox.show();
+            }
+        });
     }
 
     private void addTechnologyBlocks() {

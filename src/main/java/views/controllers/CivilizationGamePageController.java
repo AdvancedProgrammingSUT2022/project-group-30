@@ -55,7 +55,7 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
-        if (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty()) {
+        if (debugMode || (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty())) {
             createTechnologyPopup();
         }
     }
@@ -359,7 +359,6 @@ public class CivilizationGamePageController {
 
         TableView<Resource> resourcesTable = getResourcesTable(tile, tile.getResourcesAsArrayList());
         vbox.getChildren().add(resourcesTable);
-
 
 
         Button button = new Button();
