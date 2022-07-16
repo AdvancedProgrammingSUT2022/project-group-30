@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import models.Civilization;
 import models.GameDataBase;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
