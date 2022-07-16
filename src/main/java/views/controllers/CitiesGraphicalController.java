@@ -22,17 +22,22 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import menusEnumerations.CitizenManagementPanelCommands;
 import menusEnumerations.CityCommands;
+import menusEnumerations.ProductionPanelCommands;
 import models.Citizen;
 import models.City;
 import models.GameMap;
 import models.Tile;
+import models.buildings.BuildingType;
 import models.interfaces.TileImage;
+import models.resources.StrategicResource;
+import models.units.UnitType;
 import views.Main;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 
 public class CitiesGraphicalController {
@@ -103,6 +108,197 @@ public class CitiesGraphicalController {
                 }
             });
         }
+        else if(command.getName().equals(CityCommands.SHOW_PRODUCTION_PANEL.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    makeProductionPanel(city, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(CityCommands.ATTACK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                }
+            });
+        }
+        else if(command.getName().equals(CityCommands.SHOW_INFO.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                }
+            });
+        }
+    }
+
+    public static void makeProductionPanel(City city, Pane pane){
+        cityCommandsBox.getChildren().clear();
+        cityActionTabPane.setVisible(true);
+        cityCommandsBox.setDisable(false);
+        ArrayList<ProductionPanelCommands> allCommands = ProductionPanelCommands.getAllCommands();
+        for(int i = 0; i < allCommands.size(); i++){
+            addProductionPanelButtonForCommand(city, pane, allCommands.get(i));
+        }
+
+    }
+
+    private static void addProductionPanelButtonForCommand(City city, Pane pane, ProductionPanelCommands command){
+        Button button = new Button(command.getName());
+        button.getStyleClass().add("menu-button");
+        button.setPrefWidth(150);
+        button.setPrefHeight(80);
+        cityCommandsBox.getChildren().add(button);
+        if(command.getName().equals(ProductionPanelCommands.BACK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    makeTheCityActionTab(city, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(ProductionPanelCommands.SHOW_INFO.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                }
+            });
+        }
+        else if(command.getName().equals(ProductionPanelCommands.CHOOSE_PRODUCTION.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    makeChooseProductionPanel(city, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(ProductionPanelCommands.STOP_PRODUCTION.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    stopProduction(city, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(ProductionPanelCommands.PURCHASE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                }
+            });
+        }
+    }
+
+    private static void stopProduction(City city, Pane pane){
+        if (city.getEntityInProduction() == null) {
+            RegisterPageGraphicalController.showPopup("There is no ongoing production in this city");
+            makeTheCityActionTab(city, pane);
+            return;
+        }
+        city.stopProduction();
+        RegisterPageGraphicalController.showPopup("Production stopped.");
+        makeTheCityActionTab(city, pane);
+        return;
+    }
+
+    public static void makeChooseProductionPanel(City city, Pane pane){
+        if(city.getEntityInProduction() != null){
+            RegisterPageGraphicalController.showPopup("This city is already producing a " + city.getEntityInProduction().getName() + ". Its production will be halted if you choose another production");
+        }
+        cityCommandsBox.getChildren().clear();
+        cityActionTabPane.setVisible(true);
+        cityCommandsBox.setDisable(false);
+        Text text = new Text("Choose This City's Next Production From The Below Lists: (by clicking on images)");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(text);
+        ArrayList<UnitType> producibleUnits = city.calculateProductionReadyUnitTypes();
+        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes(false);
+        Text unitsText = new Text("Units:");
+        unitsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(unitsText);
+        for (UnitType producibleUnit : producibleUnits) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(10);
+            int hammerCost = producibleUnit.calculateHammerCost();
+            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            Circle circle = new Circle();
+            circle.setRadius(15);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + producibleUnit.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(!city.getCentralTile().doesPackingLetUnitEnter((UnitType) producibleUnit)){
+                        RegisterPageGraphicalController.showPopup("There is already a unit in the city. You need to move it to make room!");
+                        makeProductionPanel(city, pane);
+                        return;
+                    }
+                    city.changeProduction(producibleUnit);
+                    RegisterPageGraphicalController.showPopup("Set city's production to " + producibleUnit.getName());
+                    makeProductionPanel(city, pane);
+
+                }
+            });
+            hBox.getChildren().add(circle);
+            String info = producibleUnit.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsRequired + " turns";
+
+            HashMap<StrategicResource, Integer> resources = producibleUnit.getPrerequisiteResources();
+            for (StrategicResource resource : resources.keySet()) {
+                info = info + "\t" + resource.getName() + ": " + resources.get(resource);
+            }
+            Text infoText = new Text(info);
+            infoText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+            hBox.getChildren().add(infoText);
+            cityCommandsBox.getChildren().add(hBox);
+        }
+        Text buildingsText = new Text("Buildings:");
+        buildingsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+        cityCommandsBox.getChildren().add(buildingsText);
+
+        for (BuildingType producibleBuilding : producibleBuildings) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(10);
+            int hammerCost = producibleBuilding.calculateHammerCost();
+            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            Circle circle = new Circle();
+            circle.setRadius(15);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + producibleBuilding.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    city.changeProduction(producibleBuilding);
+                    RegisterPageGraphicalController.showPopup("Set city's production to " + producibleBuilding.getName());
+                    makeProductionPanel(city, pane);
+                }
+            });
+            hBox.getChildren().add(circle);
+            Text info = new Text(producibleBuilding.getName() + ",\t\t\t" + hammerCost + " Hammers, " + turnsRequired + " turns");
+            info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+            hBox.getChildren().add(info);
+            cityCommandsBox.getChildren().add(hBox);
+        }
+
+        Button back = new Button("back");
+        back.getStyleClass().add("menu-button");
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                makeProductionPanel(city, pane);
+            }
+        });
     }
 
     public static void makeCitizenManagementPanel(City city, Pane pane){
