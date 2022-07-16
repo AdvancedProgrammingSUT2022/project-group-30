@@ -17,14 +17,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import menusEnumerations.ResearchCommands;
 import models.technology.Technology;
 import models.technology.TechnologyMap;
+import views.CheatCodes;
 import views.Main;
 import views.customcomponents.CheatBox;
 import views.customcomponents.TechnologyBlock;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 public class TechnologyTreeController {
     @FXML
@@ -72,13 +75,25 @@ public class TechnologyTreeController {
         Main.getScene().getAccelerators().put(combination, new Runnable() {
             @Override
             public void run() {
-                System.out.println("cheat box should be up");
                 CheatBox cheatBox = new CheatBox() {
                     @Override
                     public void onSubmitButtonClick() {
-                        if (textField.getText().equals("hello")) {
-                            textField.setText("meow");
+                        Matcher matcher;
+                        if ((matcher = CheatCodes.UNLOCK_TECHNOLOGY.getMatcher(textField.getText())) != null) {
+                            if (matcher.group("name").equalsIgnoreCase("all")) {
+                                GameController.getGameController().getCurrentPlayer().learnAllTechnologiesWithCheat();
+                            }
+                            Technology technology = Technology.getTechnologyByName(matcher.group("name"));
+                            if (technology != null) {
+                                GameController.getGameController().getCurrentPlayer().learnTechnologyWithCheat(technology);
+                            }
                         }
+                        try {
+                            Main.loadFxmlFile("TechnologyTree");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        this.close();
                     }
                 };
                 cheatBox.show();

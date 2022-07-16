@@ -460,5 +460,17 @@ public class Civilization implements TurnHandler {
         return improvements;
     }
 
+    public void learnTechnologyWithCheat(Technology technology) {
+        technologies.learnTechnologyAndPrerequisites(technology);
+        if (researchProject != null && technologies.isTechnologyLearned(researchProject)) {
+            researchProject = null;
+        }
+    }
+
+    public void learnAllTechnologiesWithCheat() {
+        technologies.learnAllTechnologies();
+        researchProject = null;
+    }
+
 
 }
