@@ -160,4 +160,13 @@ public class TechnologyTreeController {
             block.requestFocus();
         }
     }
+
+    @FXML
+    private void onBackButtonClick() {
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -14,7 +14,7 @@
             <Insets topRightBottomLeft="10"/>
         </padding>
         <left>
-            <Button fx:id="backButton" styleClass="backButton" text="Back" BorderPane.alignment="CENTER_LEFT"/>
+            <Button fx:id="backButton" styleClass="backButton" text="Back" BorderPane.alignment="CENTER_LEFT" onAction="#onBackButtonClick"/>
         </left>
         <center>
             <HBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10">
