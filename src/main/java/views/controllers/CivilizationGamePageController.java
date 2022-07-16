@@ -30,6 +30,7 @@ import models.units.Unit;
 import views.Main;
 import views.customcomponents.TechnologyPopup;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class CivilizationGamePageController {
 
     private GameController controller = GameController.getGameController();
 
-    private double hexagonsSideLength = 32;
+    private static double hexagonsSideLength = 32;
 
     @FXML
     private Pane pane;
@@ -49,7 +50,7 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-        //controller.makeEverythingVisible();
+        controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
@@ -58,9 +59,11 @@ public class CivilizationGamePageController {
         if (debugMode || (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty())) {
             createTechnologyPopup();
         }
+        UnitsGraphicalController.initializeUnitActionTab(this.pane);
+        CitiesGraphicalController.initializeCityActionTab(this.pane);
     }
 
-    private Polygon createHexagon(double xCoordinate, double yCoordinate){
+    public static Polygon createHexagon(double xCoordinate, double yCoordinate){
         Polygon hexagon = new Polygon();
         hexagon.getPoints().addAll(xCoordinate, yCoordinate,
                 xCoordinate + hexagonsSideLength, yCoordinate,
@@ -84,6 +87,7 @@ public class CivilizationGamePageController {
     public void drawMap() throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
+        removeAllCirclesFromPane();
         for(int i = 0; i < tilesToShow.length; i++){
             for(int j = 0; j < tilesToShow[i].length; j++){
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
@@ -112,6 +116,7 @@ public class CivilizationGamePageController {
         drawFeatures();
         drawRiverSegments();
         putUnitsOnMap();
+        putCitiesOnMap();
     }
 
     private void createTechnologyPopup() {
@@ -195,13 +200,87 @@ public class CivilizationGamePageController {
                 if(tilesToShow[i][j] instanceof Tile){
                     ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
                     for(int k = 0; k < units.size(); k++){
-                        Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
-                        hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
-                        pane.getChildren().add(hexagon);
+                        Circle circle = new Circle();
+                        circle.setCenterY(yCoordinate + 10 + 20 * k);
+                        circle.setCenterX(xCoordinate + 16);
+                        circle.setRadius(10);
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        Unit unit = units.get(k);
+                        if(unit.getOwner().equals(controller.getCurrentPlayer())) {
+                            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
+                                    // TODO...
+                                    try {
+                                        UnitsGraphicalController.makeTheUnitActionTab(unit, CivilizationGamePageController.this.pane);
+                                    } catch (MalformedURLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
+                        }
+                        pane.getChildren().add(circle);
                     }
                 }
             }
         }
+    }
+
+    public void putCitiesOnMap() throws MalformedURLException {
+        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        for(int i = 0; i < tilesToShow.length; i++){
+            for(int j = 0; j < tilesToShow[i].length; j++){
+                double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
+                int isOdd = 1;
+                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                    isOdd = -1;
+                }
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                if(tilesToShow[i][j] instanceof Tile){
+                    City city = controller.getCityCenteredInTile((Tile) tilesToShow[i][j]);
+                    if(city != null){
+                        Circle circle = new Circle();
+                        circle.setCenterY(yCoordinate + hexagonsSideLength * Math.sqrt(3) / 2);
+                        circle.setCenterX(xCoordinate - 5);
+                        circle.setRadius(15);
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/City/cityBanner.png").toExternalForm()).toExternalForm())));
+                        if(city.getOwner().equals(controller.getCurrentPlayer())) {
+                            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(city);
+                                    //TODO...
+                                    CitiesGraphicalController.makeTheCityActionTab(city, pane);
+                                }
+                            });
+                        }
+                        Text text = new Text(String.valueOf(city.getCitizens().size()));
+                        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
+                        text.setX(circle.getCenterX());
+                        text.setY(circle.getCenterY() - 15);
+                        circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                pane.getChildren().add(text);
+                            }
+                        });
+                        circle.setOnMouseExited(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                pane.getChildren().remove(text);
+                            }
+                        });
+
+
+                        pane.getChildren().add(circle);
+
+                    }
+
+                }
+            }
+        }
+
     }
 
     public void removeAllCirclesFromPane(){
@@ -634,6 +713,18 @@ public class CivilizationGamePageController {
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+        hexagon.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hexagon.setOpacity(0.5);
+            }
+        });
+        hexagon.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hexagon.setOpacity(1);
             }
         });
     }
