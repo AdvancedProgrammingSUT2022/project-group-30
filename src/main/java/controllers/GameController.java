@@ -250,6 +250,11 @@ public class GameController {
         civilization.setBeakerCount(0);
     }
 
+    public void stopPreviousResearchAndStartNext(Civilization civilization, Technology next) {
+        stopResearch(civilization);
+        startResearch(civilization, next);
+    }
+
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();

@@ -51,6 +51,18 @@ public class TechnologyMap {
         return true;
     }
 
+    public boolean isTechnologyUnlockedAndNotLearned(Technology technology) {
+        for (Technology prerequisite : technology.getPrerequisiteTechnologies()) {
+            if (map.get(prerequisite) == false) {
+                return false;
+            }
+        }
+        if (map.get(technology) == true) {
+            return false;
+        }
+        return true;
+    }
+
     public ArrayList<Technology> getLearnedTechnologies() {
         ArrayList<Technology> result = new ArrayList<Technology>();
         for (Technology technology : map.keySet()) {

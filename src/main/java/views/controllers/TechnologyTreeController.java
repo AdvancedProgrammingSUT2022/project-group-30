@@ -1,18 +1,23 @@
 package views.controllers;
 
 import controllers.GameController;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
+import views.Main;
 import views.customcomponents.TechnologyBlock;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class TechnologyTreeController {
@@ -61,10 +66,27 @@ public class TechnologyTreeController {
         for (int i = 0; i < Technology.values().length; i++) {
             Technology technology = Technology.values()[i];
             TechnologyBlock block = new TechnologyBlock();
-            block.setTechnology(GameController.getGameController().getCurrentPlayer().getTechnologies(), technology);
+            TechnologyMap techMap = GameController.getGameController().getCurrentPlayer().getTechnologies();
+            block.setTechnology(techMap, technology);
             block.setLayoutX(padding + technology.getGrade() * (hspace + block.getPrefWidth()));
             block.setLayoutY(padding + nextFreeRowIndex[technology.getGrade()] * (vspace + block.getPrefHeight()));
             nextFreeRowIndex[technology.getGrade()]++;
+            if (techMap.isTechnologyUnlockedAndNotLearned(technology)) {
+                block.setStyle("-fx-cursor: hand");
+                block.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        if (mouseEvent.getClickCount() > 1) {
+                            GameController.getGameController().stopPreviousResearchAndStartNext(GameController.getGameController().getCurrentPlayer(), technology);
+                            try {
+                                Main.loadFxmlFile("TechnologyTree");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+            }
             techPane.getChildren().add(block);
             techBlocks.put(technology, block);
         }

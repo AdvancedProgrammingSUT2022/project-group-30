@@ -49,7 +49,7 @@ public class TechnologyBlock extends HBox {
         techName.setText(technology.getName());
         if (techMap.isTechnologyLearned(technology)) {
             changeColor(LEARNED_COLOR);
-        } else if (techMap.isTechnologyUnlocked(technology)) {
+        } else if (techMap.isTechnologyUnlockedAndNotLearned(technology)) {
             changeColor(UNLOCKED_COLOR);
         } else {
             changeColor(LOCKED_COLOR);
