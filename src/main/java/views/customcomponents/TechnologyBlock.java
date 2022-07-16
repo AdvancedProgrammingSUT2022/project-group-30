@@ -1,5 +1,6 @@
 package views.customcomponents;
 
+import controllers.GameController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -56,6 +57,11 @@ public class TechnologyBlock extends HBox {
         }
 
         StringBuilder tipTextBuilder = new StringBuilder();
+        tipTextBuilder.append("Cost in beakers: ").append(technology.getCost()).append("\n");
+        Double reserve = GameController.getGameController().getCurrentPlayer().getResearchReserve().get(technology);
+        tipTextBuilder.append("Beakers already researched: ").
+                append((reserve == null) ? (int) 0 : reserve.intValue()).
+                append("\n");
         tipTextBuilder.append("Unlocks Technologies:\n");
         for (Technology dependentTechnology : technology.getDependentTechnologies()) {
             tipTextBuilder.append(dependentTechnology.getName() + "\n");
