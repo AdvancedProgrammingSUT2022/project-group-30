@@ -3,16 +3,23 @@ package views.controllers;
 import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import menusEnumerations.CitizenManagementPanelCommands;
 import menusEnumerations.CityCommands;
 import models.Citizen;
@@ -23,6 +30,8 @@ import models.interfaces.TileImage;
 import views.Main;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 
@@ -156,17 +165,52 @@ public class CitiesGraphicalController {
         });
         cityCommandsBox.getChildren().add(showNonWorkedTiles);
 
+        Button workingCitizens = new Button("Working citizens");
+        workingCitizens.getStyleClass().add("menu-button");
+        workingCitizens.setPrefWidth(150);
+        workingCitizens.setPrefHeight(80);
+        workingCitizens.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                showWorkingCitizenPanel(city, pane);
+            }
+        });
+        cityCommandsBox.getChildren().add(workingCitizens);
+
+        Button nonWorkingCitizens = new Button("Workless citizens");
+        nonWorkingCitizens.getStyleClass().add("menu-button");
+        nonWorkingCitizens.setPrefWidth(150);
+        nonWorkingCitizens.setPrefHeight(80);
+        nonWorkingCitizens.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                showNonWorkingCitizenPanel(city, pane);
+            }
+        });
+        cityCommandsBox.getChildren().add(nonWorkingCitizens);
+
+        Button back = new Button("Back");
+        back.getStyleClass().add("menu-button");
+        back.setPrefWidth(150);
+        back.setPrefHeight(80);
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                makeCitizenManagementPanel(city, pane);
+            }
+        });
+        cityCommandsBox.getChildren().add(back);
+
+
+
+
+
 
     }
 
     private static void showNonWorkingTiles(City city, Pane pane){
         ArrayList<Citizen> citizens = city.getCitizens();
         ArrayList<Tile> nonWorkingTiles = city.getUnworkedTiles();
-        for(int i = 0; i < citizens.size(); i++){
-            if(citizens.get(i).getWorkPlace() instanceof Tile){
-                nonWorkingTiles.add((Tile) citizens.get(i).getWorkPlace());
-            }
-        }
         for(int i = 0; i < pane.getChildren().size(); i++){
             if(pane.getChildren().get(i) instanceof Polygon){
                 Polygon hexagon = (Polygon) pane.getChildren().get(i);
@@ -401,6 +445,102 @@ public class CitiesGraphicalController {
             }
         }
         return null;
+    }
+
+    private static void showNonWorkingCitizenPanel(City city, Pane gamePagePane){
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        Text text = new Text("Workless citizens count:");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        Text num = new Text(String.valueOf(city.calculateWorklessCitizenCount()));
+        num.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(text);
+        vbox.getChildren().add(num);
+        HBox hBox = new HBox();
+        Circle circle = new Circle();
+        try {
+            circle.setRadius(25);
+            circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Food.png").toExternalForm()).toExternalForm())));
+            hBox.getChildren().add(circle);
+            Text foodCount = new Text(String.valueOf(city.calculateWorklessCitizenCount()));
+            foodCount.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+            hBox.getChildren().add(foodCount);
+            hBox.setAlignment(Pos.CENTER);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        vbox.getChildren().add(hBox);
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+
+
+    }
+
+    private static void showWorkingCitizenPanel(City city, Pane gamePagePane){
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        Text text = new Text("Working citizens count:");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        Text num = new Text(String.valueOf(city.getCitizens().size() - city.calculateWorklessCitizenCount()));
+        num.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(text);
+        vbox.getChildren().add(num);
+        HBox hBox = new HBox();
+        Circle circle = new Circle();
+        try {
+            circle.setRadius(25);
+            circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Food.png").toExternalForm()).toExternalForm())));
+            hBox.getChildren().add(circle);
+            Text foodCount = new Text(String.valueOf(city.getCitizens().size() * 2));
+            foodCount.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+            hBox.getChildren().add(foodCount);
+            hBox.setAlignment(Pos.CENTER);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        vbox.getChildren().add(hBox);
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
     }
 
 }
