@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CivilizationGamePageController {
-    private final boolean debugMode = true; // for debugging purposes only
+    private final boolean debugMode = false; // for debugging purposes only
 
     private GameController controller = GameController.getGameController();
 
