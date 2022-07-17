@@ -49,7 +49,7 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-        controller.makeEverythingVisible();
+        //controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(controller.getCurrentPlayer().getFrameBase());
         drawMap();
@@ -60,6 +60,49 @@ public class CivilizationGamePageController {
         }
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
+        initializeNextTurnButton();
+    }
+
+    public void initializeNextTurnButton(){
+        Button button = new Button("Next Turn");
+        button.getStyleClass().add("menu-button");
+        button.setPrefHeight(30);
+        button.setPrefWidth(150);
+        button.setLayoutX(1100);
+        button.setLayoutY(50);
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                passTurn();
+            }
+        });
+        pane.getChildren().add(button);
+    }
+
+    private void passTurn() {
+        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
+            return;
+        }
+        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("You should start a research project!");
+            return;
+        }
+
+        ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
+        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
+            return;
+        }
+
+        controller.goToNextPlayer();
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Polygon createHexagon(double xCoordinate, double yCoordinate){
