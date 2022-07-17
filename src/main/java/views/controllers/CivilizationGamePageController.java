@@ -81,22 +81,22 @@ public class CivilizationGamePageController {
     }
 
     private void passTurn() {
-        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
-            return;
-        }
-        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
-                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("You should start a research project!");
-            return;
-        }
-
-        ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
-        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
-            return;
-        }
+//        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+//        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
+//            return;
+//        }
+//        if (!controller.getCurrentPlayer().getCities().isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+//                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("You should start a research project!");
+//            return;
+//        }
+//
+//        ArrayList<City> citiesWaitingForProduction = controller.getCurrentPlayer().getCitiesWaitingForProduction();
+//        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
+//            return;
+//        }
 
         controller.goToNextPlayer();
         try {

@@ -164,7 +164,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    showProductionInfo(city, pane);
                 }
             });
         }
@@ -302,7 +302,11 @@ public class CitiesGraphicalController {
             if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
                 controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
                 RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
-                makeProductionPanel(city, pane);
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 RegisterPageGraphicalController.showPopup("Your city is full! A new unit can't enter. Move the existing units and try again");
                 makeProductionPanel(city, pane);
@@ -846,5 +850,156 @@ public class CitiesGraphicalController {
         stage.setScene(scene);
         stage.show();
     }
+
+    private static void showProductionInfo(City city, Pane gamePagePane) {
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        Text text = new Text("########### City Production Info ###########");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(text);
+
+        Producible currentProduction = city.getEntityInProduction();
+        Text secondText = new Text("Currently producing: ");
+        secondText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(secondText);
+
+        if (currentProduction == null) {
+            addTextToVBox(vbox, "Nothing!");
+        } else {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            if(currentProduction instanceof BuildingType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(currentProduction instanceof UnitType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            int hammerCost = currentProduction.calculateHammerCost();
+            int productionOutput = city.calculateOutput().getProduction();
+            int hammerCount = (int) city.getHammerCount();
+            int turnsRemaining = (int) Math.ceil((double) (hammerCost - hammerCount) / productionOutput);
+            String info = currentProduction.getName() + ": (hammers " + hammerCount + " out of " + hammerCost + ")" + " " + turnsRemaining + " turns remaining";
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+        addTextToVBox(vbox, "Halted Productions:");
+        for (Producible producible : city.getProductionReserve().keySet()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            if(producible instanceof BuildingType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(producible instanceof UnitType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            String info = producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+        addTextToVBox(vbox, "Production-Ready Units:");
+        for (UnitType type : city.calculateProductionReadyUnitTypes()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            String info = type.getName();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+
+        addTextToVBox(vbox, "Production-Ready Buildings:");
+        for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            String info = type.getName();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    private static void addTextToVBox(VBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+    private static void addTextToHBox(HBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+
 
 }
