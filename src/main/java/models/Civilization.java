@@ -246,6 +246,14 @@ public class Civilization implements TurnHandler {
         this.goldCount = goldCount;
     }
 
+    public void reduceGold(double amount) {
+        this.goldCount -= amount;
+    }
+
+    public void addGold(double amount) {
+        this.goldCount += amount;
+    }
+
     public HashMap<LuxuryResource, Integer> getLuxuryResources() {
         return luxuryResources;
     }

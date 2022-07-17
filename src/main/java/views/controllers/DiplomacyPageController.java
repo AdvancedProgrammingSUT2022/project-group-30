@@ -14,6 +14,7 @@ import javafx.util.Callback;
 import models.Civilization;
 import models.GameDataBase;
 import views.Main;
+import views.customcomponents.GoldAmountDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,6 +99,31 @@ public class DiplomacyPageController {
     }
 
     @FXML
+    private void onSendGoldButtonClick() {
+        GoldAmountDialog amountDialog = new GoldAmountDialog() {
+            @Override
+            protected void onSubmitButtonClicked() {
+                String text = inputField.getText();
+                if (!text.matches("\\d+")) {
+                    messageLabel.setText("Invalid Number Format");
+                    return;
+                }
+                int amount = Integer.parseInt(text);
+                if (amount > controller.getCurrentPlayer().getGoldCount()) {
+                    messageLabel.setText("You don't have enough gold!");
+                    return;
+                }
+                controller.getCurrentPlayer().reduceGold(amount);
+                selectedCiv.addGold(amount);
+                // NOTIF?
+                updateInfo();
+                this.close();
+            }
+        };
+        amountDialog.show();
+    }
+
+    @FXML
     private void onBackButtonClick() {
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -105,6 +131,7 @@ public class DiplomacyPageController {
             e.printStackTrace();
         }
     }
+
 
     private static class CivilizationItem extends ListCell<Civilization> {
         @Override
