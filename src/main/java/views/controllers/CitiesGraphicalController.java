@@ -30,6 +30,7 @@ import models.Tile;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.TileImage;
+import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.units.UnitType;
 import views.Main;
@@ -129,7 +130,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    showCityInfo(city, pane);
                 }
             });
         }
@@ -1000,6 +1001,107 @@ public class CitiesGraphicalController {
         box.getChildren().add(info);
     }
 
+    private static void showCityInfo(City city, Pane gamePagePane) {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
 
+
+        if (city.isCapital()) {
+            addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s Capital City");
+        } else {
+            addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s City");
+        }
+        addTextToVBox(vbox, "Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
+        addTextToVBox(vbox, "The following tiles comprise this city's territory:");
+        for (Tile tile : city.getTerritories()) {
+            if (tile != city.getCentralTile()) {
+                String info = "Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " ";
+                if (city.isTileBeingWorked(tile)) {
+                    info = info + "(worked)";
+                } else {
+                    info = info + "(not worked)";
+                }
+                addTextToVBox(vbox, info);
+            }
+        }
+
+        addTextToVBox(vbox, "Resources in this city:");
+        for (Tile tile : city.getTerritories()) {
+            for (Resource resource : tile.getResourcesAsArrayList()) {
+                HBox hBox = new HBox();
+                hBox.setSpacing(20);
+                hBox.setAlignment(Pos.CENTER);
+                Circle circle = new Circle();
+                circle.setRadius(30);
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Resources/" + resource.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+                hBox.getChildren().add(circle);
+                String info = resource.getName();
+                if (resource.canBeExploited(tile)) {
+                    info = info + " (exploited by " + resource.getPrerequisiteImprovement().getName() + ")";
+                } else {
+                    info = info + " (not exploited, requires " + resource.getPrerequisiteImprovement().getName() + ")";
+                }
+                addTextToHBox(hBox, info);
+                vbox.getChildren().add(hBox);
+            }
+        }
+        addTextToVBox(vbox, "This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
+                + " of them are workless.");
+        addTextToVBox(vbox, "Hit Points Left: " + city.getHitPointsLeft());
+        addTextToVBox(vbox, "City's food balance:");
+        addTextToVBox(vbox, String.valueOf(city.getFoodCount()));
+
+        String productionName = (city.getEntityInProduction() == null) ? "nothing!" : city.getEntityInProduction().getName();
+        addTextToVBox(vbox, "This city is producing " + productionName);
+        addLineForOutputTypeToVBox("Food", "Food Output: " + city.calculateOutput().getFood(), vbox);
+        addLineForOutputTypeToVBox("Production", "Production Output: " + city.calculateOutput().getProduction(), vbox);
+        addLineForOutputTypeToVBox("Science", "Science Output: " + city.calculateBeakerProduction(), vbox);
+        addLineForOutputTypeToVBox("Gold", "Gold Output: " + city.calculateOutput().getGold(), vbox);
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private static void addLineForOutputTypeToVBox(String type, String text, VBox box) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+        Circle circle = new Circle();
+        circle.setRadius(30);
+        try {
+            circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/" + type + ".png").toExternalForm()).toExternalForm())));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        hBox.getChildren().add(circle);
+        addTextToHBox(hBox, text);
+        box.getChildren().add(hBox);
+    }
 
 }

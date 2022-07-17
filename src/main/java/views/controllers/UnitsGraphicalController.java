@@ -1,10 +1,12 @@
 package views.controllers;
 
+import controllers.CombatController;
 import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -15,10 +17,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import menusEnumerations.UnitCommands;
 import models.GameMap;
 import models.Tile;
 import models.interfaces.TileImage;
+import models.interfaces.combative;
+import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
@@ -29,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 public class UnitsGraphicalController {
 
@@ -181,6 +187,210 @@ public class UnitsGraphicalController {
                 }
             });
         }
+        else if(command.getName().equals(UnitCommands.MELEE_ATTACK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    waitForChoosingTileToMeleeAttack(unit, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(UnitCommands.RANGED_ATTACK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    waitForChoosingTileForRangedAttack(unit, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(UnitCommands.SHOW_INFO.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showUnitInfo(unit, pane);
+                }
+            });
+        }
+        else if(command.getName().equals(UnitCommands.SET_UP_FOR_RANGED_ATTACK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    setUpForRangedAttack(unit);
+                }
+            });
+        }
+        else if(command.getName().equals(UnitCommands.PILLAGE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    pillage(unit);
+                }
+            });
+        }
+        else if(command.getName().equals(UnitCommands.WORK_ACTIONS.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+
+                }
+            });
+        }
+    }
+
+    private static void waitForChoosingTileForRangedAttack(Unit unit, Pane pane){
+        for(int i = 0; i < pane.getChildren().size(); i++){
+            if(pane.getChildren().get(i) instanceof Polygon){
+                Polygon hexagon = (Polygon) pane.getChildren().get(i);
+                hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        rangedAttack(getTileImageFromHexagon(hexagon), unit);
+                    }
+                });
+            }
+        }
+
+    }
+
+    private static void rangedAttack(TileImage tileImage, Unit unit) {
+        if(!(tileImage instanceof Tile)){
+            RegisterPageGraphicalController.showPopup("You can only attack visible tiles!");
+            return;
+        }
+        Tile targetTile = (Tile) tileImage;
+        if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
+                !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
+            RegisterPageGraphicalController.showPopup("You can only attack target that are seen and within range!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeRangedAttack(unit, target);
+        RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void waitForChoosingTileToMeleeAttack(Unit unit, Pane pane){
+        for(int i = 0; i < pane.getChildren().size(); i++){
+            if(pane.getChildren().get(i) instanceof Polygon){
+                Polygon hexagon = (Polygon) pane.getChildren().get(i);
+                hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        meleeAttack(getTileImageFromHexagon(hexagon), unit);
+                    }
+                });
+            }
+        }
+
+    }
+
+    private static void meleeAttack(TileImage tileImage, Unit unit) {
+        if(!(tileImage instanceof Tile)){
+            RegisterPageGraphicalController.showPopup("You can only melee attack visible tiles!");
+            return;
+        }
+        Tile targetTile = (Tile) tileImage;
+        if (!controller.areTwoTilesAdjacent(targetTile, unit.getLocation())) {
+            RegisterPageGraphicalController.showPopup("You can only melee attack adjacent tiles!");
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+            RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+        RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setUpForRangedAttack(Unit unit) {
+        unit.assemble();
+        unit.setMovePointsLeft(0);
+        unit.setPath(null);
+        RegisterPageGraphicalController.showPopup("Unit successfully assembled!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void pillage(Unit unit) {
+        controller.pillageUnitsTile(unit);
+        RegisterPageGraphicalController.showPopup("You just successfully tore apart hard-earned value!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void showUnitInfo(Unit unit, Pane gamePagePane) {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        addTextToVBox(vbox, unit.getOwner().getName() + "'s " + unit.getType().getName());
+        addTextToVBox(vbox, "State: " + unit.getState());
+        if (unit.getType().getCombatType() == CombatType.SIEGE) {
+            addTextToVBox(vbox, (unit.isAssembled()) ? "Assembled" : "Disassembled");
+        }
+        if (unit.getType() == UnitType.WORKER) {
+            if (controller.getWorkersWork(unit) == null) {
+                addTextToVBox(vbox, "Not Currently Working...");
+            } else {
+                addTextToVBox(vbox, "Work: " + controller.getWorkersWork(unit).getTitle());
+                Tile location = controller.getWorkersWork(unit).findLocation();
+                addTextToVBox(vbox, "Work Place: Y: " + location.findTileYCoordinateInMap() + ", X: " + location.findTileXCoordinateInMap());
+
+            }
+        }
+        addTextToVBox(vbox, "Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
+        addTextToVBox(vbox, "Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
+        addTextToVBox(vbox, "Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
+        if (unit.getPath() != null) {
+            addTextToVBox(vbox, "Path:");
+            for (Tile tile : unit.getPath()) {
+                addTextToVBox(vbox, "Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+            }
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
     }
 
     private static void foundCity(Unit unit) {
@@ -415,6 +625,18 @@ public class UnitsGraphicalController {
             }
         }
         return null;
+    }
+
+    private static void addTextToVBox(VBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+    private static void addTextToHBox(HBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
     }
 
 
