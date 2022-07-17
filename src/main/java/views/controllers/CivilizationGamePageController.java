@@ -14,8 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -133,6 +132,18 @@ public class CivilizationGamePageController {
     }
 
     public void setSceneOnKeyPressed(){
+        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
+        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Main.loadFxmlFile("DiplomacyPage");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         Main.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
