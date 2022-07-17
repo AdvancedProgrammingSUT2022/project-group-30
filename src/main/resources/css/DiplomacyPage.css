@@ -13,3 +13,10 @@
     -fx-text-fill: white;
     -fx-cursor: hand;
 }
+
+.civilizationItem {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 24;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
