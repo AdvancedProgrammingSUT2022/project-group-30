@@ -53,7 +53,6 @@ public class CivilizationGamePageController {
     private Pane pane;
 
     private TechnologyPopup techPopup;
-
     private Button goToDiplomacyPageButton;
     private Button goToNextTurnButton;
 

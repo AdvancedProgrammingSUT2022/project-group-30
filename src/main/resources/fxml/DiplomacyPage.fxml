@@ -6,9 +6,49 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="views.controllers.DiplomacyPageController"
-            prefHeight="400.0" prefWidth="600.0">
-    <ListView fx:id="CivilizationsList"/>
-</AnchorPane>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.DiplomacyPageController"
+      prefHeight="400.0" prefWidth="600.0" spacing="10">
+    <padding>
+        <Insets topRightBottomLeft="15"/>
+    </padding>
+
+    <BorderPane fx:id="topBar">
+        <left>
+            <Button BorderPane.alignment="CENTER_LEFT" text="BACK" fx:id="backButton" onAction="#onBackButtonClick"/>
+        </left>
+    </BorderPane>
+    <ListView fx:id="civilizationsList" VBox.vgrow="ALWAYS"/>
+    <BorderPane fx:id="bottomBar">
+        <left>
+            <VBox fx:id="chatBox" BorderPane.alignment="CENTER_LEFT">
+                <ListView fx:id="messageList"/>
+                <HBox>
+                    <TextField fx:id="newMessageField" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="sendButton" text="SEND"/>
+                </HBox>
+            </VBox>
+        </left>
+
+        <center>
+            <Label fx:id="relationStatusField" text="said hello once" BorderPane.alignment="CENTER"/>
+        </center>
+
+        <right>
+            <VBox fx:id="tradeButtons" spacing="5" BorderPane.alignment="CENTER_RIGHT">
+                <Button text="Declare War" styleClass="tradeButton"/>
+                <Button text="Declare Peace" styleClass="tradeButton"/>
+                <Button text="Send Gold" styleClass="tradeButton"/>
+                <Button text="Send Luxury Resource" styleClass="tradeButton"/>
+                <Button text="Send Strategic Resource" styleClass="tradeButton"/>
+            </VBox>
+        </right>
+    </BorderPane>
+
+    <stylesheets>
+        <URL value="@../css/DiplomacyPage.css"/>
+    </stylesheets>
+</VBox>

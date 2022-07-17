@@ -1,0 +1,15 @@
+#backButton {
+    -fx-background-color: #ba0000;
+    -fx-text-fill: white;
+    -fx-font-size: 20;
+    -fx-cursor: hand;
+}
+
+.tradeButton {
+    -fx-pref-width: 200;
+    -fx-pref-height: 50;
+    -fx-font-size: 15;
+    -fx-background-color: #005600;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
