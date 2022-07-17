@@ -54,6 +54,9 @@ public class CivilizationGamePageController {
 
     private TechnologyPopup techPopup;
 
+    private Button goToDiplomacyPageButton;
+    private Button goToNextTurnButton;
+
     @FXML
     public void initialize() throws MalformedURLException {
         //controller.makeEverythingVisible();
@@ -68,22 +71,43 @@ public class CivilizationGamePageController {
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
         initializeNextTurnButton();
+        initializeDiplomacyButton();
     }
 
-    public void initializeNextTurnButton() {
-        Button button = new Button("Next Turn");
-        button.getStyleClass().add("menu-button");
-        button.setPrefHeight(30);
-        button.setPrefWidth(150);
-        button.setLayoutX(1100);
-        button.setLayoutY(50);
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    private void initializeDiplomacyButton() {
+        goToDiplomacyPageButton = new Button("Diplomacy");
+        goToDiplomacyPageButton.getStyleClass().add("menu-button");
+        goToDiplomacyPageButton.setPrefHeight(30);
+        goToDiplomacyPageButton.setPrefWidth(150);
+        goToDiplomacyPageButton.setLayoutX(1100);
+        goToDiplomacyPageButton.setLayoutY(90);
+        goToDiplomacyPageButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    Main.loadFxmlFile("DiplomacyPage");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        pane.getChildren().add(goToDiplomacyPageButton);
+    }
+
+    private void initializeNextTurnButton() {
+        goToNextTurnButton = new Button("Next Turn");
+        goToNextTurnButton.getStyleClass().add("menu-button");
+        goToNextTurnButton.setPrefHeight(30);
+        goToNextTurnButton.setPrefWidth(150);
+        goToNextTurnButton.setLayoutX(1100);
+        goToNextTurnButton.setLayoutY(50);
+        goToNextTurnButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 passTurn();
             }
         });
-        pane.getChildren().add(button);
+        pane.getChildren().add(goToNextTurnButton);
     }
 
     private void passTurn() {
