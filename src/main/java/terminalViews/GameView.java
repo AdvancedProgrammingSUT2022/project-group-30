@@ -1375,7 +1375,7 @@ public class GameView implements View {
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Clearace routes canceled");
+                printer.println("Clearance routes canceled");
                 return;
             }
         }

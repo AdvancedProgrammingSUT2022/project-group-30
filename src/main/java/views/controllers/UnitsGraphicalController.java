@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -18,15 +19,22 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import menusEnumerations.ProductionPanelCommands;
 import menusEnumerations.UnitCommands;
+import menusEnumerations.WorkerCommands;
+import models.City;
+import models.Feature;
 import models.GameMap;
 import models.Tile;
+import models.improvements.Improvement;
+import models.improvements.ImprovementType;
 import models.interfaces.TileImage;
 import models.interfaces.combative;
 import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
+import models.works.*;
 import views.Main;
 
 import java.io.IOException;
@@ -42,6 +50,7 @@ public class UnitsGraphicalController {
 
     private static ScrollPane unitActionTabPane;
     private static VBox unitCommandsBox;
+    private static boolean isAnswerYes;
 
     public static void initializeUnitActionTab(Pane pane){
         unitActionTabPane = new ScrollPane();
@@ -231,7 +240,7 @@ public class UnitsGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    makeWorkPanel(unit, pane);
                 }
             });
         }
@@ -637,6 +646,502 @@ public class UnitsGraphicalController {
         Text info = new Text(text);
         info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         box.getChildren().add(info);
+    }
+
+    public static void makeWorkPanel(Unit unit, Pane pane){
+        unitCommandsBox.getChildren().clear();
+        unitActionTabPane.setVisible(true);
+        unitCommandsBox.setDisable(false);
+        ArrayList<WorkerCommands> allCommands = calculateWorkerAllowedActions(unit);
+        for(int i = 0; i < allCommands.size(); i++){
+            addWokPanelButtonForCommand(unit, pane, allCommands.get(i));
+        }
+        Button back = new Button("back");
+        back.getStyleClass().add("menu-button");
+        back.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    makeTheUnitActionTab(unit, pane);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        unitCommandsBox.getChildren().add(back);
+
+    }
+
+    private static void addWokPanelButtonForCommand(Unit unit, Pane pane, WorkerCommands command){
+        Button button = new Button(command.getName());
+        button.getStyleClass().add("menu-button");
+        button.setPrefWidth(150);
+        button.setPrefHeight(80);
+        unitCommandsBox.getChildren().add(button);
+        if(command.getName().equals(WorkerCommands.BUILD_ROAD.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.ROAD);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_RAILROAD.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.RAILROAD);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_FARM.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildFarmOrMine(unit, ImprovementType.FARM);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_MINE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildFarmOrMine(unit, ImprovementType.MINE);
+
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_TRADING_POST.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.TRADING_POST);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_LUMBER_MILL.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.LUMBER_MILL);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_PASTURE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.PASTURE);
+
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_PLANTATION.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.PLANTATION);
+
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_QUARRY.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.QUARRY);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.BUILD_CAMP.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    buildImprovement(unit, ImprovementType.CAMP);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.CLEAR_FOREST.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    clearFeature(unit, Feature.FOREST);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.CLEAR_JUNGLE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    clearFeature(unit, Feature.JUNGLE);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.CLEAR_MARSH.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    clearFeature(unit, Feature.MARSH);
+
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.CLEAR_ROUTES.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    clearRoutes(unit);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.FIX_IMPROVEMENT.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    fixImprovement(unit, false);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.FIX_ROUTE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    fixImprovement(unit, true);
+                }
+            });
+        }
+        else if(command.getName().equals(WorkerCommands.STOP_WORK.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    stopWork(unit);
+                }
+            });
+        }
+    }
+
+    private static ArrayList<WorkerCommands> calculateWorkerAllowedActions(Unit worker) {
+        ArrayList<WorkerCommands> result = new ArrayList<WorkerCommands>();
+        if (controller.canWorkerBuildRoute(worker, ImprovementType.ROAD)) {
+            result.add(WorkerCommands.BUILD_ROAD);
+        }
+        if (controller.canWorkerBuildRoute(worker, ImprovementType.RAILROAD)) {
+            result.add(WorkerCommands.BUILD_RAILROAD);
+        }
+        if (controller.canWorkerBuildFarmOrMine(worker, ImprovementType.FARM)) {
+            result.add(WorkerCommands.BUILD_FARM);
+        }
+        if (controller.canWorkerBuildFarmOrMine(worker, ImprovementType.MINE)) {
+            result.add(WorkerCommands.BUILD_MINE);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.TRADING_POST)) {
+            result.add(WorkerCommands.BUILD_TRADING_POST);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.LUMBER_MILL)) {
+            result.add(WorkerCommands.BUILD_LUMBER_MILL);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PASTURE)) {
+            result.add(WorkerCommands.BUILD_PASTURE);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.PLANTATION)) {
+            result.add(WorkerCommands.BUILD_PLANTATION);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.QUARRY)) {
+            result.add(WorkerCommands.BUILD_QUARRY);
+        }
+        if (controller.canWorkerBuildImprovement(worker, ImprovementType.CAMP)) {
+            result.add(WorkerCommands.BUILD_CAMP);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.JUNGLE)) {
+            result.add(WorkerCommands.CLEAR_JUNGLE);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.FOREST)) {
+            result.add(WorkerCommands.CLEAR_FOREST);
+        }
+        if (controller.canWorkerClearFeature(worker, Feature.MARSH)) {
+            result.add(WorkerCommands.CLEAR_MARSH);
+        }
+        if (controller.canWorkerClearRoutes(worker)) {
+            result.add(WorkerCommands.CLEAR_ROUTES);
+        }
+        if (controller.canWorkerFixImprovement(worker)) {
+            result.add(WorkerCommands.FIX_IMPROVEMENT);
+        }
+        if (controller.canWorkerFixRoute(worker)) {
+            result.add(WorkerCommands.FIX_ROUTE);
+        }
+        if (controller.isWorkerWorking(worker)) {
+            result.add(WorkerCommands.STOP_WORK);
+        }
+        return result;
+    }
+
+    private static void buildImprovement(Unit worker, ImprovementType improvementType) {
+        Tile location = worker.getLocation();
+        if (!askToReplace(location)) {
+            RegisterPageGraphicalController.showPopup("Building " + improvementType.getName() + "canceled");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof BuildImprovement &&
+                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
+                ((BuildImprovement) location.getWork()).startWork(worker);
+                RegisterPageGraphicalController.showPopup("Resumed " + improvementType.getName().toLowerCase() + " construction here");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+            askYesOrNoQuestionPopup("Last project will be terminated. Are you sure you want to continue? y/n");
+            if (!isAnswerYes) {
+                RegisterPageGraphicalController.showPopup("Building " + improvementType.getName().toLowerCase() + " canceled");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
+        location.setWork(newWork);
+        worker.setPath(null);
+        RegisterPageGraphicalController.showPopup("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static boolean askToReplace(Tile location) {
+        Improvement nonRouteImprovement;
+        if ((nonRouteImprovement = location.getNonRouteImprovement()) != null) {
+            askYesOrNoQuestionPopup("There is already an improvement (" + nonRouteImprovement.getType().getName()
+                    + ") on this tile, do you wish to replace it? y/n");
+            if (isAnswerYes) {
+                location.removeImprovement(nonRouteImprovement);
+                RegisterPageGraphicalController.showPopup("Removed " + nonRouteImprovement.getType().getName() + " improvement!");
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void askYesOrNoQuestionPopup(String question){
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.setPrefHeight(200);
+        pane.setPrefWidth(400);
+        pane.setStyle("-fx-background-color: #74bfc7;");
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        box.setSpacing(20);
+        Text text = new Text(question);
+        text.setStyle("-fx-font-family: \"Academy Engraved LET\"; -fx-text-fill: #e50000; -fx-font-size: 20");
+        box.getChildren().add(text);
+        pane.setCenter(box);
+        Button yes = new Button();
+        yes.setText("Yes");
+        yes.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                isAnswerYes = true;
+                stage.hide();
+            }
+        });
+        box.getChildren().add(yes);
+        Button no = new Button();
+        no.setText("Yes");
+        no.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                isAnswerYes = false;
+                stage.hide();
+            }
+        });
+        box.getChildren().add(no);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    private static void buildFarmOrMine(Unit worker, ImprovementType type) {
+        Tile location = worker.getLocation();
+        if (!askToReplace(location)) {
+            RegisterPageGraphicalController.showPopup("Building " + type.getName() + " canceled");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof BuildImprovementAndRemoveFeature &&
+                    (((BuildImprovementAndRemoveFeature) location.getWork()).getImprovement() == type)) {
+                ((BuildImprovementAndRemoveFeature) location.getWork()).startWork(worker);
+                RegisterPageGraphicalController.showPopup("Resumed " + type.getName().toLowerCase() + " construction here");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+            askYesOrNoQuestionPopup("Last project will be terminated. Are you sure you want to continue? y/n");
+            if (!isAnswerYes) {
+                RegisterPageGraphicalController.showPopup("Building " + type.getName().toLowerCase() + " canceled");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
+        location.setWork(newWork);
+        worker.setPath(null);
+        RegisterPageGraphicalController.showPopup("Started the construction of a " + type.getName().toLowerCase() + " here!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return;
+    }
+
+    private static void clearFeature(Unit worker, Feature feature) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof ClearFeature &&
+                    ((ClearFeature) location.getWork()).getFeature() == feature) {
+                ((ClearFeature) location.getWork()).startWork(worker);
+                RegisterPageGraphicalController.showPopup("Resumed " + feature.getName().toLowerCase() + " clearance here");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+            askYesOrNoQuestionPopup("Last project will be terminated. Are you sure you want to continue? y/n");
+            if (!isAnswerYes) {
+                RegisterPageGraphicalController.showPopup("Clearance " + feature.getName().toLowerCase() + " canceled");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+        location.setWork(new ClearFeature(feature, worker));
+        worker.setPath(null);
+        RegisterPageGraphicalController.showPopup("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void clearRoutes(Unit worker) {
+        Tile location = worker.getLocation();
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof ClearRoutes) {
+                ((ClearRoutes) location.getWork()).startWork(worker);
+                RegisterPageGraphicalController.showPopup("Resumed routes clearance here");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+            askYesOrNoQuestionPopup("Last project will be terminated. Are you sure you want to continue? y/n");
+            if (!isAnswerYes) {
+                RegisterPageGraphicalController.showPopup("Clearance routes canceled");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+        location.setWork(new ClearRoutes(worker));
+        worker.setPath(null);
+        RegisterPageGraphicalController.showPopup("Started the clearance of routes here!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void fixImprovement(Unit worker, boolean isRoute) {
+        Tile location = worker.getLocation();
+        ImprovementType improvementType;
+        if (!isRoute)
+            improvementType = controller.getTypeOfPillagedImprovement(worker);
+        else if (worker.getLocation().containsImprovment(ImprovementType.ROAD))
+            improvementType = ImprovementType.ROAD;
+        else
+            improvementType = ImprovementType.RAILROAD;
+        if (location.getWork() != null) {
+            if (location.getWork() instanceof FixPillage &&
+                    ((FixPillage) location.getWork()).getImprovementType() == improvementType) {
+                ((FixPillage) location.getWork()).startWork(worker);
+                RegisterPageGraphicalController.showPopup("Resumed " + improvementType.getName().toLowerCase() + " fixation here");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+            askYesOrNoQuestionPopup("Last project will be terminated. Are you sure you want to continue? y/n");
+            if (!isAnswerYes) {
+                RegisterPageGraphicalController.showPopup("Fixation " + improvementType.getName().toLowerCase() + " canceled");
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+        }
+        location.setWork(new FixPillage(improvementType, worker));
+        worker.setPath(null);
+        RegisterPageGraphicalController.showPopup("Started the fixation of a " + improvementType.getName().toLowerCase() + " here!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void stopWork(Unit worker) {
+        Work work = controller.getWorkersWork(worker);
+        work.stopWork();
+        RegisterPageGraphicalController.showPopup("Stopped this units work!");
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
