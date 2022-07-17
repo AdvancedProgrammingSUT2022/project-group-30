@@ -66,7 +66,7 @@ public class GameController {
                 fileLines.add(scanner.nextLine());
             }
             fileLines = getAppropriateStartingPoints(fileLines, mapHeight, mapWidth, startingYPosition, startingXPosition);
-            for(int i = 0; i < fileLines.size(); i++){
+            for (int i = 0; i < fileLines.size(); i++) {
                 System.out.println(fileLines.get(i));
             }
             Random rand = new Random();
@@ -83,11 +83,11 @@ public class GameController {
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
                 int yFixDifference = 0;
-                while(Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference + 9 > GameMap.getGameMap().getMap().length - 1){
+                while (Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference + 9 > GameMap.getGameMap().getMap().length - 1) {
                     yFixDifference += 1;
                 }
                 int xFixDifference = 0;
-                while(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference + 19 > GameMap.getGameMap().getMap()[0].length - 1){
+                while (Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference + 19 > GameMap.getGameMap().getMap()[0].length - 1) {
                     xFixDifference += 1;
                 }
                 civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference, Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference));
@@ -101,13 +101,13 @@ public class GameController {
         }
     }
 
-    private ArrayList<String> getAppropriateStartingPoints(ArrayList<String> fileLines, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition){
+    private ArrayList<String> getAppropriateStartingPoints(ArrayList<String> fileLines, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         ArrayList<String> appropriateLines = new ArrayList<>();
-        for(int i = 0; i < fileLines.size(); i++){
+        for (int i = 0; i < fileLines.size(); i++) {
             String tokens[] = fileLines.get(i).split("-");
             int xPosition = Integer.parseInt(tokens[1]);
             int yPosition = Integer.parseInt(tokens[0]);
-            if(!(yPosition < startingYPosition || yPosition > startingYPosition + mapHeight - 1 || xPosition < startingXPosition || xPosition > startingXPosition + mapWidth - 1)){
+            if (!(yPosition < startingYPosition || yPosition > startingYPosition + mapHeight - 1 || xPosition < startingXPosition || xPosition > startingXPosition + mapWidth - 1)) {
                 appropriateLines.add(fileLines.get(i));
             }
         }
@@ -841,6 +841,20 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
+    public void declareWar(Civilization attacker, Civilization defender) {
+        DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(attacker, defender);
+        if (relation != null) {
+            relation.setAreAtWar(true);
+        }
+    }
+
+    public void declarePeace(Civilization attacker, Civilization defender) {
+        DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(attacker, defender);
+        if (relation != null) {
+            relation.setAreAtWar(false);
+        }
+    }
+
     public boolean isTileImpassable(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.OCEAN)
                 || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
@@ -990,8 +1004,7 @@ public class GameController {
             if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null) {
                 newMapImage.put(tile, null);
                 discoverCivsInTile(tile);
-            }
-            else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
+            } else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());

@@ -4,12 +4,9 @@ import models.Civilization;
 import models.CivilizationPair;
 
 public class DiplomaticRelation extends Diplomacy {
-    boolean areMutuallyVisible = false;
-    boolean areAtWar = false;
-
-    public DiplomaticRelation(CivilizationPair pair) {
-        this.pair = pair;
-    }
+    private boolean areMutuallyVisible = false;
+    private boolean areAtWar = false;
+    private int friendliness = 0;
 
     public DiplomaticRelation(Civilization civ1, Civilization civ2) {
         this.pair = new CivilizationPair(civ1, civ2);
@@ -23,11 +20,24 @@ public class DiplomaticRelation extends Diplomacy {
         this.areMutuallyVisible = areMutuallyVisible;
     }
 
-    public boolean isAreAtWar() {
+    public boolean areAtWar() {
         return areAtWar;
     }
 
     public void setAreAtWar(boolean areAtWar) {
         this.areAtWar = areAtWar;
     }
+
+    public void setFriendliness(int friendliness) {
+        this.friendliness = friendliness;
+    }
+
+    public int getFriendliness() {
+        return friendliness;
+    }
+
+    public DiplomaticRelation(CivilizationPair pair) {
+        this.pair = pair;
+    }
+
 }

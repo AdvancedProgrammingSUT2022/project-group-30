@@ -39,8 +39,8 @@
 
         <right>
             <VBox fx:id="tradeButtons" spacing="5" BorderPane.alignment="CENTER_RIGHT">
-                <Button text="Declare War" styleClass="tradeButton"/>
-                <Button text="Declare Peace" styleClass="tradeButton"/>
+                <Button text="Declare War" styleClass="tradeButton" onAction="#onDeclareWarButtonClick"/>
+                <Button text="Declare Peace" styleClass="tradeButton" onAction="#onDeclarePeaceButtonClick"/>
                 <Button text="Send Gold" styleClass="tradeButton"/>
                 <Button text="Send Luxury Resource" styleClass="tradeButton"/>
                 <Button text="Send Strategic Resource" styleClass="tradeButton"/>

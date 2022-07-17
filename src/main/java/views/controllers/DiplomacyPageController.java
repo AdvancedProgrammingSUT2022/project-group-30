@@ -72,7 +72,29 @@ public class DiplomacyPageController {
         } else {
             sb.append("Discovery Status: Not Discovered\n");
         }
+        if (database.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areAtWar())
+        {
+            sb.append("War Status: At War\n");
+        } else {
+            sb.append("War Status: At Peace\n");
+        }
         relationStatusField.setText(sb.toString());
+    }
+
+    @FXML
+    private void onDeclareWarButtonClick() {
+        if (selectedCiv != null) {
+            controller.declareWar(controller.getCurrentPlayer(), selectedCiv);
+            updateInfo();
+        }
+    }
+
+    @FXML
+    private void onDeclarePeaceButtonClick() {
+        if (selectedCiv != null) {
+            controller.declarePeace(controller.getCurrentPlayer(), selectedCiv);
+            updateInfo();
+        }
     }
 
     @FXML
