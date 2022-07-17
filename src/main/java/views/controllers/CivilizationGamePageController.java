@@ -23,10 +23,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.*;
+import models.improvements.ImprovementType;
 import models.interfaces.TileImage;
+import models.resources.LuxuryResource;
 import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.units.Unit;
+import models.units.UnitType;
+import views.CheatCodes;
 import views.Main;
+import views.customcomponents.CheatBox;
 import views.customcomponents.TechnologyPopup;
 
 import java.io.IOException;
@@ -34,6 +40,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
 
 public class CivilizationGamePageController {
     private final boolean debugMode = false; // for debugging purposes only
@@ -63,7 +70,7 @@ public class CivilizationGamePageController {
         initializeNextTurnButton();
     }
 
-    public void initializeNextTurnButton(){
+    public void initializeNextTurnButton() {
         Button button = new Button("Next Turn");
         button.getStyleClass().add("menu-button");
         button.setPrefHeight(30);
@@ -105,7 +112,7 @@ public class CivilizationGamePageController {
         }
     }
 
-    public static Polygon createHexagon(double xCoordinate, double yCoordinate){
+    public static Polygon createHexagon(double xCoordinate, double yCoordinate) {
         Polygon hexagon = new Polygon();
         hexagon.getPoints().addAll(xCoordinate, yCoordinate,
                 xCoordinate + hexagonsSideLength, yCoordinate,
@@ -116,10 +123,10 @@ public class CivilizationGamePageController {
         return hexagon;
     }
 
-    public void removeAllPolygonsFromPane(){
+    public void removeAllPolygonsFromPane() {
         ArrayList<Polygon> toRemove = new ArrayList<>();
-        for(int i = 0; i < pane.getChildren().size(); i++){
-            if(pane.getChildren().get(i) instanceof Polygon){
+        for (int i = 0; i < pane.getChildren().size(); i++) {
+            if (pane.getChildren().get(i) instanceof Polygon) {
                 toRemove.add((Polygon) pane.getChildren().get(i));
             }
         }
@@ -130,24 +137,22 @@ public class CivilizationGamePageController {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
         removeAllCirclesFromPane();
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
                     isOdd = -1;
                 }
-                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
                 Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
-                if(tilesToShow[i][j] == null){
+                if (tilesToShow[i][j] == null) {
                     hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/FogOfWar.png").toExternalForm()).toExternalForm())));
-                }
-                else if(tilesToShow[i][j] instanceof Tile){
+                } else if (tilesToShow[i][j] instanceof Tile) {
                     String terrainTypeName = ((Tile) tilesToShow[i][j]).getTerrainType().getName();
                     hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
                     setVisibleTilesHexagonsOnMouseClicked(hexagon);
-                }
-                else if(tilesToShow[i][j] instanceof TileHistory){
+                } else if (tilesToShow[i][j] instanceof TileHistory) {
                     String terrainTypeName = ((TileHistory) tilesToShow[i][j]).getTile().getTerrainType().getName();
                     hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
                     hexagon.setOpacity(0.5);
@@ -174,7 +179,9 @@ public class CivilizationGamePageController {
         pane.getChildren().remove(techPopup);
     }
 
-    public void setSceneOnKeyPressed(){
+    public void setSceneOnKeyPressed() {
+        addCheatBox();
+
         KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
         Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
             @Override
@@ -193,7 +200,7 @@ public class CivilizationGamePageController {
                 String keyName = keyEvent.getCode().getName();
                 int yPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
                 int xPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-                switch (keyName){
+                switch (keyName) {
                     case "Up":
                         goUp(yPosition, xPosition);
                         break;
@@ -218,50 +225,50 @@ public class CivilizationGamePageController {
         });
     }
 
-    public void goUp(int yPosition, int xPosition){
-        if(yPosition > 0){
+    public void goUp(int yPosition, int xPosition) {
+        if (yPosition > 0) {
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition, yPosition - 1));
         }
     }
 
-    public void goDown(int yPosition, int xPosition){
-        if(yPosition + 9 < GameMap.getGameMap().getMap().length - 1){
+    public void goDown(int yPosition, int xPosition) {
+        if (yPosition + 9 < GameMap.getGameMap().getMap().length - 1) {
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition, yPosition + 1));
         }
     }
 
-    public void goLeft(int yPosition, int xPosition){
-        if(xPosition > 0){
+    public void goLeft(int yPosition, int xPosition) {
+        if (xPosition > 0) {
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition - 1, yPosition));
         }
     }
 
-    public void goRight(int yPosition, int xPosition){
-        if(xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1){
+    public void goRight(int yPosition, int xPosition) {
+        if (xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1) {
             controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition + 1, yPosition));
         }
     }
 
     public void putUnitsOnMap() throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
                     isOdd = -1;
                 }
-                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
-                if(tilesToShow[i][j] instanceof Tile){
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
+                if (tilesToShow[i][j] instanceof Tile) {
                     ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
-                    for(int k = 0; k < units.size(); k++){
+                    for (int k = 0; k < units.size(); k++) {
                         Circle circle = new Circle();
                         circle.setCenterY(yCoordinate + 10 + 20 * k);
                         circle.setCenterX(xCoordinate + 16);
                         circle.setRadius(10);
                         circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
                         Unit unit = units.get(k);
-                        if(unit.getOwner().equals(controller.getCurrentPlayer())) {
+                        if (unit.getOwner().equals(controller.getCurrentPlayer())) {
                             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
@@ -284,23 +291,23 @@ public class CivilizationGamePageController {
 
     public void putCitiesOnMap() throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
                     isOdd = -1;
                 }
-                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
-                if(tilesToShow[i][j] instanceof Tile){
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
+                if (tilesToShow[i][j] instanceof Tile) {
                     City city = controller.getCityCenteredInTile((Tile) tilesToShow[i][j]);
-                    if(city != null){
+                    if (city != null) {
                         Circle circle = new Circle();
                         circle.setCenterY(yCoordinate + hexagonsSideLength * Math.sqrt(3) / 2);
                         circle.setCenterX(xCoordinate - 5);
                         circle.setRadius(15);
                         circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/City/cityBanner.png").toExternalForm()).toExternalForm())));
-                        if(city.getOwner().equals(controller.getCurrentPlayer())) {
+                        if (city.getOwner().equals(controller.getCurrentPlayer())) {
                             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
@@ -338,10 +345,10 @@ public class CivilizationGamePageController {
 
     }
 
-    public void removeAllCirclesFromPane(){
+    public void removeAllCirclesFromPane() {
         ArrayList<Circle> toRemove = new ArrayList<>();
-        for(int i = 0; i < pane.getChildren().size(); i++){
-            if(pane.getChildren().get(i) instanceof Circle){
+        for (int i = 0; i < pane.getChildren().size(); i++) {
+            if (pane.getChildren().get(i) instanceof Circle) {
                 toRemove.add((Circle) pane.getChildren().get(i));
             }
         }
@@ -350,17 +357,17 @@ public class CivilizationGamePageController {
 
     public void drawFeatures() throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
                     isOdd = -1;
                 }
-                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
-                if(tilesToShow[i][j] instanceof Tile){
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
+                if (tilesToShow[i][j] instanceof Tile) {
                     ArrayList<Feature> features = ((Tile) tilesToShow[i][j]).getFeatures();
-                    for(int k = 0; k < features.size(); k++){
+                    for (int k = 0; k < features.size(); k++) {
                         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
                         hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + features.get(k).getName() + ".png").toExternalForm()).toExternalForm())));
                         setVisibleTilesHexagonsOnMouseClicked(hexagon);
@@ -373,19 +380,16 @@ public class CivilizationGamePageController {
 
     public void drawRiverSegments() throws MalformedURLException {
         ArrayList<RiverSegment> rivers = GameMap.getGameMap().getRivers();
-        for(int i = 0; i < rivers.size(); i++){
+        for (int i = 0; i < rivers.size(); i++) {
             Tile firstTile = rivers.get(i).getFirstTile();
             Tile secondTile = rivers.get(i).getSecondTile();
-            if(rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("RD")){
+            if (rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("RD")) {
                 drawRiverForTile(firstTile, "RD");
-            }
-            else if(rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("LD")){
+            } else if (rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("LD")) {
                 drawRiverForTile(firstTile, "LD");
-            }
-            else if(rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("RD")){
+            } else if (rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("RD")) {
                 drawRiverForTile(secondTile, "RD");
-            }
-            else if(rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("LD")){
+            } else if (rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("LD")) {
                 drawRiverForTile(secondTile, "LD");
             }
         }
@@ -393,22 +397,21 @@ public class CivilizationGamePageController {
 
     private void drawRiverForTile(Tile tile, String direction) throws MalformedURLException {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
-        if(findTileCoordinatesInScene(tile, tilesToShow).isEmpty()){
+        if (findTileCoordinatesInScene(tile, tilesToShow).isEmpty()) {
             return;
         }
         int xPosition = findTileCoordinatesInScene(tile, tilesToShow).get(0);
         int yPosition = findTileCoordinatesInScene(tile, tilesToShow).get(1);
         double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * xPosition);
         int isOdd = 1;
-        if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+        if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
             isOdd = -1;
         }
-        double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (yPosition +isOdd * (double) (xPosition % 2) / (double) 2);
+        double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (yPosition + isOdd * (double) (xPosition % 2) / (double) 2);
         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
-        if(direction.equals("RD")) {
+        if (direction.equals("RD")) {
             hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomRight.png").toExternalForm()).toExternalForm())));
-        }
-        else{
+        } else {
             hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomLeft.png").toExternalForm()).toExternalForm())));
         }
         setVisibleTilesHexagonsOnMouseClicked(hexagon);
@@ -416,12 +419,12 @@ public class CivilizationGamePageController {
     }
 
     //this functions returns x and y coordinates in an ArrayList if the tile is in the scene and visible, returns empty arrayList otherwise
-    private ArrayList<Integer> findTileCoordinatesInScene(Tile tile, TileImage[][] tilesToShow){
+    private ArrayList<Integer> findTileCoordinatesInScene(Tile tile, TileImage[][] tilesToShow) {
         ArrayList<Integer> coordinates = new ArrayList<>();
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
-                if(tilesToShow[i][j] instanceof Tile){
-                    if(((Tile) tilesToShow[i][j]).equals(tile)){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
+                if (tilesToShow[i][j] instanceof Tile) {
+                    if (((Tile) tilesToShow[i][j]).equals(tile)) {
                         coordinates.add(j);
                         coordinates.add(i);
                     }
@@ -433,16 +436,16 @@ public class CivilizationGamePageController {
 
 
     // this function is only for debugging purposes
-    private void printAllTilesInfo(){
+    private void printAllTilesInfo() {
         Tile[][] map = GameMap.getGameMap().getMap();
-        for(int i = 0; i < map.length; i++){
-            for(int j = 0; j < map[i].length; j++){
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
                 System.out.println("********************");
                 System.out.println("Tile located in i: " + i + " and j: " + j);
                 System.out.println();
                 System.out.println("FEATURES:");
                 ArrayList<Feature> features = map[i][j].getFeatures();
-                for(int k = 0; k < features.size(); k++){
+                for (int k = 0; k < features.size(); k++) {
                     System.out.println(features.get(k).getName());
                 }
                 System.out.println();
@@ -509,7 +512,7 @@ public class CivilizationGamePageController {
         stage.show();
     }
 
-    private TableView<Feature> getFeaturesTable(ArrayList<Feature> features){
+    private TableView<Feature> getFeaturesTable(ArrayList<Feature> features) {
         TableView<Feature> tableView = new TableView<>();
         TableColumn<Feature, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Feature");
@@ -593,7 +596,7 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TableView<Output> getOutputTableForTile(Tile tile){
+    private TableView<Output> getOutputTableForTile(Tile tile) {
         ArrayList<Output> outputs = new ArrayList<>();
         outputs.add(tile.calculateTheoreticalOutput());
         TableView<Output> tableView = new TableView<>();
@@ -620,7 +623,7 @@ public class CivilizationGamePageController {
     }
 
 
-    private void setTableColumnData(TableColumn<Output, Integer> tableColumn, String name){
+    private void setTableColumnData(TableColumn<Output, Integer> tableColumn, String name) {
         tableColumn.setCellFactory(col -> {
             TableCell<Output, Integer> cell = new TableCell<>();
             cell.itemProperty().addListener((observableValue, o, newValue) -> {
@@ -645,7 +648,7 @@ public class CivilizationGamePageController {
         });
     }
 
-    private TableView<Resource> getResourcesTable(Tile tile, ArrayList<Resource> resources){
+    private TableView<Resource> getResourcesTable(Tile tile, ArrayList<Resource> resources) {
         TableView<Resource> tableView = new TableView<>();
         TableColumn<Resource, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Resource");
@@ -738,19 +741,19 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TileImage getTileImageFromHexagon(Polygon hexagon){
+    private TileImage getTileImageFromHexagon(Polygon hexagon) {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         double startXCoordinate = hexagon.getPoints().get(0);
         double startYCoordinate = hexagon.getPoints().get(1);
-        for(int i = 0; i < tilesToShow.length; i++){
-            for(int j = 0; j < tilesToShow[i].length; j++){
+        for (int i = 0; i < tilesToShow.length; i++) {
+            for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
                     isOdd = -1;
                 }
-                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i +isOdd * (double) (j % 2) / (double) 2);
-                if(startXCoordinate == xCoordinate &&  startYCoordinate == yCoordinate){
+                double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
+                if (startXCoordinate == xCoordinate && startYCoordinate == yCoordinate) {
                     return tilesToShow[i][j];
                 }
             }
@@ -758,7 +761,7 @@ public class CivilizationGamePageController {
         return null;
     }
 
-    private void setVisibleTilesHexagonsOnMouseClicked(Polygon hexagon){
+    private void setVisibleTilesHexagonsOnMouseClicked(Polygon hexagon) {
         hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -841,7 +844,119 @@ public class CivilizationGamePageController {
 
         pane.getChildren().add(hBox);
     }
+
+    private void addCheatBox() {
+        KeyCombination cheatCombo = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN);
+        Main.getScene().getAccelerators().put(cheatCombo, new Runnable() {
+            @Override
+            public void run() {
+                CheatBox cheatBox = new CheatBox() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        String text = textField.getText();
+                        Matcher matcher;
+                        if ((matcher = CheatCodes.MAKE_EVERYTHING_VISIBLE.getMatcher(text)) != null) {
+                            controller.makeEverythingVisible();
+                        } else if ((matcher = CheatCodes.ADD_GOLD.getMatcher(text)) != null) {
+                            controller.getCurrentPlayer().addGold(200);
+                        } else if ((matcher = CheatCodes.DISABLE_TURN_BREAK.getMatcher(text)) != null) {
+                            controller.disableTurnBreak();
+                        } else if ((matcher = CheatCodes.ADD_STRATEGIC_RESOURCE.getMatcher(text)) != null) {
+                            String name = matcher.group("name");
+                            StrategicResource chosenResource = StrategicResource.getStrategicResourceByName(name);
+                            if (chosenResource == null) {
+                                return;
+                            }
+                            controller.getCurrentPlayer().addStrategicResource(chosenResource, 5);
+                        } else if ((matcher = CheatCodes.ADD_LUXURY_RESOURCE.getMatcher(text)) != null) {
+                            String name = matcher.group("name");
+                            LuxuryResource chosenResource = LuxuryResource.getLuxuryResourceByName(name);
+                            if (chosenResource == null) {
+                                return;
+                            }
+                            controller.getCurrentPlayer().addLuxuryResource(chosenResource, 5);
+                        } else if ((matcher = CheatCodes.ADD_UNIT.getMatcher(text)) != null) {
+                            String name = matcher.group("name");
+                            int y = Integer.parseInt(matcher.group("y"));
+                            int x = Integer.parseInt(matcher.group("x"));
+                            UnitType selectedType = UnitType.getUnitTypeByName(name);
+                            if (selectedType == null) {
+                                return;
+                            }
+                            if (!controller.areCoordinatesValid(x, y)) {
+                                return;
+                            }
+                            Tile tile = controller.getTileByCoordinates(x, y);
+                            if (!controller.canUnitTeleportToTile(selectedType, controller.getCurrentPlayer(), tile)) {
+                                return;
+                            }
+                            controller.createUnit(selectedType, controller.getCurrentPlayer(), tile);
+                        } else if ((matcher = CheatCodes.KILL_UNIT.getMatcher(text)) != null) {
+                            int y = Integer.parseInt(matcher.group("y"));
+                            int x = Integer.parseInt(matcher.group("x"));
+                            if (!controller.areCoordinatesValid(x, y)) {
+                                return;
+                            }
+                            Tile tile = controller.getTileByCoordinates(x, y);
+                            ArrayList<Unit> units = controller.getUnitsInTile(tile);
+                            if (units.size() == 0) {
+                                return;
+                            }
+                            for (Unit unit : units) {
+                                controller.removeUnit(unit);
+                            }
+                        } else if ((matcher = CheatCodes.MAKE_IMPROVEMENT.getMatcher(text)) != null) {
+                            String name = matcher.group("name");
+                            int x = Integer.parseInt(matcher.group("x"));
+                            int y = Integer.parseInt(matcher.group("y"));
+                            if (!controller.areCoordinatesValid(x, y)) {
+                                return;
+                            }
+                            Tile tile = controller.getTileByCoordinates(x, y);
+                            ImprovementType chosenType = ImprovementType.getImprovementTypeByName(name);
+                            if (chosenType == null) {
+                                return;
+                            }
+                            if (tile.containsImprovment(chosenType)) {
+                                return;
+                            }
+                            if (chosenType != ImprovementType.ROAD && chosenType != ImprovementType.RAILROAD &&
+                                    (tile.getCityOfTile() == null || tile.getCityOfTile().getOwner() != controller.getCurrentPlayer())) {
+                                return;
+                            }
+                            controller.addImprovementToTile(tile, chosenType);
+                        } else if ((matcher = CheatCodes.DEPLOY_FEATURE.getMatcher(text)) != null) {
+                            String name = matcher.group("name");
+                            int x = Integer.parseInt(matcher.group("x"));
+                            int y = Integer.parseInt(matcher.group("y"));
+                            if (!controller.areCoordinatesValid(x, y)) {
+                                return;
+                            }
+                            Tile tile = controller.getTileByCoordinates(x, y);
+                            Feature chosenFeature = Feature.getFeatureByName(name);
+                            if (chosenFeature == null) {
+                                return;
+                            }
+                            tile.addFeatureAndApplyChanges(chosenFeature);
+                        } else if ((matcher = CheatCodes.CLEAR_ALL_FEATURES.getMatcher(text)) != null) {
+                            int x = Integer.parseInt(matcher.group("x"));
+                            int y = Integer.parseInt(matcher.group("y"));
+                            if (!controller.areCoordinatesValid(x, y)) {
+                                return;
+                            }
+                            Tile tile = controller.getTileByCoordinates(x, y);
+                            tile.removeAllFeaturesAndApplyChanges();
+                        }
+                        try {
+                            Main.loadFxmlFile("CivilizationGamePage");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        this.close();
+                    }
+                };
+                cheatBox.show();
+            }
+        });
+    }
 }
-
-
-
