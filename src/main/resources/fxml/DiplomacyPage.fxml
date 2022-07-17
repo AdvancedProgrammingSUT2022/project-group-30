@@ -34,7 +34,7 @@
         </left>
 
         <center>
-            <Label fx:id="relationStatusField" text="said hello once" BorderPane.alignment="CENTER"/>
+            <Label fx:id="relationStatusField" text="-" BorderPane.alignment="CENTER"/>
         </center>
 
         <right>

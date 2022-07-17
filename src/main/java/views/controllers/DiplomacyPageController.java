@@ -1,6 +1,8 @@
 package views.controllers;
 
 import controllers.GameController;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,11 +23,14 @@ public class DiplomacyPageController {
     private ListView<Civilization> civilizationsList;
     @FXML
     private ListView messageList;
+    @FXML
+    private Label relationStatusField;
 
     private ObservableList<Civilization> civsListData;
 
     private GameDataBase database;
     private GameController controller;
+    private Civilization selectedCiv = null;
 
     @FXML
     public void initialize() {
@@ -35,6 +40,10 @@ public class DiplomacyPageController {
 //            System.out.println(civilizationPair.getCivilizationsArray().get(0).getName() + " " +
 //                    civilizationPair.getCivilizationsArray().get(1).getName());
 //        }
+        initializeCivilizationsList();
+    }
+
+    private void initializeCivilizationsList() {
         ArrayList<Civilization> discoveredCivs = database.getDiscoveredCivilizations(controller.getCurrentPlayer());
         civsListData = FXCollections.observableArrayList();
         civsListData.setAll(discoveredCivs);
@@ -45,6 +54,25 @@ public class DiplomacyPageController {
                 return new CivilizationItem();
             }
         });
+        civilizationsList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Civilization>() {
+            @Override
+            public void changed(ObservableValue<? extends Civilization> observableValue, Civilization civilization, Civilization t1) {
+                selectedCiv = t1;
+                updateInfo();
+            }
+        });
+    }
+
+    private void updateInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(selectedCiv.getName()).append("\n");
+        if (database.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areMutuallyVisible())
+        {
+            sb.append("Discovery Status: Discovered\n");
+        } else {
+            sb.append("Discovery Status: Not Discovered\n");
+        }
+        relationStatusField.setText(sb.toString());
     }
 
     @FXML

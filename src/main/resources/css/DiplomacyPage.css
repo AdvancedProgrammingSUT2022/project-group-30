@@ -20,3 +20,8 @@
     -fx-background-color: white;
     -fx-text-fill: black;
 }
+
+#relationStatusField {
+    -fx-font-size: 30;
+    -fx-font-family: "Times New Roman";
+}
