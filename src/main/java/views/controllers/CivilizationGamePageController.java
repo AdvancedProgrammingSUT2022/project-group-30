@@ -127,6 +127,7 @@ public class CivilizationGamePageController {
         techPopup.updateInfo(controller.getCurrentPlayer().getTechnologies());
     }
 
+
     private void removeTechnologyPopup() {
         pane.getChildren().remove(techPopup);
     }
