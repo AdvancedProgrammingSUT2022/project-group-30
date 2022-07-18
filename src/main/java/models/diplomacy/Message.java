@@ -1,4 +1,4 @@
-package models.diplomacyChat;
+package models.diplomacy;
 
 import models.Civilization;
 

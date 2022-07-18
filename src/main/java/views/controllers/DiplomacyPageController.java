@@ -6,13 +6,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import models.Civilization;
 import models.GameDataBase;
+import models.diplomacy.Message;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -27,11 +27,12 @@ public class DiplomacyPageController {
     @FXML
     private ListView<Civilization> civilizationsList;
     @FXML
-    private ListView messageList;
+    private ListView<Message> messageList;
     @FXML
     private Label relationStatusField;
 
     private ObservableList<Civilization> civsListData;
+    private ObservableList<Message> messagesData;
 
     private GameDataBase database;
     private GameController controller;
@@ -46,6 +47,99 @@ public class DiplomacyPageController {
 //                    civilizationPair.getCivilizationsArray().get(1).getName());
 //        }
         initializeCivilizationsList();
+    }
+
+    private void initializeMessageList() {
+        ArrayList<Message> messages = database.getDiplomaticRelation(controller.getCurrentPlayer(), selectedCiv).getMessages();
+//        messages.add(new Message("meow", controller.getCurrentPlayer()));
+//        messages.add(new Message("helloooo:)", selectedCiv));
+//        messages.add(new Message("noooooo", controller.getCurrentPlayer()));
+        messagesData = FXCollections.observableArrayList();
+        messagesData.setAll(messages);
+        messageList.setItems(messagesData);
+        System.out.println(messagesData.size());
+        messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
+            @Override
+            public ListCell<Message> call(ListView listView) {
+                return new MessageBox();
+            }
+        });
+//        messageList.setSelectionModel(new MultipleSelectionModel<Message>() {
+//            @Override
+//            public ObservableList<Integer> getSelectedIndices() {
+//                return FXCollections.<Integer>emptyObservableList();
+//            }
+//
+//            @Override
+//            public ObservableList getSelectedItems() {
+//                return FXCollections.<Message>emptyObservableList();
+//            }
+//
+//            @Override
+//            public void selectIndices(int i, int... ints) {
+//
+//            }
+//
+//            @Override
+//            public void selectAll() {
+//
+//            }
+//
+//            @Override
+//            public void selectFirst() {
+//
+//            }
+//
+//            @Override
+//            public void selectLast() {
+//
+//            }
+//
+//            @Override
+//            public void clearAndSelect(int i) {
+//
+//            }
+//
+//            @Override
+//            public void select(int i) {
+//
+//            }
+//
+//            @Override
+//            public void select(Message o) {
+//
+//            }
+//
+//            @Override
+//            public void clearSelection(int i) {
+//
+//            }
+//
+//            @Override
+//            public void clearSelection() {
+//
+//            }
+//
+//            @Override
+//            public boolean isSelected(int i) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean isEmpty() {
+//                return false;
+//            }
+//
+//            @Override
+//            public void selectPrevious() {
+//
+//            }
+//
+//            @Override
+//            public void selectNext() {
+//
+//            }
+//        });
     }
 
     private void initializeCivilizationsList() {
@@ -84,6 +178,7 @@ public class DiplomacyPageController {
             sb.append("War Status: At Peace\n");
         }
         relationStatusField.setText(sb.toString());
+        initializeMessageList();
     }
 
     @FXML
@@ -190,6 +285,24 @@ public class DiplomacyPageController {
             parent.setCenter(label);
             label.setText(civilization.getName());
             label.getStyleClass().add("civilizationItem");
+            setGraphic(parent);
+        }
+    }
+
+    private static class MessageBox extends ListCell<Message> {
+        @Override
+        public void updateItem(Message message, boolean empty) {
+            if (message == null || empty) {
+                return;
+            }
+            Label textLabel = new Label(message.getMessage());
+            if (message.getSender() == GameController.getGameController().getCurrentPlayer()) {
+                AnchorPane.setRightAnchor(textLabel, 10.0);
+            } else {
+                AnchorPane.setLeftAnchor(textLabel, 10.0);
+            }
+            textLabel.setStyle("-fx-font-size: 16; -fx-font-family: 'Times New Roman'; -fx-background-color: white; -fx-text-fill: black;");
+            AnchorPane parent = new AnchorPane(textLabel);
             setGraphic(parent);
         }
     }

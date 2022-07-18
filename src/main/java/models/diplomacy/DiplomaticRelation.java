@@ -3,13 +3,25 @@ package models.diplomacy;
 import models.Civilization;
 import models.CivilizationPair;
 
+import java.util.ArrayList;
+
 public class DiplomaticRelation extends Diplomacy {
     private boolean areMutuallyVisible = false;
     private boolean areAtWar = false;
     private int friendliness = 0;
+    private ArrayList<Message> messages = new ArrayList<>();
 
     public DiplomaticRelation(Civilization civ1, Civilization civ2) {
         this.pair = new CivilizationPair(civ1, civ2);
+    }
+
+    public void addMessage(String text, Civilization sender) {
+        Message newMessage = new Message(text, sender);
+        messages.add(newMessage);
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
     }
 
     public boolean areMutuallyVisible() {
