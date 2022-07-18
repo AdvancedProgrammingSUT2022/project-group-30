@@ -1,5 +1,6 @@
 package views.controllers;
 
+import controllers.CombatController;
 import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -30,7 +31,10 @@ import models.Tile;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.TileImage;
+import models.interfaces.combative;
+import models.resources.Resource;
 import models.resources.StrategicResource;
+import models.units.Unit;
 import models.units.UnitType;
 import views.Main;
 
@@ -121,7 +125,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    waitForChoosingTileToAttack(city, pane);
                 }
             });
         }
@@ -129,9 +133,81 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    showCityInfo(city, pane);
                 }
             });
+        }
+    }
+
+    private static void waitForChoosingTileToAttack(City city, Pane pane){
+        for(int i = 0; i < pane.getChildren().size(); i++){
+            if(pane.getChildren().get(i) instanceof Polygon){
+                Polygon hexagon = (Polygon) pane.getChildren().get(i);
+                hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        cityRangedAttack(getTileImageFromHexagon(hexagon), city);
+                    }
+                });
+            }
+        }
+
+    }
+
+    private static void cityRangedAttack(TileImage tileImage, City city) {
+        if (city.hasAttackedThisTurn()) {
+            RegisterPageGraphicalController.showPopup("This city has already attacked in this turn!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if(!(tileImage instanceof Tile)){
+            RegisterPageGraphicalController.showPopup("You can only attack visible tiles!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        Tile targetTile = (Tile) tileImage;
+        if (targetTile.calculateDistance(city.getCentralTile()) >= city.getRange()) {
+            RegisterPageGraphicalController.showPopup("This target is not within city's range!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, city.getOwner())) {
+            RegisterPageGraphicalController.showPopup("There are no hostile entities in this tile!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, city.getOwner());
+        if (target instanceof City) {
+            RegisterPageGraphicalController.showPopup("You can't attack another city!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        CombatController.getCombatController().executeRangedAttack(city, target);
+        RegisterPageGraphicalController.showPopup("Attacked target at " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -164,7 +240,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    showProductionInfo(city, pane);
                 }
             });
         }
@@ -302,7 +378,11 @@ public class CitiesGraphicalController {
             if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
                 controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
                 RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
-                makeProductionPanel(city, pane);
+                try {
+                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 RegisterPageGraphicalController.showPopup("Your city is full! A new unit can't enter. Move the existing units and try again");
                 makeProductionPanel(city, pane);
@@ -845,6 +925,258 @@ public class CitiesGraphicalController {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private static void showProductionInfo(City city, Pane gamePagePane) {
+        Stage stage = new Stage();
+        BorderPane pane = new BorderPane();
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        Text text = new Text("########### City Production Info ###########");
+        text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(text);
+
+        Producible currentProduction = city.getEntityInProduction();
+        Text secondText = new Text("Currently producing: ");
+        secondText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        vbox.getChildren().add(secondText);
+
+        if (currentProduction == null) {
+            addTextToVBox(vbox, "Nothing!");
+        } else {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            if(currentProduction instanceof BuildingType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(currentProduction instanceof UnitType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            int hammerCost = currentProduction.calculateHammerCost();
+            int productionOutput = city.calculateOutput().getProduction();
+            int hammerCount = (int) city.getHammerCount();
+            int turnsRemaining = (int) Math.ceil((double) (hammerCost - hammerCount) / productionOutput);
+            String info = currentProduction.getName() + ": (hammers " + hammerCount + " out of " + hammerCost + ")" + " " + turnsRemaining + " turns remaining";
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+        addTextToVBox(vbox, "Halted Productions:");
+        for (Producible producible : city.getProductionReserve().keySet()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            if(producible instanceof BuildingType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            else if(producible instanceof UnitType){
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            String info = producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+        addTextToVBox(vbox, "Production-Ready Units:");
+        for (UnitType type : city.calculateProductionReadyUnitTypes()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            String info = type.getName();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+
+        addTextToVBox(vbox, "Production-Ready Buildings:");
+        for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            try {
+                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+
+            String info = type.getName();
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, info);
+            vbox.getChildren().add(hBox);
+        }
+
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    private static void addTextToVBox(VBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+    private static void addTextToHBox(HBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+    private static void showCityInfo(City city, Pane gamePagePane) {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(gamePagePane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+
+        if (city.isCapital()) {
+            addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s Capital City");
+        } else {
+            addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s City");
+        }
+        addTextToVBox(vbox, "Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
+        addTextToVBox(vbox, "The following tiles comprise this city's territory:");
+        for (Tile tile : city.getTerritories()) {
+            if (tile != city.getCentralTile()) {
+                String info = "Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " ";
+                if (city.isTileBeingWorked(tile)) {
+                    info = info + "(worked)";
+                } else {
+                    info = info + "(not worked)";
+                }
+                addTextToVBox(vbox, info);
+            }
+        }
+
+        addTextToVBox(vbox, "Resources in this city:");
+        for (Tile tile : city.getTerritories()) {
+            for (Resource resource : tile.getResourcesAsArrayList()) {
+                HBox hBox = new HBox();
+                hBox.setSpacing(20);
+                hBox.setAlignment(Pos.CENTER);
+                Circle circle = new Circle();
+                circle.setRadius(30);
+                try {
+                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Resources/" + resource.getName() + ".png").toExternalForm()).toExternalForm())));
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+                hBox.getChildren().add(circle);
+                String info = resource.getName();
+                if (resource.canBeExploited(tile)) {
+                    info = info + " (exploited by " + resource.getPrerequisiteImprovement().getName() + ")";
+                } else {
+                    info = info + " (not exploited, requires " + resource.getPrerequisiteImprovement().getName() + ")";
+                }
+                addTextToHBox(hBox, info);
+                vbox.getChildren().add(hBox);
+            }
+        }
+        addTextToVBox(vbox, "This city has " + city.getCitizens().size() + " citizens. " + city.calculateWorklessCitizenCount()
+                + " of them are workless.");
+        addTextToVBox(vbox, "Hit Points Left: " + city.getHitPointsLeft());
+        addTextToVBox(vbox, "City's food balance:");
+        addTextToVBox(vbox, String.valueOf(city.getFoodCount()));
+
+        String productionName = (city.getEntityInProduction() == null) ? "nothing!" : city.getEntityInProduction().getName();
+        addTextToVBox(vbox, "This city is producing " + productionName);
+        addLineForOutputTypeToVBox("Food", "Food Output: " + city.calculateOutput().getFood(), vbox);
+        addLineForOutputTypeToVBox("Production", "Production Output: " + city.calculateOutput().getProduction(), vbox);
+        addLineForOutputTypeToVBox("Science", "Science Output: " + city.calculateBeakerProduction(), vbox);
+        addLineForOutputTypeToVBox("Gold", "Gold Output: " + city.calculateOutput().getGold(), vbox);
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private static void addLineForOutputTypeToVBox(String type, String text, VBox box) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+        Circle circle = new Circle();
+        circle.setRadius(30);
+        try {
+            circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/" + type + ".png").toExternalForm()).toExternalForm())));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        hBox.getChildren().add(circle);
+        addTextToHBox(hBox, text);
+        box.getChildren().add(hBox);
     }
 
 }

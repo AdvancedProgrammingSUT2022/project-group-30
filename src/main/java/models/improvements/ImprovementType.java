@@ -49,11 +49,11 @@ public enum ImprovementType {
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA)),
             0, "Trading Post", 6),
-    FORT(new Output(0, 0, 2), Technology.ENGINEERING,
+    MANUFACTORY(new Output(0, 0, 2), Technology.ENGINEERING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA, TerrainType.SNOW)),
-            0, "Fort", 7),
+            0, "Manufactory", 7),
     ROAD(new Output(0, 0, 0), Technology.THE_WHEEL,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.DESERT, TerrainType.GRASSLAND, TerrainType.HILLS,
