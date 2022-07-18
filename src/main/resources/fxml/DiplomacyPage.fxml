@@ -42,8 +42,8 @@
                 <Button text="Declare War" styleClass="tradeButton" onAction="#onDeclareWarButtonClick"/>
                 <Button text="Declare Peace" styleClass="tradeButton" onAction="#onDeclarePeaceButtonClick"/>
                 <Button text="Send Gold" styleClass="tradeButton" onAction="#onSendGoldButtonClick"/>
-                <Button text="Send Luxury Resource" styleClass="tradeButton"/>
-                <Button text="Send Strategic Resource" styleClass="tradeButton"/>
+                <Button text="Send Luxury Resource" styleClass="tradeButton" onAction="#onSendLuxuryResourceClick"/>
+                <Button text="Send Strategic Resource" styleClass="tradeButton" onAction="#onSendStrategicResourceClick"/>
             </VBox>
         </right>
     </BorderPane>

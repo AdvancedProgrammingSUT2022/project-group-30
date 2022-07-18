@@ -13,8 +13,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import models.Civilization;
 import models.GameDataBase;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import views.Main;
 import views.customcomponents.GoldAmountDialog;
+import views.customcomponents.ResourcePicker;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,6 +104,10 @@ public class DiplomacyPageController {
 
     @FXML
     private void onSendGoldButtonClick() {
+        if (selectedCiv == null) {
+            return;
+        }
+
         GoldAmountDialog amountDialog = new GoldAmountDialog() {
             @Override
             protected void onSubmitButtonClicked() {
@@ -121,6 +129,44 @@ public class DiplomacyPageController {
             }
         };
         amountDialog.show();
+    }
+
+    @FXML
+    private void onSendLuxuryResourceClick() {
+        if (selectedCiv == null) {
+            return;
+        }
+        ResourcePicker resourcePicker = new ResourcePicker(controller.getCurrentPlayer().getLuxuryResources()) {
+            @Override
+            protected void onResourceButtonClick(Resource resource) {
+                controller.getCurrentPlayer().addLuxuryResource((LuxuryResource) resource, -1);
+                selectedCiv.addLuxuryResource((LuxuryResource) resource, 1);
+//                System.out.println(resource.getName() + " " + controller.getCurrentPlayer().getLuxuryResources().get(resource));
+//                System.out.println(resource.getName() + " " + selectedCiv.getLuxuryResources().get(resource));
+                this.close();
+                updateInfo();
+            }
+        };
+        resourcePicker.showAndWait();
+    }
+
+    @FXML
+    private void onSendStrategicResourceClick() {
+        if (selectedCiv == null) {
+            return;
+        }
+        ResourcePicker resourcePicker = new ResourcePicker(controller.getCurrentPlayer().getStrategicResources()) {
+            @Override
+            protected void onResourceButtonClick(Resource resource) {
+                controller.getCurrentPlayer().addStrategicResource((StrategicResource) resource, -1);
+                selectedCiv.addStrategicResource((StrategicResource) resource, 1);
+//                System.out.println(resource.getName() + " " + controller.getCurrentPlayer().getStrategicResources().get(resource));
+//                System.out.println(resource.getName() + " " + selectedCiv.getStrategicResources().get(resource));
+                this.close();
+                updateInfo();
+            }
+        };
+        resourcePicker.showAndWait();
     }
 
     @FXML
