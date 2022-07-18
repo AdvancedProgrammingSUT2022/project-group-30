@@ -63,6 +63,7 @@ public class CivilizationGamePageController {
         //controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(controller.getCurrentPlayer().getFrameBase());
+        pane.getChildren().clear();
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
@@ -182,7 +183,7 @@ public class CivilizationGamePageController {
                     hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
                     hexagon.setOpacity(0.5);
                 }
-                pane.getChildren().add(hexagon);
+                pane.getChildren().add(0, hexagon);
             }
         }
         drawFeatures();
@@ -219,7 +220,7 @@ public class CivilizationGamePageController {
             }
         });
 
-        Main.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
+        Main.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 String keyName = keyEvent.getCode().getName();
@@ -243,11 +244,42 @@ public class CivilizationGamePageController {
                 }
                 try {
                     drawMap();
-                } catch (MalformedURLException e) {
+//                    Main.loadFxmlFile("CivilizationGamePage");
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
         });
+
+//        Main.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent keyEvent) {
+//                String keyName = keyEvent.getCode().getName();
+//                int yPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
+//                int xPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
+//                switch (keyName) {
+//                    case "Up":
+//                        goUp(yPosition, xPosition);
+//                        break;
+//                    case "Down":
+//                        goDown(yPosition, xPosition);
+//                        break;
+//                    case "Right":
+//                        goRight(yPosition, xPosition);
+//                        break;
+//                    case "Left":
+//                        goLeft(yPosition, xPosition);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//                try {
+//                    drawMap();
+//                } catch (MalformedURLException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        });
     }
 
     public void goUp(int yPosition, int xPosition) {
@@ -396,7 +428,7 @@ public class CivilizationGamePageController {
                         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
                         hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + features.get(k).getName() + ".png").toExternalForm()).toExternalForm())));
                         setVisibleTilesHexagonsOnMouseClicked(hexagon);
-                        pane.getChildren().add(hexagon);
+                        pane.getChildren().add(0, hexagon);
                     }
                 }
             }
@@ -440,7 +472,7 @@ public class CivilizationGamePageController {
             hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomLeft.png").toExternalForm()).toExternalForm())));
         }
         setVisibleTilesHexagonsOnMouseClicked(hexagon);
-        pane.getChildren().add(hexagon);
+        pane.getChildren().add(0, hexagon);
     }
 
     //this functions returns x and y coordinates in an ArrayList if the tile is in the scene and visible, returns empty arrayList otherwise
@@ -853,7 +885,6 @@ public class CivilizationGamePageController {
 
         ObservableList<Improvement> list = FXCollections.observableArrayList(improvements);
         tableView.setItems(list);
-
 
         return tableView;
     }
