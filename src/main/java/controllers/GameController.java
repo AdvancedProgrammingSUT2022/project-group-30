@@ -79,6 +79,7 @@ public class GameController {
                 addCivilizationToPairs(civilization);
                 this.gameDataBase.getPlayers().get(i).setCivilization(civilization);
                 Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - startingXPosition, Integer.parseInt(tokens[0]) - startingYPosition);
+                System.out.println(settlerTile.getTerrainType().getName());
                 Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1 - startingXPosition, Integer.parseInt(tokens[0]) - startingYPosition);
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
