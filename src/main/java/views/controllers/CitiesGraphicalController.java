@@ -1,5 +1,6 @@
 package views.controllers;
 
+import controllers.CombatController;
 import controllers.GameController;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -30,8 +31,10 @@ import models.Tile;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.TileImage;
+import models.interfaces.combative;
 import models.resources.Resource;
 import models.resources.StrategicResource;
+import models.units.Unit;
 import models.units.UnitType;
 import views.Main;
 
@@ -122,7 +125,7 @@ public class CitiesGraphicalController {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-
+                    waitForChoosingTileToAttack(city, pane);
                 }
             });
         }
@@ -133,6 +136,78 @@ public class CitiesGraphicalController {
                     showCityInfo(city, pane);
                 }
             });
+        }
+    }
+
+    private static void waitForChoosingTileToAttack(City city, Pane pane){
+        for(int i = 0; i < pane.getChildren().size(); i++){
+            if(pane.getChildren().get(i) instanceof Polygon){
+                Polygon hexagon = (Polygon) pane.getChildren().get(i);
+                hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        cityRangedAttack(getTileImageFromHexagon(hexagon), city);
+                    }
+                });
+            }
+        }
+
+    }
+
+    private static void cityRangedAttack(TileImage tileImage, City city) {
+        if (city.hasAttackedThisTurn()) {
+            RegisterPageGraphicalController.showPopup("This city has already attacked in this turn!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if(!(tileImage instanceof Tile)){
+            RegisterPageGraphicalController.showPopup("You can only attack visible tiles!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        Tile targetTile = (Tile) tileImage;
+        if (targetTile.calculateDistance(city.getCentralTile()) >= city.getRange()) {
+            RegisterPageGraphicalController.showPopup("This target is not within city's range!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        if (!controller.doesTileContainEnemyCombative(targetTile, city.getOwner())) {
+            RegisterPageGraphicalController.showPopup("There are no hostile entities in this tile!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        combative target = controller.getPriorityTargetInTile(targetTile, city.getOwner());
+        if (target instanceof City) {
+            RegisterPageGraphicalController.showPopup("You can't attack another city!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return;
+        }
+        CombatController.getCombatController().executeRangedAttack(city, target);
+        RegisterPageGraphicalController.showPopup("Attacked target at " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

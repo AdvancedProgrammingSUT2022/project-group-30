@@ -24,6 +24,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.*;
+import models.improvements.Improvement;
+import models.improvements.ImprovementType;
 import models.interfaces.TileImage;
 import models.resources.Resource;
 import models.units.Unit;
@@ -449,7 +451,11 @@ public class CivilizationGamePageController {
 
     public void showTileValues(Tile tile) throws MalformedURLException {
         Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
         BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
         pane.getStylesheets().addAll(this.pane.getStylesheets());
         pane.getStyleClass().add("shadow-pane");
         pane.setPrefHeight(600);
@@ -482,6 +488,9 @@ public class CivilizationGamePageController {
         TableView<Resource> resourcesTable = getResourcesTable(tile, tile.getResourcesAsArrayList());
         vbox.getChildren().add(resourcesTable);
 
+        TableView<Improvement> improvementTableView = getImprovementTable(tile, tile.getImprovements());
+        vbox.getChildren().add(improvementTableView);
+
 
         Button button = new Button();
         button.setText("Ok");
@@ -492,7 +501,7 @@ public class CivilizationGamePageController {
             }
         });
         vbox.getChildren().add(button);
-        Scene scene = new Scene(pane);
+        Scene scene = new Scene(scrollPane);
         stage.setScene(scene);
         stage.show();
     }
@@ -722,6 +731,91 @@ public class CivilizationGamePageController {
                     row.pseudoClassStateChanged(higlighted, newOrder != null && newOrder.canBeExploited(tile)));
             return row;
         });
+
+        return tableView;
+    }
+
+    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements){
+        TableView<Improvement> tableView = new TableView<>();
+        TableColumn<Improvement, String> imageColumn = new TableColumn<>();
+        imageColumn.setText("Improvement");
+        TableColumn<Improvement, String> nameColumn = new TableColumn<>();
+        nameColumn.setText("Name");
+        TableColumn<Improvement, Output> goldColumn = new TableColumn<>();
+        goldColumn.setText("Gold");
+        TableColumn<Improvement, Output> foodColumn = new TableColumn<>();
+        foodColumn.setText("Food");
+        TableColumn<Improvement, Output> productionColumn = new TableColumn<>();
+        productionColumn.setText("Production");
+        tableView.getColumns().add(imageColumn);
+        tableView.getColumns().add(nameColumn);
+        tableView.getColumns().add(goldColumn);
+        tableView.getColumns().add(foodColumn);
+        tableView.getColumns().add(productionColumn);
+        tableView.setFixedCellSize(40);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+        imageColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        goldColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        foodColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+        productionColumn.setCellValueFactory(new PropertyValueFactory<>("output"));
+
+        imageColumn.setCellFactory(col -> {
+            TableCell<Improvement, String> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Circle circle = new Circle();
+                    circle.setRadius(20);
+                    try {
+                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/improvements/" + newValue + ".png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
+                }
+            });
+            return cell;
+        });
+
+        goldColumn.setCellFactory(col -> {
+            TableCell<Improvement, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getGold());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        foodColumn.setCellFactory(col -> {
+            TableCell<Improvement, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getFood());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+        productionColumn.setCellFactory(col -> {
+            TableCell<Improvement, Output> cell = new TableCell<>();
+            cell.itemProperty().addListener((observableValue, o, newValue) -> {
+                if (newValue != null) {
+                    Text text = new Text("" + newValue.getProduction());
+                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(text));
+                }
+            });
+            return cell;
+        });
+
+
+        ObservableList<Improvement> list = FXCollections.observableArrayList(improvements);
+        tableView.setItems(list);
+
 
         return tableView;
     }

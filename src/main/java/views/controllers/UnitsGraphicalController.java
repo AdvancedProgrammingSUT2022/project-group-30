@@ -264,16 +264,31 @@ public class UnitsGraphicalController {
     private static void rangedAttack(TileImage tileImage, Unit unit) {
         if(!(tileImage instanceof Tile)){
             RegisterPageGraphicalController.showPopup("You can only attack visible tiles!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         Tile targetTile = (Tile) tileImage;
         if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
                 !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
             RegisterPageGraphicalController.showPopup("You can only attack target that are seen and within range!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
             RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
@@ -304,15 +319,30 @@ public class UnitsGraphicalController {
     private static void meleeAttack(TileImage tileImage, Unit unit) {
         if(!(tileImage instanceof Tile)){
             RegisterPageGraphicalController.showPopup("You can only melee attack visible tiles!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         Tile targetTile = (Tile) tileImage;
         if (!controller.areTwoTilesAdjacent(targetTile, unit.getLocation())) {
             RegisterPageGraphicalController.showPopup("You can only melee attack adjacent tiles!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
             RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
@@ -685,6 +715,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.ROAD);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.ROAD, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_RAILROAD.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -693,6 +724,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.RAILROAD);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.RAILROAD, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_FARM.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -701,6 +733,7 @@ public class UnitsGraphicalController {
                     buildFarmOrMine(unit, ImprovementType.FARM);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovementAndRemoveFeature(unit, ImprovementType.FARM));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_MINE.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -710,6 +743,7 @@ public class UnitsGraphicalController {
 
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovementAndRemoveFeature(unit, ImprovementType.FARM));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_TRADING_POST.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -718,6 +752,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.TRADING_POST);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.TRADING_POST, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_LUMBER_MILL.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -726,6 +761,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.LUMBER_MILL);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.LUMBER_MILL, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_PASTURE.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -735,6 +771,7 @@ public class UnitsGraphicalController {
 
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.PASTURE, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_PLANTATION.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -744,6 +781,7 @@ public class UnitsGraphicalController {
 
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.PLANTATION, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_QUARRY.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -752,6 +790,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.QUARRY);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.QUARRY, unit));
         }
         else if(command.getName().equals(WorkerCommands.BUILD_CAMP.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -760,6 +799,7 @@ public class UnitsGraphicalController {
                     buildImprovement(unit, ImprovementType.CAMP);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.CAMP, unit));
         }
         else if(command.getName().equals(WorkerCommands.CLEAR_FOREST.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -768,6 +808,7 @@ public class UnitsGraphicalController {
                     clearFeature(unit, Feature.FOREST);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.FOREST, unit));
         }
         else if(command.getName().equals(WorkerCommands.CLEAR_JUNGLE.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -776,6 +817,7 @@ public class UnitsGraphicalController {
                     clearFeature(unit, Feature.JUNGLE);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.JUNGLE, unit));
         }
         else if(command.getName().equals(WorkerCommands.CLEAR_MARSH.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -785,6 +827,7 @@ public class UnitsGraphicalController {
 
                 }
             });
+            addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.MARSH, unit));
         }
         else if(command.getName().equals(WorkerCommands.CLEAR_ROUTES.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -793,6 +836,7 @@ public class UnitsGraphicalController {
                     clearRoutes(unit);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new ClearRoutes(unit));
         }
         else if(command.getName().equals(WorkerCommands.FIX_IMPROVEMENT.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -801,6 +845,7 @@ public class UnitsGraphicalController {
                     fixImprovement(unit, false);
                 }
             });
+            addTooltipForWorkButtons(button, unit, new FixPillage(controller.getTypeOfPillagedImprovement(unit), unit));
         }
         else if(command.getName().equals(WorkerCommands.FIX_ROUTE.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -809,6 +854,12 @@ public class UnitsGraphicalController {
                     fixImprovement(unit, true);
                 }
             });
+            ImprovementType improvementType;
+            if (unit.getLocation().containsImprovment(ImprovementType.ROAD))
+                improvementType = ImprovementType.ROAD;
+            else
+                improvementType = ImprovementType.RAILROAD;
+            addTooltipForWorkButtons(button, unit, new FixPillage(improvementType, unit));
         }
         else if(command.getName().equals(WorkerCommands.STOP_WORK.getName())){
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -1142,6 +1193,28 @@ public class UnitsGraphicalController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void addTooltipForWorkButtons(Button button, Unit unit, Work work){
+        int totalTurns = work.getTurnsRemaining();
+        int turnsLeft = totalTurns;
+        if(work instanceof BuildImprovement && unit.getLocation().getWork() instanceof BuildImprovement && ((BuildImprovement) work).getImprovement()== ((BuildImprovement) unit.getLocation().getWork()).getImprovement()){
+            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        }
+        if(work instanceof BuildImprovementAndRemoveFeature && unit.getLocation().getWork() instanceof BuildImprovementAndRemoveFeature && ((BuildImprovementAndRemoveFeature) work).getImprovement() == ((BuildImprovementAndRemoveFeature) unit.getLocation().getWork()).getImprovement()){
+            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        }
+        if(work instanceof FixPillage && unit.getLocation().getWork() instanceof FixPillage && ((FixPillage) work).getImprovementType() == ((FixPillage) unit.getLocation().getWork()).getImprovementType()){
+            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        }
+        if(work instanceof ClearFeature && unit.getLocation().getWork() instanceof ClearFeature && ((ClearFeature) work).getFeature() == ((ClearFeature) unit.getLocation().getWork()).getFeature()){
+            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        }
+        if(work instanceof ClearRoutes && unit.getLocation().getWork() instanceof ClearRoutes){
+            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        }
+        String note = "turns remaining: " + String.valueOf(turnsLeft) + " out of " + String.valueOf(totalTurns);
+        GamePageController.setToolTipForButton(button, note);
     }
 
 

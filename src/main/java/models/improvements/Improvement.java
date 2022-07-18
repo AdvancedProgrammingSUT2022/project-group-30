@@ -1,6 +1,7 @@
 package models.improvements;
 
 import models.Civilization;
+import models.Output;
 
 public class Improvement {
     private final ImprovementType type;
@@ -34,5 +35,13 @@ public class Improvement {
 
     public void setIsPillaged(boolean isPillaged) {
         this.isPillaged = isPillaged;
+    }
+
+    public String getName(){
+        return type.getName();
+    }
+
+    public Output getOutput(){
+        return type.getOutput();
     }
 }
