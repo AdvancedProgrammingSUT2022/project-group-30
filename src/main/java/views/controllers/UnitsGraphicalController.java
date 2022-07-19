@@ -303,6 +303,7 @@ public class UnitsGraphicalController {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                    this.close();
                 }
             };
             dialog.show();
@@ -386,11 +387,22 @@ public class UnitsGraphicalController {
                     @Override
                     public void onDestroyButtonClick() {
                         CombatController.getCombatController().kill(targetCity);
+                        try {
+                            Main.loadFxmlFile("CivilizationGamePage");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                     }
 
                     @Override
                     public void onAnnexButtonClick() {
                         CombatController.getCombatController().annexCity(targetCity, controller.getCurrentPlayer());
+                        try {
+                            Main.loadFxmlFile("CivilizationGamePage");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 };
                 defeatDialog.show();

@@ -168,10 +168,6 @@ public class CombatController {
         city.getOwner().addNotification("Your city at " + city.getCentralTile().findTileYCoordinateInMap() + ", " +
                 city.getCentralTile().findTileXCoordinateInMap() + " was destroyed!");
 
-        ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
-        for (Unit unit : units) {
-            gameController.removeUnit(unit);
-        }
         gameController.destroyCity(city);
     }
 
