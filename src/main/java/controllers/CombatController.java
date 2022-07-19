@@ -164,7 +164,7 @@ public class CombatController {
         }
     }
 
-    private void kill(City city) {
+    public void kill(City city) {
         city.getOwner().addNotification("Your city at " + city.getCentralTile().findTileYCoordinateInMap() + ", " +
                 city.getCentralTile().findTileXCoordinateInMap() + " was destroyed!");
 
@@ -175,7 +175,7 @@ public class CombatController {
         gameController.destroyCity(city);
     }
 
-    private void kill(Unit unit) {
+    public void kill(Unit unit) {
         unit.getOwner().addNotification("Your " + unit.getType().getName() + " at " +
                 unit.getLocation().findTileYCoordinateInMap() + ", " + unit.getLocation().findTileXCoordinateInMap() +
                 " was destroyed!");
@@ -183,12 +183,17 @@ public class CombatController {
         gameController.removeUnit(unit);
     }
 
-    private void kill(combative entityToKill) {
+    public void kill(combative entityToKill) {
         if (entityToKill instanceof Unit) {
             kill((Unit) entityToKill);
         } else {
             kill((City) entityToKill);
         }
+    }
+
+    public void annexCity(City city, Civilization newOwner) {
+        city.setOwner(newOwner);
+        gameController.setMapImageOfCivilization(newOwner);
     }
 
     private void captureUnit(Unit attacker, Unit defender) {
@@ -218,9 +223,17 @@ public class CombatController {
             capturedUnit = gameController.getCivilianUnitInTile(loserUnit.getLocation());
         }
 
-        kill(loser);
-        if (capturedUnit != null) {
-            captureUnit((Unit) winner, capturedUnit);
+        if (loser instanceof City) {
+            ArrayList<Unit> units = gameController.getUnitsInTile(((City) loser).getCentralTile());
+            for (Unit unit : units) {
+                gameController.removeUnit(unit);
+            }
+            ((City) loser).setDefeated(true);
+        } else if (loser instanceof Unit) {
+            kill((Unit) loser);
+            if (capturedUnit != null) {
+                captureUnit((Unit) winner, capturedUnit);
+            }
         }
 
         if (winner instanceof Unit) {

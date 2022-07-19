@@ -21,6 +21,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch();
     }
+
     @Override
     public void start(Stage stage) throws Exception {
         Main.stage = stage;
@@ -31,7 +32,7 @@ public class Main extends Application {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
-                if(ProgramDatabase.getProgramDatabase().getLoggedInUser() != null) {
+                if (ProgramDatabase.getProgramDatabase().getLoggedInUser() != null) {
                     ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
                     LoginPageController.writeUsersListToFile();
                 }
@@ -43,17 +44,17 @@ public class Main extends Application {
     public static void loadFxmlFile(String name) throws IOException {
         URL url = new URL(Main.class.getResource("/fxml/" + name + ".fxml").toExternalForm());
         Parent root = FXMLLoader.load(url);
-        if(scene == null){
+        if (scene == null) {
             scene = new Scene(root);
         }
         scene.setRoot(root);
     }
 
-    public static Scene getScene(){
+    public static Scene getScene() {
         return scene;
     }
 
-    public static Stage getStage(){
+    public static Stage getStage() {
         return stage;
     }
 }

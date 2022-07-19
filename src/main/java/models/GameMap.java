@@ -26,9 +26,9 @@ public class GameMap implements java.io.Serializable{
 
     }
 
-    public void loadMapFromFile() {
-        this.initializeMap();
-        this.initializeRivers();
+    public void loadMapFromFile(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
+        this.initializeMap(mapHeight, mapWidth, startingYPosition, startingXPosition);
+        this.initializeRivers(mapHeight, mapWidth, startingYPosition, startingXPosition);
         this.initializeFeatures();
         this.initializeBonusResources();
         this.initializeLuxuryResources();
@@ -43,7 +43,7 @@ public class GameMap implements java.io.Serializable{
         return gameMap;
     }
 
-    private void initializeMap() {
+    private void initializeMap(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -61,10 +61,12 @@ public class GameMap implements java.io.Serializable{
                 String tokens[] = fileLines.get(i).split("\\s+");
                 mapTerrainTypes[i] = tokens;
             }
-            this.map = new Tile[mapTerrainTypes.length][mapTerrainTypes[0].length];
+            this.map = new Tile[mapHeight][mapWidth];
+            System.out.println(mapHeight);
+            System.out.println(mapWidth);
             for (int i = 0; i < this.map.length; i++) {
                 for (int j = 0; j < this.map[i].length; j++) {
-                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[i][j]), new HashMap<>(), null);
+                    map[i][j] = new Tile(this.findTileTerrainTypeFromFile(mapTerrainTypes[startingYPosition + i][startingXPosition + j]), new HashMap<>(), null);
                 }
             }
             scanner.close();
@@ -74,7 +76,7 @@ public class GameMap implements java.io.Serializable{
 
     }
 
-    private void initializeRivers() {
+    private void initializeRivers(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -95,9 +97,9 @@ public class GameMap implements java.io.Serializable{
                     int secondTileYCoordinate = Integer.parseInt(coordinates[2]);
                     int secondTileXCoordinate = Integer.parseInt(coordinates[3]);
                     if (RiverSegment.checkTilesCoordinatesValidity(firstTileXCoordinate, firstTileYCoordinate,
-                            secondTileXCoordinate, secondTileYCoordinate)) {
-                        Tile firstTile = this.map[firstTileYCoordinate][firstTileXCoordinate];
-                        Tile secondTile = this.map[secondTileYCoordinate][secondTileXCoordinate];
+                            secondTileXCoordinate, secondTileYCoordinate) && areCoordinatesInRange(firstTileYCoordinate, firstTileXCoordinate, secondTileYCoordinate, secondTileXCoordinate, mapHeight, mapWidth, startingYPosition, startingXPosition)) {
+                        Tile firstTile = this.map[firstTileYCoordinate - startingYPosition][firstTileXCoordinate - startingXPosition];
+                        Tile secondTile = this.map[secondTileYCoordinate - startingYPosition][secondTileXCoordinate - startingXPosition];
                         RiverSegment river = new RiverSegment(firstTile, secondTile);
                         this.rivers.add(river);
                     }
@@ -112,27 +114,43 @@ public class GameMap implements java.io.Serializable{
 
     }
 
+    private boolean areCoordinatesInRange(int firstTileYCoordinate, int firstTileXCoordinate, int secondTileYCoordinate, int secondTileXCoordinate, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition){
+        if(firstTileXCoordinate < startingXPosition || firstTileXCoordinate > startingXPosition + mapWidth - 1){
+            return false;
+        }
+        if(secondTileXCoordinate < startingXPosition || secondTileXCoordinate > startingXPosition + mapWidth - 1){
+            return false;
+        }
+        if(firstTileYCoordinate < startingYPosition || firstTileYCoordinate > startingYPosition + mapHeight - 1){
+            return false;
+        }
+        if(secondTileYCoordinate < startingYPosition || secondTileYCoordinate > startingYPosition + mapHeight - 1){
+            return false;
+        }
+        return true;
+    }
+
     private void initializeStrategicResources() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.COAL);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.COAL, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.HORSE);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.HORSE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(StrategicResource.IRON);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(StrategicResource.IRON, 1);
             }
         }
@@ -145,77 +163,77 @@ public class GameMap implements java.io.Serializable{
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.COTTON);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.COTTON, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.DYE);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.DYE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.FUR);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.FUR, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.GEM);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.GEM, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.GOLD);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.GOLD, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.INCENSE);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.INCENSE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.IVORY);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.IVORY, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.MARBLE);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.MARBLE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SILK);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SILK, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SILVER);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SILVER, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(LuxuryResource.SUGAR);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 3) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(LuxuryResource.SUGAR, 1);
             }
         }
@@ -227,35 +245,35 @@ public class GameMap implements java.io.Serializable{
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.BANANA);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 4) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(BonusResource.BANANA, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.COW);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 4) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(BonusResource.COW, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.GAZELLE);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 4) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(BonusResource.GAZELLE, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.SHEEP);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 4) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(BonusResource.SHEEP, 1);
             }
         }
         compatiblTiles = this.findAllCompatibleTilesForAResource(BonusResource.WHEAT);
         for (int i = 0; i < compatiblTiles.size(); i++) {
             int chance = rand.nextInt(10);
-            if (chance < 4) {
+            if (chance < 2) {
                 compatiblTiles.get(i).getResources().put(BonusResource.WHEAT, 1);
             }
         }
@@ -336,6 +354,18 @@ public class GameMap implements java.io.Serializable{
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
                 tiles[i][j] = this.map[i + startingYPoint][j + startingXPoint];
+            }
+        }
+        return tiles;
+    }
+
+    public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
+        TileImage tiles[][] = new TileImage[10][20];
+        int startingXPoint = civ.getFrameBase().findTileXCoordinateInMap();
+        int startingYPoint = civ.getFrameBase().findTileYCoordinateInMap();
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                tiles[i][j] = civ.getTileImage(this.map[i + startingYPoint][j + startingXPoint]);
             }
         }
         return tiles;

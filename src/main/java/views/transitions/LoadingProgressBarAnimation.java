@@ -15,7 +15,7 @@ public class LoadingProgressBarAnimation extends Transition {
 
     public LoadingProgressBarAnimation(ProgressBar progressBar){
         this.progressBar = progressBar;
-        this.setCycleDuration(Duration.millis(5000));
+        this.setCycleDuration(Duration.millis(50));
         this.setCycleCount(1);
         this.setOnFinished(new EventHandler<ActionEvent>() {
             @Override

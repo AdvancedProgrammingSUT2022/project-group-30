@@ -1,12 +1,16 @@
 package views.controllers;
 
+import javafx.animation.Animation;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import views.Main;
 import views.transitions.LoadingProgressBarAnimation;
+
+import java.io.IOException;
 
 public class StartPageController {
 
@@ -24,4 +28,5 @@ public class StartPageController {
         LoadingProgressBarAnimation animation = new LoadingProgressBarAnimation(loadingProgressBar);
         animation.play();
     }
+
 }

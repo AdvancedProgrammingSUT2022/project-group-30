@@ -14,6 +14,7 @@
 
     <center>
         <VBox spacing="30" alignment="CENTER" fx:id="box">
+            <Button text="Chat Room" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#chatRoomPage"/>
             <Button text="Game Menu" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#gameMenu"/>
             <Button text="Scoreboard" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#scoreboardPage"/>
             <Button text="Profile Menu" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#profileMenu"/>

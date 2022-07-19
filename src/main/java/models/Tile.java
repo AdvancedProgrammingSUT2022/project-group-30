@@ -113,6 +113,21 @@ public class Tile implements Workable, TileImage, TurnHandler {
         return output;
     }
 
+    public Output calculateTheoreticalOutput(){
+        Output output = new Output(0, 0, 0);
+        output.add(this.output);
+        for (Resource resource : this.resources.keySet()) {
+            if (this.isImprovementTypeAccessible(resource.getPrerequisiteImprovement())) {
+                for (int i = 0; i < this.resources.get(resource); i++)
+                    output.add(resource.getOutput());
+            }
+        }
+        for (Improvement improvement : this.getImprovements()) {
+            output.add(improvement.getType().getOutput());
+        }
+        return output;
+    }
+
     public City getCityOfTile() {
         for (City city : GameDataBase.getGameDataBase().getCities()) {
             if (city.getTerritories().contains(this))

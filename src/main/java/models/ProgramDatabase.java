@@ -67,4 +67,13 @@ public class ProgramDatabase {
         return this.loggedInUser;
     }
 
+    public User getUserById(int id) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
+    }
+
 }

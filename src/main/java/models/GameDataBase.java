@@ -2,6 +2,7 @@ package models;
 
 import menusEnumerations.AutoSave;
 import models.diplomacy.Diplomacy;
+import models.diplomacy.DiplomaticRelation;
 import models.diplomacy.WarInfo;
 import models.units.Unit;
 
@@ -13,10 +14,10 @@ public class GameDataBase implements java.io.Serializable{
     private ArrayList<City> cities = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
     private ArrayList<WarInfo> wars = new ArrayList<>();
-    private ArrayList<CivilizationPair> civilizationPairs = new ArrayList<>();
+    private ArrayList<DiplomaticRelation> diplomaticRelations = new ArrayList<>();
     private Civilization currentPlayer;
     private ArrayList<Player> players = new ArrayList<>();
-    private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
+
     private int turnNumber = 0;
 
     private int numberOfAutoSavedFiles = 5;
@@ -58,11 +59,38 @@ public class GameDataBase implements java.io.Serializable{
     }
 
     public ArrayList<CivilizationPair> getCivilizationPairs() {
-        return this.civilizationPairs;
+        ArrayList<CivilizationPair> result = new ArrayList<>();
+        for (DiplomaticRelation relation : diplomaticRelations) {
+            result.add(relation.getPair());
+        }
+        return result;
     }
 
-    public ArrayList<Diplomacy> getAllDiplomaticRelations() {
-        return this.AllDiplomaticRelations;
+    public ArrayList<DiplomaticRelation> getDiplomaticRelations() {
+        return this.diplomaticRelations;
+    }
+
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        if (civ1 == civ2) {
+            return null;
+        }
+        for (DiplomaticRelation relation : diplomaticRelations) {
+            if (relation.getPair().containsCivilization(civ1) && relation.getPair().containsCivilization(civ2)) {
+                return relation;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization reference) {
+        ArrayList<Civilization> result = new ArrayList<>();
+        for (Civilization civilization : getCivilizations()) {
+            DiplomaticRelation relation = getDiplomaticRelation(civilization, reference);
+            if (relation != null && relation.areMutuallyVisible()) {
+                result.add(civilization);
+            }
+        }
+        return result;
     }
 
     public Civilization getCurrentPlayer() {
@@ -96,7 +124,9 @@ public class GameDataBase implements java.io.Serializable{
     public ArrayList<Civilization> getCivilizations() {
         ArrayList<Civilization> civilizations = new ArrayList<>();
         for (Player player : this.players) {
-            civilizations.add(player.getCivilization());
+            if (player.getCivilization() != null) {
+                civilizations.add(player.getCivilization());
+            }
         }
         return civilizations;
     }

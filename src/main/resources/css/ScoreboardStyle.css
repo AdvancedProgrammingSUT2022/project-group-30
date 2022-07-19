@@ -1,15 +1,4 @@
-/*.root{*/
-/*    -bg-gradient: linear-gradient(from 25px 25px to 500px 300px, #0c65f1, #1f90d3);*/
-/*    -hlight-gradient: linear-gradient(to bottom, #1dbbdd44, #93f9b944);*/
-
-/*    -primary: rgba(9, 60, 222, 0.33);*/
-/*    -secondary: #375FCB;*/
-/*    -tertiary: #0097f5;*/
-/*    -tertiary-armed: #19c0e7;*/
-/*}*/
-
 .background-pane{
-    /*-fx-background-color: -bg-gradient;*/
     -fx-padding: 10px 15px;
     -fx-background-radius: 10px;
 }

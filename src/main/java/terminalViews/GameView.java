@@ -51,7 +51,7 @@ public class GameView implements View {
 
     public void run() {
         askUserForPlayers();
-        controller.initializeGame();
+        controller.initializeGame(52, 80, 0, 0);
 
         showMap();
 
@@ -653,11 +653,7 @@ public class GameView implements View {
             input = scanner.nextLine();
             if ((matcher = Pattern.compile("\\s*[0-9]+\\s*").matcher(input)) != null && Integer.parseInt(input) <= technologies.size() && Integer.parseInt(input) >= 1) {
                 Technology researchProject = technologies.get(Integer.parseInt(input) - 1);
-                if (civilization.getResearchReserve().containsKey(researchProject)) {
-                    civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
-                    civilization.getResearchReserve().remove(researchProject);
-                }
-                civilization.setResearchProject(researchProject);
+                controller.startResearch(civilization, researchProject);
                 break;
             } else {
                 printer.printlnError("Please enter a number between 1 and " + technologies.size());
@@ -671,9 +667,7 @@ public class GameView implements View {
             return;
         }
         Technology researchProject = civilization.getResearchProject();
-        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
-        civilization.setResearchProject(null);
-        civilization.setBeakerCount(0);
+        controller.stopResearch(civilization);
         printer.println("research " + researchProject.getName() + " has stopped!");
     }
 
@@ -1381,7 +1375,7 @@ public class GameView implements View {
             printer.printlnPurple("Last project will be terminated. Are you sure you want to continue? y/n");
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("n")) {
-                printer.println("Clearace routes canceled");
+                printer.println("Clearance routes canceled");
                 return;
             }
         }

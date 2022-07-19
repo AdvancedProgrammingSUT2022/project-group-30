@@ -11,7 +11,6 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="views.controllers.SecondPageController"
             prefHeight="720" prefWidth="1280" styleClass="secondPage" fx:id="pane">
-
     <stylesheets>
         <URL value="@../css/MenusStyle.css"/>
     </stylesheets>

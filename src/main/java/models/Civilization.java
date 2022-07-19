@@ -246,6 +246,14 @@ public class Civilization implements TurnHandler {
         this.goldCount = goldCount;
     }
 
+    public void reduceGold(double amount) {
+        this.goldCount -= amount;
+    }
+
+    public void addGold(double amount) {
+        this.goldCount += amount;
+    }
+
     public HashMap<LuxuryResource, Integer> getLuxuryResources() {
         return luxuryResources;
     }
@@ -411,12 +419,14 @@ public class Civilization implements TurnHandler {
         String technologyName = researchProject.getName();
         String notificationText = "You have learned " + technologyName + " technology!";
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+        notifications.add(notification);
     }
 
     public void addNotificationForProduction(Producible production) {
         String productionName = production.getName();
         String notificationText = "City production is finished : " + productionName + " !";
         Notification notification = new Notification(notificationText, false, GameDataBase.getGameDataBase().getTurnNumber());
+        notifications.add(notification);
     }
 
     public void addNotification(String text) {
@@ -456,6 +466,18 @@ public class Civilization implements TurnHandler {
             }
         }
         return improvements;
+    }
+
+    public void learnTechnologyWithCheat(Technology technology) {
+        technologies.learnTechnologyAndPrerequisites(technology);
+        if (researchProject != null && technologies.isTechnologyLearned(researchProject)) {
+            researchProject = null;
+        }
+    }
+
+    public void learnAllTechnologiesWithCheat() {
+        technologies.learnAllTechnologies();
+        researchProject = null;
     }
 
 

@@ -104,7 +104,7 @@ public class LoginPageController {
             }
             ProgramDatabase.getProgramDatabase().setUsers(users);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            writeUsersListToFile();
         }
     }
 
@@ -120,7 +120,6 @@ public class LoginPageController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
 

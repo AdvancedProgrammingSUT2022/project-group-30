@@ -14,12 +14,14 @@
 
     <center>
         <VBox spacing="30" alignment="CENTER" fx:id="box">
-            <Button text="Start New Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#startNewGame"/>
-            <Button text="Resume Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#resumeGame"/>
-            <Button text="Save This Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#saveGame"/>
-            <Button text="Resume Saved Games" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#resumeSavedGames"/>
-            <Button text="Active Auto Save" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#autoSave"/>
-            <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
+            <Button text="Start New Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#startNewGame" fx:id="newGameButton"/>
+            <Button text="Resume Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#resumeGame" fx:id="resumeButton"/>
+            <Button text="Save This Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#saveGame" fx:id="saveButton"/>
+            <Button text="Resume Saved Games" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#resumeSavedGames" fx:id="loadSavedGamesButton"/>
+            <Button text="Active Auto Save" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#autoSave" fx:id="autoSaveButton"/>
+            <Button text="Invite Other Players" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#invite" fx:id="invitationButton"/>
+            <Button text="Invitations Received" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#showReceivedInvitations" fx:id="receivedInvitationsButton"/>
+            <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back" fx:id="backButton"/>
         </VBox>
     </center>
 

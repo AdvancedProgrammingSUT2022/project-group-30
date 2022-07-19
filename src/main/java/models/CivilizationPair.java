@@ -8,7 +8,6 @@ import java.util.Set;
 
 public class CivilizationPair {
     private Set<Civilization> civilizations = new LinkedHashSet<>();
-    ;
 
     public CivilizationPair(Civilization civ1, Civilization civ2) {
         if (civ1.equals(civ2)) {

@@ -45,21 +45,19 @@ public class GameController {
         return gameController;
     }
 
-    public void initializeGame() {
-        GameMap.getGameMap().loadMapFromFile();
-        assignCivsToPlayersAndInitializePrimaryUnits();
+    public void initializeGame(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
+        GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
+        assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
     }
 
-    public void addCivilization(Civilization newCivilization) {
+    public void addCivilizationToPairs(Civilization newCivilization) {
         for (Civilization civilization : getGameDataBase().getCivilizations()) {
-            gameDataBase.getCivilizationPairs().add(new CivilizationPair(civilization, newCivilization));
-            gameDataBase.getAllDiplomaticRelations().add(new DiplomaticRelationsMap(civilization, newCivilization));
+            gameDataBase.getDiplomaticRelations().add(new DiplomaticRelation(civilization, newCivilization));
         }
-        GameDataBase.getGameDataBase().getCivilizations().add(newCivilization);
     }
 
-    private void assignCivsToPlayersAndInitializePrimaryUnits() {
+    private void assignCivsToPlayersAndInitializePrimaryUnits(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File textFiles = new File(resources, "textFiles");
@@ -70,23 +68,54 @@ public class GameController {
             while (scanner.hasNextLine()) {
                 fileLines.add(scanner.nextLine());
             }
+            fileLines = getAppropriateStartingPoints(fileLines, mapHeight, mapWidth, startingYPosition, startingXPosition);
+            for (int i = 0; i < fileLines.size(); i++) {
+                System.out.println(fileLines.get(i));
+            }
             Random rand = new Random();
             for (int i = 0; i < this.gameDataBase.getPlayers().size(); i++) {
                 int fileLineIndex = rand.nextInt(fileLines.size());
                 String tokens[] = fileLines.get(fileLineIndex).split("-");
                 Civilization civilization = new Civilization(tokens[2]);
+                System.out.println(tokens[0]);
+                System.out.println(tokens[1]);
+                addCivilizationToPairs(civilization);
                 this.gameDataBase.getPlayers().get(i).setCivilization(civilization);
-                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[0]));
-                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1, Integer.parseInt(tokens[0]));
+                Tile settlerTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - startingXPosition, Integer.parseInt(tokens[0]) - startingYPosition);
+                System.out.println(settlerTile.getTerrainType().getName());
+                Tile warriorTile = GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 1 - startingXPosition, Integer.parseInt(tokens[0]) - startingYPosition);
                 createUnit(UnitType.SETTLER, civilization, settlerTile);
                 createUnit(UnitType.WARRIOR, civilization, warriorTile);
-                civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3, Integer.parseInt(tokens[0]) - 1));
+                int yFixDifference = 0;
+                while (Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference + 9 > GameMap.getGameMap().getMap().length - 1) {
+                    yFixDifference += 1;
+                }
+                int xFixDifference = 0;
+                while (Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference + 19 > GameMap.getGameMap().getMap()[0].length - 1) {
+                    xFixDifference += 1;
+                }
+                civilization.setFrameBase(GameMap.getGameMap().getTile(Integer.parseInt(tokens[1]) - 3 - startingXPosition - xFixDifference, Integer.parseInt(tokens[0]) - 1 - startingYPosition - yFixDifference));
+                System.out.println(civilization.getFrameBase().findTileXCoordinateInMap());
+                System.out.println(civilization.getFrameBase().findTileYCoordinateInMap());
                 fileLines.remove(fileLineIndex);
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<String> getAppropriateStartingPoints(ArrayList<String> fileLines, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
+        ArrayList<String> appropriateLines = new ArrayList<>();
+        for (int i = 0; i < fileLines.size(); i++) {
+            String tokens[] = fileLines.get(i).split("-");
+            int xPosition = Integer.parseInt(tokens[1]);
+            int yPosition = Integer.parseInt(tokens[0]);
+            if (!(yPosition < startingYPosition || yPosition > startingYPosition + mapHeight - 1 || xPosition < startingXPosition || xPosition > startingXPosition + mapWidth - 1)) {
+                appropriateLines.add(fileLines.get(i));
+            }
+        }
+        return appropriateLines;
     }
 
     public void createUnit(UnitType type, Civilization owner, Tile location) {
@@ -207,6 +236,26 @@ public class GameController {
             }
         }
         return false;
+    }
+
+    public void startResearch(Civilization civilization, Technology researchProject) {
+        if (civilization.getResearchReserve().containsKey(researchProject)) {
+            civilization.setBeakerCount(civilization.getResearchReserve().get(researchProject));
+            civilization.getResearchReserve().remove(researchProject);
+        }
+        civilization.setResearchProject(researchProject);
+    }
+
+    public void stopResearch(Civilization civilization) {
+        Technology researchProject = civilization.getResearchProject();
+        civilization.getResearchReserve().put(researchProject, civilization.getBeakerCount());
+        civilization.setResearchProject(null);
+        civilization.setBeakerCount(0);
+    }
+
+    public void stopPreviousResearchAndStartNext(Civilization civilization, Technology next) {
+        stopResearch(civilization);
+        startResearch(civilization, next);
     }
 
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
@@ -609,7 +658,7 @@ public class GameController {
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
             tile.goToNextTurn();
         }
-        for (Diplomacy diplomaticRelation : gameDataBase.getAllDiplomaticRelations()) {
+        for (Diplomacy diplomaticRelation : gameDataBase.getDiplomaticRelations()) {
             if (diplomaticRelation instanceof TurnHandler) {
                 ((TurnHandler) diplomaticRelation).goToNextTurn();
             }
@@ -796,6 +845,20 @@ public class GameController {
         return gameDataBase.getCurrentPlayer();
     }
 
+    public void declareWar(Civilization attacker, Civilization defender) {
+        DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(attacker, defender);
+        if (relation != null) {
+            relation.setAreAtWar(true);
+        }
+    }
+
+    public void declarePeace(Civilization attacker, Civilization defender) {
+        DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(attacker, defender);
+        if (relation != null) {
+            relation.setAreAtWar(false);
+        }
+    }
+
     public boolean isTileImpassable(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.OCEAN)
                 || tile.getTerrainType().equals(TerrainType.MOUNTAIN)
@@ -942,9 +1005,10 @@ public class GameController {
         HashMap<Tile, TileImage> newMapImage = new HashMap<>();
         ArrayList<Tile> visibleTiles = getVisibleTilesByCivilization(civilization);
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
-            if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null)
+            if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null) {
                 newMapImage.put(tile, null);
-            else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
+                discoverCivsInTile(tile);
+            } else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());
@@ -957,9 +1021,26 @@ public class GameController {
     public void makeEverythingVisible() {
         Civilization player = getCurrentPlayer();
         for (Tile tile : player.getMapImage().keySet()) {
+            discoverCivsInTile(tile);
             player.getMapImage().put(tile, tile);
         }
         player.setEverythingVisibleCheatCodeInEffect(true);
+    }
+
+    public void discoverCivsInTile(Tile tile) {
+        for (Unit unit : getUnitsInTile(tile)) {
+            DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(getCurrentPlayer(), unit.getOwner());
+            if (relation != null) {
+                relation.setAreMutuallyVisible(true);
+            }
+        }
+        City city = whoseTerritoryIsTileIn(tile);
+        if (city != null) {
+            DiplomaticRelation relation = gameDataBase.getDiplomaticRelation(getCurrentPlayer(), city.getOwner());
+            if (relation != null) {
+                relation.setAreMutuallyVisible(true);
+            }
+        }
     }
 
     public int getMapWidth() {
@@ -1066,13 +1147,13 @@ public class GameController {
     }
 
     /*Diplomacy functions*/
-    public DiplomaticRelationsMap getDiplomaticRelationsMap(CivilizationPair pair) {
+    public DiplomaticRelation getDiplomaticRelationsMap(CivilizationPair pair) {
         ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
         Civilization civ1 = civilizations.get(0);
         Civilization civ2 = civilizations.get(1);
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
-            if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
-                return (DiplomaticRelationsMap) diplomacy;
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
+            if (diplomacy instanceof DiplomaticRelation && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
+                return (DiplomaticRelation) diplomacy;
         }
         //it will never return null
         return null;
@@ -1083,7 +1164,7 @@ public class GameController {
         Civilization civ1 = civilizations.get(0);
         Civilization civ2 = civilizations.get(1);
         ArrayList<ScientificTreaty> scientificTreaties = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
@@ -1095,7 +1176,7 @@ public class GameController {
         Civilization civ1 = civilizations.get(0);
         Civilization civ2 = civilizations.get(1);
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
@@ -1106,25 +1187,25 @@ public class GameController {
         ArrayList<Civilization> civilizations = pair.getCivilizationsArray();
         Civilization civ1 = civilizations.get(0);
         Civilization civ2 = civilizations.get(1);
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civ1) && diplomacy.getPair().containsCivilization(civ2))
                 return (WarInfo) diplomacy;
         }
         return null;
     }
 
-    public ArrayList<DiplomaticRelationsMap> getDiplomaticRelationsMapOfCivilization(Civilization civilization) {
-        ArrayList<DiplomaticRelationsMap> diplomaticRelationsMaps = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
-            if (diplomacy instanceof DiplomaticRelationsMap && diplomacy.getPair().containsCivilization(civilization))
-                diplomaticRelationsMaps.add((DiplomaticRelationsMap) diplomacy);
+    public ArrayList<DiplomaticRelation> getDiplomaticRelationsMapOfCivilization(Civilization civilization) {
+        ArrayList<DiplomaticRelation> diplomaticRelationsMaps = new ArrayList<>();
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
+            if (diplomacy instanceof DiplomaticRelation && diplomacy.getPair().containsCivilization(civilization))
+                diplomaticRelationsMaps.add((DiplomaticRelation) diplomacy);
         }
         return diplomaticRelationsMaps;
     }
 
     public ArrayList<ScientificTreaty> getScientificTreatiesOfCivilization(Civilization civilization) {
         ArrayList<ScientificTreaty> scientificTreaties = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof ScientificTreaty && diplomacy.getPair().containsCivilization(civilization))
                 scientificTreaties.add((ScientificTreaty) diplomacy);
         }
@@ -1133,7 +1214,7 @@ public class GameController {
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationPayer(Civilization civilization) {
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getPayer() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
@@ -1142,7 +1223,7 @@ public class GameController {
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
         ArrayList<StepWiseGoldTransferContract> stepWiseGoldTransferContracts = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof StepWiseGoldTransferContract && ((StepWiseGoldTransferContract) diplomacy).getRecipient() == civilization)
                 stepWiseGoldTransferContracts.add((StepWiseGoldTransferContract) diplomacy);
         }
@@ -1151,7 +1232,7 @@ public class GameController {
 
     public ArrayList<WarInfo> getWarInfoMapOfCivilization(Civilization civilization) {
         ArrayList<WarInfo> warInfos = new ArrayList<>();
-        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getAllDiplomaticRelations()) {
+        for (Diplomacy diplomacy : GameDataBase.getGameDataBase().getDiplomaticRelations()) {
             if (diplomacy instanceof WarInfo && diplomacy.getPair().containsCivilization(civilization))
                 warInfos.add((WarInfo) diplomacy);
         }

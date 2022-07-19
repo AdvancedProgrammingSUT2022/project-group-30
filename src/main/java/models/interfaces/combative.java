@@ -1,5 +1,6 @@
 package models.interfaces;
 
+import models.Civilization;
 import models.Tile;
 
 public interface combative {
@@ -10,4 +11,6 @@ public interface combative {
     public void setHitPoints(int amount);
 
     public Tile getLocation();
+
+    public Civilization getOwner();
 }
