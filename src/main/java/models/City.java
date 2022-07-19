@@ -1,8 +1,10 @@
 package models;
 
 import controllers.GameController;
+import javafx.scene.layout.Pane;
 import models.buildings.Building;
 import models.buildings.BuildingType;
+import models.buildings.Palace;
 import models.interfaces.*;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
@@ -574,6 +576,22 @@ public class City implements Selectable, TurnHandler, combative {
 
     public void setOwner(Civilization owner) {
         this.owner = owner;
+    }
+
+    public void changeOwner(Civilization newOwner) {
+        if (owner != null && isCapital()) {
+            owner.setCapital(null);
+        }
+        owner = newOwner;
+    }
+
+    public Palace getPalace() {
+        for (Building building : buildings) {
+            if (building instanceof Palace) {
+                return (Palace) building;
+            }
+        }
+        return null;
     }
 
     public Tile getCentralTile() {

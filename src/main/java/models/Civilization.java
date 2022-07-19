@@ -1,6 +1,7 @@
 package models;
 
 import controllers.GameController;
+import models.buildings.Palace;
 import models.diplomacy.StepWiseGoldTransferContract;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -354,10 +355,26 @@ public class Civilization implements TurnHandler {
         return capital;
     }
 
-    public void setCapital(City capital) {
+    public void changeCapital(City newCapital) {
         if (originCapital == null) {
-            this.originCapital = capital;
+            this.originCapital = newCapital;
         }
+
+        // switch palace
+        Palace palace = null;
+        if (capital != null) {
+            palace = capital.getPalace();
+            capital.getBuildings().remove(palace);
+        }
+        if (palace == null) {
+            palace = new Palace(this);
+        }
+        newCapital.getBuildings().add(palace);
+
+        this.capital = newCapital;
+    }
+
+    public void setCapital(City capital) {
         this.capital = capital;
     }
 

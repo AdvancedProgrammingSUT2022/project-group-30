@@ -589,7 +589,7 @@ public class GameController {
         newCity.getBuildings().add(new Building(BuildingType.PALACE));
         gameDataBase.getCities().add(newCity);
         if (unit.getOwner().getOriginCapital() == null) {
-            unit.getOwner().setCapital(newCity);
+            unit.getOwner().changeCapital(newCity);
         }
 
         removeUnit(unit);
