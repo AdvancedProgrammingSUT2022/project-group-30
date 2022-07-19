@@ -163,6 +163,12 @@ public class CivilizationGamePageController {
         TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
         removeAllCirclesFromPane();
+
+        putCitiesOnMap();
+        putUnitsOnMap();
+        drawRiverSegments();
+        drawFeatures();
+
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
@@ -186,10 +192,8 @@ public class CivilizationGamePageController {
                 pane.getChildren().add(0, hexagon);
             }
         }
-        drawFeatures();
-        drawRiverSegments();
-        putUnitsOnMap();
-        putCitiesOnMap();
+
+
     }
 
     private void createTechnologyPopup() {
@@ -339,7 +343,7 @@ public class CivilizationGamePageController {
                                 }
                             });
                         }
-                        pane.getChildren().add(circle);
+                        pane.getChildren().add(0, circle);
                     }
                 }
             }
@@ -392,7 +396,7 @@ public class CivilizationGamePageController {
                         });
 
 
-                        pane.getChildren().add(circle);
+                        pane.getChildren().add(0, circle);
 
                     }
 
