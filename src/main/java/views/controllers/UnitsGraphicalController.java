@@ -34,6 +34,7 @@ import models.units.UnitType;
 import models.works.*;
 import views.Main;
 import views.customcomponents.AttackYesNoDialog;
+import views.customcomponents.CityDefeatDialog;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -366,25 +367,40 @@ public class UnitsGraphicalController {
                 @Override
                 public void onYesButtonClick() {
                     GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
-                    CombatController.getCombatController().executeMeleeAttack(unit, target);
-                    RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
-                    try {
-                        Main.loadFxmlFile("CivilizationGamePage");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    applyMeleeAttackEffects(unit, target, targetTile);
                     this.close();
                 }
             };
             dialog.show();
         } else {
-            CombatController.getCombatController().executeMeleeAttack(unit, target);
-            RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
-            try {
-                Main.loadFxmlFile("CivilizationGamePage");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            applyMeleeAttackEffects(unit, target, targetTile);
+        }
+    }
+
+    public static void applyMeleeAttackEffects(Unit unit, combative target, Tile targetTile) {
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+        if (target instanceof City) {
+            City targetCity = (City) target;
+            if (targetCity.isDefeated()) {
+                CityDefeatDialog defeatDialog = new CityDefeatDialog() {
+                    @Override
+                    public void onDestroyButtonClick() {
+                        CombatController.getCombatController().kill(targetCity);
+                    }
+
+                    @Override
+                    public void onAnnexButtonClick() {
+                        CombatController.getCombatController().annexCity(targetCity, controller.getCurrentPlayer());
+                    }
+                };
+                defeatDialog.show();
             }
+        }
+        RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        try {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -3,6 +3,7 @@ package views.customcomponents;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,6 +36,7 @@ public abstract class AttackYesNoDialog extends Stage {
         VBox parent = new VBox(textLabel, buttonsBox);
         parent.setSpacing(10);
         parent.setPadding(new Insets(15));
+        parent.setAlignment(Pos.CENTER);
         Scene scene = new Scene(parent);
         setScene(scene);
     }

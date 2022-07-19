@@ -39,6 +39,8 @@ public class City implements Selectable, TurnHandler, combative {
     private double populationGrowthLimit;
     private double populationShrinkageLimit;
     private ArrayList<Citizen> citizens = new ArrayList<>();
+    private boolean isDefeated;
+
 
     public City(Civilization founder, Tile tile) {
         this.founder = founder;
@@ -720,5 +722,13 @@ public class City implements Selectable, TurnHandler, combative {
 
     public void setHasAttackedThisTurn(boolean hasAttackedThisTurn) {
         this.hasAttackedThisTurn = hasAttackedThisTurn;
+    }
+
+    public boolean isDefeated() {
+        return isDefeated;
+    }
+
+    public void setDefeated(boolean defeated) {
+        isDefeated = defeated;
     }
 }
