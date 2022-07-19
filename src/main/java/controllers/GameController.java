@@ -1,5 +1,7 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import models.*;
 import models.buildings.Building;
 import models.buildings.BuildingType;
@@ -21,8 +23,9 @@ import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class GameController {
@@ -1272,5 +1275,76 @@ public class GameController {
         averageScore /= players.size();
         return averageScore;
     }
+
+    public HashMap<String, ArrayList<String>> loadMeta() throws IOException {
+        File file = new File("meta.json");
+        HashMap<String, ArrayList<String>> meta = new HashMap<>();
+        if (!file.exists())
+            return meta;
+        FileInputStream fileInputStream = new FileInputStream(file);
+        String data = new String(fileInputStream.readAllBytes());
+        meta = new Gson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+        fileInputStream.close();
+        return meta;
+    }
+
+    public void saveMeta(HashMap<String, ArrayList<String>> input) throws IOException {
+        String data = new Gson().toJson(input);
+        FileOutputStream fileOutputStream = new FileOutputStream("meta.json");
+        fileOutputStream.write(data.getBytes());
+        fileOutputStream.close();
+    }
+
+    public void saveGame(String fileName) {
+        try {
+            if (GameDataBase.getGameDataBase().getPlayers().isEmpty())
+                return;
+            FileOutputStream fileOutputStream = new FileOutputStream("save/" + fileName + ".sav");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(GameDataBase.getGameDataBase());
+            objectOutputStream.flush();
+            objectOutputStream.close();
+
+            HashMap<String, ArrayList<String>> meta = loadMeta();
+            meta.put(fileName + ".sav", GameDataBase.getGameDataBase().getAllPlayersUsername());
+            saveMeta(meta);
+        } catch (Exception e) {
+            Debugger.debug("Serialization");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGame(String fileName) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream("save/" + fileName + ".sav");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            GameDataBase.setGameDataBaseWithForce((GameDataBase) objectInputStream.readObject());
+            objectInputStream.close();
+        } catch (Exception e) {
+            Debugger.debug("Deserialization");
+        }
+    }
+
+    public void saveGameManually(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyـMMـddـhhـmmـss");
+        saveGame("manual_save_" + dateTimeFormatter.format(now));
+    }
+
+    public ArrayList<String> listSavedFiles(boolean isAuto) throws IOException {
+        HashMap<String, ArrayList<String>> meta = loadMeta();
+        String name = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File file = new File("save");
+        String[] files = file.list();
+        ArrayList<String> filesArrayList = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            if ((isAuto && files[i].startsWith("auto")) || (!isAuto && files[i].startsWith("manual"))) {
+                if (meta.get(files[i]).contains(name))
+                    filesArrayList.add(files[i]);
+            }
+        }
+        return filesArrayList;
+    }
+
 
 }

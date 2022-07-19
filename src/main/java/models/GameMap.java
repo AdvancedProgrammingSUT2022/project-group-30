@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GameMap {
+public class GameMap implements java.io.Serializable{
     private static GameMap gameMap;
 
     public static final int EXPENSIVE_MOVEMENT_COST = 10000;

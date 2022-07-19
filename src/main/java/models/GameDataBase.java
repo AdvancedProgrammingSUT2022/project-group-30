@@ -1,12 +1,13 @@
 package models;
 
+import menusEnumerations.AutoSave;
 import models.diplomacy.Diplomacy;
 import models.diplomacy.WarInfo;
 import models.units.Unit;
 
 import java.util.ArrayList;
 
-public class GameDataBase {
+public class GameDataBase implements java.io.Serializable{
     private static GameDataBase gameDataBase = null;
     private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
@@ -16,8 +17,13 @@ public class GameDataBase {
     private Civilization currentPlayer;
     private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Diplomacy> AllDiplomaticRelations = new ArrayList<>();
-
     private int turnNumber = 0;
+
+    private int numberOfAutoSavedFiles = 5;
+
+    private int currrentAutoSaveNumber = 1;
+
+    private AutoSave autoSaveMode = AutoSave.OFF;
 
     private GameDataBase() {
         map = GameMap.getGameMap();
@@ -93,5 +99,41 @@ public class GameDataBase {
             civilizations.add(player.getCivilization());
         }
         return civilizations;
+    }
+
+    public static void setGameDataBaseWithForce(GameDataBase gameDataBase){
+        GameDataBase.gameDataBase = gameDataBase;
+    }
+
+    public AutoSave getAutoSaveMode() {
+        return autoSaveMode;
+    }
+
+    public void setAutoSaveMode(AutoSave autoSaveMode) {
+        this.autoSaveMode = autoSaveMode;
+    }
+
+    public int getNumberOfAutoSavedFiles() {
+        return numberOfAutoSavedFiles;
+    }
+
+    public void setNumberOfAutoSavedFiles(int numberOfAutoSavedFiles) {
+        this.numberOfAutoSavedFiles = numberOfAutoSavedFiles;
+    }
+
+    public int getCurrrentAutoSaveNumber() {
+        return currrentAutoSaveNumber;
+    }
+
+    public void setCurrrentAutoSaveNumber(int currrentAutoSaveNumber) {
+        this.currrentAutoSaveNumber = currrentAutoSaveNumber;
+    }
+
+    public ArrayList<String> getAllPlayersUsername(){
+        ArrayList<String > names = new ArrayList<>();
+        for (Player player : this.players) {
+            names.add(player.getUser().getUsername());
+        }
+        return names;
     }
 }

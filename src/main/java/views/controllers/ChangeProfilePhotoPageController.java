@@ -3,7 +3,6 @@ package views.controllers;
 import controllers.ProfilePageController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,7 +60,7 @@ public class ChangeProfilePhotoPageController {
         pane.getChildren().add(fourthImage);
     }
 
-    public void makePageButtons(){
+    public void makePageButtons() {
         //<Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
         Button upload = new Button("Upload Photo");
         upload.setPrefHeight(50);
@@ -99,7 +98,7 @@ public class ChangeProfilePhotoPageController {
         pane.getChildren().add(back);
     }
 
-    public void chooseDefaultPicture(ImageView imageView){
+    public void chooseDefaultPicture(ImageView imageView) {
         imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -118,6 +117,8 @@ public class ChangeProfilePhotoPageController {
     public void chooseImageFileAndSaveItInResources() throws IOException {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(Main.getStage());
+        if (file == null)
+            return;
         String[] tokens = Paths.get(file.getAbsoluteFile().getAbsolutePath()).toString().split("/");
         String imageName = tokens[tokens.length - 1];
         this.controller.changeLoggedInUsersProfileImage(imageName);
