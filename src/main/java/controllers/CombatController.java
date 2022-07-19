@@ -188,6 +188,7 @@ public class CombatController {
     }
 
     public void annexCity(City city, Civilization newOwner) {
+
         city.setOwner(newOwner);
         gameController.setMapImageOfCivilization(newOwner);
     }

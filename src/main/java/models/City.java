@@ -532,6 +532,10 @@ public class City implements Selectable, TurnHandler, combative {
         return (owner.getCapital() == this);
     }
 
+    public boolean isOriginalCapital() {
+        return (owner.getOriginCapital() == this);
+    }
+
     public void addCitizen() {
         this.citizens.add(new Citizen());
     }
