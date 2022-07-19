@@ -22,10 +22,7 @@ import javafx.stage.Stage;
 import menusEnumerations.ProductionPanelCommands;
 import menusEnumerations.UnitCommands;
 import menusEnumerations.WorkerCommands;
-import models.City;
-import models.Feature;
-import models.GameMap;
-import models.Tile;
+import models.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TileImage;
@@ -36,6 +33,7 @@ import models.units.UnitState;
 import models.units.UnitType;
 import models.works.*;
 import views.Main;
+import views.customcomponents.AttackYesNoDialog;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -292,12 +290,29 @@ public class UnitsGraphicalController {
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        CombatController.getCombatController().executeRangedAttack(unit, target);
-        RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
-        try {
-            Main.loadFxmlFile("CivilizationGamePage");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (!GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar()) {
+            AttackYesNoDialog dialog = new AttackYesNoDialog() {
+                @Override
+                public void onYesButtonClick() {
+                    GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
+                    CombatController.getCombatController().executeRangedAttack(unit, target);
+                    RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+                    try {
+                        Main.loadFxmlFile("CivilizationGamePage");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+            dialog.show();
+        } else {
+            CombatController.getCombatController().executeRangedAttack(unit, target);
+            RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -346,12 +361,30 @@ public class UnitsGraphicalController {
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        CombatController.getCombatController().executeMeleeAttack(unit, target);
-        RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
-        try {
-            Main.loadFxmlFile("CivilizationGamePage");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (!GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar()) {
+            AttackYesNoDialog dialog = new AttackYesNoDialog() {
+                @Override
+                public void onYesButtonClick() {
+                    GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
+                    CombatController.getCombatController().executeMeleeAttack(unit, target);
+                    RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+                    try {
+                        Main.loadFxmlFile("CivilizationGamePage");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    this.close();
+                }
+            };
+            dialog.show();
+        } else {
+            CombatController.getCombatController().executeMeleeAttack(unit, target);
+            RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+            try {
+                Main.loadFxmlFile("CivilizationGamePage");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
