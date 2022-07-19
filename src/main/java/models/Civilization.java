@@ -40,6 +40,7 @@ public class Civilization implements TurnHandler {
     private Tile frameBase;
     private Selectable selectedEntity;
     private ArrayList<Notification> notifications = new ArrayList<>();
+    private boolean isDefeated;
 
     public Civilization(String name) {
         this.name = name;
@@ -50,6 +51,7 @@ public class Civilization implements TurnHandler {
         this.score = 0;
         this.capital = null;
         this.originCapital = null;
+        isDefeated = false;
         mapImage = new HashMap<>();
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
             mapImage.put(tile, null);
@@ -497,5 +499,11 @@ public class Civilization implements TurnHandler {
         researchProject = null;
     }
 
+    public boolean isDefeated() {
+        return isDefeated;
+    }
 
+    public void setDefeated(boolean defeated) {
+        isDefeated = defeated;
+    }
 }

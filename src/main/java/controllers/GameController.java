@@ -595,6 +595,57 @@ public class GameController {
         removeUnit(unit);
     }
 
+    public void checkVictoryByDominion() {
+        Civilization dominator = null;
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            if (doesCivilizationHaveItsOriginalCapital(civilization)) {
+                if (dominator == null) {
+                    dominator = civilization;
+                } else {
+                    return;
+                }
+            }
+        }
+        makeCivilizationWin(dominator);
+    }
+
+    public boolean doesCivilizationHaveItsOriginalCapital(Civilization civilization) {
+        if (civilization.getCapital() != null && civilization.getCapital() == civilization.getOriginCapital()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void defeatCivilization(Civilization civilization) {
+        civilization.setDefeated(true);
+        civilization.setScore(0);
+    }
+
+    public void makeCivilizationWin(Civilization civilization) {
+        for (Civilization civ : gameDataBase.getCivilizations()) {
+            if (civ != civilization) {
+                defeatCivilization(civ);
+            }
+        }
+
+        civilization.setScore(calculateScoreForCivilization(civilization) * (2050 - gameDataBase.calculateYear()) / 500);
+        // TODO : end game and stuff
+    }
+
+    public void endGameByTime() {
+        Civilization winner = null;
+        int winnerScore = 0;
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            int score = calculateScoreForCivilization(civilization);
+            if (score > winnerScore || winner == null) {
+                winner = civilization;
+                winnerScore = score;
+            }
+        }
+        makeCivilizationWin(winner);
+    }
+
     public void disableTurnBreak() {
         Civilization player = getCurrentPlayer();
         player.setisTurnBreakDisabled(true);
@@ -644,6 +695,9 @@ public class GameController {
 
     public void goToNextTurn() {
         gameDataBase.setTurnNumber(gameDataBase.getTurnNumber() + 1);
+        if (gameDataBase.calculateYear() >= 2050) {
+            endGameByTime();
+        }
         getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
 
         for (Unit unit : gameDataBase.getUnits()) {

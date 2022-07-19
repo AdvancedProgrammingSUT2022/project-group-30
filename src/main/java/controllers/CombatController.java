@@ -214,10 +214,12 @@ public class CombatController {
     private void changeCivsCapital(Civilization civilization) {
         if (civilization.getCities().size() == 0) {
             // TODO: civ loses
+            GameController.getGameController().defeatCivilization(civilization);
             System.out.println("civ " + civilization.getName() + " has lost!");
             return;
         }
         civilization.changeCapital(civilization.getCities().get(0));
+        GameController.getGameController().checkVictoryByDominion();
     }
 
     private void captureUnit(Unit attacker, Unit defender) {
