@@ -21,7 +21,10 @@ import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
 import models.works.Work;
+import netPackets.Request;
+import netPackets.Response;
 import utilities.Debugger;
+import utilities.MyGson;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -29,6 +32,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class GameController {
+
+    private NetworkController networkController = NetworkController.getNetworkController();
+
     private static GameController gameController;
 
     private GameDataBase gameDataBase = GameDataBase.getGameDataBase();
@@ -1479,6 +1485,12 @@ public class GameController {
             }
         }
         return filesArrayList;
+    }
+
+    public GameMap getGameMap(test i1, test i2){
+        Request request = new Request("getGameMap", MyGson.toJson(i1), MyGson.toJson(i2));
+        Response response = NetworkController.getNetworkController().transferData(request);
+        return response.getGameMap();
     }
 
 }

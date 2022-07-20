@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.GameController;
+import controllers.test;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -161,7 +162,8 @@ public class CivilizationGamePageController {
     }
 
     public void drawMap() throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        TileImage[][] tilesToShow = controller.getGameMap(new test(1), new test(2)).getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        // TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
         removeAllCirclesFromPane();
 

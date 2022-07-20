@@ -9,6 +9,7 @@ module com.example.civilization {
     opens models to javafx.fxml, com.google.gson, javafx.base;
     opens models.resources to javafx.fxml, javafx.base;
     opens models.improvements to javafx.fxml, javafx.base;
+    opens netPackets to javafx.base, javafx.fxml, com.google.gson;
     opens terminalViews to javafx.fxml;
     opens views to javafx.fxml;
     opens views.controllers to javafx.fxml;

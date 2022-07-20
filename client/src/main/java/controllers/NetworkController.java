@@ -1,5 +1,8 @@
 package controllers;
 
+import netPackets.Request;
+import netPackets.Response;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -34,6 +37,17 @@ public class NetworkController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public Response transferData(Request request){
+        try {
+            dataOutputStream.writeUTF(request.toJson());
+            dataOutputStream.flush();
+            return Response.formJson(dataInputStream.readUTF());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void terminateNetwork(){
