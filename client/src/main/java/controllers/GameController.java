@@ -1487,10 +1487,5 @@ public class GameController {
         return filesArrayList;
     }
 
-    public GameMap getGameMap(test i1, test i2){
-        Request request = new Request("getGameMap", MyGson.toJson(i1), MyGson.toJson(i2));
-        Response response = NetworkController.getNetworkController().transferData(request);
-        return response.getGameMap();
-    }
 
 }

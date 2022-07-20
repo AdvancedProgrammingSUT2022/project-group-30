@@ -74,12 +74,12 @@ public class SecondPageController {
         pane.getChildren().get(4).setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                User[] players = new User[2];
-                LoginPageController.getLoginPageController().setProgramDatabase();
-                players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
-                players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
-                GameController.getGameController().addPlayers(players);
-                GameController.getGameController().initializeGame(20, 30, 0, 8);
+//                User[] players = new User[2];
+//                LoginPageController.getLoginPageController().setProgramDatabase();
+//                players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
+//                players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
+//                GameController.getGameController().addPlayers(players);
+//                GameController.getGameController().initializeGame(20, 30, 0, 8);
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
                 } catch (IOException e) {
@@ -91,12 +91,12 @@ public class SecondPageController {
         pane.getChildren().get(5).setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                User[] players = new User[2];
-                LoginPageController.getLoginPageController().setProgramDatabase();
-                players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
-                players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
-                GameController.getGameController().addPlayers(players);
-                GameController.getGameController().initializeGame(20, 30, 0, 8);
+//                User[] players = new User[2];
+//                LoginPageController.getLoginPageController().setProgramDatabase();
+//                players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
+//                players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
+//                GameController.getGameController().addPlayers(players);
+//                GameController.getGameController().initializeGame(20, 30, 0, 8);
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
                 } catch (IOException e) {

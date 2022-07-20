@@ -7,8 +7,15 @@ module com.example.civilization {
     
     opens controllers to javafx.fxml, com.google.gson;
     opens models to javafx.fxml, com.google.gson, javafx.base;
-    opens models.resources to javafx.fxml, javafx.base;
-    opens models.improvements to javafx.fxml, javafx.base;
+    opens models.resources to javafx.fxml, javafx.base, com.google.gson;
+    opens models.buildings to com.google.gson;
+    opens models.chat to com.google.gson;
+    opens models.diplomacy to com.google.gson;
+    opens models.interfaces to com.google.gson;
+    opens models.technology to com.google.gson;
+    opens models.units to com.google.gson;
+    opens models.works to com.google.gson;
+    opens models.improvements to javafx.fxml, javafx.base, com.google.gson;
     opens netPackets to javafx.base, javafx.fxml, com.google.gson;
     opens terminalViews to javafx.fxml;
     opens views to javafx.fxml;
