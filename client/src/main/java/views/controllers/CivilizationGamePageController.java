@@ -36,6 +36,7 @@ import views.CheatCodes;
 import views.Main;
 import views.customcomponents.CheatBox;
 import views.customcomponents.TechnologyPopup;
+import views.images.Images;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -179,14 +180,14 @@ public class CivilizationGamePageController {
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
                 Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
                 if (tilesToShow[i][j] == null) {
-                    hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/FogOfWar.png").toExternalForm()).toExternalForm())));
+                    hexagon.setFill(Images.getImage("FogOfWar"));
                 } else if (tilesToShow[i][j] instanceof Tile) {
                     String terrainTypeName = ((Tile) tilesToShow[i][j]).getTerrainType().getName();
-                    hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
+                    hexagon.setFill(Images.getImage(terrainTypeName));
                     setVisibleTilesHexagonsOnMouseClicked(hexagon);
                 } else if (tilesToShow[i][j] instanceof TileHistory) {
                     String terrainTypeName = ((TileHistory) tilesToShow[i][j]).getTile().getTerrainType().getName();
-                    hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + terrainTypeName + ".png").toExternalForm()).toExternalForm())));
+                    hexagon.setFill(Images.getImage(terrainTypeName));
                     hexagon.setOpacity(0.5);
                 }
                 pane.getChildren().add(0, hexagon);
@@ -327,7 +328,7 @@ public class CivilizationGamePageController {
                         circle.setCenterY(yCoordinate + 10 + 20 * k);
                         circle.setCenterX(xCoordinate + 16);
                         circle.setRadius(10);
-                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + units.get(k).getType().getName() + ".png").toExternalForm()).toExternalForm())));
+                        circle.setFill(Images.getImage(units.get(k).getType().getName()));
                         Unit unit = units.get(k);
                         if (unit.getOwner().equals(controller.getCurrentPlayer())) {
                             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -430,7 +431,7 @@ public class CivilizationGamePageController {
                     ArrayList<Feature> features = ((Tile) tilesToShow[i][j]).getFeatures();
                     for (int k = 0; k < features.size(); k++) {
                         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
-                        hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + features.get(k).getName() + ".png").toExternalForm()).toExternalForm())));
+                        hexagon.setFill(Images.getImage(features.get(k).getName()));
                         setVisibleTilesHexagonsOnMouseClicked(hexagon);
                         pane.getChildren().add(0, hexagon);
                     }
@@ -471,9 +472,9 @@ public class CivilizationGamePageController {
         double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (yPosition + isOdd * (double) (xPosition % 2) / (double) 2);
         Polygon hexagon = createHexagon(xCoordinate, yCoordinate);
         if (direction.equals("RD")) {
-            hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomRight.png").toExternalForm()).toExternalForm())));
+            hexagon.setFill(Images.getImage("River-BottomRight"));
         } else {
-            hexagon.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/River-BottomLeft.png").toExternalForm()).toExternalForm())));
+            hexagon.setFill(Images.getImage("River-BottomLeft"));
         }
         setVisibleTilesHexagonsOnMouseClicked(hexagon);
         pane.getChildren().add(0, hexagon);
@@ -546,7 +547,7 @@ public class CivilizationGamePageController {
 
         Circle terrainTypeCircle = new Circle();
         terrainTypeCircle.setRadius(20);
-        terrainTypeCircle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/TerrainTypes/" + tile.getTerrainType().getName() + ".png").toExternalForm()).toExternalForm())));
+        terrainTypeCircle.setFill(Images.getImage(tile.getTerrainType().getName()));
         Text terrainType = new Text();
         terrainType.setText("Terrain Type : " + tile.getTerrainType().getName());
         terrainType.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
@@ -613,11 +614,7 @@ public class CivilizationGamePageController {
                 if (newValue != null) {
                     Circle circle = new Circle();
                     circle.setRadius(20);
-                    try {
-                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Features/" + newValue + ".png").toExternalForm()).toExternalForm())));
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    circle.setFill(Images.getImage(newValue));
                     cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
                 }
             });
@@ -749,11 +746,7 @@ public class CivilizationGamePageController {
                 if (newValue != null) {
                     Circle circle = new Circle();
                     circle.setRadius(20);
-                    try {
-                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Resources/" + newValue + ".png").toExternalForm()).toExternalForm())));
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    circle.setFill(Images.getImage(newValue));
                     cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
                 }
             });
@@ -842,11 +835,7 @@ public class CivilizationGamePageController {
                 if (newValue != null) {
                     Circle circle = new Circle();
                     circle.setRadius(20);
-                    try {
-                        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/improvements/" + newValue + ".png").toExternalForm()).toExternalForm())));
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    circle.setFill(Images.getImage(newValue));
                     cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(circle));
                 }
             });

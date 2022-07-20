@@ -91,18 +91,18 @@ public class Images {
     public static Images WHEAT = new Images("Resources", "Wheat");
 
     // terrain types
-    public static Images DESERT = new Images("Terrain Types", "Desert");
-    public static Images FOG_OF_WAR = new Images("Terrain Types", "FogOfWar");
-    public static Images GRASSLAND = new Images("Terrain Types", "Grassland");
-    public static Images HILLS = new Images("Terrain Types", "Hills");
-    public static Images MOUNTAIN = new Images("Terrain Types", "Mountain");
-    public static Images OCEAN = new Images("Terrain Types", "Ocean");
-    public static Images PLAINS = new Images("Terrain Types", "Plains");
-    public static Images RIVER_BOTTOM = new Images("Terrain Types", "River-Bottom");
-    public static Images RIVER_BOTTOM_LEFT = new Images("Terrain Types", "River-BottomLeft");
-    public static Images RIVER_BOTTOM_RIGHT = new Images("Terrain Types", "River-BottomRight");
-    public static Images SNOW = new Images("Terrain Types", "Snow");
-    public static Images TUNDRA = new Images("Terrain Types", "Tundra");
+    public static Images DESERT = new Images("TerrainTypes", "Desert");
+    public static Images FOG_OF_WAR = new Images("TerrainTypes", "FogOfWar");
+    public static Images GRASSLAND = new Images("TerrainTypes", "Grassland");
+    public static Images HILLS = new Images("TerrainTypes", "Hills");
+    public static Images MOUNTAIN = new Images("TerrainTypes", "Mountain");
+    public static Images OCEAN = new Images("TerrainTypes", "Ocean");
+    public static Images PLAINS = new Images("TerrainTypes", "Plains");
+    public static Images RIVER_BOTTOM = new Images("TerrainTypes", "River-Bottom");
+    public static Images RIVER_BOTTOM_LEFT = new Images("TerrainTypes", "River-BottomLeft");
+    public static Images RIVER_BOTTOM_RIGHT = new Images("TerrainTypes", "River-BottomRight");
+    public static Images SNOW = new Images("TerrainTypes", "Snow");
+    public static Images TUNDRA = new Images("TerrainTypes", "Tundra");
 
 
     // units
@@ -135,7 +135,7 @@ public class Images {
 
 
 
-    private static ArrayList<Images> allImages = new ArrayList<>();
+    private static ArrayList<Images> allImages;
 
     private ImagePattern imagePattern;
     private String name;
@@ -146,6 +146,9 @@ public class Images {
             this.imagePattern = new ImagePattern(new Image(new URL(Main.class.getResource("/images/" + directoryName + "/" + name + ".png").toExternalForm()).toExternalForm()));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
+        }
+        if(allImages == null){
+            allImages = new ArrayList<>();
         }
         allImages.add(this);
     }

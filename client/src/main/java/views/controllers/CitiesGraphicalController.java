@@ -37,6 +37,7 @@ import models.resources.StrategicResource;
 import models.units.Unit;
 import models.units.UnitType;
 import views.Main;
+import views.images.Images;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -302,11 +303,7 @@ public class CitiesGraphicalController {
             hBox.setSpacing(10);
             Circle circle = new Circle();
             circle.setRadius(15);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + unit.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(unit.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -331,11 +328,7 @@ public class CitiesGraphicalController {
             hBox.setSpacing(10);
             Circle circle = new Circle();
             circle.setRadius(15);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + building.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(building.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -415,11 +408,7 @@ public class CitiesGraphicalController {
             int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
             Circle circle = new Circle();
             circle.setRadius(15);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + producibleUnit.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(producibleUnit.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -458,11 +447,7 @@ public class CitiesGraphicalController {
             int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
             Circle circle = new Circle();
             circle.setRadius(15);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + producibleBuilding.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(producibleBuilding.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -957,19 +942,10 @@ public class CitiesGraphicalController {
             Circle circle = new Circle();
             circle.setRadius(30);
             if(currentProduction instanceof BuildingType){
-                try {
-                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                circle.setFill(Images.getImage(currentProduction.getName()));
             }
             else if(currentProduction instanceof UnitType){
-                try {
-                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + currentProduction.getName() + ".png").toExternalForm()).toExternalForm())));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
-
+                circle.setFill(Images.getImage(currentProduction.getName()));
             }
             int hammerCost = currentProduction.calculateHammerCost();
             int productionOutput = city.calculateOutput().getProduction();
@@ -989,18 +965,10 @@ public class CitiesGraphicalController {
             Circle circle = new Circle();
             circle.setRadius(30);
             if(producible instanceof BuildingType){
-                try {
-                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                circle.setFill(Images.getImage(producible.getName()));
             }
             else if(producible instanceof UnitType){
-                try {
-                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + producible.getName() + ".png").toExternalForm()).toExternalForm())));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                circle.setFill(Images.getImage(producible.getName()));
 
             }
             String info = producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost();
@@ -1016,11 +984,7 @@ public class CitiesGraphicalController {
             hBox.setSpacing(20);
             Circle circle = new Circle();
             circle.setRadius(30);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(type.getName()));
 
             String info = type.getName();
             hBox.getChildren().add(circle);
@@ -1036,11 +1000,7 @@ public class CitiesGraphicalController {
             hBox.setSpacing(20);
             Circle circle = new Circle();
             circle.setRadius(30);
-            try {
-                circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Buildings/" + type.getName() + ".png").toExternalForm()).toExternalForm())));
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
+            circle.setFill(Images.getImage(type.getName()));
 
             String info = type.getName();
             hBox.getChildren().add(circle);
@@ -1120,11 +1080,7 @@ public class CitiesGraphicalController {
                 hBox.setAlignment(Pos.CENTER);
                 Circle circle = new Circle();
                 circle.setRadius(30);
-                try {
-                    circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Resources/" + resource.getName() + ".png").toExternalForm()).toExternalForm())));
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                }
+                circle.setFill(Images.getImage(resource.getName()));
                 hBox.getChildren().add(circle);
                 String info = resource.getName();
                 if (resource.canBeExploited(tile)) {

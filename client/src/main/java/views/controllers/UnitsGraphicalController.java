@@ -35,6 +35,7 @@ import models.works.*;
 import views.Main;
 import views.customcomponents.AttackYesNoDialog;
 import views.customcomponents.CityDefeatDialog;
+import views.images.Images;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -82,7 +83,7 @@ public class UnitsGraphicalController {
         }
         Circle circle = new Circle();
         circle.setRadius(30);
-        circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Units3/" + unit.getType().getName() + ".png").toExternalForm()).toExternalForm())));
+        circle.setFill(Images.getImage(unit.getType().getName()));
         unitCommandsBox.getChildren().add(circle);
         Text name = new Text(controller.getCurrentPlayer().getName() + "'s " + unit.getType().getName());
         name.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
