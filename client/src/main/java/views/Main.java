@@ -1,6 +1,7 @@
 package views;
 
 import controllers.LoginPageController;
+import controllers.NetworkController;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +20,10 @@ public class Main extends Application {
     private static Stage stage;
 
     public static void main(String[] args) {
+        NetworkController networkController = NetworkController.getNetworkController();
+        networkController.initializeNetwork();
         launch();
+        networkController.terminateNetwork();
     }
 
     @Override
