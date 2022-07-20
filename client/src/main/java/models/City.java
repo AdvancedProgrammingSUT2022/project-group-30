@@ -20,6 +20,14 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class City implements Selectable, TurnHandler, combative {
+
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    private static int newAvailableId = 0;
+
     private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;
@@ -45,6 +53,8 @@ public class City implements Selectable, TurnHandler, combative {
 
 
     public City(Civilization founder, Tile tile) {
+        this.id = newAvailableId;
+        newAvailableId++;
         this.founder = founder;
         this.owner = founder;
         this.centralTile = tile;
