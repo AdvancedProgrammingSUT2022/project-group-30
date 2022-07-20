@@ -1,0 +1,116 @@
+.blueBackground {
+    -fx-fill: blue;
+    -fx-background-color: blue;
+}
+
+.sidebar {
+    -fx-background-color: #9f9ffd;
+}
+
+.greenBackground {
+    -fx-fill: green;
+    -fx-background-color: green;
+}
+
+.sidebutton {
+    -fx-background-color: transparent;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 13;
+}
+.sidebutton:hover {
+    -fx-cursor: hand;
+    -fx-fill: white;
+}
+
+.blackButton {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 15px;
+}
+.blackButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #2f2f2f;
+}
+
+.redButton {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 15px;
+}
+.redButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #ab0000;
+}
+
+.greenButton {
+    -fx-background-color: #00ca00;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 10px;
+}
+.greenButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: green;
+}
+
+.timesNewRoman20 {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+}
+.timesNewRoman30 {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+}
+
+.firstMenu {
+    -fx-background-image: url("../images/backgrounds/chatroomFirstPageBackground.png");
+    -fx-background-size: cover;
+}
+
+.transparentRect {
+    -fx-background-color: rgba(255, 255, 255, 0.38);
+}
+
+.chatTopBar {
+    -fx-background-color: #000543;
+    -fx-padding: 10;
+}
+
+.chatNameLabel {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+    -fx-text-fill: white;
+}
+
+.chatBackground {
+    -fx-background-image: url("../images/backgrounds/chatBackground.png");
+    -fx-background-size: stretch;
+}
+
+.backButton {
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 25;
+}
+.backButton:hover {
+    -fx-cursor: hand;
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+}
+
+.messageBox {
+    -fx-background-color: transparent;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+}
+
+.messageContextMenu {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 15;
+    -fx-background-color: #bdbdff;
+}
