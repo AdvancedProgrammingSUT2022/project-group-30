@@ -121,6 +121,10 @@ public class GameDataBase implements java.io.Serializable{
         this.turnNumber = turnNumber;
     }
 
+    public int calculateYear() {
+        return turnNumber * 50;
+    }
+
     public ArrayList<Civilization> getCivilizations() {
         ArrayList<Civilization> civilizations = new ArrayList<>();
         for (Player player : this.players) {

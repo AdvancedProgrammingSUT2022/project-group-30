@@ -1,6 +1,7 @@
 package models;
 
 import controllers.GameController;
+import models.buildings.Palace;
 import models.diplomacy.StepWiseGoldTransferContract;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -39,6 +40,7 @@ public class Civilization implements TurnHandler {
     private Tile frameBase;
     private Selectable selectedEntity;
     private ArrayList<Notification> notifications = new ArrayList<>();
+    private boolean isDefeated;
 
     public Civilization(String name) {
         this.name = name;
@@ -49,6 +51,7 @@ public class Civilization implements TurnHandler {
         this.score = 0;
         this.capital = null;
         this.originCapital = null;
+        isDefeated = false;
         mapImage = new HashMap<>();
         for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
             mapImage.put(tile, null);
@@ -354,10 +357,26 @@ public class Civilization implements TurnHandler {
         return capital;
     }
 
-    public void setCapital(City capital) {
+    public void changeCapital(City newCapital) {
         if (originCapital == null) {
-            this.originCapital = capital;
+            this.originCapital = newCapital;
         }
+
+        // switch palace
+        Palace palace = null;
+        if (capital != null) {
+            palace = capital.getPalace();
+            capital.getBuildings().remove(palace);
+        }
+        if (palace == null) {
+            palace = new Palace(this);
+        }
+        newCapital.getBuildings().add(palace);
+
+        this.capital = newCapital;
+    }
+
+    public void setCapital(City capital) {
         this.capital = capital;
     }
 
@@ -480,5 +499,11 @@ public class Civilization implements TurnHandler {
         researchProject = null;
     }
 
+    public boolean isDefeated() {
+        return isDefeated;
+    }
 
+    public void setDefeated(boolean defeated) {
+        isDefeated = defeated;
+    }
 }

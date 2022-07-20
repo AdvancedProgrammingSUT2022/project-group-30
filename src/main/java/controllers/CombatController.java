@@ -167,12 +167,15 @@ public class CombatController {
     public void kill(City city) {
         city.getOwner().addNotification("Your city at " + city.getCentralTile().findTileYCoordinateInMap() + ", " +
                 city.getCentralTile().findTileXCoordinateInMap() + " was destroyed!");
-
-        ArrayList<Unit> units = gameController.getUnitsInTile(city.getCentralTile());
-        for (Unit unit : units) {
-            gameController.removeUnit(unit);
+        Civilization owner = null;
+        if (city.isCapital()) {
+            owner = city.getOwner();
+            owner.setCapital(null);
         }
         gameController.destroyCity(city);
+        if (owner != null) {
+            changeCivsCapital(owner);
+        }
     }
 
     public void kill(Unit unit) {
@@ -192,8 +195,31 @@ public class CombatController {
     }
 
     public void annexCity(City city, Civilization newOwner) {
+        Civilization prevOwner = null;
+        if (city.isCapital()) {
+            prevOwner = city.getOwner();
+            prevOwner.setCapital(null);
+        }
         city.setOwner(newOwner);
+        if (prevOwner != null) {
+            changeCivsCapital(prevOwner);
+        }
+
+        if (newOwner.getOriginCapital() == city) {
+            newOwner.changeCapital(city);
+        }
         gameController.setMapImageOfCivilization(newOwner);
+    }
+
+    private void changeCivsCapital(Civilization civilization) {
+        if (civilization.getCities().size() == 0) {
+            // TODO: civ loses
+            GameController.getGameController().defeatCivilization(civilization);
+            System.out.println("civ " + civilization.getName() + " has lost!");
+            return;
+        }
+        civilization.changeCapital(civilization.getCities().get(0));
+        GameController.getGameController().checkVictoryByDominion();
     }
 
     private void captureUnit(Unit attacker, Unit defender) {
