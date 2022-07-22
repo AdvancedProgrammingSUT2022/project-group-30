@@ -6,9 +6,21 @@ import models.interfaces.TurnHandler;
 import models.units.Unit;
 
 public abstract class Work implements TurnHandler {
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    private static int nextAvailableId = 0;
+
     protected int turnsRemaining;
     protected Unit worker;
     protected boolean isInProgress;
+
+    public Work() {
+        id = nextAvailableId;
+        nextAvailableId++;
+    }
 
     public void goToNextTurn() {
         if (isInProgress) {

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import models.GameMap;
 
 public class Response {
-
     private GameMap gameMap;
 
     public String toJson(){

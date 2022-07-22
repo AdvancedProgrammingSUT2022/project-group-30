@@ -4,12 +4,22 @@ import models.Civilization;
 import models.Output;
 
 public class Improvement {
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    private static int nextAvailableId = 0;
+
     private final ImprovementType type;
     private final Civilization founder;
 
     private boolean isPillaged;
 
     public Improvement(ImprovementType type, Civilization founder) {
+        this.id = nextAvailableId;
+        nextAvailableId++;
+
         this.type = type;
         this.founder = founder;
         isPillaged = false;
