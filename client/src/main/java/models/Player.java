@@ -13,7 +13,7 @@ public class Player {
     private Civilization civilization;
 
     public Player(User user) {
-        this.id = id;
+        this.id = nextAvailableId;
         nextAvailableId++;
 
         this.user = user;

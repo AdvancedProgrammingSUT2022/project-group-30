@@ -4,10 +4,10 @@ import utilities.Debugger;
 
 public class Player {
     private final int id;
+    private static int nextAvailableId = 0;
     public  int getId() {
         return id;
     }
-    private static int nextAvailableId = 0;
 
     private final User user;
     private Civilization civilization;
