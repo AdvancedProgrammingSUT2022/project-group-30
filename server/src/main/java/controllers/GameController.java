@@ -344,6 +344,15 @@ public class GameController {
         return null;
     }
 
+    public RiverSegment findRiverSegmentById(int id) {
+        for (RiverSegment river : GameMap.getGameMap().getRivers()) {
+            if (river.getId() == id) {
+                return river;
+            }
+        }
+        return null;
+    }
+
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
         Tile location = worker.getLocation();
         Civilization owner = worker.getOwner();

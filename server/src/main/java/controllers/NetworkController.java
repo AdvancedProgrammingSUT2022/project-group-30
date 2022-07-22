@@ -30,7 +30,6 @@ public class NetworkController {
     private ServerSocket serverSocket;
 
     private NetworkController() {
-
     }
 
     public static NetworkController getNetworkController() {
@@ -55,9 +54,6 @@ public class NetworkController {
             Object[] parsedArguments = new Object[arguments.size()];
             for (int i = 0; i < arguments.size(); i++) {
                 Gson gson = new Gson();
-                /*
-                 * if... method.getParameterTypes()[i] Unit -> find the unit in server
-                 */
                 Class argumentClass = method.getParameterTypes()[i];
                 if (argumentClass == Unit.class) {
                     int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();
@@ -104,6 +100,9 @@ public class NetworkController {
                 } else if (argumentClass == Player.class) {
                     int id = ((Player) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findPlayerById(id);
+                } else if (argumentClass == RiverSegment.class) {
+                    int id = ((RiverSegment) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findRiverSegmentById(id);
                 } else {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }

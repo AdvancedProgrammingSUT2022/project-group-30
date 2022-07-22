@@ -1,10 +1,19 @@
 package models;
 
 public class RiverSegment {
+    private final int id;
+    private static int nextAvailableId = 0;
+    public  int getId() {
+        return id;
+    }
+
     private final Tile firstTile;
     private final Tile secondTile;
 
     public RiverSegment(Tile firstTile, Tile secondTile) {
+        this.id = nextAvailableId;
+        nextAvailableId++;
+
         this.firstTile = firstTile;
         this.secondTile = secondTile;
     }
