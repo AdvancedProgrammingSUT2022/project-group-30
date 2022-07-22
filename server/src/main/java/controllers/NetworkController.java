@@ -29,24 +29,24 @@ public class NetworkController {
 
     private ServerSocket serverSocket;
 
-    private NetworkController(){
+    private NetworkController() {
 
     }
 
-    public static NetworkController getNetworkController(){
+    public static NetworkController getNetworkController() {
         if (networkController == null) {
             networkController = new NetworkController();
         }
         return networkController;
     }
 
-    private String process(String data){
+    private String process(String data) {
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
-            for(int i = 0; i < methods.length; i++){
-                if(methods[i].getName().equals(request.getMethodName())){
+            for (int i = 0; i < methods.length; i++) {
+                if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];
                     break;
                 }
@@ -56,7 +56,7 @@ public class NetworkController {
             for (int i = 0; i < arguments.size(); i++) {
                 Gson gson = new Gson();
                 /*
-                * if... method.getParameterTypes()[i] Unit -> find the unit in server
+                 * if... method.getParameterTypes()[i] Unit -> find the unit in server
                  */
                 Class argumentClass = method.getParameterTypes()[i];
                 if (argumentClass == Unit.class) {
@@ -98,25 +98,31 @@ public class NetworkController {
                 } else if (argumentClass == Citizen.class) {
                     int id = ((Citizen) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findCitizenById(id);
-                }  else if (argumentClass == Notification.class) {
+                } else if (argumentClass == Notification.class) {
                     int id = ((Notification) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findNotificationById(id);
+                } else if (argumentClass == Player.class) {
+                    int id = ((Player) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findPlayerById(id);
                 } else {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }
             }
             Object result = method.invoke(GameController.getGameController(), (Object[]) parsedArguments);
-            Gson gson = new Gson();
-            return gson.toJson(result);
-
-        }catch (Exception e){
+            if (result == null) {
+                return "null";
+            } else {
+                Gson gson = new Gson();
+                return gson.toJson(result);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    public void run(){
+    public void run() {
         User[] players = new User[2];
         LoginPageController.getLoginPageController().setProgramDatabase();
         players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
@@ -147,8 +153,7 @@ public class NetworkController {
                     }
                 }).start();
             }
-        }
-        catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

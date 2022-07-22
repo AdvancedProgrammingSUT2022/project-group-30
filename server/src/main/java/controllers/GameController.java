@@ -281,7 +281,7 @@ public class GameController {
         return null;
     }
 
-    public Building findDiplomacyById(int id) {
+    public DiplomaticRelation findDiplomacyById(int id) {
         for (DiplomaticRelation diplomaticRelation : gameDataBase.getDiplomaticRelations()) {
             if (diplomaticRelation.getId() == id) {
                 return diplomaticRelation;
@@ -295,7 +295,7 @@ public class GameController {
         return null;
     }
 
-    public Message findTechnologyMapById(int id) {
+    public TechnologyMap findTechnologyMapById(int id) {
         for (Civilization civilization : gameDataBase.getCivilizations()) {
             if (civilization.getTechnologies().getId() == id) {
                 return civilization.getTechnologies();
@@ -324,12 +324,21 @@ public class GameController {
         return null;
     }
 
-    public Citizen findNotificationById(int id) {
+    public Notification findNotificationById(int id) {
         for (Civilization civilization : gameDataBase.getCivilizations()) {
             for (Notification notification : civilization.getNotifications()) {
                 if (notification.getId() == id) {
                     return notification;
                 }
+            }
+        }
+        return null;
+    }
+
+    public Player findPlayerById(int id) {
+        for (Player player : gameDataBase.getPlayers()) {
+            if (player.getId() == id) {
+                return player;
             }
         }
         return null;

@@ -9,4 +9,7 @@ public class MyGson {
     public static String toJson(Object obj){
         return gson.toJson(obj);
     }
+    public static Gson getGson() {
+        return gson;
+    }
 }
