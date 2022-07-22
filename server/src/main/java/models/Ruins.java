@@ -7,6 +7,17 @@ import models.units.UnitType;
 import java.util.ArrayList;
 
 public class Ruins {
+    private final int id;
+    private static int nextAvailableId = 0;
+    public  int getId() {
+        return id;
+    }
+
+    public Ruins() {
+        id = nextAvailableId;
+        nextAvailableId++;
+    }
+
     private boolean isUsed = false;
 
     public Ruins createImage() {

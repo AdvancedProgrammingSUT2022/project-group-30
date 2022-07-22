@@ -1,9 +1,14 @@
 package controllers;
 
 import com.google.gson.Gson;
-import models.GameMap;
-import models.ProgramDatabase;
-import models.User;
+import models.*;
+import models.buildings.Building;
+import models.diplomacy.Diplomacy;
+import models.diplomacy.Message;
+import models.improvements.Improvement;
+import models.technology.TechnologyMap;
+import models.units.Unit;
+import models.works.Work;
 import netPackets.Request;
 
 import java.io.DataInputStream;
@@ -53,8 +58,52 @@ public class NetworkController {
                 /*
                 * if... method.getParameterTypes()[i] Unit -> find the unit in server
                  */
-                parsedArguments[i] = gson.fromJson(arguments.get(i), method.getParameterTypes()[i]);
-
+                Class argumentClass = method.getParameterTypes()[i];
+                if (argumentClass == Unit.class) {
+                    int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                } else if (argumentClass == City.class) {
+                    int id = ((City) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                } else if (argumentClass == Civilization.class) {
+                    int id = ((Civilization) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameDataBase.getGameDataBase().findCivById(id);
+                } else if (argumentClass == Tile.class) {
+                    int id = ((Tile) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameMap.getGameMap().findTileById(id);
+                } else if (argumentClass == Ruins.class) {
+                    int id = ((Ruins) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameDataBase.getGameDataBase().findRuinsById(id);
+                } else if (argumentClass == User.class) {
+                    int id = ((User) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = ProgramDatabase.getProgramDatabase().getUserById(id);
+                } else if (argumentClass == Improvement.class) {
+                    int id = ((Improvement) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findImprovementById(id);
+                } else if (argumentClass == Building.class) {
+                    int id = ((Building) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findBuildingById(id);
+                } else if (argumentClass == Diplomacy.class) {
+                    int id = ((Diplomacy) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findDiplomacyById(id);
+                } else if (argumentClass == Message.class) {
+                    int id = ((Message) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findMessageById(id);
+                } else if (argumentClass == TechnologyMap.class) {
+                    int id = ((TechnologyMap) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findTechnologyMapById(id);
+                } else if (argumentClass == Work.class) {
+                    int id = ((Work) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findWorkById(id);
+                } else if (argumentClass == Citizen.class) {
+                    int id = ((Citizen) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findCitizenById(id);
+                }  else if (argumentClass == Notification.class) {
+                    int id = ((Notification) gson.fromJson(arguments.get(i), argumentClass)).getId();
+                    parsedArguments[i] = GameController.getGameController().findNotificationById(id);
+                } else {
+                    parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
+                }
             }
             Object result = method.invoke(GameController.getGameController(), (Object[]) parsedArguments);
             Gson gson = new Gson();

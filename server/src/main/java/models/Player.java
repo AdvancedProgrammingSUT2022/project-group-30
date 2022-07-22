@@ -3,10 +3,19 @@ package models;
 import utilities.Debugger;
 
 public class Player {
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+    private static int nextAvailableId = 0;
+
     private final User user;
     private Civilization civilization;
 
     public Player(User user) {
+        this.id = nextAvailableId;
+        nextAvailableId++;
+
         this.user = user;
         this.civilization = null;
     }

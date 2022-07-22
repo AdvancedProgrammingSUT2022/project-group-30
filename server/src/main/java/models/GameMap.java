@@ -130,6 +130,15 @@ public class GameMap implements java.io.Serializable{
         return true;
     }
 
+    public Tile findTileById(int id) {
+        for (Tile tile : getAllMapTiles()) {
+            if (tile.getId() == id) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
     private void initializeStrategicResources() {
         Random rand = new Random();
         ArrayList<Tile> compatiblTiles = new ArrayList<>();

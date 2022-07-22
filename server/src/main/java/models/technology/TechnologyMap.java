@@ -7,10 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TechnologyMap {
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+    private static int nextAvailableId = 0;
+
     private HashMap<Technology, Boolean> map = new HashMap<Technology, Boolean>();
     private Technology lastUnlocked;
 
     public TechnologyMap() {
+        this.id = nextAvailableId;
+        nextAvailableId++;
+
         for (Technology type : Technology.values()) {
             map.put(type, false);
         }

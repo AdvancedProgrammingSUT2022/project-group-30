@@ -155,6 +155,42 @@ public class GameDataBase implements java.io.Serializable{
         this.numberOfAutoSavedFiles = numberOfAutoSavedFiles;
     }
 
+    public Unit findUnitById(int id) {
+        for (Unit unit : units) {
+            if (unit.getId() == id) {
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    public City findCityById(int id) {
+        for (City city : cities) {
+            if (city.getId() == id) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    public Civilization findCivById(int id) {
+        for (Civilization civilization : getCivilizations()) {
+            if (civilization.getId() == id) {
+                return civilization;
+            }
+        }
+        return null;
+    }
+
+    public Ruins findRuinsById(int id) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getRuins() != null && tile.getRuins().getId() == id) {
+                return tile.getRuins();
+            }
+        }
+        return null;
+    }
+
     public int getCurrrentAutoSaveNumber() {
         return currrentAutoSaveNumber;
     }

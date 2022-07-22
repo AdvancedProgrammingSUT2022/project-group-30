@@ -20,6 +20,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class Tile implements Workable, TileImage, TurnHandler {
+
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    private static int newAvailableId = 0;
+
     private TerrainType terrainType;
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();
@@ -30,6 +38,8 @@ public class Tile implements Workable, TileImage, TurnHandler {
 
     public Tile(TerrainType terrainType,
                 HashMap<Resource, Integer> resources, Ruins ruins) {
+        this.id = newAvailableId;
+        newAvailableId++;
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.resources = resources;

@@ -5,9 +5,18 @@ import models.TerrainType;
 import models.interfaces.Workable;
 
 public class Building implements Workable {
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    protected static int nextAvailableId = 0;
+
     private final BuildingType type;
 
     public Building(BuildingType type) {
+        this.id = nextAvailableId;
+        nextAvailableId++;
         this.type = type;
     }
 

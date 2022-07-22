@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Civilization implements TurnHandler {
+    private final int id;
+    private static int nextAvailableId = 0;
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;
@@ -43,6 +45,8 @@ public class Civilization implements TurnHandler {
     private boolean isDefeated;
 
     public Civilization(String name) {
+        this.id = nextAvailableId;
+        nextAvailableId++;
         this.name = name;
         this.goldCount = 0;
         this.beakerCount = 0;
@@ -505,5 +509,9 @@ public class Civilization implements TurnHandler {
 
     public void setDefeated(boolean defeated) {
         isDefeated = defeated;
+    }
+
+    public int getId() {
+        return id;
     }
 }

@@ -11,6 +11,13 @@ import models.interfaces.combative;
 import java.util.ArrayList;
 
 public class Unit implements Selectable, TurnHandler, combative {
+
+    private final int id;
+    public  int getId() {
+        return id;
+    }
+
+    private static int newAvailableId = 0;
     private final Civilization owner;
     private final UnitType type;
     private Tile location;
@@ -26,6 +33,8 @@ public class Unit implements Selectable, TurnHandler, combative {
 
 
     public Unit(Civilization owner, UnitType type, Tile location) {
+        this.id = newAvailableId;
+        newAvailableId++;
         this.owner = owner;
         this.type = type;
         this.location = location;

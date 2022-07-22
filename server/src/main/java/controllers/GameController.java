@@ -16,6 +16,7 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
+import models.technology.TechnologyMap;
 import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
@@ -256,6 +257,82 @@ public class GameController {
     public void stopPreviousResearchAndStartNext(Civilization civilization, Technology next) {
         stopResearch(civilization);
         startResearch(civilization, next);
+    }
+
+    public Improvement findImprovementById(int id) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            for (Improvement improvement : tile.getImprovements()) {
+                if (improvement.getId() == id) {
+                    return improvement;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Building findBuildingById(int id) {
+        for (City city : gameDataBase.getCities()) {
+            for (Building building : city.getBuildings()) {
+                if (building.getId() == id) {
+                    return building;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Building findDiplomacyById(int id) {
+        for (DiplomaticRelation diplomaticRelation : gameDataBase.getDiplomaticRelations()) {
+            if (diplomaticRelation.getId() == id) {
+                return diplomaticRelation;
+            }
+        }
+        return null;
+    }
+
+    public Message findMessageById(int id) {
+        // TODO
+        return null;
+    }
+
+    public Message findTechnologyMapById(int id) {
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            if (civilization.getTechnologies().getId() == id) {
+                return civilization.getTechnologies();
+            }
+        }
+        return null;
+    }
+
+    public Work findWorkById(int id) {
+        for (Tile tile : GameMap.getGameMap().getAllMapTiles()) {
+            if (tile.getWork() != null && tile.getWork().getId() == id) {
+                return tile.getWork();
+            }
+        }
+        return null;
+    }
+
+    public Citizen findCitizenById(int id) {
+        for (City city : gameDataBase.getCities()) {
+            for (Citizen citizen : city.getCitizens()) {
+                if (citizen.getId() == id) {
+                    return citizen;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Citizen findNotificationById(int id) {
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            for (Notification notification : civilization.getNotifications()) {
+                if (notification.getId() == id) {
+                    return notification;
+                }
+            }
+        }
+        return null;
     }
 
     public boolean canWorkerBuildImprovement(Unit worker, ImprovementType improvementType) {
