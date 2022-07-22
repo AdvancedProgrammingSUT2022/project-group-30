@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 public class Request {
 
-
     private String methodName;
     private ArrayList<String> arguments;
 

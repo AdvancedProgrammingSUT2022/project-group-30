@@ -1,11 +1,14 @@
 package models;
 
+import controllers.NetworkController;
 import models.interfaces.TileImage;
 import models.resources.BonusResource;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
+import netPackets.Request;
 import utilities.Debugger;
+import utilities.MyGson;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -360,15 +363,8 @@ public class GameMap implements java.io.Serializable{
     }
 
     public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
-        TileImage tiles[][] = new TileImage[10][20];
-        int startingXPoint = civ.getFrameBase().findTileXCoordinateInMap();
-        int startingYPoint = civ.getFrameBase().findTileYCoordinateInMap();
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[i].length; j++) {
-                tiles[i][j] = civ.getTileImage(this.map[i + startingYPoint][j + startingXPoint]);
-            }
-        }
-        return tiles;
+        Request request = new Request("getCivilizationImageToShowOnScene", MyGson.toJson(civ));
+        return (TileImage[][]) NetworkController.getNetworkController().transferData(request);
     }
 
     public TileImage[][] getCivilizationsImage(Civilization civ) {
