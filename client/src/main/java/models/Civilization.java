@@ -514,4 +514,8 @@ public class Civilization implements TurnHandler {
     public int getId() {
         return id;
     }
+
+    public void setMapImage(HashMap<Tile, TileImage> mapImage) {
+        this.mapImage = mapImage;
+    }
 }

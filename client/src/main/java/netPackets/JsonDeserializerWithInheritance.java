@@ -1,9 +1,13 @@
 package netPackets;
 
 import com.google.gson.*;
+import models.Tile;
 import models.interfaces.EnumInterface;
+import models.interfaces.TileImage;
+import models.units.Unit;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 public class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T>, JsonSerializer<T> {
     @Override

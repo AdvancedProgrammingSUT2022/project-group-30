@@ -1,6 +1,5 @@
 package models;
 
-import com.google.gson.annotations.Expose;
 import controllers.GameController;
 import models.buildings.Palace;
 import models.diplomacy.StepWiseGoldTransferContract;
@@ -514,5 +513,9 @@ public class Civilization implements TurnHandler {
 
     public int getId() {
         return id;
+    }
+
+    public void setMapImage(HashMap<Tile, TileImage> mapImage) {
+        this.mapImage = mapImage;
     }
 }
