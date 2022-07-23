@@ -1,5 +1,1 @@
-{
-  "gold": 0,
-  "food": 0,
-  "production": 0
-}
+null
