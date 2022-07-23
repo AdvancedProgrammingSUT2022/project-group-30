@@ -24,6 +24,8 @@ import utilities.Debugger;
 import utilities.MyGson;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -216,7 +218,6 @@ public class GameController {
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         Request request = new Request("getUnitsInTile", MyGson.toJson(tile));
         ArrayList<Unit> result = (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request);
-        System.out.println(result);
         return result;
     }
 
@@ -419,6 +420,11 @@ public class GameController {
         Request request = new Request("getCurrentPlayer");
         Civilization civ = (Civilization) NetworkController.getNetworkController().transferData(request);
         //System.out.println(civ.getName());
+        try {
+            Files.writeString(Paths.get("feshar.txt"), MyGson.toJson(civ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return civ;
     }
 

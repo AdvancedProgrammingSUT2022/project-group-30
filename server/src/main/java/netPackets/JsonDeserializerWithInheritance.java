@@ -10,6 +10,9 @@ public class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T>, 
     public T deserialize(
             JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
+        //json.isJsonObject()
+//        String enumString = json.getAsString();
+//        String[] parts = enumString.split(" ");
         if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
             String enumString = json.getAsString();
             String[] parts = enumString.split(" ");
@@ -29,34 +32,59 @@ public class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T>, 
                     throw new JsonParseException(e.getMessage());
                 }
             } else {
-                notEnum(json, typeOfT, context);
+                JsonObject jsonObject = json.getAsJsonObject();
+                JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
+                if (classNamePrimitive == null) {
+                    Gson gson = new Gson();
+                    return gson.fromJson(json, typeOfT);
+                }
+                String className = classNamePrimitive.getAsString();
+                Class<?> clazz;
+                try {
+                    clazz = Class.forName(className);
+//                    System.out.println("found class: " + clazz.getName());
+                } catch (ClassNotFoundException e) {
+                    throw new JsonParseException(e.getMessage());
+                }
+                return context.deserialize(jsonObject, clazz);
             }
         } else {
-            notEnum(json, typeOfT, context);
+            JsonObject jsonObject = json.getAsJsonObject();
+            JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
+            if (classNamePrimitive == null) {
+                Gson gson = new Gson();
+                return gson.fromJson(json, typeOfT);
+            }
+            String className = classNamePrimitive.getAsString();
+            Class<?> clazz;
+            try {
+                clazz = Class.forName(className);
+//                System.out.println("found class: " + clazz.getName());
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException(e.getMessage());
+            }
+            return context.deserialize(jsonObject, clazz);
         }
         return null;
-    }
-
-    private T notEnum(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-        JsonObject jsonObject = json.getAsJsonObject();
-        JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
-        if (classNamePrimitive == null) {
-            Gson gson = new Gson();
-            return gson.fromJson(json, typeOfT);
-        }
-        String className = classNamePrimitive.getAsString();
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(className);
-//                    System.out.println("found class: " + clazz.getName());
-        } catch (ClassNotFoundException e) {
-            throw new JsonParseException(e.getMessage());
-        }
-        return context.deserialize(jsonObject, clazz);
     }
 
     @Override
     public JsonElement serialize(T t, Type type, JsonSerializationContext jsonSerializationContext) {
         return jsonSerializationContext.serialize(t);
     }
+//            JsonElement json, Type typeOfT, JsonDeserializationContext context)
+//            throws JsonParseException {
+//        JsonObject jsonObject = json.getAsJsonObject();
+//        JsonPrimitive classNamePrimitive = (JsonPrimitive) jsonObject.get("type");
+//
+//        String className = classNamePrimitive.getAsString();
+//
+//        Class<?> clazz;
+//        try {
+//            clazz = Class.forName(className);
+//        } catch (ClassNotFoundException e) {
+//            throw new JsonParseException(e.getMessage());
+//        }
+//        return context.deserialize(jsonObject, clazz);
+    //}
 }
