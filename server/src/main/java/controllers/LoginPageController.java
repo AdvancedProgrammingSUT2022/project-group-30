@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import models.ProgramDatabase;
 import models.User;
+import utilities.MyGson;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -97,7 +98,7 @@ public class LoginPageController {
     public static void readUsersListFromFile() {
         try {
             String input = new String(Files.readAllBytes(Paths.get("src", "main", "resources", "json", "Users.json")));
-            ArrayList<User> users = new Gson().fromJson(input, new TypeToken<List<User>>() {
+            ArrayList<User> users = MyGson.getGson().fromJson(input, new TypeToken<List<User>>() {
             }.getType());
             if (users == null) {
                 users = new ArrayList<>();
@@ -115,7 +116,7 @@ public class LoginPageController {
         File usersFile = new File(json, "Users.json");
         try {
             FileWriter userWriter = new FileWriter(usersFile);
-            userWriter.write(new Gson().toJson(ProgramDatabase.getProgramDatabase().getUsers()));
+            userWriter.write(MyGson.getGson().toJson(ProgramDatabase.getProgramDatabase().getUsers()));
             userWriter.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

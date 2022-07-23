@@ -8,10 +8,7 @@ import models.buildings.BuildingType;
 import models.diplomacy.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
-import models.interfaces.MPCostInterface;
-import models.interfaces.TileImage;
-import models.interfaces.TurnHandler;
-import models.interfaces.combative;
+import models.interfaces.*;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -23,8 +20,11 @@ import models.units.UnitState;
 import models.units.UnitType;
 import models.works.Work;
 import utilities.Debugger;
+import utilities.MyGson;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -50,6 +50,7 @@ public class GameController {
         GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+        HashMap<Tile, TileImage> map = getCurrentPlayer().getMapImage();
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {
@@ -1513,13 +1514,13 @@ public class GameController {
             return meta;
         FileInputStream fileInputStream = new FileInputStream(file);
         String data = new String(fileInputStream.readAllBytes());
-        meta = new Gson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+        meta = MyGson.getGson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
         fileInputStream.close();
         return meta;
     }
 
     public void saveMeta(HashMap<String, ArrayList<String>> input) throws IOException {
-        String data = new Gson().toJson(input);
+        String data = MyGson.getGson().toJson(input);
         FileOutputStream fileOutputStream = new FileOutputStream("meta.json");
         fileOutputStream.write(data.getBytes());
         fileOutputStream.close();
@@ -1575,5 +1576,58 @@ public class GameController {
         }
         return filesArrayList;
     }
+
+    public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
+        return GameMap.getGameMap().getCivilizationImageToShowOnScene(civ);
+    }
+
+    public int findTileXCoordinateInMap(Tile tile){
+        return tile.findTileXCoordinateInMap();
+    }
+
+    public int findTileYCoordinateInMap(Tile tile){
+        return tile.findTileYCoordinateInMap();
+    }
+
+    public void setPlayersSelectedEntity(Selectable selectable){
+        this.getCurrentPlayer().setSelectedEntity(selectable);
+    }
+
+    public boolean isCityOwnerEqualToCurrentPlayer(City city){
+        return city.getOwner().equals(this.getCurrentPlayer());
+    }
+
+    public boolean isUnitOwnerEqualToCurrentPlayer(Unit unit){
+        return unit.getOwner().equals(this.getCurrentPlayer());
+    }
+
+    public ArrayList<RiverSegment> getMapRivers(){
+        return GameMap.getGameMap().getRivers();
+    }
+
+    public String findRiverSegmentDirectionForTile(RiverSegment river, Tile tile){
+        return river.findRiverSegmentDirectionForTile(tile);
+    }
+
+    public boolean isTileImageEqualToTile(Tile tile, TileImage tileImage){
+        return ((Tile) tileImage).equals(tile);
+    }
+
+    public Tile getTileFromMap(int x, int y){
+        return GameMap.getGameMap().getTile(x, y);
+    }
+
+    public void setCurrentPlayerFrameBase(Tile tile){
+        this.getCurrentPlayer().setFrameBase(tile);
+    }
+
+    public Output calculateTheoreticalOutputForTile(Tile tile){
+        return tile.calculateTheoreticalOutput();
+    }
+
+    public boolean canResourceBeExploitedForTile(Resource resource, Tile tile){
+        return resource.canBeExploited(tile);
+    }
+
 
 }

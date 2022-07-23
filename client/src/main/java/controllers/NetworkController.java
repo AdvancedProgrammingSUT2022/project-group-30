@@ -9,6 +9,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class NetworkController {
     private final static int PORT_NUMBER = 6000;
@@ -17,6 +22,7 @@ public class NetworkController {
     private Socket socket;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
+    private RuntimeException runtimeException;
 
     private NetworkController() {
 
@@ -36,14 +42,16 @@ public class NetworkController {
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw runtimeException;
         }
 
     }
 
     public Object transferData(Request request) {
         try {
-            dataOutputStream.writeUTF(request.toJson());
+            byte[] data = request.toJson().getBytes(StandardCharsets.UTF_8);
+            dataOutputStream.writeInt(data.length);
+            dataOutputStream.write(data);
             dataOutputStream.flush();
             Method method = null;
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
@@ -56,8 +64,14 @@ public class NetworkController {
             if (method.getReturnType() == void.class) {
                 return null;
             }
-
-            Response response = Response.fromJson(dataInputStream.readUTF());
+            int length = dataInputStream.readInt();
+            data = new byte[length];
+            dataInputStream.readFully(data);
+            String text = new String(data);
+//            System.out.println(text);
+            Response response = Response.fromJson(text);
+//            System.out.println("RESPONSE:\n" + response.getJson());
+            Files.writeString(Paths.get("json.txt"), response.getJson());
             return MyGson.getGson().fromJson(response.getJson(), method.getReturnType());
         } catch (IOException e) {
             e.printStackTrace();

@@ -2,17 +2,18 @@ package netPackets;
 
 import com.google.gson.Gson;
 import models.GameMap;
+import utilities.MyGson;
 
 public class Response {
     private String json;
 
     public String toJson(){
-        Gson gson = new Gson();
+        Gson gson = MyGson.getGson();
         return gson.toJson(this);
     }
 
     public static Response fromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = MyGson.getGson();
         return gson.fromJson(json, Response.class);
     }
 

@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.SerializedName;
 import controllers.GameController;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -22,7 +23,7 @@ import java.util.HashSet;
 public class Tile implements Workable, TileImage, TurnHandler {
 
     private final int id;
-    public  int getId() {
+    public int getId() {
         return id;
     }
 
@@ -36,8 +37,12 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
+    @SerializedName("type")
+    private String typeName;
+
     public Tile(TerrainType terrainType,
                 HashMap<Resource, Integer> resources, Ruins ruins) {
+        this.typeName = getClass().getName();
         this.id = newAvailableId;
         newAvailableId++;
         this.output = new Output(0, 0, 0);

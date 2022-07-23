@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.SerializedName;
 import models.interfaces.TileImage;
 import models.units.Unit;
 
@@ -10,9 +11,14 @@ public class TileHistory implements TileImage {
     private ArrayList<Unit> units;
     private City city;
 
+    @SerializedName("type")
+    private String typeName;
+
     public TileHistory() {
+        this.typeName = getClass().getName();
         units = new ArrayList<>();
     }
+
 
     public Tile getTile() {
         return tile;

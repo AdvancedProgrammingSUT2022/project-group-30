@@ -10,6 +10,8 @@ import models.technology.TechnologyMap;
 import models.units.Unit;
 import models.works.Work;
 import netPackets.Request;
+import netPackets.Response;
+import utilities.MyGson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,7 +21,12 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class NetworkController {
 
@@ -40,6 +47,7 @@ public class NetworkController {
     }
 
     private String process(String data) {
+//        System.out.println(data);
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
@@ -53,7 +61,7 @@ public class NetworkController {
             ArrayList<String> arguments = request.getArguments();
             Object[] parsedArguments = new Object[arguments.size()];
             for (int i = 0; i < arguments.size(); i++) {
-                Gson gson = new Gson();
+                Gson gson = MyGson.getGson();
                 Class argumentClass = method.getParameterTypes()[i];
                 if (argumentClass == Unit.class) {
                     int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();
@@ -109,10 +117,11 @@ public class NetworkController {
             }
             Object result = method.invoke(GameController.getGameController(), (Object[]) parsedArguments);
             if (result == null) {
-                return "null";
+                return MyGson.toJson(new Response(MyGson.toJson(null)));
             } else {
-                Gson gson = new Gson();
-                return gson.toJson(result);
+                Gson gson = MyGson.getGson();
+                Response response = new Response(gson.toJson(result));
+                return response.toJson();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,9 +147,14 @@ public class NetworkController {
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                         while (true) {
                             try {
-                                String request = dataInputStream.readUTF();
+                                int length = dataInputStream.readInt();
+                                byte[] data = new byte[length];
+                                dataInputStream.readFully(data);
+                                String request = new String(data);
                                 String response = process(request);
-                                dataOutputStream.writeUTF(response);
+                                data = response.getBytes(StandardCharsets.UTF_8);
+                                dataOutputStream.writeInt(data.length);
+                                dataOutputStream.write(data);
                                 dataOutputStream.flush();
                             } catch (SocketException | EOFException e) {
                                 System.out.println("connection failed");

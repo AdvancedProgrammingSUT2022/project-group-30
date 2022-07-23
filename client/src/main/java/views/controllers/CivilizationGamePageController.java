@@ -67,13 +67,13 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
-        if (debugMode || (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty())) {
-            createTechnologyPopup();
-        }
-        UnitsGraphicalController.initializeUnitActionTab(this.pane);
-        CitiesGraphicalController.initializeCityActionTab(this.pane);
-        initializeNextTurnButton();
-        initializeDiplomacyButton();
+//        if (debugMode || (controller.getCurrentPlayer().getResearchProject() == null && !controller.getCurrentPlayer().getCities().isEmpty())) {
+//            createTechnologyPopup();
+//        }
+//        UnitsGraphicalController.initializeUnitActionTab(this.pane);
+//        CitiesGraphicalController.initializeCityActionTab(this.pane);
+//        initializeNextTurnButton();
+//        initializeDiplomacyButton();
     }
 
     private void initializeDiplomacyButton() {
@@ -160,7 +160,7 @@ public class CivilizationGamePageController {
     }
 
     public void drawMap() throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         removeAllPolygonsFromPane();
         removeAllCirclesFromPane();
 
@@ -173,7 +173,7 @@ public class CivilizationGamePageController {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
@@ -210,19 +210,19 @@ public class CivilizationGamePageController {
     }
 
     public void setSceneOnKeyPressed() {
-        addCheatBox();
+        //addCheatBox();
 
-        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
-        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Main.loadFxmlFile("DiplomacyPage");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
+//        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Main.loadFxmlFile("DiplomacyPage");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         Main.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
@@ -248,80 +248,51 @@ public class CivilizationGamePageController {
                 }
                 try {
                     drawMap();
-//                    Main.loadFxmlFile("CivilizationGamePage");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
         });
 
-//        Main.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
-//            @Override
-//            public void handle(KeyEvent keyEvent) {
-//                String keyName = keyEvent.getCode().getName();
-//                int yPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileYCoordinateInMap();
-//                int xPosition = controller.getGameDataBase().getCurrentPlayer().getFrameBase().findTileXCoordinateInMap();
-//                switch (keyName) {
-//                    case "Up":
-//                        goUp(yPosition, xPosition);
-//                        break;
-//                    case "Down":
-//                        goDown(yPosition, xPosition);
-//                        break;
-//                    case "Right":
-//                        goRight(yPosition, xPosition);
-//                        break;
-//                    case "Left":
-//                        goLeft(yPosition, xPosition);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                try {
-//                    drawMap();
-//                } catch (MalformedURLException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        });
     }
 
     public void goUp(int yPosition, int xPosition) {
         if (yPosition > 0) {
-            controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition, yPosition - 1));
+            controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition, yPosition - 1));
         }
     }
 
     public void goDown(int yPosition, int xPosition) {
-        if (yPosition + 9 < GameMap.getGameMap().getMap().length - 1) {
-            controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition, yPosition + 1));
+        if (yPosition + 9 < controller.getMapHeight() - 1) {
+            controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition, yPosition + 1));
         }
     }
 
     public void goLeft(int yPosition, int xPosition) {
         if (xPosition > 0) {
-            controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition - 1, yPosition));
+            controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition - 1, yPosition));
         }
     }
 
     public void goRight(int yPosition, int xPosition) {
-        if (xPosition + 19 < GameMap.getGameMap().getMap()[0].length - 1) {
-            controller.getCurrentPlayer().setFrameBase(GameMap.getGameMap().getTile(xPosition + 1, yPosition));
+        if (xPosition + 19 < controller.getMapWidth() - 1) {
+            controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition + 1, yPosition));
         }
     }
 
     public void putUnitsOnMap() throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
                 if (tilesToShow[i][j] instanceof Tile) {
                     ArrayList<Unit> units = controller.getUnitsInTile((Tile) tilesToShow[i][j]);
+//                    System.out.println("Units: " + units);
                     for (int k = 0; k < units.size(); k++) {
                         Circle circle = new Circle();
                         circle.setCenterY(yCoordinate + 10 + 20 * k);
@@ -329,12 +300,11 @@ public class CivilizationGamePageController {
                         circle.setRadius(10);
                         circle.setFill(Images.getImage(units.get(k).getType().getName()));
                         Unit unit = units.get(k);
-                        if (unit.getOwner().equals(controller.getCurrentPlayer())) {
+                        if (controller.isUnitOwnerEqualToCurrentPlayer(unit)) {
                             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
-                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(unit);
-                                    // TODO...
+                                    CivilizationGamePageController.this.controller.setPlayersSelectedEntity(unit);
                                     try {
                                         UnitsGraphicalController.makeTheUnitActionTab(unit, CivilizationGamePageController.this.pane);
                                     } catch (MalformedURLException e) {
@@ -351,12 +321,12 @@ public class CivilizationGamePageController {
     }
 
     public void putCitiesOnMap() throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
@@ -368,12 +338,11 @@ public class CivilizationGamePageController {
                         circle.setCenterX(xCoordinate - 5);
                         circle.setRadius(15);
                         circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/City/cityBanner.png").toExternalForm()).toExternalForm())));
-                        if (city.getOwner().equals(controller.getCurrentPlayer())) {
+                        if (controller.isCityOwnerEqualToCurrentPlayer(city)) {
                             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                                 @Override
                                 public void handle(MouseEvent mouseEvent) {
-                                    CivilizationGamePageController.this.controller.getCurrentPlayer().setSelectedEntity(city);
-                                    //TODO...
+                                    CivilizationGamePageController.this.controller.setPlayersSelectedEntity(city);
                                     CitiesGraphicalController.makeTheCityActionTab(city, pane);
                                 }
                             });
@@ -416,13 +385,13 @@ public class CivilizationGamePageController {
         pane.getChildren().removeAll(toRemove);
     }
 
-    public void drawFeatures() throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+    public void drawFeatures() {
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);
@@ -440,24 +409,24 @@ public class CivilizationGamePageController {
     }
 
     public void drawRiverSegments() throws MalformedURLException {
-        ArrayList<RiverSegment> rivers = GameMap.getGameMap().getRivers();
+        ArrayList<RiverSegment> rivers = controller.getMapRivers();
         for (int i = 0; i < rivers.size(); i++) {
             Tile firstTile = rivers.get(i).getFirstTile();
             Tile secondTile = rivers.get(i).getSecondTile();
-            if (rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("RD")) {
+            if (controller.findRiverSegmentDirectionForTile(rivers.get(i), firstTile).equals("RD")) {
                 drawRiverForTile(firstTile, "RD");
-            } else if (rivers.get(i).findRiverSegmentDirectionForTile(firstTile).equals("LD")) {
+            } else if (controller.findRiverSegmentDirectionForTile(rivers.get(i), firstTile).equals("LD")) {
                 drawRiverForTile(firstTile, "LD");
-            } else if (rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("RD")) {
+            } else if (controller.findRiverSegmentDirectionForTile(rivers.get(i), secondTile).equals("RD")) {
                 drawRiverForTile(secondTile, "RD");
-            } else if (rivers.get(i).findRiverSegmentDirectionForTile(secondTile).equals("LD")) {
+            } else if (controller.findRiverSegmentDirectionForTile(rivers.get(i), secondTile).equals("LD")) {
                 drawRiverForTile(secondTile, "LD");
             }
         }
     }
 
-    private void drawRiverForTile(Tile tile, String direction) throws MalformedURLException {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+    private void drawRiverForTile(Tile tile, String direction){
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         if (findTileCoordinatesInScene(tile, tilesToShow).isEmpty()) {
             return;
         }
@@ -465,7 +434,7 @@ public class CivilizationGamePageController {
         int yPosition = findTileCoordinatesInScene(tile, tilesToShow).get(1);
         double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * xPosition);
         int isOdd = 1;
-        if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+        if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
             isOdd = -1;
         }
         double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (yPosition + isOdd * (double) (xPosition % 2) / (double) 2);
@@ -485,7 +454,7 @@ public class CivilizationGamePageController {
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 if (tilesToShow[i][j] instanceof Tile) {
-                    if (((Tile) tilesToShow[i][j]).equals(tile)) {
+                    if (controller.isTileImageEqualToTile(tile, tilesToShow[i][j])) {
                         coordinates.add(j);
                         coordinates.add(i);
                     }
@@ -540,7 +509,7 @@ public class CivilizationGamePageController {
         pane.setCenter(vbox);
 
         Text text = new Text();
-        text.setText("Tile coordinates: i = " + tile.findTileYCoordinateInMap() + " , j = " + tile.findTileXCoordinateInMap());
+        text.setText("Tile coordinates: i = " + controller.findTileYCoordinateInMap(tile) + " , j = " + controller.findTileXCoordinateInMap(tile));
         text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(text);
 
@@ -662,7 +631,7 @@ public class CivilizationGamePageController {
 
     private TableView<Output> getOutputTableForTile(Tile tile) {
         ArrayList<Output> outputs = new ArrayList<>();
-        outputs.add(tile.calculateTheoreticalOutput());
+        outputs.add(controller.calculateTheoreticalOutputForTile(tile));
         TableView<Output> tableView = new TableView<>();
         TableColumn<Output, Integer> goldColumn = new TableColumn<>();
         goldColumn.setText("Gold");
@@ -794,7 +763,7 @@ public class CivilizationGamePageController {
         tableView.setRowFactory(view -> {
             TableRow<Resource> row = new TableRow<>();
             row.itemProperty().addListener((obs, oldOrder, newOrder) ->
-                    row.pseudoClassStateChanged(higlighted, newOrder != null && newOrder.canBeExploited(tile)));
+                    row.pseudoClassStateChanged(higlighted, newOrder != null && controller.canResourceBeExploitedForTile(newOrder, tile)));
             return row;
         });
 
@@ -882,14 +851,14 @@ public class CivilizationGamePageController {
     }
 
     private TileImage getTileImageFromHexagon(Polygon hexagon) {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
+        TileImage[][] tilesToShow = controller.getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         double startXCoordinate = hexagon.getPoints().get(0);
         double startYCoordinate = hexagon.getPoints().get(1);
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(controller.getCurrentPlayer().getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * hexagonsSideLength * (i + isOdd * (double) (j % 2) / (double) 2);

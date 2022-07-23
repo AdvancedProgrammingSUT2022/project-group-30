@@ -1,6 +1,7 @@
 package netPackets;
 
 import com.google.gson.Gson;
+import utilities.MyGson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,12 +21,12 @@ public class Request {
     }
 
     public String toJson(){
-        Gson gson = new Gson();
+        Gson gson = MyGson.getGson();
         return gson.toJson(this);
     }
 
     public static Request fromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = MyGson.getGson();
         return gson.fromJson(json, Request.class);
     }
 

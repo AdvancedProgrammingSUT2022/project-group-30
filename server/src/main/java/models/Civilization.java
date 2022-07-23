@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.Expose;
 import controllers.GameController;
 import models.buildings.Palace;
 import models.diplomacy.StepWiseGoldTransferContract;

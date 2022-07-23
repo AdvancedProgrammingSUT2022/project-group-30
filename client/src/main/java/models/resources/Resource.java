@@ -1,5 +1,6 @@
 package models.resources;
 
+import com.google.gson.annotations.SerializedName;
 import models.Civilization;
 import models.Output;
 import models.Tile;
@@ -15,8 +16,12 @@ public abstract class Resource {
     private ImprovementType prerequisiteImprovement;
     private String name;
 
+    @SerializedName("type")
+    private String typeName;
+
     public Resource(Output output, ImprovementType prerequisiteImprovement,
                     ArrayList<TerrainProperty> allowedTerrains, String name) {
+        this.typeName = getClass().getName();
         this.output = output;
         this.prerequisiteImprovement = prerequisiteImprovement;
         this.allowedTerrains = allowedTerrains;
