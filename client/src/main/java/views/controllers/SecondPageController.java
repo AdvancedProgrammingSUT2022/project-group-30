@@ -5,6 +5,7 @@ import controllers.LoginPageController;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -105,9 +106,21 @@ public class SecondPageController {
 
             }
         });
+
+        ImageView chatButton = addButtonToPane(this.pane, "chat", 100, 300, "bg_dio");
+        chatButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    Main.loadFxmlFile("ChatFirstPage");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
-    public static void addButtonToPane(Pane pane, String buttonText, double xPosition, double yPosition, String buttonTemplateName) throws MalformedURLException {
+    public static ImageView addButtonToPane(Pane pane, String buttonText, double xPosition, double yPosition, String buttonTemplateName) throws MalformedURLException {
         ImageView button = new ImageView(new Image(new URL(Main.class.getResource("/images/buttons/" + buttonTemplateName + ".png").toExternalForm()).toExternalForm()));
         button.setX(xPosition);
         button.setY(yPosition);
@@ -117,6 +130,7 @@ public class SecondPageController {
         text.setY(button.getY() + (button.getImage().getHeight() + text.getLayoutBounds().getHeight()) / 2);
         pane.getChildren().add(button);
         pane.getChildren().add(text);
+        return button;
     }
 
 }

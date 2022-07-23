@@ -9,6 +9,7 @@ import models.improvements.Improvement;
 import models.technology.TechnologyMap;
 import models.units.Unit;
 import models.works.Work;
+import netPackets.ControllerType;
 import netPackets.Request;
 
 import java.io.DataInputStream;
@@ -43,7 +44,12 @@ public class NetworkController {
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
-            Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
+            Method[] methods = null;
+            if (request.getControllerType() == ControllerType.GAME_CONTROLLER) {
+                methods = GameController.getGameController().getClass().getDeclaredMethods();
+            } else if (request.getControllerType() == ControllerType.CHAT_CONTROLLER) {
+                methods = ChatController.getChatController().getClass().getDeclaredMethods();
+            }
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];

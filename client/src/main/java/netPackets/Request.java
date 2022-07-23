@@ -1,22 +1,26 @@
 package netPackets;
 
 import com.google.gson.Gson;
+import models.GameMap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Request {
-
     private String methodName;
     private ArrayList<String> arguments;
-
-    public Request(){
-
-    }
+    private ControllerType controllerType;
 
     public Request(String methodName, String... arguments){
         this.methodName = methodName;
         this.arguments = new ArrayList<>(Arrays.asList(arguments));
+        this.controllerType = ControllerType.GAME_CONTROLLER;
+    }
+
+    public Request(String methodName, ControllerType controllerType, String... arguments){
+        this.methodName = methodName;
+        this.arguments = new ArrayList<>(Arrays.asList(arguments));
+        this.controllerType = controllerType;
     }
 
     public String toJson(){
@@ -35,5 +39,9 @@ public class Request {
 
     public ArrayList<String> getArguments(){
         return this.arguments;
+    }
+
+    public ControllerType getControllerType() {
+        return controllerType;
     }
 }
