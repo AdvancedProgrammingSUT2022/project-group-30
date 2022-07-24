@@ -42,11 +42,9 @@ public class NetworkController {
             socket = new Socket("localhost", PORT_NUMBER);
             dataInputStream = new DataInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
         } catch (IOException e) {
             throw runtimeException;
         }
-
     }
 
     public Object transferData(Request request) {

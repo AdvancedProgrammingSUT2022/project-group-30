@@ -62,4 +62,12 @@ public abstract class Resource {
     public ImprovementType getPrerequisiteImprovement() {
         return prerequisiteImprovement;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Resource) {
+            return ((Resource) o).name.equals(name);
+        }
+        return false;
+    }
 }
