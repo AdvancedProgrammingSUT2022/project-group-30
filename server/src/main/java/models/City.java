@@ -55,7 +55,24 @@ public class City implements Selectable, TurnHandler, combative {
         this.id = city.getId();
         this.founder = null;
         this.owner = null;
-        // TODO
+        this.centralTile = city.centralTile;
+        this.buildings = city.buildings;
+        this.territories = city.territories;
+        this.productionReserve = city.productionReserve;
+        this.entityInProduction = city.entityInProduction;
+        this.hammerCount = city.hammerCount;
+        this.foodCount = city.foodCount;
+        this.combatStrength = city.combatStrength;
+        this.rangedCombatStrength = city.rangedCombatStrength;
+        this.range = city.range;
+        this.hitPoints = city.hitPoints;
+        this.hasAttackedThisTurn = city.hasAttackedThisTurn;
+        this.expansionProgress = city.expansionProgress;
+        this.populationProgress = city.populationProgress;
+        this.populationGrowthLimit = city.populationGrowthLimit;
+        this.populationShrinkageLimit = city.populationShrinkageLimit;
+        this.citizens = city.citizens;
+        this.isDefeated = city.isDefeated;
     }
 
     public City(Civilization founder, Tile tile) {
