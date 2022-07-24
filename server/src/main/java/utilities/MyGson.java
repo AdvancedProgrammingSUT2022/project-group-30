@@ -3,6 +3,7 @@ package utilities;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.MPCostEnum;
+import models.TileVisibility;
 import models.buildings.BuildingType;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -28,6 +29,7 @@ public class MyGson {
             .registerTypeAdapter(UnitType.class, new JsonDeserializerWithInheritance<UnitType>())
             .registerTypeAdapter(UnitState.class, new JsonDeserializerWithInheritance<UnitState>())
             .registerTypeAdapter(CombatType.class, new JsonDeserializerWithInheritance<CombatType>())
+            .registerTypeAdapter(TileVisibility.class, new JsonDeserializerWithInheritance<TileVisibility>())
             .setPrettyPrinting()
             .create();
 
