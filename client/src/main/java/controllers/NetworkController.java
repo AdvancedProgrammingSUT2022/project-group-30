@@ -73,7 +73,7 @@ public class NetworkController {
 //            System.out.println(text);
             Response response = Response.fromJson(text);
 //            System.out.println("RESPONSE:\n" + response.getJson());
-            Files.writeString(Paths.get("json.txt"), response.getJson());
+//            Files.writeString(Paths.get("json.txt"), response.getJson());
             return MyGson.getGson().fromJson(response.getJson(), method.getReturnType());
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,7 +105,7 @@ public class NetworkController {
 //            System.out.println(text);
             Response response = Response.fromJson(text);
 //            System.out.println("RESPONSE:\n" + response.getJson());
-            Files.writeString(Paths.get("json.txt"), response.getJson());
+//            Files.writeString(Paths.get("json.txt"), response.getJson());
             return new ArrayList<T>(Arrays.asList(MyGson.getGson().fromJson(response.getJson(), clazz)));
         } catch (IOException e) {
             e.printStackTrace();
