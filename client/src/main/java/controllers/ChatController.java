@@ -4,12 +4,15 @@ import models.User;
 import models.chat.ChatDataBase;
 import models.chat.PrivateChat;
 import models.chat.Room;
+import netPackets.Request;
+import utilities.MyGson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChatController {
     private static ChatController chatController;
+
     private ChatController() {
         database = ChatDataBase.getChatDatabase();
     }
@@ -24,42 +27,37 @@ public class ChatController {
     private ChatDataBase database;
 
     public Room getCurrentRoom(int token) {
-        HashMap<Integer, Integer> currentRoomIndexes = database.getCurrentRoomIndexes();
-        if (database.getRooms().isEmpty()) {
-            return null;
-        }
-        return database.getRooms().get(currentRoomIndexes.get(token));
+        Request request = new Request("ChatController", "getCurrentRoom", MyGson.toJson(token));
+        return (Room) NetworkController.getNetworkController().transferData(request);
     }
 
     public int getCurrentPrivateContactId(int token) {
-        HashMap<Integer, Integer> currentPrivateContactIds = database.getCurrentPrivateContactIds();
-        return currentPrivateContactIds.get(token);
+        Request request = new Request("ChatController", "getCurrentPrivateContactId", MyGson.toJson(token));
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public PrivateChat fetchPrivateChatForUsers(int user1Id, int user2Id) {
+        Request request = new Request("ChatController", "fetchPrivateChatForUsers", MyGson.toJson(user1Id), MyGson.toJson(user2Id));
+        return (PrivateChat) NetworkController.getNetworkController().transferData(request);
     }
 
     public void setCurrentPrivateContactId(int currentPrivateContactId, int token) {
-        database.getCurrentPrivateContactIds().put(token, currentPrivateContactId);
+        Request request = new Request("ChatController", "setCurrentPrivateContactId", MyGson.toJson(currentPrivateContactId), MyGson.toJson(token));
+        NetworkController.getNetworkController().transferData(request);
     }
 
     public void setCurrentRoom(Room room, int token) {
-        database.getCurrentRoomIndexes().put(token, database.getRooms().indexOf(room));
+        Request request = new Request("ChatController", "setCurrentRoom", MyGson.toJson(room), MyGson.toJson(token));
+        NetworkController.getNetworkController().transferData(request);
     }
 
     public Room getRoomByName(String name) {
-        ArrayList<Room> rooms = database.getRooms();
-        for (Room room : rooms) {
-            if (room.getName().equals(name)) {
-                return room;
-            }
-        }
-        return null;
+        Request request = new Request("ChatController", "getRoomByName", MyGson.toJson(name));
+        return (Room) NetworkController.getNetworkController().transferData(request);
     }
 
     public void createNewRoom(User owner, String name) {
-        Room newRoom = new Room();
-        newRoom.setParticipants(new ArrayList<>());
-        newRoom.getParticipants().add(owner.getId());
-        newRoom.setOwner(owner.getId());
-        newRoom.setName(name);
-        database.getRooms().add(newRoom);
+        Request request = new Request("ChatController", "createNewRoom", MyGson.toJson(owner), MyGson.toJson(name));
+        NetworkController.getNetworkController().transferData(request);
     }
 }

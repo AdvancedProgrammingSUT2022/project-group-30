@@ -16,6 +16,7 @@ import models.ProgramDatabase;
 import models.User;
 import models.chat.ChatDataBase;
 import models.chat.Message;
+import models.chat.PrivateChat;
 import views.Main;
 import views.customcomponents.MessageBox;
 
@@ -48,8 +49,9 @@ public class PrivateChatPageController {
         contactImage.setFill(new ImagePattern(new Image("file:src/main/resources/images/avatars/" + contact.getImageName())));
         contactImage.setStroke(Color.BLACK);
         contactImage.setStyle("-fx-background-size: cover;");
+        PrivateChat chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
         data = FXCollections.observableArrayList();
-        ArrayList<Message> messages = new ArrayList<>();
+        ArrayList<Message> messages = chat.getMessages();
         messages.add(new Message("meow"));
         messages.add(new Message("Hi"));
         messages.add(new Message("weeee"));

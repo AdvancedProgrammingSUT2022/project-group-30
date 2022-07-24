@@ -73,7 +73,7 @@ public class NetworkController {
                 methods = ProgramController.getProgramController().getClass().getDeclaredMethods();
                 controller = ProgramController.getProgramController();
             }
-//            System.out.println("Processing: " + request.getMethodName());
+            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];
