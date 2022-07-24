@@ -81,7 +81,8 @@ public class LoginPageController {
     }
 
     public boolean isUserLoggedIn() {
-        return this.programDatabase.getLoggedInUser() == null ? false : true;
+        // NEEDS CHANGING
+        return this.programDatabase.getLoggedInUser(0) == null ? false : true;
     }
 
     public boolean checkNextMenuValidity(String menuName) {

@@ -19,7 +19,6 @@ module com.example.civilization {
     opens terminalViews to javafx.fxml;
     opens views to javafx.fxml;
     opens netPackets to javafx.fxml, javafx.base, com.google.gson;
-    opens views.controllers to javafx.fxml;
     opens menusEnumerations to javafx.fxml, com.google.gson;
     opens utilities to javafx.fxml;
     exports views;

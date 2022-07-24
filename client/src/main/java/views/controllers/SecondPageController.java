@@ -1,20 +1,14 @@
 package views.controllers;
 
-import controllers.GameController;
-import controllers.LoginPageController;
-import javafx.event.Event;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import models.ProgramDatabase;
-import models.User;
 import views.Main;
 
 import java.io.IOException;
@@ -110,6 +104,7 @@ public class SecondPageController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
+                    ProgramController.getProgramController().hackIntoChat(NetworkController.getNetworkController().getToken());
                     Main.loadFxmlFile("ChatFirstPage");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -126,6 +121,7 @@ public class SecondPageController {
 //                GameController.getGameController().addPlayers(players);
 //                GameController.getGameController().initializeGame(20, 30, 0, 8);
                 try {
+                    ProgramController.getProgramController().hackIntoChat(NetworkController.getNetworkController().getToken());
                     Main.loadFxmlFile("ChatFirstPage");
                 } catch (IOException e) {
                     throw new RuntimeException(e);

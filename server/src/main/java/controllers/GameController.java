@@ -1564,18 +1564,20 @@ public class GameController {
     }
 
     public ArrayList<String> listSavedFiles(boolean isAuto) throws IOException {
-        HashMap<String, ArrayList<String>> meta = loadMeta();
-        String name = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
-        File file = new File("save");
-        String[] files = file.list();
-        ArrayList<String> filesArrayList = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            if ((isAuto && files[i].startsWith("auto")) || (!isAuto && files[i].startsWith("manual"))) {
-                if (meta.get(files[i]).contains(name))
-                    filesArrayList.add(files[i]);
-            }
-        }
-        return filesArrayList;
+//        HashMap<String, ArrayList<String>> meta = loadMeta();
+//         NEEDS CHANGING
+//        String name = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+//        File file = new File("save");
+//        String[] files = file.list();
+//        ArrayList<String> filesArrayList = new ArrayList<>();
+//        for (int i = 0; i < files.length; i++) {
+//            if ((isAuto && files[i].startsWith("auto")) || (!isAuto && files[i].startsWith("manual"))) {
+//                if (meta.get(files[i]).contains(name))
+//                    filesArrayList.add(files[i]);
+//            }
+//        }
+//        return filesArrayList;
+        return null;
     }
 
     public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){

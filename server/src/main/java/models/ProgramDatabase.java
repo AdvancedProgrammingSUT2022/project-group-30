@@ -3,16 +3,16 @@ package models;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProgramDatabase {
     private static ProgramDatabase programDatabase;
 
     private ArrayList<User> users;
-    private User loggedInUser;
+    private HashMap<Integer, User> loggedInUsers = new HashMap<>();
 
     private ProgramDatabase() {
         this.users = new ArrayList<>();
-        this.loggedInUser = null;
     }
 
     public static ProgramDatabase getProgramDatabase() {
@@ -38,7 +38,8 @@ public class ProgramDatabase {
     }
 
     public void updateLoggedInUserLastLoginTime(){
-        this.loggedInUser.setLastLoginTime(this.getCurrentDate());
+//        this.loggedInUsers.setLastLoginTime(this.getCurrentDate());
+        // THIS METHOD SHOULD BE CHANGED TO SUPPORT TOKENS
     }
 
     public void updateUserLastScoreChangeTime(User user){
@@ -59,12 +60,21 @@ public class ProgramDatabase {
         return this.users;
     }
 
+    public void setLoggedInUser(User user, int token) {
+        loggedInUsers.put(token, user);
+    }
+
     public void setLoggedInUser(User user) {
-        this.loggedInUser = user;
+        // THIS METHOD SHOULD BE TERMINATED
+    }
+
+    public User getLoggedInUser(int token) {
+        return loggedInUsers.get(token);
     }
 
     public User getLoggedInUser() {
-        return this.loggedInUser;
+        // NEEDS TO BE TERMINATED
+        return loggedInUsers.get(0);
     }
 
     public User getUserById(int id) {

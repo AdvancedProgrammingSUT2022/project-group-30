@@ -1,5 +1,8 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,10 +34,16 @@ public class PrivateChatPageController {
 
     private ObservableList<Message> data;
 
+    private ChatController controller;
+    private NetworkController netController;
+
     @FXML
     public void initialize() {
-        User currentUser = ProgramDatabase.getProgramDatabase().getLoggedInUser();
-        User contact = ProgramDatabase.getProgramDatabase().getUserById(ChatDataBase.getChatDatabase().getCurrentPrivateContactId());
+        controller = ChatController.getChatController();
+        netController = NetworkController.getNetworkController();
+
+        User currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
+        User contact = ProgramController.getProgramController().getUserById(controller.getCurrentPrivateContactId(netController.getToken()));
         contactUsernameField.setText(contact.getUsername());
         contactImage.setFill(new ImagePattern(new Image("file:src/main/resources/images/avatars/" + contact.getImageName())));
         contactImage.setStroke(Color.BLACK);

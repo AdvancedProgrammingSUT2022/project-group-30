@@ -1,5 +1,8 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,10 +32,16 @@ public class RoomChatPageController {
 
     private ObservableList<Message> data;
 
+    private ChatController controller;
+    private NetworkController netController;
+
     @FXML
     public void initialize() {
-        User currentUser = ProgramDatabase.getProgramDatabase().getLoggedInUser();
-        Room room = ChatDataBase.getChatDatabase().getCurrentRoom();
+        controller = ChatController.getChatController();
+        netController = NetworkController.getNetworkController();
+
+        User currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
+        Room room =  controller.getCurrentRoom(netController.getToken());
         roomNameField.setText(room.getName());
         data = FXCollections.observableArrayList();
         ArrayList<Message> messages = new ArrayList<>();
@@ -70,7 +79,7 @@ public class RoomChatPageController {
 
     @FXML
     protected void onSendButtonClick() {
-        data.add(new Message(textArea.getText(), ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()));
+        data.add(new Message(textArea.getText(), ProgramController.getProgramController().getLoggedInUser(netController.getToken()).getId()));
         textArea.setText("");
         scrollToBottom();
     }
