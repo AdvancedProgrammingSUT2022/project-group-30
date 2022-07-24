@@ -343,7 +343,9 @@ public class GameController {
 
     public City getCityCenteredInTile(Tile tile) {
         Request request = new Request("getCityCenteredInTile", MyGson.toJson(tile));
-        return (City) NetworkController.getNetworkController().transferData(request);
+        City result = (City) NetworkController.getNetworkController().transferData(request);;
+        System.out.println(result);
+        return result;
     }
 
     public boolean canUnitMove(Unit unit) {

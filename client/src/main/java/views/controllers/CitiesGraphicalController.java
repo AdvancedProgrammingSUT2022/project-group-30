@@ -420,7 +420,6 @@ public class CitiesGraphicalController {
                     city.changeProduction(producibleUnit);
                     RegisterPageGraphicalController.showPopup("Set city's production to " + producibleUnit.getName());
                     makeProductionPanel(city, pane);
-
                 }
             });
             hBox.getChildren().add(circle);

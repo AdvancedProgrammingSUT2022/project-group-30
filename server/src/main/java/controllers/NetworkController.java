@@ -54,6 +54,7 @@ public class NetworkController {
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
+            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];
@@ -130,17 +131,23 @@ public class NetworkController {
                     response = new Response(gson.toJson(result));
                     castedResult.getOwner().setMapImage(map);
                 } else if (result instanceof City) {
+//                    City castedResult = (City) result;
+//                    HashMap<Tile, TileImage> map = castedResult.getOwner().getMapImage();
+//                    castedResult.getOwner().setMapImage(null);
+//                    response = new Response(gson.toJson(result));
+//                    castedResult.getOwner().setMapImage(map);
+
                     City castedResult = (City) result;
-                    HashMap<Tile, TileImage> map = castedResult.getOwner().getMapImage();
-                    castedResult.getOwner().setMapImage(null);
-                    response = new Response(gson.toJson(result));
-                    castedResult.getOwner().setMapImage(map);
+                    response = new Response(gson.toJson(new City(castedResult)));
+
                 } else if (result instanceof Civilization) {
+//                    Civilization castedResult = (Civilization) result;
+//                    HashMap<Tile, TileImage> map = castedResult.getMapImage();
+//                    castedResult.setMapImage(null);
+//                    response = new Response(gson.toJson(result));
+//                    castedResult.setMapImage(map);
                     Civilization castedResult = (Civilization) result;
-                    HashMap<Tile, TileImage> map = castedResult.getMapImage();
-                    castedResult.setMapImage(null);
-                    response = new Response(gson.toJson(result));
-                    castedResult.setMapImage(map);
+                    response = new Response(gson.toJson(new Civilization(castedResult)));
                 } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof Unit) {
                     ArrayList<Unit> castedResult = (ArrayList<Unit>) result;
                     ArrayList<HashMap<Tile, TileImage>> maps = new ArrayList<>();
@@ -160,7 +167,7 @@ public class NetworkController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(request.getMethodName().equals("findTileXCoordinateInMap")){
+        if (request.getMethodName().equals("findTileXCoordinateInMap")) {
             System.out.println("WTF IS HAPPENING!!!!");
         }
         return null;

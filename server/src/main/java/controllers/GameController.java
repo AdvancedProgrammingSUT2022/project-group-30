@@ -51,6 +51,7 @@ public class GameController {
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
         HashMap<Tile, TileImage> map = getCurrentPlayer().getMapImage();
+        foundCityWithSettler(getCurrentPlayer().getUnits().get(0));
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {

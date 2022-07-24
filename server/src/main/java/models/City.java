@@ -29,9 +29,9 @@ public class City implements Selectable, TurnHandler, combative {
     private static int newAvailableId = 0;
 
     private static final int MAXHITPOINTS = 20;
-    private final Civilization founder;
-    private Civilization owner;
-    private final Tile centralTile;
+    private final Civilization founder; //
+    private Civilization owner; //
+    private Tile centralTile;
     private ArrayList<Building> buildings = new ArrayList<>();
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
@@ -51,6 +51,12 @@ public class City implements Selectable, TurnHandler, combative {
     private ArrayList<Citizen> citizens = new ArrayList<>();
     private boolean isDefeated;
 
+    public City(City city) {
+        this.id = city.getId();
+        this.founder = null;
+        this.owner = null;
+        // TODO
+    }
 
     public City(Civilization founder, Tile tile) {
         this.id = newAvailableId;
