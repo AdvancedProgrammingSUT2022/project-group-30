@@ -4,28 +4,30 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import models.MPCostEnum;
 import models.buildings.BuildingType;
+import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.resources.Resource;
 import models.technology.Technology;
+import models.units.CombatType;
 import models.units.UnitState;
 import models.units.UnitType;
 import netPackets.JsonDeserializerWithInheritance;
 
 public class MyGson {
-
     private static Gson gson = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .registerTypeAdapter(TerrainProperty.class, new JsonDeserializerWithInheritance<TerrainProperty>())
             .registerTypeAdapter(Resource.class, new JsonDeserializerWithInheritance<Resource>())
-            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<Resource>())
-            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<Resource>())
-            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Resource>())
+            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<BuildingType>())
+            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<ImprovementType>())
+            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Technology>())
             .registerTypeAdapter(TileImage.class, new JsonDeserializerWithInheritance<TileImage>())
-            .registerTypeAdapter(MPCostEnum.class, new JsonDeserializerWithInheritance<TileImage>())
-            .registerTypeAdapter(UnitType.class, new JsonDeserializerWithInheritance<TileImage>())
-            .registerTypeAdapter(UnitState.class, new JsonDeserializerWithInheritance<TileImage>())
+            .registerTypeAdapter(MPCostEnum.class, new JsonDeserializerWithInheritance<MPCostEnum>())
+            .registerTypeAdapter(UnitType.class, new JsonDeserializerWithInheritance<UnitType>())
+            .registerTypeAdapter(UnitState.class, new JsonDeserializerWithInheritance<UnitState>())
+            .registerTypeAdapter(CombatType.class, new JsonDeserializerWithInheritance<CombatType>())
             .setPrettyPrinting()
             .create();
 
