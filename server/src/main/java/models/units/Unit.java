@@ -33,10 +33,19 @@ public class Unit implements Selectable, TurnHandler, combative {
 
 
     public Unit(Unit unit) {
+        this.id = unit.getId();
         this.owner = null;
         this.type = unit.getType();
-        this.id = unit.getId();
-        
+        this.location = unit.getLocation();
+        this.hitPointsLeft = unit.hitPointsLeft;
+        this.movePointsLeft = unit.movePointsLeft;
+        this.state = unit.state;
+        this.isAssembled = unit.isAssembled;
+        this.hasAttackedThisTurn = unit.hasAttackedThisTurn;
+        this.inactivityDuration = unit.inactivityDuration;
+        this.stateDuration = unit.stateDuration;
+        this.path = unit.path;
+
     }
 
     public Unit(Civilization owner, UnitType type, Tile location) {

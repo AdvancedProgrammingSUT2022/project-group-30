@@ -29,9 +29,9 @@ public class City implements Selectable, TurnHandler, combative {
     private static int newAvailableId = 0;
 
     private static final int MAXHITPOINTS = 20;
-    private final Civilization founder;
-    private Civilization owner;
-    private final Tile centralTile;
+    private final Civilization founder; //
+    private Civilization owner; //
+    private Tile centralTile;
     private ArrayList<Building> buildings = new ArrayList<>();
     private ArrayList<Tile> territories = new ArrayList<>();
     private HashMap<Producible, Integer> productionReserve = new HashMap<>();
@@ -51,6 +51,29 @@ public class City implements Selectable, TurnHandler, combative {
     private ArrayList<Citizen> citizens = new ArrayList<>();
     private boolean isDefeated;
 
+    public City(City city) {
+        this.id = city.getId();
+        this.founder = null;
+        this.owner = null;
+        this.centralTile = city.centralTile;
+        this.buildings = city.buildings;
+        this.territories = city.territories;
+        this.productionReserve = city.productionReserve;
+        this.entityInProduction = city.entityInProduction;
+        this.hammerCount = city.hammerCount;
+        this.foodCount = city.foodCount;
+        this.combatStrength = city.combatStrength;
+        this.rangedCombatStrength = city.rangedCombatStrength;
+        this.range = city.range;
+        this.hitPoints = city.hitPoints;
+        this.hasAttackedThisTurn = city.hasAttackedThisTurn;
+        this.expansionProgress = city.expansionProgress;
+        this.populationProgress = city.populationProgress;
+        this.populationGrowthLimit = city.populationGrowthLimit;
+        this.populationShrinkageLimit = city.populationShrinkageLimit;
+        this.citizens = city.citizens;
+        this.isDefeated = city.isDefeated;
+    }
 
     public City(Civilization founder, Tile tile) {
         this.id = newAvailableId;
