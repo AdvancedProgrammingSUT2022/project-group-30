@@ -7,6 +7,7 @@ import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.resources.Resource;
+import models.technology.Technology;
 import netPackets.JsonDeserializerWithInheritance;
 
 public class MyGson {
@@ -17,6 +18,7 @@ public class MyGson {
             .registerTypeAdapter(Resource.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<Resource>())
+            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(TileImage.class, new JsonDeserializerWithInheritance<TileImage>())
             .setPrettyPrinting()
             .create();
