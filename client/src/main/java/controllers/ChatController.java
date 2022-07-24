@@ -2,6 +2,7 @@ package controllers;
 
 import models.User;
 import models.chat.ChatDataBase;
+import models.chat.PrivateChat;
 import models.chat.Room;
 
 import java.util.ArrayList;

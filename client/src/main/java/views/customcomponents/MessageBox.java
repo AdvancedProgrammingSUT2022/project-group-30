@@ -1,5 +1,7 @@
 package views.customcomponents;
 
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,13 +23,13 @@ public class MessageBox extends ListCell<Message> {
             AnchorPane pane = new AnchorPane();
             MessageComponent box = new MessageComponent(item);
             pane.getChildren().add(box);
-            if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+            if (item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId()) {
                 AnchorPane.setRightAnchor(box, 10.0);
             } else {
                 AnchorPane.setLeftAnchor(box, 10.0);
             }
             setGraphic(pane);
-            if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+            if (item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId()) {
                 this.setContextMenu(createContextMenu(item));
             }
         }

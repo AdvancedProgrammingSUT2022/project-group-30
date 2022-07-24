@@ -1,5 +1,6 @@
 package views.customcomponents;
 
+import controllers.ProgramController;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -20,7 +21,7 @@ public class MessageComponent extends VBox {
 
     public MessageComponent(Message message) {
         this.message = message;
-        User sender = ProgramDatabase.getProgramDatabase().getUserById(message.getSenderId());
+        User sender = ProgramController.getProgramController().getUserById(message.getSenderId());
 
         HBox senderInfo = new HBox();
         senderInfo.setAlignment(Pos.CENTER_LEFT);
