@@ -24,10 +24,7 @@ import javafx.stage.Stage;
 import menusEnumerations.CitizenManagementPanelCommands;
 import menusEnumerations.CityCommands;
 import menusEnumerations.ProductionPanelCommands;
-import models.Citizen;
-import models.City;
-import models.GameMap;
-import models.Tile;
+import models.*;
 import models.buildings.BuildingType;
 import models.interfaces.Producible;
 import models.interfaces.TileImage;
@@ -52,8 +49,12 @@ public class CitiesGraphicalController {
 
     private static ScrollPane cityActionTabPane;
     private static VBox cityCommandsBox;
+    private static Civilization currentPlayer;
+    private static TileImage[][] tilesToShow;
 
     public static void initializeCityActionTab(Pane pane){
+        currentPlayer = controller.getCurrentPlayer();
+        tilesToShow = controller.getCivilizationImageToShowOnScene(currentPlayer);
         cityActionTabPane = new ScrollPane();
         pane.getChildren().add(cityActionTabPane);
         cityCommandsBox = new VBox();
@@ -175,7 +176,7 @@ public class CitiesGraphicalController {
             return;
         }
         Tile targetTile = (Tile) tileImage;
-        if (targetTile.calculateDistance(city.getCentralTile()) >= city.getRange()) {
+        if (controller.calculateDistanceFromTile(targetTile, city.getCentralTile()) >= city.getRange()) {
             RegisterPageGraphicalController.showPopup("This target is not within city's range!");
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
@@ -203,8 +204,8 @@ public class CitiesGraphicalController {
             }
             return;
         }
-        CombatController.getCombatController().executeRangedAttack(city, target);
-        RegisterPageGraphicalController.showPopup("Attacked target at " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        controller.executeRangedAttackCity(city, target);
+        RegisterPageGraphicalController.showPopup("Attacked target at " + controller.findTileYCoordinateInMap(targetTile) + ", " + controller.findTileXCoordinateInMap(targetTile));
         try {
             Main.loadFxmlFile("CivilizationGamePage");
         } catch (IOException e) {
@@ -742,22 +743,28 @@ public class CitiesGraphicalController {
     }
 
     public static void waitForChoosingTileToBuy(City city, Pane pane){
-        ArrayList<Tile> purchasableTiles = city.findPurchasableTiles();
+        ArrayList<Tile> purchasableTiles = controller.findCityPurchasableTiles(city);
         //city.getOwner().setGoldCount(1000);
         for(int i = 0; i < pane.getChildren().size(); i++){
             if(pane.getChildren().get(i) instanceof Polygon){
                 Polygon hexagon = (Polygon) pane.getChildren().get(i);
                 hexagon.setDisable(true);
                 TileImage tileImage = getTileImageFromHexagon(hexagon);
-                if(tileImage instanceof Tile && purchasableTiles.contains((Tile) tileImage)){
-                    hexagon.setStroke(Color.RED);
-                    hexagon.setDisable(false);
-                    hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
-                            purchaseTile(city, (Tile) tileImage);
+                if(tileImage instanceof Tile){
+                    for(int j = 0; j < purchasableTiles.size(); j++){
+                        if(purchasableTiles.get(j).getId() == ((Tile) tileImage).getId()){
+                            hexagon.setStroke(Color.RED);
+                            hexagon.setDisable(false);
+                            hexagon.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    purchaseTile(city, (Tile) tileImage);
+                                }
+                            });
+                            break;
                         }
-                    });
+                    }
+
                 }
 
             }
@@ -768,12 +775,12 @@ public class CitiesGraphicalController {
     }
 
     private static void purchaseTile(City city, Tile tile){
-        int cost = city.calculateNextTilePrice();
-        if (cost > city.getOwner().getGoldCount()) {
+        int cost = controller.calculateNextTilePriceForCity(city);
+        if (cost > controller.getCityOwnerGoldCount(city)) {
             RegisterPageGraphicalController.showPopup("You don't have enough gold to buy this tile!");
             return;
         }
-        controller.getCurrentPlayer().decreaseGold(cost);
+        controller.decreaseCivilizationGold(currentPlayer, cost);
         controller.addTileToCityTerritory(city, tile);
         RegisterPageGraphicalController.showPopup("Tile successfully purchased!");
         try {
@@ -784,7 +791,7 @@ public class CitiesGraphicalController {
     }
 
     private static void deselectCity(City city) {
-        city.getOwner().setSelectedEntity(null);
+        controller.deselectCity(city);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(false);
         cityCommandsBox.setDisable(true);
@@ -796,14 +803,13 @@ public class CitiesGraphicalController {
     }
 
     private static TileImage getTileImageFromHexagon(Polygon hexagon){
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         double startXCoordinate = hexagon.getPoints().get(0);
         double startYCoordinate = hexagon.getPoints().get(1);
         for(int i = 0; i < tilesToShow.length; i++){
             for(int j = 0; j < tilesToShow[i].length; j++){
                 double xCoordinate = 160 + (double) 32 / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if(controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1){
+                if(controller.findTileXCoordinateInMap(currentPlayer.getFrameBase()) % 2 == 1){
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * 32 * (i +isOdd * (double) (j % 2) / (double) 2);
@@ -1052,17 +1058,17 @@ public class CitiesGraphicalController {
         pane.setCenter(vbox);
 
 
-        if (city.isCapital()) {
+        if (controller.isCityCapital(city)) {
             addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s Capital City");
         } else {
             addTextToVBox(vbox, controller.getCurrentPlayer().getName() + "'s City");
         }
-        addTextToVBox(vbox, "Y: " + city.getCentralTile().findTileYCoordinateInMap() + ", X: " + city.getCentralTile().findTileXCoordinateInMap());
+        addTextToVBox(vbox, "Y: " + controller.findTileYCoordinateInMap(city.getCentralTile()) + ", X: " + controller.findTileXCoordinateInMap(city.getCentralTile()));
         addTextToVBox(vbox, "The following tiles comprise this city's territory:");
         for (Tile tile : city.getTerritories()) {
             if (tile != city.getCentralTile()) {
-                String info = "Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " ";
-                if (city.isTileBeingWorked(tile)) {
+                String info = "Y: " + controller.findTileYCoordinateInMap(tile) + ", X: " + controller.findTileYCoordinateInMap(tile) + " ";
+                if (controller.isCityTileBeingWorked(city, tile)) {
                     info = info + "(worked)";
                 } else {
                     info = info + "(not worked)";
@@ -1099,10 +1105,10 @@ public class CitiesGraphicalController {
 
         String productionName = (city.getEntityInProduction() == null) ? "nothing!" : city.getEntityInProduction().getName();
         addTextToVBox(vbox, "This city is producing " + productionName);
-        addLineForOutputTypeToVBox("Food", "Food Output: " + city.calculateOutput().getFood(), vbox);
-        addLineForOutputTypeToVBox("Production", "Production Output: " + city.calculateOutput().getProduction(), vbox);
-        addLineForOutputTypeToVBox("Science", "Science Output: " + city.calculateBeakerProduction(), vbox);
-        addLineForOutputTypeToVBox("Gold", "Gold Output: " + city.calculateOutput().getGold(), vbox);
+        addLineForOutputTypeToVBox("Food", "Food Output: " + controller.calculateOutputForCity(city).getFood(), vbox);
+        addLineForOutputTypeToVBox("Production", "Production Output: " + controller.calculateOutputForCity(city).getProduction(), vbox);
+        addLineForOutputTypeToVBox("Science", "Science Output: " + controller.calculateCityBeakerProduction(city), vbox);
+        addLineForOutputTypeToVBox("Gold", "Gold Output: " + controller.calculateOutputForCity(city).getGold(), vbox);
 
         Button button = new Button();
         button.setText("Ok");

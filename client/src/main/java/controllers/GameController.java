@@ -67,7 +67,7 @@ public class GameController {
 
     private ArrayList<String> getAppropriateStartingPoints(ArrayList<String> fileLines, int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
         Request request = new Request("getAppropriateStartingPoints", MyGson.toJson(fileLines), MyGson.toJson(mapHeight), MyGson.toJson(mapWidth), MyGson.toJson(startingYPosition), MyGson.toJson(startingXPosition));
-        return (ArrayList<String>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<String>) NetworkController.getNetworkController().transferData(request, String[].class);
     }
 
     public void createUnit(UnitType type, Civilization owner, Tile location) {
@@ -217,8 +217,7 @@ public class GameController {
 
     public ArrayList<Unit> getUnitsInTile(Tile tile) {
         Request request = new Request("getUnitsInTile", MyGson.toJson(tile));
-        ArrayList<Unit> result = (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request, Unit[].class);
-        return result;
+        return (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request, Unit[].class);
     }
 
     public Unit getMilitaryUnitInTile(Tile tile) {
@@ -303,7 +302,7 @@ public class GameController {
 
     public ArrayList<Unit> getCurrentPlayersUnitsWaitingForCommand() {
         Request request = new Request("getCurrentPlayersUnitsWaitingForCommand");
-        return (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request, Unit[].class);
     }
 
     public void goToNextTurn() {
@@ -343,9 +342,7 @@ public class GameController {
 
     public City getCityCenteredInTile(Tile tile) {
         Request request = new Request("getCityCenteredInTile", MyGson.toJson(tile));
-        City result = (City) NetworkController.getNetworkController().transferData(request);;
-        System.out.println(result);
-        return result;
+        return (City) NetworkController.getNetworkController().transferData(request);
     }
 
     public boolean canUnitMove(Unit unit) {
@@ -420,8 +417,7 @@ public class GameController {
 
     public Civilization getCurrentPlayer() {
         Request request = new Request("getCurrentPlayer");
-        Civilization civ = (Civilization) NetworkController.getNetworkController().transferData(request);
-        return civ;
+        return (Civilization) NetworkController.getNetworkController().transferData(request);
     }
 
     public void declareWar(Civilization attacker, Civilization defender) {
@@ -447,7 +443,7 @@ public class GameController {
 
     public ArrayList<Tile> getAdjacentTiles(Tile tile) {
         Request request = new Request("getAdjacentTiles", MyGson.toJson(tile));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public boolean isTileBlocker(Tile tile) {
@@ -457,32 +453,32 @@ public class GameController {
 
     public ArrayList<Tile> getVisibleTilesFromTile(Tile tile, int distance) {
         Request request = new Request("getVisibleTilesFromTile", MyGson.toJson(tile), MyGson.toJson(distance));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public ArrayList<Tile> deleteRepetitiveElementsFromArrayList(ArrayList<Tile> tiles) {
         Request request = new Request("deleteRepetitiveElementsFromArrayList", MyGson.toJson(tiles));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public ArrayList<Tile> getVisibleTilesByCities(Civilization civilization) {
         Request request = new Request("getVisibleTilesByCities", MyGson.toJson(civilization));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public ArrayList<Tile> getVisibleTilesByUnits(Civilization civilization) {
         Request request = new Request("getVisibleTilesByUnits", MyGson.toJson(civilization));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public ArrayList<Tile> getVisibleTilesByUnit(Unit unit) {
         Request request = new Request("getVisibleTilesByUnit", MyGson.toJson(unit));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public ArrayList<Tile> getVisibleTilesByCivilization(Civilization civilization) {
         Request request = new Request("getVisibleTilesByCivilization", MyGson.toJson(civilization));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     public void setMapImageOfCivilization(Civilization civilization) {
@@ -512,7 +508,7 @@ public class GameController {
 
     public ArrayList<Tile> findPath(Unit unit, Tile sourceTile, Tile destinationTile) {
         Request request = new Request("findPath", MyGson.toJson(unit), MyGson.toJson(sourceTile), MyGson.toJson(destinationTile));
-        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
     private TileGraph calculateShortestPathFromSourceTile(TileGraph graph, GraphNode source) {
@@ -538,12 +534,12 @@ public class GameController {
 
     public ArrayList<ScientificTreaty> getScientificTreaties(CivilizationPair pair) {
         Request request = new Request("getScientificTreaties", MyGson.toJson(pair));
-        return (ArrayList<ScientificTreaty>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<ScientificTreaty>) NetworkController.getNetworkController().transferData(request, ScientificTreaty[].class);
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContracts(CivilizationPair pair) {
         Request request = new Request("getStepWiseGoldTransferContracts", MyGson.toJson(pair));
-        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request, StepWiseGoldTransferContract[].class);
     }
 
     public WarInfo getWarInfos(CivilizationPair pair) {
@@ -553,32 +549,32 @@ public class GameController {
 
     public ArrayList<DiplomaticRelation> getDiplomaticRelationsMapOfCivilization(Civilization civilization) {
         Request request = new Request("getDiplomaticRelationsMapOfCivilization", MyGson.toJson(civilization));
-        return (ArrayList<DiplomaticRelation>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<DiplomaticRelation>) NetworkController.getNetworkController().transferData(request, DiplomaticRelation[].class);
     }
 
     public ArrayList<ScientificTreaty> getScientificTreatiesOfCivilization(Civilization civilization) {
         Request request = new Request("getScientificTreatiesOfCivilization", MyGson.toJson(civilization));
-        return (ArrayList<ScientificTreaty>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<ScientificTreaty>) NetworkController.getNetworkController().transferData(request, ScientificTreaty[].class);
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationPayer(Civilization civilization) {
         Request request = new Request("getStepWiseGoldTransferContractsOfCivilizationPayer", MyGson.toJson(civilization));
-        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request, StepWiseGoldTransferContract[].class);
     }
 
     public ArrayList<StepWiseGoldTransferContract> getStepWiseGoldTransferContractsOfCivilizationRecipient(Civilization civilization) {
         Request request = new Request("getStepWiseGoldTransferContractsOfCivilizationRecipient", MyGson.toJson(civilization));
-        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<StepWiseGoldTransferContract>) NetworkController.getNetworkController().transferData(request, StepWiseGoldTransferContract[].class);
     }
 
     public ArrayList<WarInfo> getWarInfoMapOfCivilization(Civilization civilization) {
         Request request = new Request("getWarInfoMapOfCivilization", MyGson.toJson(civilization));
-        return (ArrayList<WarInfo>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<WarInfo>) NetworkController.getNetworkController().transferData(request, WarInfo[].class);
     }
 
     public ArrayList<Notification> getCivilizationNewNotification() {
         Request request = new Request("getCivilizationNewNotification");
-        return (ArrayList<Notification>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<Notification>) NetworkController.getNetworkController().transferData(request, Notification[].class);
     }
 
     public void seenAllNotifications() {
@@ -693,7 +689,7 @@ public class GameController {
 
     public ArrayList<RiverSegment> getMapRivers() {
         Request request = new Request("getMapRivers");
-        return (ArrayList<RiverSegment>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<RiverSegment>) NetworkController.getNetworkController().transferData(request, RiverSegment[].class);
     }
 
     public String findRiverSegmentDirectionForTile(RiverSegment river, Tile tile) {
@@ -724,6 +720,60 @@ public class GameController {
     public boolean canResourceBeExploitedForTile(Resource resource, Tile tile) {
         Request request = new Request("canResourceBeExploitedForTile", MyGson.toJson(resource), MyGson.toJson(tile));
         return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<City> getCivilizationCities(Civilization civ) {
+        Request request = new Request("getCivilizationCities", MyGson.toJson(civ));
+        return (ArrayList<City>) NetworkController.getNetworkController().transferData(request, City[].class);
+    }
+
+    public ArrayList<City> getCivilizationCitiesWaitingForProduction(Civilization civ) {
+        Request request = new Request("getCivilizationCitiesWaitingForProduction", MyGson.toJson(civ));
+        return (ArrayList<City>) NetworkController.getNetworkController().transferData(request, City[].class);
+    }
+
+    public void deselectCity(City city){
+        city.getOwner().setSelectedEntity(null);
+    }
+
+    public ArrayList<Tile> findCityPurchasableTiles(City city){
+        return city.findPurchasableTiles();
+    }
+
+    public int calculateNextTilePriceForCity(City city){
+        return city.calculateNextTilePrice();
+    }
+
+    public double getCityOwnerGoldCount(City city){
+        return city.getOwner().getGoldCount();
+    }
+
+    public void decreaseCivilizationGold(Civilization civ, int cost){
+        civ.decreaseGold(cost);
+    }
+
+    public boolean isCityCapital(City city){
+        return city.isCapital();
+    }
+
+    public boolean isCityTileBeingWorked(City city, Tile tile){
+        return city.isTileBeingWorked(tile);
+    }
+
+    public Output calculateOutputForCity(City city){
+        return city.calculateOutput();
+    }
+
+    public double calculateCityBeakerProduction(City city){
+        return city.calculateBeakerProduction();
+    }
+
+    public int calculateDistanceFromTile(Tile tile, Tile dest){
+        return tile.calculateDistance(dest);
+    }
+
+    public void executeRangedAttackCity(City city, combative comb){
+        CombatController.getCombatController().executeRangedAttack(city, comb);
     }
 
 

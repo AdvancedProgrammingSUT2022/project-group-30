@@ -50,7 +50,6 @@ public class GameController {
         GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
-        HashMap<Tile, TileImage> map = getCurrentPlayer().getMapImage();
         foundCityWithSettler(getCurrentPlayer().getUnits().get(0));
     }
 
@@ -1628,6 +1627,14 @@ public class GameController {
 
     public boolean canResourceBeExploitedForTile(Resource resource, Tile tile){
         return resource.canBeExploited(tile);
+    }
+
+    public ArrayList<City> getCivilizationCities(Civilization civ){
+        return civ.getCities();
+    }
+
+    public ArrayList<City> getCivilizationCitiesWaitingForProduction(Civilization civ){
+        return civ.getCitiesWaitingForProduction();
     }
 
 

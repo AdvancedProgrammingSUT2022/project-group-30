@@ -9,6 +9,7 @@ import models.buildings.BuildingType;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.interfaces.Producible;
+import models.interfaces.Selectable;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -24,6 +25,7 @@ public class MyGson {
             .registerTypeAdapter(TerrainProperty.class, new JsonDeserializerWithInheritance<TerrainProperty>())
             .registerTypeAdapter(Resource.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(Building.class, new JsonDeserializerWithInheritance<Building>())
+            .registerTypeAdapter(Selectable.class, new JsonDeserializerWithInheritance<Selectable>())
 //            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<BuildingType>())
 //            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<ImprovementType>())
 //            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Technology>())

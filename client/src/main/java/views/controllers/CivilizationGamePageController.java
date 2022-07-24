@@ -74,9 +74,9 @@ public class CivilizationGamePageController {
 //        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
 //            createTechnologyPopup();
 //        }
-//        UnitsGraphicalController.initializeUnitActionTab(this.pane);
-//        CitiesGraphicalController.initializeCityActionTab(this.pane);
-//        initializeNextTurnButton();
+        UnitsGraphicalController.initializeUnitActionTab(this.pane);
+        CitiesGraphicalController.initializeCityActionTab(this.pane);
+        initializeNextTurnButton();
 //        initializeDiplomacyButton();
     }
 
@@ -122,13 +122,13 @@ public class CivilizationGamePageController {
 //            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
 //            return;
 //        }
-//        if (!currentPlayer.getCities().isEmpty() && currentPlayer.getResearchProject() == null &&
+//        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && currentPlayer.getResearchProject() == null &&
 //                !currentPlayer.isTurnBreakDisabled()) {
 //            RegisterPageGraphicalController.showPopup("You should start a research project!");
 //            return;
 //        }
 //
-//        ArrayList<City> citiesWaitingForProduction = currentPlayer.getCitiesWaitingForProduction();
+//        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
 //        if (citiesWaitingForProduction.isEmpty() == false && !currentPlayer.isTurnBreakDisabled()) {
 //            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
 //            return;
@@ -268,10 +268,7 @@ public class CivilizationGamePageController {
     }
 
     public void goDown(int yPosition, int xPosition) {
-        System.out.println("x: " + xPosition + ", y: " + yPosition);
-        System.out.println("in goDown:");
         if (yPosition + 9 < controller.getMapHeight() - 1) {
-            System.out.println("hmmmm");
             controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition, yPosition + 1));
         }
     }
@@ -878,7 +875,6 @@ public class CivilizationGamePageController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 try {
-                    System.out.println("how are you!");
                     showTileValues((Tile) getTileImageFromHexagon(hexagon));
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);

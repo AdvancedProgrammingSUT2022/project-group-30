@@ -44,7 +44,7 @@ public abstract class Resource {
     public boolean canBeExploited(Tile tile) {
         ArrayList<Improvement> unpillagedImprovements = tile.getUnpillagedImprovements();
         for (Improvement improvement : unpillagedImprovements) {
-            if (improvement.getType() == prerequisiteImprovement) {
+            if (improvement.getType().getName().equals(prerequisiteImprovement.getName())) {
                 return true;
             }
         }
