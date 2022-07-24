@@ -50,10 +50,14 @@ public class PrivateChatPageController {
         contactImage.setStroke(Color.BLACK);
         contactImage.setStyle("-fx-background-size: cover;");
         PrivateChat chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
-        controller.addMessagetoPrivateChat(chat.getId(), new Message("Meow"));
+        controller.addMessagetoPrivateChat(chat.getId(), new Message("Meow", currentUser.getId()));
+        controller.addMessagetoPrivateChat(chat.getId(), new Message("Hello", contact.getId()));
         data = FXCollections.observableArrayList();
         chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
         ArrayList<Message> messages = chat.getMessages();
+        controller.editMessageText(messages.get(0).getId(), "Fuck You man");
+        chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
+        messages = chat.getMessages();
 //        messages.add(new Message("meow"));
 //        messages.add(new Message("Hi"));
 //        messages.add(new Message("weeee"));

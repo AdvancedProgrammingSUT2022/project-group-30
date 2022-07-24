@@ -66,6 +66,11 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public void editMessageText(int id, String newText) {
+        Request request = new Request("ChatController", "editMessageText", MyGson.toJson(id), MyGson.toJson(newText));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public int getNextPrivateChatId() {
         Request request = new Request("ChatController", "getNextPrivateChatId");
         return (int) NetworkController.getNetworkController().transferData(request);
@@ -74,5 +79,10 @@ public class ChatController {
     public int getNextMessageId() {
         Request request = new Request("ChatController", "getNextMessageId");
         return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Message findMessageById(int id) {
+        Request request = new Request("ChatController", "findMessageById", MyGson.toJson(id));
+        return (Message) NetworkController.getNetworkController().transferData(request);
     }
 }

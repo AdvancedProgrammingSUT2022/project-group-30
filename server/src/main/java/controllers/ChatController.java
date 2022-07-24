@@ -73,6 +73,11 @@ public class ChatController {
         privateChat.getMessages().add(message);
     }
 
+    public void editMessageText(int id, String newText) {
+        Message message = findMessageById(id);
+        message.setText(newText);
+    }
+
     public int getNextPrivateChatId() {
         int largest = 0;
         for (PrivateChat privateChat : database.getPrivateChats()) {
@@ -107,5 +112,31 @@ public class ChatController {
         }
 
         return largest;
+    }
+
+    public Message findMessageById(int id) {
+        for (PrivateChat privateChat : database.getPrivateChats()) {
+            for (Message message : privateChat.getMessages()) {
+                if (message.getId() == id) {
+                    return message;
+                }
+            }
+        }
+
+        for (Room room : database.getRooms()) {
+            for (Message message : room.getMessages()) {
+                if (message.getId() == id) {
+                    return message;
+                }
+            }
+        }
+
+        for (Message message : database.getGlobalChat()) {
+            if (message.getId() == id) {
+                return message;
+            }
+        }
+
+        return null;
     }
 }
