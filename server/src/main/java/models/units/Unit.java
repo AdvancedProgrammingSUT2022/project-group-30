@@ -18,7 +18,7 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     private static int newAvailableId = 0;
-    private final Civilization owner;
+    private final Civilization owner;   //
     private final UnitType type;
     private Tile location;
     private int hitPointsLeft;
@@ -31,6 +31,13 @@ public class Unit implements Selectable, TurnHandler, combative {
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
     public static final int MAINTENANCE_COST_OF_UNIT = 2;
 
+
+    public Unit(Unit unit) {
+        this.owner = null;
+        this.type = unit.getType();
+        this.id = unit.getId();
+        
+    }
 
     public Unit(Civilization owner, UnitType type, Tile location) {
         this.id = newAvailableId;

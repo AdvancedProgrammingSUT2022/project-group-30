@@ -125,11 +125,13 @@ public class NetworkController {
                 Gson gson = MyGson.getGson();
                 Response response;
                 if (result instanceof Unit) {
+//                    Unit castedResult = (Unit) result;
+//                    HashMap<Tile, TileImage> map = castedResult.getOwner().getMapImage();
+//                    castedResult.getOwner().setMapImage(null);
+//                    response = new Response(gson.toJson(result));
+//                    castedResult.getOwner().setMapImage(map);
                     Unit castedResult = (Unit) result;
-                    HashMap<Tile, TileImage> map = castedResult.getOwner().getMapImage();
-                    castedResult.getOwner().setMapImage(null);
-                    response = new Response(gson.toJson(result));
-                    castedResult.getOwner().setMapImage(map);
+                    response = new Response(gson.toJson(new Unit(castedResult)));
                 } else if (result instanceof City) {
 //                    City castedResult = (City) result;
 //                    HashMap<Tile, TileImage> map = castedResult.getOwner().getMapImage();
@@ -150,15 +152,19 @@ public class NetworkController {
                     response = new Response(gson.toJson(new Civilization(castedResult)));
                 } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof Unit) {
                     ArrayList<Unit> castedResult = (ArrayList<Unit>) result;
-                    ArrayList<HashMap<Tile, TileImage>> maps = new ArrayList<>();
-                    for (int i = 0; i < castedResult.size(); i++) {
-                        maps.add(castedResult.get(i).getOwner().getMapImage());
-                        castedResult.get(i).getOwner().setMapImage(null);
+//                    ArrayList<HashMap<Tile, TileImage>> maps = new ArrayList<>();
+//                    for (int i = 0; i < castedResult.size(); i++) {
+//                        maps.add(castedResult.get(i).getOwner().getMapImage());
+//                        castedResult.get(i).getOwner().setMapImage(null);
+//                    }
+//                    response = new Response(gson.toJson(result));
+//                    for (int i = 0; i < castedResult.size(); i++) {
+//                        castedResult.get(i).getOwner().setMapImage(maps.get(i));
+//                    }
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new Unit(castedResult.get(i)));
                     }
-                    response = new Response(gson.toJson(result));
-                    for (int i = 0; i < castedResult.size(); i++) {
-                        castedResult.get(i).getOwner().setMapImage(maps.get(i));
-                    }
+                    response = new Response(gson.toJson(castedResult));
                 } else {
                     response = new Response(gson.toJson(result));
                 }
