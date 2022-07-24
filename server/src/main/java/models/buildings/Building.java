@@ -1,5 +1,6 @@
 package models.buildings;
 
+import com.google.gson.annotations.SerializedName;
 import models.City;
 import models.TerrainType;
 import models.interfaces.Workable;
@@ -14,7 +15,11 @@ public class Building implements Workable {
 
     private final BuildingType type;
 
+    @SerializedName("type")
+    private String typeName;
+
     public Building(BuildingType type) {
+        this.typeName = getClass().getName();
         this.id = nextAvailableId;
         nextAvailableId++;
         this.type = type;

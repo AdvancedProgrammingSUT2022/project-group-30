@@ -56,7 +56,7 @@ public class City implements Selectable, TurnHandler, combative {
         this.founder = null;
         this.owner = null;
         this.centralTile = city.centralTile;
-        this.buildings = city.buildings;
+//        this.buildings = city.buildings;
         this.territories = city.territories;
         this.productionReserve = city.productionReserve;
         this.entityInProduction = city.entityInProduction;
