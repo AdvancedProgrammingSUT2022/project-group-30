@@ -2,6 +2,8 @@ package utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import models.buildings.BuildingType;
+import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.resources.Resource;
@@ -13,6 +15,8 @@ public class MyGson {
             .enableComplexMapKeySerialization()
             .registerTypeAdapter(TerrainProperty.class, new JsonDeserializerWithInheritance<TerrainProperty>())
             .registerTypeAdapter(Resource.class, new JsonDeserializerWithInheritance<Resource>())
+            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<Resource>())
+            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(TileImage.class, new JsonDeserializerWithInheritance<TileImage>())
             .setPrettyPrinting()
             .create();

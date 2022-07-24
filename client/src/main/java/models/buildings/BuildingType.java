@@ -62,6 +62,12 @@ public enum BuildingType implements Producible, EnumInterface {
     PUBLIC_SCHOOL(350, 3, Technology.SCIENTIFIC_THEORY, createArrayList(UNIVERSITY), 0, "Public School"),
     @SerializedName("Enum models.buildings.BuildingType Satrap's Court")
     SATRAPS_COURT(220, 0, Technology.BANKING, createArrayList(MARKET), 2, "Satrap's Court"),
+    @SerializedName("Enum models.buildings.BuildingType Theater")
+    THEATER(300, 5, Technology.PRINTING_PRESS, createArrayList(COLOSSEUM), 4, "Theater"),
+    @SerializedName("Enum models.buildings.BuildingType Windmill")
+    WINDMILL(180, 2, Technology.ECONOMICS, 0, "Windmill"),
+    @SerializedName("Enum models.buildings.BuildingType Arsenal")
+    ARSENAL(350, 3, Technology.RAILROAD, createArrayList(MILITARY_ACADEMY), 0, "Arsenal"),
     @SerializedName("Enum models.buildings.BuildingType Broadcast Tower")
     BROADCAST_TOWER(600, 3, Technology.RADIO, createArrayList(MUSEUM), 0, "Broadcast Tower"),
     @SerializedName("Enum models.buildings.BuildingType Factory")
