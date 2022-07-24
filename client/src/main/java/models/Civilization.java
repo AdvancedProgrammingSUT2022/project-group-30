@@ -518,4 +518,8 @@ public class Civilization implements TurnHandler {
     public void setMapImage(HashMap<Tile, TileImage> mapImage) {
         this.mapImage = mapImage;
     }
+
+    public void setOriginCapital(City originCapital) {
+        this.originCapital = originCapital;
+    }
 }

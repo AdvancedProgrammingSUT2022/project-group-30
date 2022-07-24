@@ -44,6 +44,14 @@ public class Civilization implements TurnHandler {
     private ArrayList<Notification> notifications = new ArrayList<>();
     private boolean isDefeated;
 
+    public Civilization(Civilization civ) {
+        this.id = civ.getId();
+        this.name = "Ghost";
+        luxuryResources = null;
+        strategicResources = null;
+        technologies = null;
+    }
+
     public Civilization(String name) {
         this.id = nextAvailableId;
         nextAvailableId++;
@@ -517,5 +525,9 @@ public class Civilization implements TurnHandler {
 
     public void setMapImage(HashMap<Tile, TileImage> mapImage) {
         this.mapImage = mapImage;
+    }
+
+    public void setOriginCapital(City originCapital) {
+        this.originCapital = originCapital;
     }
 }

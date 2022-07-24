@@ -29,7 +29,7 @@ public class City implements Selectable, TurnHandler, combative {
     private static int newAvailableId = 0;
 
     private static final int MAXHITPOINTS = 20;
-    private final Civilization founder;
+    private Civilization founder;
     private Civilization owner;
     private final Tile centralTile;
     private ArrayList<Building> buildings = new ArrayList<>();
@@ -762,5 +762,9 @@ public class City implements Selectable, TurnHandler, combative {
 
     public void setDefeated(boolean defeated) {
         isDefeated = defeated;
+    }
+
+    public void setFounder(Civilization founder) {
+        this.founder = founder;
     }
 }

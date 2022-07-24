@@ -70,6 +70,8 @@ public class JsonDeserializerWithInheritance<T> implements JsonDeserializer<T>, 
 
     @Override
     public JsonElement serialize(T t, Type type, JsonSerializationContext jsonSerializationContext) {
+//        System.out.println("serializing type: " + type.getTypeName());
+//        System.out.flush();
         return jsonSerializationContext.serialize(t);
     }
 //            JsonElement json, Type typeOfT, JsonDeserializationContext context)
