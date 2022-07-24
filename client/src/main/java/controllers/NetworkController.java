@@ -63,12 +63,12 @@ public class NetworkController {
                     break;
                 }
             }
-            if (method.getReturnType() == void.class) {
-                return null;
-            }
             int length = dataInputStream.readInt();
             data = new byte[length];
             dataInputStream.readFully(data);
+            if (method.getReturnType() == void.class) {
+                return null;
+            }
             String text = new String(data);
 //            System.out.println(text);
             Response response = Response.fromJson(text);

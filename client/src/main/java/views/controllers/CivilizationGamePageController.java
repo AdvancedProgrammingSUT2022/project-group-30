@@ -62,8 +62,7 @@ public class CivilizationGamePageController {
     
     @FXML
     public void initialize() throws MalformedURLException {
-        currentPlayer = controller.getCurrentPlayer();
-        tilesToShow = controller.getCivilizationImageToShowOnScene(currentPlayer);
+
         
         //controller.makeEverythingVisible();
         //printAllTilesInfo();
@@ -165,14 +164,14 @@ public class CivilizationGamePageController {
     }
 
     public void drawMap() throws MalformedURLException {
+        currentPlayer = controller.getCurrentPlayer();
+        tilesToShow = controller.getCivilizationImageToShowOnScene(currentPlayer);
         removeAllPolygonsFromPane();
         removeAllCirclesFromPane();
-
         putCitiesOnMap();
         putUnitsOnMap();
         drawRiverSegments();
         drawFeatures();
-
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) hexagonsSideLength / (double) 2 * (1 + 3 * j);
@@ -269,7 +268,10 @@ public class CivilizationGamePageController {
     }
 
     public void goDown(int yPosition, int xPosition) {
+        System.out.println("x: " + xPosition + ", y: " + yPosition);
+        System.out.println("in goDown:");
         if (yPosition + 9 < controller.getMapHeight() - 1) {
+            System.out.println("hmmmm");
             controller.setCurrentPlayerFrameBase(controller.getTileFromMap(xPosition, yPosition + 1));
         }
     }

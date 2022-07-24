@@ -23,6 +23,8 @@ public class Request {
         return gson.toJson(this);
     }
 
+
+
     public static Request fromJson(String json){
         Gson gson = MyGson.getGson();
         return gson.fromJson(json, Request.class);

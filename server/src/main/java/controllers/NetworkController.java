@@ -154,7 +154,9 @@ public class NetworkController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        if(request.getMethodName().equals("findTileXCoordinateInMap")){
+            System.out.println("WTF IS HAPPENING!!!!");
+        }
         return null;
     }
 

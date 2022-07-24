@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.RoomsListController"
+      prefHeight="400.0" prefWidth="600.0" spacing="20" alignment="TOP_CENTER">
+
+    <padding>
+        <Insets topRightBottomLeft="50"/>
+    </padding>
+
+    <HBox alignment="CENTER" spacing="20">
+        <Label text="Room Name:" styleClass="timesNewRoman20"/>
+        <TextField styleClass="timesNewRoman20" prefWidth="200" fx:id="roomNameField"/>
+    </HBox>
+
+    <Button text="Enter Room" prefWidth="300" styleClass="greenButton" onAction="#onEnterRoomButtonClick"/>
+    <Button text="Create Room" prefWidth="300" styleClass="greenButton" onAction="#onCreateRoomButtonClick"/>
+    <Button text="Back" prefWidth="300" styleClass="redButton" onAction="#onBackButtonClick"/>
+
+    <stylesheets>
+        <URL value="@../css/chatroom.css"/>
+    </stylesheets>
+</VBox>
