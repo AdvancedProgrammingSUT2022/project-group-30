@@ -51,7 +51,24 @@ public class Civilization implements TurnHandler {
         this.capital = null;
         this.originCapital = null;
         this.selectedEntity = null;
+        this.isEverythingVisibleCheatCodeInEffect = civ.isEverythingVisibleCheatCodeInEffect;
+        this.isTurnBreakDisabled = civ.isTurnBreakDisabled;
+        this.luxuryResources = civ.luxuryResources;
+        this.strategicResources = civ.strategicResources;
+        this.technologies = civ.technologies;
+        this.goldCount = civ.goldCount;
+        this.beakerCount = civ.beakerCount;
+        this.researchProject = civ.researchProject;
+        this.researchReserve = civ.researchReserve;
+        this.happiness = civ.happiness;
+        this.diplomaticCredit = civ.diplomaticCredit;
+        this.score = civ.score;
+        this.capital = null;
+        this.originCapital = null;
         this.frameBase = civ.frameBase;
+        this.selectedEntity = null;
+        this.notifications = civ.notifications;
+        this.isDefeated = civ.isDefeated;
     }
 
     public Civilization(String name) {
