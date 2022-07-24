@@ -2,6 +2,7 @@ package utilities;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import models.MPCostEnum;
 import models.buildings.BuildingType;
 import models.improvements.ImprovementType;
 import models.interfaces.TerrainProperty;
@@ -20,6 +21,7 @@ public class MyGson {
             .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(TileImage.class, new JsonDeserializerWithInheritance<TileImage>())
+            .registerTypeAdapter(MPCostEnum.class, new JsonDeserializerWithInheritance<TileImage>())
             .setPrettyPrinting()
             .create();
 
