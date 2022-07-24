@@ -2,6 +2,7 @@ package controllers;
 
 import models.User;
 import models.chat.ChatDataBase;
+import models.chat.Message;
 import models.chat.PrivateChat;
 import models.chat.Room;
 
@@ -65,5 +66,46 @@ public class ChatController {
         newRoom.setOwner(owner.getId());
         newRoom.setName(name);
         database.getRooms().add(newRoom);
+    }
+
+    public void addMessagetoPrivateChat(int id, Message message) {
+        PrivateChat privateChat = database.findPrivateChatById(id);
+        privateChat.getMessages().add(message);
+    }
+
+    public int getNextPrivateChatId() {
+        int largest = 0;
+        for (PrivateChat privateChat : database.getPrivateChats()) {
+            if (privateChat.getId() >= largest) {
+                largest = privateChat.getId() + 1;
+            }
+        }
+        return largest;
+    }
+
+    public int getNextMessageId() {
+        int largest = 0;
+        for (PrivateChat privateChat : database.getPrivateChats()) {
+            for (Message message : privateChat.getMessages()) {
+                if (message.getId() >= largest) {
+                    largest = message.getId() + 1;
+                }
+            }
+        }
+        for (Room room : database.getRooms()) {
+            for (Message message : room.getMessages()) {
+                if (message.getId() >= largest) {
+                    largest = message.getId() + 1;
+                }
+            }
+        }
+
+        for (Message message : database.getGlobalChat()) {
+            if (message.getId() >= largest) {
+                largest = message.getId() + 1;
+            }
+        }
+
+        return largest;
     }
 }

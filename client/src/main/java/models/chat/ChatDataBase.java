@@ -20,6 +20,7 @@ public class ChatDataBase {
 
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();
     private ArrayList<Room> rooms = new ArrayList<>();
+    private ArrayList<Message> globalChat = new ArrayList<>();
     private HashMap<Integer, Integer> currentPrivateContactIds = new HashMap<>();
     private HashMap<Integer, Integer> currentRoomIndexes = new HashMap<>();
 
@@ -39,6 +40,10 @@ public class ChatDataBase {
         return rooms;
     }
 
+    public ArrayList<Message> getGlobalChat() {
+        return globalChat;
+    }
+
     public PrivateChat fetchPrivateChatForUsers(int user1Id, int user2Id) {
         for (PrivateChat privateChat : privateChats) {
             if (privateChat.matchUsers(user1Id, user2Id)) {
@@ -48,5 +53,14 @@ public class ChatDataBase {
         PrivateChat privateChat = new PrivateChat(user1Id, user2Id);
         privateChats.add(privateChat);
         return privateChat;
+    }
+
+    public PrivateChat findPrivateChatById(int id) {
+        for (PrivateChat privateChat : privateChats) {
+            if (privateChat.getId() == id) {
+                return privateChat;
+            }
+        }
+        return null;
     }
 }

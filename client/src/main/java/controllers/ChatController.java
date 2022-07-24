@@ -2,6 +2,7 @@ package controllers;
 
 import models.User;
 import models.chat.ChatDataBase;
+import models.chat.Message;
 import models.chat.PrivateChat;
 import models.chat.Room;
 import netPackets.Request;
@@ -12,7 +13,6 @@ import java.util.HashMap;
 
 public class ChatController {
     private static ChatController chatController;
-
     private ChatController() {
         database = ChatDataBase.getChatDatabase();
     }
@@ -59,5 +59,20 @@ public class ChatController {
     public void createNewRoom(User owner, String name) {
         Request request = new Request("ChatController", "createNewRoom", MyGson.toJson(owner), MyGson.toJson(name));
         NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addMessagetoPrivateChat(int id, Message message) {
+        Request request = new Request("ChatController", "addMessagetoPrivateChat", MyGson.toJson(id), MyGson.toJson(message));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int getNextPrivateChatId() {
+        Request request = new Request("ChatController", "getNextPrivateChatId");
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int getNextMessageId() {
+        Request request = new Request("ChatController", "getNextMessageId");
+        return (int) NetworkController.getNetworkController().transferData(request);
     }
 }
