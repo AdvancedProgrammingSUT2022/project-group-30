@@ -9,6 +9,7 @@ import models.interfaces.TerrainProperty;
 import models.interfaces.TileImage;
 import models.resources.Resource;
 import models.technology.Technology;
+import models.units.UnitType;
 import netPackets.JsonDeserializerWithInheritance;
 
 public class MyGson {
@@ -22,6 +23,7 @@ public class MyGson {
             .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(TileImage.class, new JsonDeserializerWithInheritance<TileImage>())
             .registerTypeAdapter(MPCostEnum.class, new JsonDeserializerWithInheritance<TileImage>())
+            .registerTypeAdapter(UnitType.class, new JsonDeserializerWithInheritance<TileImage>())
             .setPrettyPrinting()
             .create();
 

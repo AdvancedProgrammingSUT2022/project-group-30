@@ -1,6 +1,9 @@
 package models;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum TileVisibility {
+
     VISIBLE("Visible"),
     REVEALED("Revealed"),
     FOG_OF_WAR("Fog of War");
