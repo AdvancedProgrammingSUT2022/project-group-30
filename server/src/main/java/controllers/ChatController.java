@@ -78,6 +78,33 @@ public class ChatController {
         message.setText(newText);
     }
 
+    public void deleteMessage(int id) {
+        for (PrivateChat privateChat : database.getPrivateChats()) {
+            for (Message message : privateChat.getMessages()) {
+                if (message.getId() == id) {
+                    privateChat.getMessages().remove(message);
+                    return;
+                }
+            }
+        }
+
+        for (Room room : database.getRooms()) {
+            for (Message message : room.getMessages()) {
+                if (message.getId() == id) {
+                    room.getMessages().remove(message);
+                    return;
+                }
+            }
+        }
+
+        for (Message message : database.getGlobalChat()) {
+            if (message.getId() == id) {
+                database.getGlobalChat().remove(message);
+                return;
+            }
+        }
+    }
+
     public int getNextPrivateChatId() {
         int largest = 0;
         for (PrivateChat privateChat : database.getPrivateChats()) {

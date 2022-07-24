@@ -52,10 +52,13 @@ public class PrivateChatPageController {
         PrivateChat chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
         controller.addMessagetoPrivateChat(chat.getId(), new Message("Meow", currentUser.getId()));
         controller.addMessagetoPrivateChat(chat.getId(), new Message("Hello", contact.getId()));
+        controller.addMessagetoPrivateChat(chat.getId(), new Message("Ummm", contact.getId()));
+        controller.addMessagetoPrivateChat(chat.getId(), new Message("Heeey :)", contact.getId()));
         data = FXCollections.observableArrayList();
         chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
         ArrayList<Message> messages = chat.getMessages();
         controller.editMessageText(messages.get(0).getId(), "Fuck You man");
+        controller.deleteMessage(messages.get(3).getId());
         chat = controller.fetchPrivateChatForUsers(currentUser.getId(), contact.getId());
         messages = chat.getMessages();
 //        messages.add(new Message("meow"));
