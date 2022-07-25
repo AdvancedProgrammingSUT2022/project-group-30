@@ -1,5 +1,6 @@
 package views.customcomponents;
 
+import controllers.ChatController;
 import controllers.NetworkController;
 import controllers.ProgramController;
 import javafx.event.ActionEvent;
@@ -13,6 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.ProgramDatabase;
 import models.chat.Message;
+import views.Main;
+
+import java.io.IOException;
 
 public class MessageBox extends ListCell<Message> {
     private boolean isViewerSender;
@@ -67,7 +71,12 @@ public class MessageBox extends ListCell<Message> {
     }
 
     private void deleteForEveryone(Message message) {
-        getListView().getItems().remove(message);
+        ChatController.getChatController().deleteMessage(message.getId());
+        try {
+            Main.loadFxmlFile("PrivateChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showEditPopup(Message message) {

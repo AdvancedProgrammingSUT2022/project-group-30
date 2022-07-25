@@ -55,14 +55,6 @@ public class NetworkController {
 
     private String process(String data) {
 //        System.out.println("processing: " + data);
-        BufferedWriter out = null;
-        try {
-            out = new BufferedWriter(
-                    new FileWriter("Log.txt", true));
-            out.write("Request: " + data + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
@@ -192,8 +184,6 @@ public class NetworkController {
                 } else {
                     response = new Response(gson.toJson(result));
                 }
-                out.write("Response:\n\n" + response.toJson() + "\n");
-                out.close();
                 return response.toJson();
             }
         } catch (Exception e) {

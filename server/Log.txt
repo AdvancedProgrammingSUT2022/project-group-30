@@ -21024,3 +21024,1933 @@ Response:
 {
   "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
 }
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserByUsername",
+  "arguments": [
+    "\"amir\""
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "0",
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserByUsername",
+  "arguments": [
+    "\"mahyarafshin\""
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "0",
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "2"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "2"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "0",
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "2"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "2"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "2"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "1"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "0",
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    },\n    {\n      \"id\": 2,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"chtri?\\n\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:31\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    },\n    {\n      \"id\": 2,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"chtri?\\n\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:31\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "3"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    },\n    {\n      \"id\": 2,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"chtri?\\n\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:31\"\n    },\n    {\n      \"id\": 3,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"aaawli\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:39\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserByUsername",
+  "arguments": [
+    "\"mahyarafshin\""
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getCurrentPrivateContactId",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "0"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "fetchPrivateChatForUsers",
+  "arguments": [
+    "1",
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"id\": 0,\n  \"user1Id\": 0,\n  \"user2Id\": 1,\n  \"messages\": [\n    {\n      \"id\": 0,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"hello\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:06\"\n    },\n    {\n      \"id\": 1,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"hiii\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:17\"\n    },\n    {\n      \"id\": 2,\n      \"senderId\": 0,\n      \"isHiddenToSender\": false,\n      \"text\": \"chtri?\\n\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:31\"\n    },\n    {\n      \"id\": 3,\n      \"senderId\": 1,\n      \"isHiddenToSender\": false,\n      \"text\": \"aaawli\",\n      \"seen\": false,\n      \"timeSent\": \"2022/07/25 22:50:39\"\n    }\n  ]\n}"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ChatController",
+  "methodName": "getNextMessageId",
+  "arguments": []
+}
+Response:
+
+{
+  "json": "4"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "0"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 1,\n  \"id\": 0,\n  \"username\": \"mahyarafshin\",\n  \"password\": \"1111\",\n  \"nickname\": \"mahyarafshin\",\n  \"score\": 0,\n  \"imageName\": \"3.jpeg\",\n  \"lastLoginTime\": \"2022/07/20 00:22:19\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:15\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getLoggedInUser",
+  "arguments": [
+    "2"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
+Request: {
+  "controllerName": "ProgramController",
+  "methodName": "getUserById",
+  "arguments": [
+    "1"
+  ]
+}
+Response:
+
+{
+  "json": "{\n  \"rank\": 2,\n  \"id\": 1,\n  \"username\": \"amir\",\n  \"password\": \"1Aa@1111\",\n  \"nickname\": \"amiri\",\n  \"score\": 0,\n  \"imageName\": \"0.jpeg\",\n  \"lastLoginTime\": \"2022/07/11 16:42:09\",\n  \"lastScoreChangeTime\": \"2022/07/11 16:41:46\",\n  \"invitations\": []\n}"
+}
