@@ -15,21 +15,23 @@ import models.ProgramDatabase;
 import models.chat.Message;
 
 public class MessageBox extends ListCell<Message> {
+    private boolean isViewerSender;
     @Override
     public void updateItem(Message item, boolean empty) {
         super.updateItem(item, empty);
         this.getStyleClass().add("messageBox");
         if (item != null && !empty) {
+            isViewerSender = item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId();
             AnchorPane pane = new AnchorPane();
-            MessageComponent box = new MessageComponent(item);
+            MessageComponent box = new MessageComponent(item, isViewerSender);
             pane.getChildren().add(box);
-            if (item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId()) {
+            if (isViewerSender) {
                 AnchorPane.setRightAnchor(box, 10.0);
             } else {
                 AnchorPane.setLeftAnchor(box, 10.0);
             }
             setGraphic(pane);
-            if (item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId()) {
+            if (isViewerSender) {
                 this.setContextMenu(createContextMenu(item));
             }
         }
