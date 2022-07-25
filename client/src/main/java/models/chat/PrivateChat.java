@@ -6,6 +6,11 @@ import models.User;
 import java.util.ArrayList;
 
 public class PrivateChat {
+    private final int id;
+    private int user1Id;
+    private int user2Id;
+    private ArrayList<Message> messages = new ArrayList<>();
+
     public PrivateChat(int user1Id, int user2Id) {
         this.user1Id = user1Id;
         this.user2Id = user2Id;
@@ -46,9 +51,4 @@ public class PrivateChat {
         }
         return false;
     }
-
-    private final int id;
-    private int user1Id;
-    private int user2Id;
-    private ArrayList<Message> messages = new ArrayList<>();
 }

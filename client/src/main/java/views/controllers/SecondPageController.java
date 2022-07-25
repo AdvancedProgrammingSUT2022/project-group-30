@@ -114,14 +114,34 @@ public class SecondPageController {
         pane.getChildren().get(7).setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-//                User[] players = new User[2];
-//                LoginPageController.getLoginPageController().setProgramDatabase();
-//                players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
-//                players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
-//                GameController.getGameController().addPlayers(players);
-//                GameController.getGameController().initializeGame(20, 30, 0, 8);
+
                 try {
                     ProgramController.getProgramController().hackIntoChat(NetworkController.getNetworkController().getToken());
+                    Main.loadFxmlFile("ChatFirstPage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        addButtonToPane(this.pane, "chat1", 100, 380, "bg_dio");
+        pane.getChildren().get(8).setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    ProgramController.getProgramController().hackIntoChat1(NetworkController.getNetworkController().getToken());
+                    Main.loadFxmlFile("ChatFirstPage");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        pane.getChildren().get(9).setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    ProgramController.getProgramController().hackIntoChat1(NetworkController.getNetworkController().getToken());
                     Main.loadFxmlFile("ChatFirstPage");
                 } catch (IOException e) {
                     throw new RuntimeException(e);

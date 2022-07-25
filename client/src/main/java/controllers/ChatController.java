@@ -1,10 +1,7 @@
 package controllers;
 
 import models.User;
-import models.chat.ChatDataBase;
-import models.chat.Message;
-import models.chat.PrivateChat;
-import models.chat.Room;
+import models.chat.*;
 import netPackets.Request;
 import utilities.MyGson;
 

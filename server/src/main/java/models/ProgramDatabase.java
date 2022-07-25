@@ -1,15 +1,16 @@
 package models;
 
+import models.chat.TokenData;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ProgramDatabase {
     private static ProgramDatabase programDatabase;
 
     private ArrayList<User> users;
-    private HashMap<Integer, User> loggedInUsers = new HashMap<>();
+    private ArrayList<TokenData> tokenData = new ArrayList<>();
 
     private ProgramDatabase() {
         this.users = new ArrayList<>();
@@ -42,6 +43,17 @@ public class ProgramDatabase {
         // THIS METHOD SHOULD BE CHANGED TO SUPPORT TOKENS
     }
 
+    public TokenData fetchTokenData(int token) {
+        for (TokenData data : tokenData) {
+            if (data.getToken() == token) {
+                return data;
+            }
+        }
+        TokenData newTokenData = new TokenData(token);
+        tokenData.add(newTokenData);
+        return newTokenData;
+    }
+
     public void updateUserLastScoreChangeTime(User user){
         user.setLastScoreChangeTime(this.getCurrentDate());
     }
@@ -61,20 +73,20 @@ public class ProgramDatabase {
     }
 
     public void setLoggedInUser(User user, int token) {
-        loggedInUsers.put(token, user);
+        fetchTokenData(token).setLoggedInUser(user.getId());
+    }
+
+    public User getLoggedInUser(int token) {
+        return getUserById(fetchTokenData(token).getLoggedInUser());
+    }
+
+    public User getLoggedInUser() {
+        // THIS METHOD NEEDS TO BE TERMINATED
+        return null;
     }
 
     public void setLoggedInUser(User user) {
         // THIS METHOD SHOULD BE TERMINATED
-    }
-
-    public User getLoggedInUser(int token) {
-        return loggedInUsers.get(token);
-    }
-
-    public User getLoggedInUser() {
-        // NEEDS TO BE TERMINATED
-        return loggedInUsers.get(0);
     }
 
     public User getUserById(int id) {
@@ -84,6 +96,10 @@ public class ProgramDatabase {
             }
         }
         return null;
+    }
+
+    public ArrayList<TokenData> getTokenData() {
+        return tokenData;
     }
 
 }

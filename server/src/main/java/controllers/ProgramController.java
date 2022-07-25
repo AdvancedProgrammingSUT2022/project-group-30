@@ -2,6 +2,10 @@ package controllers;
 
 import models.ProgramDatabase;
 import models.User;
+import models.chat.ChatDataBase;
+import models.chat.TokenData;
+
+import java.util.ArrayList;
 
 public class ProgramController {
     private static ProgramController programController;
@@ -21,6 +25,19 @@ public class ProgramController {
     public void hackIntoChat(int token) {
         LoginPageController.readUsersListFromFile();
         database.setLoggedInUser(getUserById(0), token);
+    }
+
+    public void hackIntoChat1(int token) {
+        LoginPageController.readUsersListFromFile();
+        database.setLoggedInUser(getUserById(1), token);
+    }
+
+    public TokenData fetchTokenData(int token) {
+        return database.fetchTokenData(token);
+    }
+
+    public ArrayList<TokenData> getTokenData() {
+        return database.getTokenData();
     }
 
     public User getUserByUsername(String username) {

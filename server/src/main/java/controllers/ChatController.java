@@ -1,10 +1,7 @@
 package controllers;
 
 import models.User;
-import models.chat.ChatDataBase;
-import models.chat.Message;
-import models.chat.PrivateChat;
-import models.chat.Room;
+import models.chat.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +22,8 @@ public class ChatController {
     private ChatDataBase database;
 
     public Room getCurrentRoom(int token) {
+        TokenData tokenData = ProgramController.getProgramController().fetchTokenData(token);
+
         HashMap<Integer, Integer> currentRoomIndexes = database.getCurrentRoomIndexes();
         if (database.getRooms().isEmpty()) {
             return null;
@@ -33,19 +32,18 @@ public class ChatController {
     }
 
     public int getCurrentPrivateContactId(int token) {
-        HashMap<Integer, Integer> currentPrivateContactIds = database.getCurrentPrivateContactIds();
-        return currentPrivateContactIds.get(token);
+        return ProgramController.getProgramController().fetchTokenData(token).getCurrentPrivateChatId();
     }
 
     public PrivateChat fetchPrivateChatForUsers(int user1Id, int user2Id) {
         return database.fetchPrivateChatForUsers(user1Id, user2Id);
     }
 
-    public void setCurrentPrivateContactId(int currentPrivateContactId, int token) {
-        database.getCurrentPrivateContactIds().put(token, currentPrivateContactId);
+    public synchronized void setCurrentPrivateContactId(int currentPrivateContactId, int token) {
+        ProgramController.getProgramController().fetchTokenData(token).setCurrentPrivateChatId(currentPrivateContactId);
     }
 
-    public void setCurrentRoom(Room room, int token) {
+    public synchronized void setCurrentRoom(Room room, int token) {
         database.getCurrentRoomIndexes().put(token, database.getRooms().indexOf(room));
     }
 
@@ -59,7 +57,7 @@ public class ChatController {
         return null;
     }
 
-    public void createNewRoom(User owner, String name) {
+    public synchronized void createNewRoom(User owner, String name) {
         Room newRoom = new Room();
         newRoom.setParticipants(new ArrayList<>());
         newRoom.getParticipants().add(owner.getId());
@@ -68,17 +66,17 @@ public class ChatController {
         database.getRooms().add(newRoom);
     }
 
-    public void addMessagetoPrivateChat(int id, Message message) {
+    public synchronized void addMessagetoPrivateChat(int id, Message message) {
         PrivateChat privateChat = database.findPrivateChatById(id);
         privateChat.getMessages().add(message);
     }
 
-    public void editMessageText(int id, String newText) {
+    public synchronized void editMessageText(int id, String newText) {
         Message message = findMessageById(id);
         message.setText(newText);
     }
 
-    public void deleteMessage(int id) {
+    public synchronized void deleteMessage(int id) {
         for (PrivateChat privateChat : database.getPrivateChats()) {
             for (Message message : privateChat.getMessages()) {
                 if (message.getId() == id) {

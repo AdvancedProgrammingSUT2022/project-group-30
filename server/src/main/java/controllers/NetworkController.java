@@ -15,10 +15,7 @@ import netPackets.Request;
 import netPackets.Response;
 import utilities.MyGson;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -58,6 +55,14 @@ public class NetworkController {
 
     private String process(String data) {
 //        System.out.println("processing: " + data);
+        BufferedWriter out = null;
+        try {
+            out = new BufferedWriter(
+                    new FileWriter("Log.txt", true));
+            out.write("Request: " + data + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
@@ -73,7 +78,7 @@ public class NetworkController {
                 methods = ProgramController.getProgramController().getClass().getDeclaredMethods();
                 controller = ProgramController.getProgramController();
             }
-            System.out.println("Processing: " + request.getMethodName());
+//            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];
@@ -187,6 +192,8 @@ public class NetworkController {
                 } else {
                     response = new Response(gson.toJson(result));
                 }
+                out.write("Response:\n\n" + response.toJson() + "\n");
+                out.close();
                 return response.toJson();
             }
         } catch (Exception e) {

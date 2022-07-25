@@ -4,9 +4,7 @@ import netPackets.Request;
 import netPackets.Response;
 import utilities.MyGson;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +42,7 @@ public class NetworkController {
             dataInputStream = new DataInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             token = dataInputStream.readInt();
+            System.out.println("token: " + token);
         } catch (IOException e) {
             throw runtimeException;
         }
