@@ -95,7 +95,12 @@ public class MessageBox extends ListCell<Message> {
         button.setPrefWidth(100);
         button.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 20; -fx-background-color: #007900; -fx-text-fill: white");
         button.setOnAction(event -> {
-            message.setText(textArea.getText());
+            ChatController.getChatController().editMessageText(message.getId(), textArea.getText());
+            try {
+                Main.loadFxmlFile("PrivateChatPage");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             stage.close();
         });
         box.getChildren().addAll(textArea, button);
