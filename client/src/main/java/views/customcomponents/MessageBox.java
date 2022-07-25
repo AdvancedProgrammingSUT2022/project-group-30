@@ -48,11 +48,6 @@ public class MessageBox extends ListCell<Message> {
 
     private ContextMenu createContextMenu(Message item) {
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem deleteForMeItem = new MenuItem();
-        deleteForMeItem.setText("Delete for me");
-        deleteForMeItem.setOnAction(event -> {
-            deleteForMe(item);
-        });
         MenuItem deleteForEveryoneItem = new MenuItem();
         deleteForEveryoneItem.setText("Delete for everybody");
         deleteForEveryoneItem.setOnAction(event -> {
@@ -66,13 +61,9 @@ public class MessageBox extends ListCell<Message> {
                 showEditPopup(item);
             }
         });
-        contextMenu.getItems().addAll(deleteForMeItem, deleteForEveryoneItem, editItem);
+        contextMenu.getItems().addAll(deleteForEveryoneItem, editItem);
         contextMenu.getStyleClass().add("messageContextMenu");
         return contextMenu;
-    }
-
-    private void deleteForMe(Message message) {
-        getListView().getItems().remove(message);
     }
 
     private void deleteForEveryone(Message message) {

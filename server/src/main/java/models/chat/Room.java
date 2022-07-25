@@ -12,7 +12,10 @@ public class Room {
     private ArrayList<Message> messages = new ArrayList<>();
 
     public Room() {
-        this.id = ChatController.getChatController().getNextRoomId();
+    }
+
+    public Room(int id) {
+        this.id = id;
     }
 
     public ArrayList<Integer> getParticipants() {

@@ -4,16 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChatDataBase {
-    private static ChatDataBase chatDatabase;
-
-    public static ChatDataBase getChatDatabase() {
-        if (chatDatabase == null) {
-            chatDatabase = new ChatDataBase();
-        }
-        return chatDatabase;
-    }
-
-    private ChatDataBase() {
+    public ChatDataBase() {
     }
 
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();

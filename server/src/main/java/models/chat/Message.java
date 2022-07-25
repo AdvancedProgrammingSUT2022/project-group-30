@@ -32,11 +32,11 @@ public class Message {
         this.id = ChatController.getChatController().getNextMessageId();
     }
 
+    // for gson
     public Message() {
         this.text = "default";
         senderId = 0;
-        setDefaults();
-        this.id = ChatController.getChatController().getNextMessageId();
+        this.id = 0;
     }
 
     private void setDefaults() {

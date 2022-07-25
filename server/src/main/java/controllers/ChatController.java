@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.reflect.TypeToken;
 import models.ProgramDatabase;
 import models.User;
 import models.chat.*;
@@ -8,12 +9,14 @@ import utilities.MyGson;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class ChatController {
     private static ChatController chatController;
     private ChatController() {
-        database = ChatDataBase.getChatDatabase();
+        readDatabasefromFile();
     }
 
     public static ChatController getChatController() {
@@ -39,7 +42,9 @@ public class ChatController {
     }
 
     public PrivateChat fetchPrivateChatForUsers(int user1Id, int user2Id) {
-        return database.fetchPrivateChatForUsers(user1Id, user2Id);
+        PrivateChat result = database.fetchPrivateChatForUsers(user1Id, user2Id);
+        saveDatabaseToFile();
+        return result;
     }
 
     public synchronized void setCurrentPrivateContactId(int currentPrivateContactId, int token) {
@@ -62,7 +67,7 @@ public class ChatController {
     }
 
     public synchronized void createNewRoom(User owner, String name) {
-        Room newRoom = new Room();
+        Room newRoom = new Room(getNextRoomId());
         newRoom.setParticipants(new ArrayList<>());
         newRoom.getParticipants().add(owner.getId());
         newRoom.setOwnerId(owner.getId());
@@ -90,30 +95,36 @@ public class ChatController {
 
     public void addUserToRoom(int userId, int roomId) {
         findRoomById(roomId).getParticipants().add(userId);
+        saveDatabaseToFile();
     }
 
     public synchronized void addMessagetoPrivateChat(int id, Message message) {
         PrivateChat privateChat = database.findPrivateChatById(id);
         privateChat.getMessages().add(message);
+        saveDatabaseToFile();
     }
 
     public synchronized void addMessageToRoom(int id, Message message) {
         Room room = database.findRoomById(id);
         room.getMessages().add(message);
+        saveDatabaseToFile();
     }
 
     public synchronized void addMessageToGlobalChat(Message message) {
         database.getGlobalChat().add(message);
+        saveDatabaseToFile();
     }
 
     public synchronized void editMessageText(int id, String newText) {
         Message message = findMessageById(id);
         message.setText(newText);
+        saveDatabaseToFile();
     }
 
     public synchronized void markMessageAsSeen(int id) {
         Message message = findMessageById(id);
         message.setSeen(true);
+        saveDatabaseToFile();
     }
 
     public ArrayList<Message> getGlobalChat() {
@@ -125,6 +136,7 @@ public class ChatController {
             for (Message message : privateChat.getMessages()) {
                 if (message.getId() == id) {
                     privateChat.getMessages().remove(message);
+                    saveDatabaseToFile();
                     return;
                 }
             }
@@ -134,6 +146,7 @@ public class ChatController {
             for (Message message : room.getMessages()) {
                 if (message.getId() == id) {
                     room.getMessages().remove(message);
+                    saveDatabaseToFile();
                     return;
                 }
             }
@@ -142,6 +155,7 @@ public class ChatController {
         for (Message message : database.getGlobalChat()) {
             if (message.getId() == id) {
                 database.getGlobalChat().remove(message);
+                saveDatabaseToFile();
                 return;
             }
         }
@@ -218,7 +232,7 @@ public class ChatController {
         return null;
     }
 
-    public void saveDatabaseToFile() {
+    public synchronized void saveDatabaseToFile() {
         File main = new File("src", "main");
         File resources = new File(main, "resources");
         File json = new File(resources, "json");
@@ -230,5 +244,17 @@ public class ChatController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public synchronized void readDatabasefromFile() {
+        String input = null;
+        try {
+            input = new String(Files.readAllBytes(Paths.get("src", "main", "resources", "json", "ChatDataBase.json")));
+        } catch (IOException e) {
+            database = new ChatDataBase();
+            saveDatabaseToFile();
+            return;
+        }
+        database = MyGson.getGson().fromJson(input, ChatDataBase.class);
     }
 }
