@@ -1,10 +1,14 @@
 package controllers;
 
+import models.ProgramDatabase;
 import models.User;
 import models.chat.*;
+import utilities.MyGson;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ChatController {
     private static ChatController chatController;
@@ -64,6 +68,7 @@ public class ChatController {
         newRoom.setOwnerId(owner.getId());
         newRoom.setName(name);
         database.getRooms().add(newRoom);
+        saveDatabaseToFile();
     }
 
     public boolean isUserMemberOfRoom(int userId, int roomId) {
@@ -210,7 +215,20 @@ public class ChatController {
                 return message;
             }
         }
-
         return null;
+    }
+
+    public void saveDatabaseToFile() {
+        File main = new File("src", "main");
+        File resources = new File(main, "resources");
+        File json = new File(resources, "json");
+        File usersFile = new File(json, "ChatDataBase.json");
+        try {
+            FileWriter userWriter = new FileWriter(usersFile);
+            userWriter.write(MyGson.getGson().toJson(database));
+            userWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
