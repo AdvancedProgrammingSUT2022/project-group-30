@@ -68,6 +68,11 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public void markMessageAsSeen(int id) {
+        Request request = new Request("ChatController", "markMessageAsSeen", MyGson.toJson(id));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public void deleteMessage(int id) {
         Request request = new Request("ChatController", "deleteMessage", MyGson.toJson(id));
         NetworkController.getNetworkController().transferData(request);

@@ -76,6 +76,11 @@ public class ChatController {
         message.setText(newText);
     }
 
+    public synchronized void markMessageAsSeen(int id) {
+        Message message = findMessageById(id);
+        message.setSeen(true);
+    }
+
     public synchronized void deleteMessage(int id) {
         for (PrivateChat privateChat : database.getPrivateChats()) {
             for (Message message : privateChat.getMessages()) {

@@ -60,6 +60,11 @@ public class PrivateChatPageController {
         chatId = chat.getId();
         data = FXCollections.observableArrayList();
         ArrayList<Message> messages = chat.getMessages();
+        for (Message message : messages) {
+            if (message.getSenderId() != currentUserId && !message.isSeen()) {
+                controller.markMessageAsSeen(message.getId());
+            }
+        }
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setFocusTraversable(false);
