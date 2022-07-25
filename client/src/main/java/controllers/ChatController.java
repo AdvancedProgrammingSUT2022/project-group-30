@@ -63,6 +63,11 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public void addMessageToGlobalChat(Message message) {
+        Request request = new Request("ChatController", "addMessageToGlobalChat", MyGson.toJson(message));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public void editMessageText(int id, String newText) {
         Request request = new Request("ChatController", "editMessageText", MyGson.toJson(id), MyGson.toJson(newText));
         NetworkController.getNetworkController().transferData(request);
@@ -71,6 +76,11 @@ public class ChatController {
     public void markMessageAsSeen(int id) {
         Request request = new Request("ChatController", "markMessageAsSeen", MyGson.toJson(id));
         NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Message> getGlobalChat() {
+        Request request = new Request("ChatController", "getGlobalChat");
+        return (ArrayList<Message>) NetworkController.getNetworkController().transferData(request, Message[].class);
     }
 
     public void deleteMessage(int id) {

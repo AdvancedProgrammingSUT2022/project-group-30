@@ -19,6 +19,11 @@ import views.Main;
 import java.io.IOException;
 
 public class MessageBox extends ListCell<Message> {
+    public MessageBox(String fxmlName) {
+        this.fxmlName = fxmlName;
+    }
+
+    private String fxmlName;
     private boolean isViewerSender;
     @Override
     public void updateItem(Message item, boolean empty) {
@@ -73,7 +78,7 @@ public class MessageBox extends ListCell<Message> {
     private void deleteForEveryone(Message message) {
         ChatController.getChatController().deleteMessage(message.getId());
         try {
-            Main.loadFxmlFile("PrivateChatPage");
+            Main.loadFxmlFile(fxmlName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,7 +102,7 @@ public class MessageBox extends ListCell<Message> {
         button.setOnAction(event -> {
             ChatController.getChatController().editMessageText(message.getId(), textArea.getText());
             try {
-                Main.loadFxmlFile("PrivateChatPage");
+                Main.loadFxmlFile(fxmlName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

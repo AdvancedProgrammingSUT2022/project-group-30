@@ -71,6 +71,10 @@ public class ChatController {
         privateChat.getMessages().add(message);
     }
 
+    public synchronized void addMessageToGlobalChat(Message message) {
+        database.getGlobalChat().add(message);
+    }
+
     public synchronized void editMessageText(int id, String newText) {
         Message message = findMessageById(id);
         message.setText(newText);
@@ -79,6 +83,10 @@ public class ChatController {
     public synchronized void markMessageAsSeen(int id) {
         Message message = findMessageById(id);
         message.setSeen(true);
+    }
+
+    public ArrayList<Message> getGlobalChat() {
+        return database.getGlobalChat();
     }
 
     public synchronized void deleteMessage(int id) {

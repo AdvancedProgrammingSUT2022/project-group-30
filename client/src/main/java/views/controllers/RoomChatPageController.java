@@ -63,7 +63,7 @@ public class RoomChatPageController {
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
             @Override
             public ListCell<Message> call(ListView<Message> messageListView) {
-                return new MessageBox();
+                return new MessageBox("RoomChatPage");
             }
         });
     }

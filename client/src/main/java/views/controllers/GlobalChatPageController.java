@@ -6,32 +6,22 @@ import controllers.ProgramController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.util.Callback;
-import models.ProgramDatabase;
-import models.User;
-import models.chat.ChatDataBase;
 import models.chat.Message;
-import models.chat.PrivateChat;
 import views.Main;
 import views.customcomponents.MessageBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class PrivateChatPageController {
+public class GlobalChatPageController {
     @FXML
     private ListView<Message> messageList;
     @FXML
     private TextArea textArea;
-    @FXML
-    private Circle contactImage;
-    @FXML
-    private Label contactUsernameField;
 
     private ObservableList<Message> data;
 
@@ -39,8 +29,6 @@ public class PrivateChatPageController {
     private NetworkController netController;
 
     private int currentUserId;
-    private int contactId;
-    private int chatId;
 
     @FXML
     public void initialize() {
@@ -48,17 +36,9 @@ public class PrivateChatPageController {
         netController = NetworkController.getNetworkController();
 
         currentUserId = ProgramController.getProgramController().getLoggedInUser(netController.getToken()).getId();
-        User contact = ProgramController.getProgramController().getUserById(controller.getCurrentPrivateContactId(netController.getToken()));
-        contactId = contact.getId();
-        PrivateChat chat = controller.fetchPrivateChatForUsers(currentUserId, contactId);
 
-        contactUsernameField.setText(contact.getUsername());
-        contactImage.setFill(new ImagePattern(new Image("file:src/main/resources/images/avatars/" + contact.getImageName())));
-        contactImage.setStroke(Color.BLACK);
-        contactImage.setStyle("-fx-background-size: cover;");
-        chatId = chat.getId();
         data = FXCollections.observableArrayList();
-        ArrayList<Message> messages = chat.getMessages();
+        ArrayList<Message> messages = controller.getGlobalChat();
         for (Message message : messages) {
             if (message.getSenderId() != currentUserId && !message.isSeen()) {
                 controller.markMessageAsSeen(message.getId());
@@ -73,16 +53,16 @@ public class PrivateChatPageController {
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
             @Override
             public ListCell<Message> call(ListView<Message> messageListView) {
-                return new MessageBox("PrivateChatPage");
+                return new MessageBox("GlobalChatPage");
             }
         });
     }
 
     @FXML
     protected void onSendButtonClick() {
-        controller.addMessagetoPrivateChat(chatId, new Message(textArea.getText(), currentUserId));
+        controller.addMessageToGlobalChat(new Message(textArea.getText(), currentUserId));
         try {
-            Main.loadFxmlFile("PrivateChatPage");
+            Main.loadFxmlFile("GlobalChatPage");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,7 +71,7 @@ public class PrivateChatPageController {
     @FXML
     protected void onRefreshButtonClick() {
         try {
-            Main.loadFxmlFile("PrivateChatPage");
+            Main.loadFxmlFile("GlobalChatPage");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,7 +80,7 @@ public class PrivateChatPageController {
     @FXML
     protected void onBackButtonClick() {
         try {
-            Main.loadFxmlFile("PrivateChatsList");
+            Main.loadFxmlFile("ChatFirstPage");
         } catch (IOException e) {
             e.printStackTrace();
         }
