@@ -29,7 +29,7 @@ public class RoomsListController {
             RegisterPageGraphicalController.showPopup("You are not a member of this room!");
             return;
         }
-        ChatController.getChatController().setCurrentRoom(room, NetworkController.getNetworkController().getToken());
+        ChatController.getChatController().setCurrentRoom(room.getId(), NetworkController.getNetworkController().getToken());
         try {
             Main.loadFxmlFile("RoomChatPage");
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class RoomsListController {
         }
         ChatController.getChatController().createNewRoom(ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()), roomName);
         RegisterPageGraphicalController.showPopup("Room " + roomName + " has been created!");
-        ChatController.getChatController().setCurrentRoom(ChatController.getChatController().getRoomByName(roomName),
+        ChatController.getChatController().setCurrentRoom(ChatController.getChatController().getRoomByName(roomName).getId(),
                 NetworkController.getNetworkController().getToken());
         try {
             Main.loadFxmlFile("RoomChatPage");

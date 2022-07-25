@@ -1,7 +1,5 @@
 package models.chat;
 
-import models.User;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,16 +19,6 @@ public class ChatDataBase {
     private ArrayList<PrivateChat> privateChats = new ArrayList<>();
     private ArrayList<Room> rooms = new ArrayList<>();
     private ArrayList<Message> globalChat = new ArrayList<>();
-    private HashMap<Integer, Integer> currentPrivateContactIds = new HashMap<>();
-    private HashMap<Integer, Integer> currentRoomIndexes = new HashMap<>();
-
-    public HashMap<Integer, Integer> getCurrentRoomIndexes() {
-        return currentRoomIndexes;
-    }
-
-    public HashMap<Integer, Integer> getCurrentPrivateContactIds() {
-        return currentPrivateContactIds;
-    }
 
     public ArrayList<PrivateChat> getPrivateChats() {
         return privateChats;
@@ -59,6 +47,15 @@ public class ChatDataBase {
         for (PrivateChat privateChat : privateChats) {
             if (privateChat.getId() == id) {
                 return privateChat;
+            }
+        }
+        return null;
+    }
+
+    public Room findRoomById(int id) {
+        for (Room room : rooms) {
+            if (room.getId() == id) {
+                return room;
             }
         }
         return null;

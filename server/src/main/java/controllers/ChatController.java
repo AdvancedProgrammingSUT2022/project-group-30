@@ -24,11 +24,10 @@ public class ChatController {
     public Room getCurrentRoom(int token) {
         TokenData tokenData = ProgramController.getProgramController().fetchTokenData(token);
 
-        HashMap<Integer, Integer> currentRoomIndexes = database.getCurrentRoomIndexes();
         if (database.getRooms().isEmpty()) {
             return null;
         }
-        return database.getRooms().get(currentRoomIndexes.get(token));
+        return database.findRoomById(tokenData.getCurrentRoomId());
     }
 
     public int getCurrentPrivateContactId(int token) {
@@ -43,8 +42,9 @@ public class ChatController {
         ProgramController.getProgramController().fetchTokenData(token).setCurrentPrivateChatId(currentPrivateContactId);
     }
 
-    public synchronized void setCurrentRoom(Room room, int token) {
-        database.getCurrentRoomIndexes().put(token, database.getRooms().indexOf(room));
+    public synchronized void setCurrentRoom(int roomId, int token) {
+        TokenData tokenData = ProgramController.getProgramController().fetchTokenData(token);
+        tokenData.setCurrentRoomId(roomId);
     }
 
     public Room getRoomByName(String name) {
@@ -61,7 +61,7 @@ public class ChatController {
         Room newRoom = new Room();
         newRoom.setParticipants(new ArrayList<>());
         newRoom.getParticipants().add(owner.getId());
-        newRoom.setOwner(owner.getId());
+        newRoom.setOwnerId(owner.getId());
         newRoom.setName(name);
         database.getRooms().add(newRoom);
     }
@@ -121,6 +121,16 @@ public class ChatController {
         for (PrivateChat privateChat : database.getPrivateChats()) {
             if (privateChat.getId() >= largest) {
                 largest = privateChat.getId() + 1;
+            }
+        }
+        return largest;
+    }
+
+    public int getNextRoomId() {
+        int largest = 0;
+        for (Room room : database.getRooms()) {
+            if (room.getId() >= largest) {
+                largest = room.getId() + 1;
             }
         }
         return largest;

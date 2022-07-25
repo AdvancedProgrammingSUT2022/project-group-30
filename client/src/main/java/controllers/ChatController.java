@@ -43,8 +43,8 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
-    public void setCurrentRoom(Room room, int token) {
-        Request request = new Request("ChatController", "setCurrentRoom", MyGson.toJson(room), MyGson.toJson(token));
+    public void setCurrentRoom(int roomId, int token) {
+        Request request = new Request("ChatController", "setCurrentRoom", MyGson.toJson(roomId), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 
@@ -90,6 +90,11 @@ public class ChatController {
 
     public int getNextPrivateChatId() {
         Request request = new Request("ChatController", "getNextPrivateChatId");
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int getNextRoomId() {
+        Request request = new Request("ChatController", "getNextRoomId");
         return (int) NetworkController.getNetworkController().transferData(request);
     }
 
