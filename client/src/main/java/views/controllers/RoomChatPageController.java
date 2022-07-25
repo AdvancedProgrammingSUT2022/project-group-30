@@ -17,6 +17,7 @@ import models.chat.ChatDataBase;
 import models.chat.Message;
 import models.chat.Room;
 import views.Main;
+import views.customcomponents.AddMemberDialog;
 import views.customcomponents.MessageBox;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class RoomChatPageController {
 
     private ChatController controller;
     private NetworkController netController;
+    Room room;
 
     @FXML
     public void initialize() {
@@ -41,7 +43,7 @@ public class RoomChatPageController {
         netController = NetworkController.getNetworkController();
 
         User currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
-        Room room =  controller.getCurrentRoom(netController.getToken());
+        room =  controller.getCurrentRoom(netController.getToken());
         roomNameField.setText(room.getName());
         data = FXCollections.observableArrayList();
         ArrayList<Message> messages = new ArrayList<>();
@@ -86,7 +88,8 @@ public class RoomChatPageController {
 
     @FXML
     protected void onAddMemberButtonClick() {
-        RegisterPageGraphicalController.showPopup("hello");
+        AddMemberDialog addMemberDialog = new AddMemberDialog(room.getId());
+        addMemberDialog.show();
     }
 
     private void scrollToBottom() {

@@ -58,6 +58,21 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public boolean isUserMemberOfRoom(int userId, int roomId) {
+        Request request = new Request("ChatController", "isUserMemberOfRoom", MyGson.toJson(userId), MyGson.toJson(roomId));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Room findRoomById(int id) {
+        Request request = new Request("ChatController", "findRoomById", MyGson.toJson(id));
+        return (Room) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addUserToRoom(int userId, int roomId) {
+        Request request = new Request("ChatController", "addUserToRoom", MyGson.toJson(userId), MyGson.toJson(roomId));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public void addMessagetoPrivateChat(int id, Message message) {
         Request request = new Request("ChatController", "addMessagetoPrivateChat", MyGson.toJson(id), MyGson.toJson(message));
         NetworkController.getNetworkController().transferData(request);

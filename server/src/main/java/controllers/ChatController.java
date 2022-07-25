@@ -66,6 +66,27 @@ public class ChatController {
         database.getRooms().add(newRoom);
     }
 
+    public boolean isUserMemberOfRoom(int userId, int roomId) {
+        Room room = findRoomById(roomId);
+        if (room == null) {
+            return false;
+        }
+        return room.getParticipants().contains(userId);
+    }
+
+    public Room findRoomById(int id) {
+        for (Room room : database.getRooms()) {
+            if (room.getId() == id) {
+                return room;
+            }
+        }
+        return null;
+    }
+
+    public void addUserToRoom(int userId, int roomId) {
+        findRoomById(roomId).getParticipants().add(userId);
+    }
+
     public synchronized void addMessagetoPrivateChat(int id, Message message) {
         PrivateChat privateChat = database.findPrivateChatById(id);
         privateChat.getMessages().add(message);
