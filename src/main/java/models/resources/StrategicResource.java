@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class StrategicResource extends Resource {
+public class StrategicResource extends Resource  implements java.io.Serializable{
     private static ArrayList<StrategicResource> allTypes = new ArrayList<>();
     private Technology prerequisiteTechnology;
 

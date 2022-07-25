@@ -10,7 +10,7 @@ import models.technology.Technology;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public enum ImprovementType {
+public enum ImprovementType  implements java.io.Serializable{
     CAMP(new Output(0, 0, 0), Technology.TRAPPING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(Feature.FOREST, TerrainType.TUNDRA, TerrainType.HILLS,

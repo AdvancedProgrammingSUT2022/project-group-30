@@ -9,7 +9,7 @@ import models.interfaces.TerrainProperty;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BonusResource extends Resource {
+public class BonusResource extends Resource  implements java.io.Serializable{
     public static BonusResource BANANA = new BonusResource(new Output(0, 1, 0),
             ImprovementType.PLANTATION,
             new ArrayList<TerrainProperty>(Arrays.asList(Feature.JUNGLE)), "Banana");

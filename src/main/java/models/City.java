@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class City implements Selectable, TurnHandler, combative {
+public class City implements Selectable, TurnHandler, combative, java.io.Serializable{
     private static final int MAXHITPOINTS = 20;
     private final Civilization founder;
     private Civilization owner;

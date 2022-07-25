@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class LuxuryResource extends Resource {
+public class LuxuryResource extends Resource  implements java.io.Serializable{
     private static ArrayList<LuxuryResource> allTypes = new ArrayList<>();
 
 

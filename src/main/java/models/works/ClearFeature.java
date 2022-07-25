@@ -5,7 +5,7 @@ import models.Tile;
 import models.units.Unit;
 import utilities.Debugger;
 
-public class ClearFeature extends Work {
+public class ClearFeature extends Work  implements java.io.Serializable{
 
     private Feature feature;
 

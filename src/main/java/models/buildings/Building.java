@@ -4,7 +4,7 @@ import models.City;
 import models.TerrainType;
 import models.interfaces.Workable;
 
-public class Building implements Workable {
+public class Building implements Workable  , java.io.Serializable{
     private final BuildingType type;
 
     public Building(BuildingType type) {

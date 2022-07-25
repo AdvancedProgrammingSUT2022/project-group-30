@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class Tile implements Workable, TileImage, TurnHandler {
+public class Tile implements Workable, TileImage, TurnHandler, java.io.Serializable{
     private TerrainType terrainType;
     private HashMap<Resource, Integer> resources = new HashMap<>();
     private ArrayList<Improvement> improvements = new ArrayList<>();

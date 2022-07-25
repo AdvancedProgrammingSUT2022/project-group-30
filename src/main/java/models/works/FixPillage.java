@@ -4,7 +4,7 @@ import models.Tile;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
-public class FixPillage extends Work {
+public class FixPillage extends Work  implements java.io.Serializable{
     private ImprovementType improvementType;
 
     public FixPillage(ImprovementType improvementType, Unit worker) {

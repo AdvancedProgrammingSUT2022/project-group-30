@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GraphNode {
+public class GraphNode  implements java.io.Serializable{
     private Tile tile;
     private List<GraphNode> shortestPath;
     private Integer distance;

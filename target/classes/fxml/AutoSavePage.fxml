@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="views.controllers.AutoSavePageGraphicalController"
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus">
+
+    <center>
+        <VBox spacing="30" alignment="CENTER" fx:id="box">
+            <TextField promptText="Number of saved files will be: " styleClass="text-field" maxHeight="50" maxWidth="300" fx:id="numberOfSavedFiles"/>
+            <Button text="apply changes" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#applyChanges"/>
+            <Button text="Off" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#Off"/>
+            <Button text="After Each Turn" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#afterEachTurn"/>
+            <Button text="After Each Unit Action" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#afterEachUnitAction"/>
+            <Button text="After Each Attack" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#afterEachAttack"/>
+            <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
+        </VBox>
+    </center>
+
+
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
+
+</BorderPane>

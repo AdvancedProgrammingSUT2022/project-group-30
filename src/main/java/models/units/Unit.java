@@ -10,7 +10,7 @@ import models.interfaces.combative;
 
 import java.util.ArrayList;
 
-public class Unit implements Selectable, TurnHandler, combative {
+public class Unit implements Selectable, TurnHandler, combative, java.io.Serializable{
     private final Civilization owner;
     private final UnitType type;
     private Tile location;

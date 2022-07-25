@@ -4,7 +4,7 @@ import models.Tile;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
-public class ClearRoutes extends Work {
+public class ClearRoutes extends Work  implements java.io.Serializable{
     public ClearRoutes(Unit worker) {
         this.worker = worker;
         turnsRemaining = calculateRequiredTurns();

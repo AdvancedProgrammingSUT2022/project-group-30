@@ -6,7 +6,7 @@ import models.interfaces.TerrainProperty;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public enum Feature implements TerrainProperty {
+public enum Feature implements TerrainProperty, java.io.Serializable{
     FLOOD_PLAINS(new Output(0, 2, 0), new ArrayList<TerrainType>(Arrays.asList(TerrainType.DESERT)), -33,
             new MPCostClass(1), "Flood Plains"),
     FOREST(new Output(0, 1, 1),

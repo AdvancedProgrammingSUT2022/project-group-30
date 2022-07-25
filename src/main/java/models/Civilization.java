@@ -19,7 +19,7 @@ import utilities.Debugger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Civilization implements TurnHandler {
+public class Civilization implements TurnHandler, java.io.Serializable{
     private final String name;
     private HashMap<Tile, TileImage> mapImage = new HashMap<>();
     private boolean isEverythingVisibleCheatCodeInEffect = false;

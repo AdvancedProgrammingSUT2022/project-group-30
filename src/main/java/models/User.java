@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Random;
 
-public class User {
+public class User  implements java.io.Serializable{
 
     private int rank; // this field will only change when user click on the scoreboard page button
     private final int id;

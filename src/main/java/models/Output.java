@@ -1,6 +1,6 @@
 package models;
 
-public class Output {
+public class Output  implements java.io.Serializable{
     private int gold;
     private int food;
     private int production;

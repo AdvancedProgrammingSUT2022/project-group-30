@@ -5,7 +5,7 @@ import models.improvements.Improvement;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
-public class BuildImprovement extends Work {
+public class BuildImprovement extends Work  implements java.io.Serializable{
     protected ImprovementType improvementType;
 
     public BuildImprovement(ImprovementType improvementType, Unit worker) {

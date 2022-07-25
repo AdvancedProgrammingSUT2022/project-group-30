@@ -2,7 +2,7 @@ package models;
 
 import java.util.HashSet;
 
-public class TileGraph {
+public class TileGraph  implements java.io.Serializable{
     private HashSet<GraphNode> nodes;
 
     public TileGraph() {

@@ -3,7 +3,7 @@ package models.improvements;
 import models.Civilization;
 import models.Output;
 
-public class Improvement {
+public class Improvement  implements java.io.Serializable{
     private final ImprovementType type;
     private final Civilization founder;
 

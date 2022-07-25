@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class ProgramDatabase {
+public class ProgramDatabase  implements java.io.Serializable{
     private static ProgramDatabase programDatabase;
 
     private ArrayList<User> users;

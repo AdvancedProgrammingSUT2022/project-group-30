@@ -809,7 +809,7 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements){
+    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements) {
         TableView<Improvement> tableView = new TableView<>();
         TableColumn<Improvement, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Improvement");
@@ -977,6 +977,49 @@ public class CivilizationGamePageController {
         pause.setHeight(20);
         pause.setWidth(20);
         pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+
+        //!
+        pause.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (!GameDataBase.getGameDataBase().isGamePaused()) {
+                    System.out.println("pause");
+                    RegisterPageGraphicalController.showPopup("Game is paused!");
+                    GameDataBase.getGameDataBase().setGamePaused(true);
+                    GameController.getGameController().saveGame("tempSave");
+                    //TODO icon
+                    try {
+                        pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    System.out.println("resume");
+                    RegisterPageGraphicalController.showPopup("resume Game!");
+                    GameDataBase.getGameDataBase().setGamePaused(false);
+                    GameController.getGameController().loadGame("tempSave");
+                    try {
+                        pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
+
+
+   /*     Rectangle resume = new Rectangle();
+        pause.setHeight(20);
+        pause.setWidth(20);
+        pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+        pause.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                RegisterPageGraphicalController.showPopup("Game is paused!");
+                GameDataBase.getGameDataBase().setGamePaused(false);
+                GameController.getGameController().loadGame("tempSave");
+            }
+        });*/
 
         Rectangle settings = new Rectangle();
         settings.setHeight(20);

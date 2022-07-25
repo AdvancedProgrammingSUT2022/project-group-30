@@ -15,7 +15,7 @@ A "learned" tech is one that has been researched and added to the civilization's
 the difference between unlocking and learning are important, because the methods related to them have precise names.
 */
 
-public enum Technology {
+public enum Technology  implements java.io.Serializable{
     AGRICULTURE(10, new ArrayList<Technology>(), "Agriculture"),
     ANIMAL_HUSBANDRY(1000, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Animal Husbandry"),
     ARCHERY(10, new ArrayList<Technology>(Arrays.asList(AGRICULTURE)), "Archery"),

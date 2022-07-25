@@ -6,7 +6,7 @@ import utilities.Debugger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TechnologyMap {
+public class TechnologyMap  implements java.io.Serializable{
     private HashMap<Technology, Boolean> map = new HashMap<Technology, Boolean>();
     private Technology lastUnlocked;
 

@@ -5,7 +5,7 @@ import models.CivilizationPair;
 
 import java.util.ArrayList;
 
-public class DiplomaticRelation extends Diplomacy {
+public class DiplomaticRelation extends Diplomacy  implements java.io.Serializable{
     private boolean areMutuallyVisible = false;
     private boolean areAtWar = false;
     private int friendliness = 0;

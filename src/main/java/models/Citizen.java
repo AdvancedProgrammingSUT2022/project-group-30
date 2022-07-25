@@ -2,7 +2,7 @@ package models;
 
 import models.interfaces.Workable;
 
-public class Citizen {
+public class Citizen  implements java.io.Serializable{
     private Workable workPlace;
 
     public Citizen() {

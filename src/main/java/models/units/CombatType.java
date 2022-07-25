@@ -2,7 +2,7 @@ package models.units;
 
 import java.util.ArrayList;
 
-public enum CombatType {
+public enum CombatType  implements java.io.Serializable{
     ARCHERY(false, UnitState.getStateList()),
     MOUNTED(false, UnitState.getStateList(UnitState.FORTIFY, UnitState.FORTIFYUNTILHEALED)),
     RECON(false, UnitState.getStateList()),

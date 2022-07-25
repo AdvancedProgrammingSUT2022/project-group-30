@@ -3,7 +3,7 @@ package models.diplomacy;
 import models.Civilization;
 import models.CivilizationPair;
 
-public class WarInfo extends Diplomacy {
+public class WarInfo extends Diplomacy  implements java.io.Serializable{
     public WarInfo(CivilizationPair pair) {
         this.pair = pair;
     }

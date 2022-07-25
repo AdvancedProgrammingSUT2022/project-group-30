@@ -9,7 +9,7 @@ import models.interfaces.TerrainProperty;
 
 import java.util.ArrayList;
 
-public abstract class Resource {
+public abstract class Resource  implements java.io.Serializable{
     private Output output;
     private ArrayList<TerrainProperty> allowedTerrains;
     private ImprovementType prerequisiteImprovement;

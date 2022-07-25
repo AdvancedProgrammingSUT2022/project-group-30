@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class CivilizationPair {
+public class CivilizationPair  implements java.io.Serializable{
     private Set<Civilization> civilizations = new LinkedHashSet<>();
 
     public CivilizationPair(Civilization civ1, Civilization civ2) {

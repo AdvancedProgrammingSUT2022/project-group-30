@@ -3,7 +3,7 @@ package models;
 import models.interfaces.MPCostInterface;
 import models.interfaces.TerrainProperty;
 
-public enum TerrainType implements TerrainProperty {
+public enum TerrainType implements TerrainProperty, java.io.Serializable{
     DESERT(new Output(0, 0, 0), -33, new MPCostClass(1), "Desert"),
     GRASSLAND(new Output(0, 2, 0), -33, new MPCostClass(1), "Grassland"),
     HILLS(new Output(0, 0, 2), 25, new MPCostClass(2), "Hills"),

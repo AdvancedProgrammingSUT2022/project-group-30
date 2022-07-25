@@ -2,6 +2,8 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.control.ListView;
+import menusEnumerations.AutoSave;
 import models.*;
 import models.buildings.Building;
 import models.buildings.BuildingType;
@@ -643,6 +645,15 @@ public class GameController {
     }
 
     public void goToNextTurn() {
+        //TODO  check it
+        System.out.println("yoooooo0");
+        if(GameDataBase.getGameDataBase().getAutoSaveMode() == AutoSave.AFTER_EACH_TURN){
+            System.out.println("yooooo1");
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyـMMـddـhhـmmـss");
+            saveGame("autoSave_" + dateTimeFormatter.format(now));
+            System.out.println("yooooooo2");
+        }
         gameDataBase.setTurnNumber(gameDataBase.getTurnNumber() + 1);
         getGameDataBase().setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
 

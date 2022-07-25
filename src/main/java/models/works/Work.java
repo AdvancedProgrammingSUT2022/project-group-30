@@ -5,7 +5,7 @@ import models.Tile;
 import models.interfaces.TurnHandler;
 import models.units.Unit;
 
-public abstract class Work implements TurnHandler {
+public abstract class Work implements TurnHandler, java.io.Serializable{
     protected int turnsRemaining;
     protected Unit worker;
     protected boolean isInProgress;

@@ -2,7 +2,7 @@ package models.chat;
 
 import java.util.ArrayList;
 
-public class PrivateChat {
+public class PrivateChat  implements java.io.Serializable{
     public int getUser1Id() {
         return user1Id;
     }

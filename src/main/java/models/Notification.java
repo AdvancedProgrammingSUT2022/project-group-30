@@ -1,6 +1,6 @@
 package models;
 
-public class Notification {
+public class Notification  implements java.io.Serializable{
     private String text;
     private boolean isSeen;
     private int turnNumber;

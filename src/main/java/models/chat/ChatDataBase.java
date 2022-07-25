@@ -4,7 +4,7 @@ import models.User;
 
 import java.util.ArrayList;
 
-public class ChatDataBase {
+public class ChatDataBase  implements java.io.Serializable{
     private static ChatDataBase chatDatabase;
 
     public static ChatDataBase getChatDatabase() {

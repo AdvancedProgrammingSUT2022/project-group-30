@@ -1,6 +1,6 @@
 package models;
 
-public enum TileVisibility {
+public enum TileVisibility  implements java.io.Serializable{
     VISIBLE("Visible"),
     REVEALED("Revealed"),
     FOG_OF_WAR("Fog of War");

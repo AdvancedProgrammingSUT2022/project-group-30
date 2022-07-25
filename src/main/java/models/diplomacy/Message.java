@@ -2,7 +2,7 @@ package models.diplomacy;
 
 import models.Civilization;
 
-public class Message {
+public class Message  implements java.io.Serializable{
     private String message;
     private Civilization sender;
 

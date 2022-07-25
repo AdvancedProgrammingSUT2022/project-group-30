@@ -5,7 +5,7 @@ import models.units.Unit;
 
 import java.util.ArrayList;
 
-public class TileHistory implements TileImage {
+public class TileHistory implements TileImage, java.io.Serializable{
     private Tile tile;
     private ArrayList<Unit> units;
     private City city;

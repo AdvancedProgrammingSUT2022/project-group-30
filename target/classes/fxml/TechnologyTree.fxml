@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.TechnologyTreeController"
+      prefHeight="720.0" prefWidth="1280.0" fx:id="parent">
+    <BorderPane fx:id="topBar">
+        <padding>
+            <Insets topRightBottomLeft="10"/>
+        </padding>
+        <left>
+            <Button fx:id="backButton" styleClass="backButton" text="Back" BorderPane.alignment="CENTER_LEFT" onAction="#onBackButtonClick"/>
+        </left>
+        <center>
+            <HBox BorderPane.alignment="CENTER" alignment="CENTER" spacing="10">
+                <TextField fx:id="searchField"/>
+                <Button fx:id="searchButton" text="search" onAction="#onSearchButtonPressed"/>
+            </HBox>
+        </center>
+    </BorderPane>
+
+    <ScrollPane fx:id="scrollPane"/>
+
+    <HBox spacing="10" fx:id="bottomBar">
+        <padding>
+            <Insets topRightBottomLeft="5"/>
+        </padding>
+
+        <VBox>
+            <Label fx:id="learnedColorGuide" text="Learned" styleClass="colorGuideLabel"/>
+            <Label fx:id="unlockedColorGuide" text="Unlocked (learnable)" styleClass="colorGuideLabel"/>
+            <Label fx:id="lockedColorGuide" text="Locked" styleClass="colorGuideLabel"/>
+        </VBox>
+
+        <Label fx:id="currentResearchLabel"/>
+    </HBox>
+
+    <stylesheets>
+        <URL value="@../css/TechnologyTree.css"/>
+    </stylesheets>
+</VBox>

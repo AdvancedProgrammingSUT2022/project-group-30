@@ -1,6 +1,6 @@
 package models;
 
-public class RiverSegment {
+public class RiverSegment  implements java.io.Serializable{
     private final Tile firstTile;
     private final Tile secondTile;
 

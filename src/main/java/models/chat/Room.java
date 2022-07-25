@@ -2,7 +2,7 @@ package models.chat;
 
 import java.util.ArrayList;
 
-public class Room {
+public class Room  implements java.io.Serializable{
     private String name;
     private ArrayList<Integer> participants = new ArrayList<>();
     private int owner;

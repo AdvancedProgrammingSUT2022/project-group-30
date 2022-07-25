@@ -3,7 +3,7 @@ package models.units;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public enum UnitState {
+public enum UnitState  implements java.io.Serializable{
     AWAKE(true),
     ASLEEP(false),
     ALERT(false),

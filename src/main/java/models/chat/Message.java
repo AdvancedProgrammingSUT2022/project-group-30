@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 
-public class Message {
+public class Message  implements java.io.Serializable{
     private int senderId;
     private boolean isHiddenToSender;
     private String text;

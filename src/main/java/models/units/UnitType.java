@@ -6,7 +6,7 @@ import models.technology.Technology;
 
 import java.util.HashMap;
 
-public enum UnitType implements Producible {
+public enum UnitType implements Producible  , java.io.Serializable{
     ARCHER("Archer", 70, CombatType.ARCHERY,
             4, 6, 2, 2,
             StrategicResource.getRequiredResourceHashMap(), Technology.ARCHERY),

@@ -30,6 +30,8 @@ public class GameDataBase implements java.io.Serializable{
         map = GameMap.getGameMap();
     }
 
+    boolean isGamePaused = false;
+
     public static GameDataBase getGameDataBase() {
         if (gameDataBase == null)
             gameDataBase = new GameDataBase();
@@ -165,5 +167,13 @@ public class GameDataBase implements java.io.Serializable{
             names.add(player.getUser().getUsername());
         }
         return names;
+    }
+
+    public boolean isGamePaused() {
+        return isGamePaused;
+    }
+
+    public void setGamePaused(boolean gamePaused) {
+        isGamePaused = gamePaused;
     }
 }

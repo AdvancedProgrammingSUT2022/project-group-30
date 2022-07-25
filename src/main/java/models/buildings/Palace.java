@@ -3,7 +3,7 @@ package models.buildings;
 import models.Civilization;
 import models.Output;
 
-public class Palace extends Building {
+public class Palace extends Building  implements java.io.Serializable{
     private final Civilization owner;
     private final Output output;
 

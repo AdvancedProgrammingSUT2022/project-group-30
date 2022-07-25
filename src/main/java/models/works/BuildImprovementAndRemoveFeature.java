@@ -9,7 +9,7 @@ import models.units.Unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BuildImprovementAndRemoveFeature extends BuildImprovement {
+public class BuildImprovementAndRemoveFeature extends BuildImprovement  implements java.io.Serializable{
     public BuildImprovementAndRemoveFeature(Unit worker, ImprovementType type) {
         super(type, worker);
     }

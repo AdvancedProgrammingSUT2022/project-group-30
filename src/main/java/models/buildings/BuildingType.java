@@ -5,7 +5,7 @@ import models.technology.Technology;
 
 import java.util.ArrayList;
 
-public enum BuildingType implements Producible {
+public enum BuildingType implements Producible, java.io.Serializable{
     BARRACKS(80, 1, Technology.BRONZE_WORKING, 0, "Barracks"),
     GRANARY(100, 1, Technology.POTTERY, 0, "Granary"),
     LIBRARY(80, 1, Technology.WRITING, 0, "Library"),
