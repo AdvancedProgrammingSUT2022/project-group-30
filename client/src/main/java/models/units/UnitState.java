@@ -46,4 +46,5 @@ public enum UnitState implements EnumInterface {
     public String getName(){
         return this.name;
     }
+
 }

@@ -52,7 +52,12 @@ public class UnitsGraphicalController {
     private static VBox unitCommandsBox;
     private static boolean isAnswerYes;
 
+    private static Civilization currentPlayer;
+    private static TileImage[][] tilesToShow;
+
     public static void initializeUnitActionTab(Pane pane) {
+        currentPlayer = controller.getCurrentPlayer();
+        tilesToShow = controller.getCivilizationImageToShowOnScene(currentPlayer);
         unitActionTabPane = new ScrollPane();
         pane.getChildren().add(unitActionTabPane);
         unitCommandsBox = new VBox();
@@ -85,10 +90,10 @@ public class UnitsGraphicalController {
         circle.setRadius(30);
         circle.setFill(Images.getImage(unit.getType().getName()));
         unitCommandsBox.getChildren().add(circle);
-        Text name = new Text(controller.getCurrentPlayer().getName() + "'s " + unit.getType().getName());
+        Text name = new Text(currentPlayer.getName() + "'s " + unit.getType().getName());
         name.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(name);
-        Text mp = new Text("MP: " + unit.getMovePointsLeft());
+        Text mp = new Text("MP: " + controller.getUnitMovePointsLeft(unit));
         mp.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(mp);
         Text cs = new Text("CS: " + unit.getType().getCombatStrength());
@@ -110,14 +115,16 @@ public class UnitsGraphicalController {
                     deselectUnit(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.SLEEP.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.SLEEP.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     sleepUnit(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.ALERT.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.ALERT.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -125,7 +132,8 @@ public class UnitsGraphicalController {
                 }
             });
 
-        } else if (command.getName().equals(UnitCommands.FORTIFY.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.FORTIFY.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -133,7 +141,8 @@ public class UnitsGraphicalController {
                 }
             });
 
-        } else if (command.getName().equals(UnitCommands.FORTIFY_UNTIL_HEALED.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.FORTIFY_UNTIL_HEALED.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -141,7 +150,8 @@ public class UnitsGraphicalController {
                 }
             });
 
-        } else if (command.getName().equals(UnitCommands.GARRISON.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.GARRISON.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -149,7 +159,8 @@ public class UnitsGraphicalController {
                 }
             });
 
-        } else if (command.getName().equals(UnitCommands.AWAKE.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.AWAKE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -157,70 +168,80 @@ public class UnitsGraphicalController {
                 }
             });
 
-        } else if (command.getName().equals(UnitCommands.CANCEL_MOVE.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.CANCEL_MOVE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     cancelUnitMove(unit, pane);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.DELETE.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.DELETE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     deleteAUnit(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.MOVE_TO.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.MOVE_TO.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileAsDestination(pane);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.FOUND_CITY.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.FOUND_CITY.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     foundCity(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.MELEE_ATTACK.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.MELEE_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileToMeleeAttack(unit, pane);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.RANGED_ATTACK.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.RANGED_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileForRangedAttack(unit, pane);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.SHOW_INFO.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.SHOW_INFO.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     showUnitInfo(unit, pane);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.SET_UP_FOR_RANGED_ATTACK.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.SET_UP_FOR_RANGED_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     setUpForRangedAttack(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.PILLAGE.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.PILLAGE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     pillage(unit);
                 }
             });
-        } else if (command.getName().equals(UnitCommands.WORK_ACTIONS.getName())) {
+        }
+        else if (command.getName().equals(UnitCommands.WORK_ACTIONS.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -348,11 +369,11 @@ public class UnitsGraphicalController {
             return;
         }
         combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        if (!GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar()) {
+        if (!controller.areUnitAndTargetOwnerAtWar(target, unit)) {
             AttackYesNoDialog dialog = new AttackYesNoDialog() {
                 @Override
                 public void onYesButtonClick() {
-                    GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
+                    controller.setUnitAndTargetOwnerAtWar(target, unit, true);
                     applyMeleeAttackEffects(unit, target, targetTile);
                     this.close();
                 }
@@ -464,7 +485,7 @@ public class UnitsGraphicalController {
             }
         }
         addTextToVBox(vbox, "Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
-        addTextToVBox(vbox, "Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
+        addTextToVBox(vbox, "Move Points: " + controller.getUnitMovePointsLeft(unit) + " out of " + unit.getType().getMovementSpeed());
         addTextToVBox(vbox, "Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
         if (unit.getPath() != null) {
             addTextToVBox(vbox, "Path:");
@@ -488,7 +509,7 @@ public class UnitsGraphicalController {
     }
 
     private static void foundCity(Unit unit) {
-        if (unit.getMovePointsLeft() == 0) {
+        if (controller.getUnitMovePointsLeft(unit) == 0) {
             RegisterPageGraphicalController.showPopup("Settler has no movepoints!");
             return;
         }
@@ -497,7 +518,7 @@ public class UnitsGraphicalController {
             return;
         }
         controller.foundCityWithSettler(unit);
-        controller.getCurrentPlayer().setSelectedEntity(null);
+        controller.setPlayersSelectedEntity(null);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -510,7 +531,7 @@ public class UnitsGraphicalController {
     }
 
     private static void cancelUnitMove(Unit unit, Pane pane) {
-        unit.setPath(null);
+        controller.cancelUnitMove(unit);
         try {
             makeTheUnitActionTab(unit, pane);
         } catch (MalformedURLException e) {
@@ -519,8 +540,7 @@ public class UnitsGraphicalController {
     }
 
     private static void deleteAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        controller.deleteUnit(unit);
+        controller.deleteAUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -532,7 +552,7 @@ public class UnitsGraphicalController {
     }
 
     private static void awakeAUnit(Unit unit, Pane pane) {
-        unit.setState(UnitState.AWAKE);
+        controller.awakeUnit(unit);
         try {
             makeTheUnitActionTab(unit, pane);
         } catch (MalformedURLException e) {
@@ -541,47 +561,42 @@ public class UnitsGraphicalController {
     }
 
     private static void garrisonAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.GARRISON);
+        controller.garrisonUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void fortifyAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFY);
+        controller.fortifyUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void fortifyAUnitUntilHealed(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFYUNTILHEALED);
+        controller.fortifyUnitUntilHealed(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void alertAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ALERT);
+        controller.alertUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void sleepUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ASLEEP);
+        controller.sleepUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void deselectUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
+        controller.deselectUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -592,7 +607,7 @@ public class UnitsGraphicalController {
             RegisterPageGraphicalController.showPopup("You can only choose visible tiles as destination!");
             return;
         }
-        Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        Unit unit = (Unit) controller.getCivilizationSelectedEntity(currentPlayer);
         Tile destination = (Tile) tileImage;
         if (controller.isTileImpassable(destination)) {
             RegisterPageGraphicalController.showPopup("The destination you have entered is impassable!");
@@ -605,10 +620,10 @@ public class UnitsGraphicalController {
         }
 
         // SET UNITS PATH
-        unit.setPath(path);
+        controller.setUnitPath(unit, unit.getLocation(), destination);
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
-        if (unit.getMovePointsLeft() == 0) {
+        if (controller.getUnitMovePointsLeft(unit) == 0) {
             deselectUnit(unit);
         }
         unitCommandsBox.getChildren().clear();
@@ -644,7 +659,7 @@ public class UnitsGraphicalController {
             result.put(command, false);
         }
 
-        boolean isUnitAWorkingWorker = unit.getType() == UnitType.WORKER && controller.isWorkerWorking(unit);
+        boolean isUnitAWorkingWorker = unit.getType().getName().equals(UnitType.WORKER.getName()) && controller.isWorkerWorking(unit);
         if (controller.canUnitSetUpForRangedAttack(unit)) {
             result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
         }
@@ -666,12 +681,12 @@ public class UnitsGraphicalController {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+        if (unit.getState().waitsForCommand && unit.getType().getName().equals(UnitType.SETTLER.getName()) && controller.getUnitMovePointsLeft(unit) > 0) {
             result.put(UnitCommands.FOUND_CITY, true);
         }
 
-        if (unit.getState() == UnitState.AWAKE) {
-            if (unit.getType().getCombatType().isStateAllowed(UnitState.FORTIFY)) {
+        if (unit.getState().getName().equals(UnitState.AWAKE.getName())) {
+            if (controller.isStateAllowedForUnit(unit, UnitState.FORTIFY)) {
                 result.put(UnitCommands.FORTIFY, true);
                 if (unit.getHitPointsLeft() < unit.getType().getHitPoints()) {
                     result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
@@ -685,13 +700,13 @@ public class UnitsGraphicalController {
             result.put(UnitCommands.AWAKE, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType() == UnitType.WORKER) {
+        if (unit.getState().waitsForCommand && unit.getType().getName().equals(UnitType.WORKER.getName())) {
             result.put(UnitCommands.WORK_ACTIONS, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
+        if (unit.getState().waitsForCommand && controller.isStateAllowedForUnit(unit, UnitState.GARRISON) &&
                 controller.getCityCenteredInTile(unit.getLocation()) != null &&
-                controller.getCityCenteredInTile(unit.getLocation()).getOwner() == unit.getOwner()) {
+                controller.isCityOwnerEqualToUnitOwner(controller.getCityCenteredInTile(unit.getLocation()), unit)) {
             result.put(UnitCommands.GARRISON, true);
         }
 
@@ -702,14 +717,13 @@ public class UnitsGraphicalController {
     }
 
     private static TileImage getTileImageFromHexagon(Polygon hexagon) {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         double startXCoordinate = hexagon.getPoints().get(0);
         double startYCoordinate = hexagon.getPoints().get(1);
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) 32 / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(currentPlayer.getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * 32 * (i + isOdd * (double) (j % 2) / (double) 2);

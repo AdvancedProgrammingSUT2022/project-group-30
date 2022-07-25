@@ -882,5 +882,75 @@ public class GameController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public boolean isStateAllowedForUnit(Unit unit, UnitState state){
+        return unit.getType().getCombatType().isStateAllowed(state);
+    }
+
+    public boolean isCityOwnerEqualToUnitOwner(City city, Unit unit){
+        return city.getOwner().equals(unit.getOwner());
+    }
+
+    public void deselectUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+    }
+
+    public void alertUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ALERT);
+    }
+
+    public void sleepUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ASLEEP);
+    }
+
+    public void fortifyUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFY);
+    }
+
+    public void garrisonUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.GARRISON);
+    }
+
+    public void fortifyUnitUntilHealed(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFYUNTILHEALED);
+    }
+
+    public void awakeUnit(Unit unit){
+        unit.setState(UnitState.AWAKE);
+    }
+
+    public void deleteAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        deleteUnit(unit);
+    }
+
+    public void cancelUnitMove(Unit unit){
+        unit.setPath(null);
+    }
+
+    public Selectable getCivilizationSelectedEntity(Civilization civ){
+        return civ.getSelectedEntity();
+    }
+
+    public void setUnitPath(Unit unit, Tile location, Tile destination){
+        unit.setPath(findPath(unit, unit.getLocation(), destination));
+    }
+
+    public int getUnitMovePointsLeft(Unit unit){
+        return unit.getMovePointsLeft();
+    }
+
+    public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit){
+        return GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar();
+    }
+
+    public void setUnitAndTargetOwnerAtWar(combative target, Unit unit, boolean atWar){
+        GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(atWar);
+    }
+
 
 }
