@@ -35,27 +35,24 @@ public class RoomChatPageController {
 
     private ChatController controller;
     private NetworkController netController;
-    Room room;
+    private Room room;
+    private User currentUser;
 
     @FXML
     public void initialize() {
         controller = ChatController.getChatController();
         netController = NetworkController.getNetworkController();
 
-        User currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
+        currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
         room =  controller.getCurrentRoom(netController.getToken());
         roomNameField.setText(room.getName());
         data = FXCollections.observableArrayList();
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message("meow"));
-        messages.add(new Message("Hi"));
-        messages.add(new Message("weeee"));
-        messages.add(new Message("1", 1));
-        messages.add(new Message("2"));
-        messages.add(new Message("3"));
-        messages.add(new Message("4", 1));
-        messages.add(new Message("I hanshf hlsfhel hosdfh sfn efhfndn jldhfdls hflsdh foe"));
-        messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;", 2));
+        ArrayList<Message> messages = room.getMessages();
+        for (Message message : messages) {
+            if (message.getSenderId() != currentUser.getId() && !message.isSeen()) {
+                controller.markMessageAsSeen(message.getId());
+            }
+        }
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setFocusTraversable(false);
@@ -81,13 +78,29 @@ public class RoomChatPageController {
 
     @FXML
     protected void onSendButtonClick() {
-        data.add(new Message(textArea.getText(), ProgramController.getProgramController().getLoggedInUser(netController.getToken()).getId()));
-        textArea.setText("");
-        scrollToBottom();
+        controller.addMessageToRoom(room.getId(), new Message(textArea.getText(), currentUser.getId()));
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void onRefreshButtonClick() {
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     protected void onAddMemberButtonClick() {
+        if (currentUser.getId() != room.getOwnerId()) {
+            RegisterPageGraphicalController.showPopup("You do not own this group!");
+            return;
+        }
         AddMemberDialog addMemberDialog = new AddMemberDialog(room.getId());
         addMemberDialog.show();
     }

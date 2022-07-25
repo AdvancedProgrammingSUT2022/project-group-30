@@ -78,6 +78,11 @@ public class ChatController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public void addMessageToRoom(int id, Message message) {
+        Request request = new Request("ChatController", "addMessageToRoom", MyGson.toJson(id), MyGson.toJson(message));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public void addMessageToGlobalChat(Message message) {
         Request request = new Request("ChatController", "addMessageToGlobalChat", MyGson.toJson(message));
         NetworkController.getNetworkController().transferData(request);

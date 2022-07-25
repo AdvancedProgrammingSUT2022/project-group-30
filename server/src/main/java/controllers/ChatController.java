@@ -92,6 +92,11 @@ public class ChatController {
         privateChat.getMessages().add(message);
     }
 
+    public synchronized void addMessageToRoom(int id, Message message) {
+        Room room = database.findRoomById(id);
+        room.getMessages().add(message);
+    }
+
     public synchronized void addMessageToGlobalChat(Message message) {
         database.getGlobalChat().add(message);
     }
