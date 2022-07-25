@@ -654,7 +654,7 @@ public class GameController {
 
     public ArrayList<String> listSavedFiles(boolean isAuto) throws IOException {
         Request request = new Request("listSavedFiles", MyGson.toJson(isAuto));
-        return (ArrayList<String>) NetworkController.getNetworkController().transferData(request);
+        return (ArrayList<String>) NetworkController.getNetworkController().transferData(request, String[].class);
     }
 
     public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ) {
@@ -732,48 +732,154 @@ public class GameController {
         return (ArrayList<City>) NetworkController.getNetworkController().transferData(request, City[].class);
     }
 
-    public void deselectCity(City city){
-        city.getOwner().setSelectedEntity(null);
+    public void deselectCity(City city) {
+        Request request = new Request("deselectCity", MyGson.toJson(city));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public ArrayList<Tile> findCityPurchasableTiles(City city){
-        return city.findPurchasableTiles();
+    public ArrayList<Tile> findCityPurchasableTiles(City city) {
+        Request request = new Request("findCityPurchasableTiles", MyGson.toJson(city));
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
-    public int calculateNextTilePriceForCity(City city){
-        return city.calculateNextTilePrice();
+    public int calculateNextTilePriceForCity(City city) {
+        Request request = new Request("calculateNextTilePriceForCity", MyGson.toJson(city));
+        return (int) NetworkController.getNetworkController().transferData(request);
     }
 
-    public double getCityOwnerGoldCount(City city){
-        return city.getOwner().getGoldCount();
+    public double getCityOwnerGoldCount(City city) {
+        Request request = new Request("getCityOwnerGoldCount", MyGson.toJson(city));
+        return (double) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void decreaseCivilizationGold(Civilization civ, int cost){
-        civ.decreaseGold(cost);
+    public void decreaseCivilizationGold(Civilization civ, int cost) {
+        Request request = new Request("decreaseCivilizationGold", MyGson.toJson(civ), MyGson.toJson(cost));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isCityCapital(City city){
-        return city.isCapital();
+    public boolean isCityCapital(City city) {
+        Request request = new Request("isCityCapital", MyGson.toJson(city));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isCityTileBeingWorked(City city, Tile tile){
-        return city.isTileBeingWorked(tile);
+    public boolean isCityTileBeingWorked(City city, Tile tile) {
+        Request request = new Request("isCityTileBeingWorked", MyGson.toJson(city), MyGson.toJson(tile));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public Output calculateOutputForCity(City city){
-        return city.calculateOutput();
+    public Output calculateOutputForCity(City city) {
+        Request request = new Request("calculateOutputForCity", MyGson.toJson(city));
+        return (Output) NetworkController.getNetworkController().transferData(request);
     }
 
-    public double calculateCityBeakerProduction(City city){
-        return city.calculateBeakerProduction();
+    public double calculateCityBeakerProduction(City city) {
+        Request request = new Request("calculateCityBeakerProduction", MyGson.toJson(city));
+        return (double) NetworkController.getNetworkController().transferData(request);
     }
 
-    public int calculateDistanceFromTile(Tile tile, Tile dest){
-        return tile.calculateDistance(dest);
+    public int calculateDistanceFromTile(Tile tile, Tile dest) {
+        Request request = new Request("calculateDistanceFromTile", MyGson.toJson(tile), MyGson.toJson(dest));
+        return (int) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void executeRangedAttackCity(City city, combative comb){
-        CombatController.getCombatController().executeRangedAttack(city, comb);
+    public void executeRangedAttackCity(City city, combative comb) {
+        Request request = new Request("executeRangedAttackCity", MyGson.toJson(city), MyGson.toJson(comb));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public boolean doesCityHasTileInTerritory(City city, Tile tile) {
+        Request request = new Request("doesCityHasTileInTerritory", MyGson.toJson(city), MyGson.toJson(tile));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int calculateWorklessCitizenCountForCity(City city) {
+        Request request = new Request("calculateWorklessCitizenCountForCity", MyGson.toJson(city));
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Citizen getCityWorklessCitizen(City city) {
+        Request request = new Request("getCityWorklessCitizen", MyGson.toJson(city));
+        return (Citizen) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void assignCitizenToWorkPlaceForCity(City city, Tile tile, Citizen citizen) {
+        Request request = new Request("assignCitizenToWorkPlaceForCity", MyGson.toJson(city), MyGson.toJson(tile), MyGson.toJson(citizen));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void freeCityTile(City city, Tile tile) {
+        Request request = new Request("freeCityTile", MyGson.toJson(city), MyGson.toJson(tile));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Tile> getCityWorkingTiles(City city) {
+        Request request = new Request("getCityWorkingTiles", MyGson.toJson(city));
+        return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
+    }
+
+    public boolean doesCityWorkingTilesContainsTile(City city, Tile tile) {
+        Request request = new Request("doesCityWorkingTilesContainsTile", MyGson.toJson(city), MyGson.toJson(tile));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public boolean doesCityNonWorkingTilesContainsTile(City city, Tile tile) {
+        Request request = new Request("doesCityNonWorkingTilesContainsTile", MyGson.toJson(city), MyGson.toJson(tile));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Producible getCityEntityInProduction(City city) {
+        Request request = new Request("getCityEntityInProduction", MyGson.toJson(city));
+        return (Producible) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int calculateProductionHammerCost(Producible producible) {
+        Request request = new Request("calculateProductionHammerCost", MyGson.toJson(producible));
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<UnitType> calculateCityProductionReadyUnitTypes(City city) {
+        Request request = new Request("calculateCityProductionReadyUnitTypes", MyGson.toJson(city));
+        return (ArrayList<UnitType>) NetworkController.getNetworkController().transferData(request, UnitType[].class);
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypes(City city) {
+        Request request = new Request("calculateCityProductionReadyBuildingTypes", MyGson.toJson(city));
+        return (ArrayList<BuildingType>) NetworkController.getNetworkController().transferData(request, BuildingType[].class);
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypesFalseValue(City city) {
+        Request request = new Request("calculateCityProductionReadyBuildingTypesFalseValue", MyGson.toJson(city));
+        return (ArrayList<BuildingType>) NetworkController.getNetworkController().transferData(request, BuildingType[].class);
+    }
+
+    public boolean doesPackingLetUnitEnterCity(City city, UnitType type) {
+        Request request = new Request("doesPackingLetUnitEnterCity", MyGson.toJson(city), MyGson.toJson(type));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void changeCityProduction(City city, Producible producible) {
+        Request request = new Request("changeCityProduction", MyGson.toJson(city), MyGson.toJson(producible));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void stopCityProduction(City city) {
+        Request request = new Request("stopCityProduction", MyGson.toJson(city));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<UnitType> calculateCityPurchasableUnitTypes(City city) {
+        Request request = new Request("calculateCityPurchasableUnitTypes", MyGson.toJson(city));
+        return (ArrayList<UnitType>) NetworkController.getNetworkController().transferData(request, UnitType[].class);
+    }
+
+    public ArrayList<BuildingType> calculateCityPurchasableBuildingTypes(City city) {
+        Request request = new Request("calculateCityPurchasableBuildingTypes", MyGson.toJson(city));
+        return (ArrayList<BuildingType>) NetworkController.getNetworkController().transferData(request, BuildingType[].class);
+    }
+
+    public void addBuildingToCity(City city, BuildingType type) {
+        Request request = new Request("addBuildingToCity", MyGson.toJson(city), MyGson.toJson(type));
+        NetworkController.getNetworkController().transferData(request);
     }
 
 

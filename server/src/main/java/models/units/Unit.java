@@ -1,5 +1,6 @@
 package models.units;
 
+import com.google.gson.annotations.SerializedName;
 import controllers.GameController;
 import models.City;
 import models.Civilization;
@@ -19,7 +20,7 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     private static int newAvailableId = 0;
     private final Civilization owner;   //
-    private final UnitType type;
+    private final UnitType unitType;
     private Tile location;
     private int hitPointsLeft;
     private int movePointsLeft;
@@ -31,11 +32,16 @@ public class Unit implements Selectable, TurnHandler, combative {
     private ArrayList<Tile> path;   // should be NULL when unit has no destination
     public static final int MAINTENANCE_COST_OF_UNIT = 2;
 
+    @SerializedName("type")
+    private String typeName;
+
+
 
     public Unit(Unit unit) {
+        this.typeName = unit.typeName;
         this.id = unit.getId();
         this.owner = null;
-        this.type = unit.getType();
+        this.unitType = unit.getType();
         this.location = unit.getLocation();
         this.hitPointsLeft = unit.hitPointsLeft;
         this.movePointsLeft = unit.movePointsLeft;
@@ -49,10 +55,11 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public Unit(Civilization owner, UnitType type, Tile location) {
+        this.typeName = getClass().getName();
         this.id = newAvailableId;
         newAvailableId++;
         this.owner = owner;
-        this.type = type;
+        this.unitType = type;
         this.location = location;
         hitPointsLeft = type.getHitPoints();
         movePointsLeft = type.getMovementSpeed();
@@ -61,7 +68,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         inactivityDuration = 0;
         stateDuration = 0;
         path = null;
-        if (this.type.needsAssmbly()) {
+        if (this.unitType.needsAssmbly()) {
             isAssembled = false;
         } else {
             isAssembled = true;
@@ -69,7 +76,7 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public Unit createImage() {
-        Unit image = new Unit(owner, type, location);
+        Unit image = new Unit(owner, unitType, location);
         image.hitPointsLeft = hitPointsLeft;
         image.movePointsLeft = movePointsLeft;
         image.state = state;
@@ -88,13 +95,13 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public void goToNextTurn() {
-        if (!hasAttackedThisTurn && movePointsLeft == type.movementSpeed) {
+        if (!hasAttackedThisTurn && movePointsLeft == unitType.movementSpeed) {
             inactivityDuration++;
         }
 
         stateDuration++;
         hasAttackedThisTurn = false;
-        movePointsLeft = type.getMovementSpeed();
+        movePointsLeft = unitType.getMovementSpeed();
         GameController.getGameController().moveUnitAlongItsPath(this);
 
         if (inactivityDuration >= 1) {
@@ -107,8 +114,8 @@ public class Unit implements Selectable, TurnHandler, combative {
             } else {
                 hitPointsLeft += 1;
             }
-            hitPointsLeft = Math.min(hitPointsLeft, type.getHitPoints());
-            if (hitPointsLeft == type.getHitPoints() && state == UnitState.FORTIFYUNTILHEALED) {
+            hitPointsLeft = Math.min(hitPointsLeft, unitType.getHitPoints());
+            if (hitPointsLeft == unitType.getHitPoints() && state == UnitState.FORTIFYUNTILHEALED) {
                 setState(UnitState.AWAKE);
             }
         }
@@ -124,7 +131,7 @@ public class Unit implements Selectable, TurnHandler, combative {
 
     public boolean isAssembled() { // needs to be checked for all units, but only siege units may return false, the
         // rest all return true
-        if (type.needsAssmbly()) {
+        if (unitType.needsAssmbly()) {
             return isAssembled;
         } else {
             return true;
@@ -132,7 +139,7 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public boolean isWaitingForCommand() {
-        if (type == UnitType.WORKER && GameController.getGameController().isWorkerWorking(this)) {
+        if (unitType == UnitType.WORKER && GameController.getGameController().isWorkerWorking(this)) {
             return false;
         }
         if (state.waitsForCommand == false || path != null) { // if it is in an inactive state like fortified or sleeping, return false
@@ -221,11 +228,11 @@ public class Unit implements Selectable, TurnHandler, combative {
     }
 
     public UnitType getType() {
-        return this.type;
+        return this.unitType;
     }
 
     public boolean isCivilian() {
-        return (type.getCombatType() == CombatType.CIVILIAN);
+        return (unitType.getCombatType() == CombatType.CIVILIAN);
     }
 
     public boolean hasAttackedThisTurn() {

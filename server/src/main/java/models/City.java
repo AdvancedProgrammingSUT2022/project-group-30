@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.SerializedName;
 import controllers.GameController;
 import javafx.scene.layout.Pane;
 import models.buildings.Building;
@@ -51,12 +52,17 @@ public class City implements Selectable, TurnHandler, combative {
     private ArrayList<Citizen> citizens = new ArrayList<>();
     private boolean isDefeated;
 
+    @SerializedName("type")
+    private String typeName;
+
+
     public City(City city) {
+        this.typeName = city.typeName;
         this.id = city.getId();
         this.founder = null;
         this.owner = null;
         this.centralTile = city.centralTile;
-//        this.buildings = city.buildings;
+        //this.buildings = city.buildings;
         this.territories = city.territories;
         this.productionReserve = city.productionReserve;
         this.entityInProduction = city.entityInProduction;
@@ -76,6 +82,7 @@ public class City implements Selectable, TurnHandler, combative {
     }
 
     public City(Civilization founder, Tile tile) {
+        this.typeName = getClass().getName();
         this.id = newAvailableId;
         newAvailableId++;
         this.founder = founder;

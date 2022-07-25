@@ -26,6 +26,7 @@ public class MyGson {
             .registerTypeAdapter(Resource.class, new JsonDeserializerWithInheritance<Resource>())
             .registerTypeAdapter(Building.class, new JsonDeserializerWithInheritance<Building>())
             .registerTypeAdapter(Selectable.class, new JsonDeserializerWithInheritance<Selectable>())
+            .registerTypeAdapter(Producible.class, new JsonDeserializerWithInheritance<Producible>())
 //            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<BuildingType>())
 //            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<ImprovementType>())
 //            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Technology>())

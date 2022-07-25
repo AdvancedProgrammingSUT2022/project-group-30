@@ -273,12 +273,12 @@ public class CitiesGraphicalController {
     }
 
     private static void stopProduction(City city, Pane pane){
-        if (city.getEntityInProduction() == null) {
+        if (controller.getCityEntityInProduction(city) == null) {
             RegisterPageGraphicalController.showPopup("There is no ongoing production in this city");
             makeTheCityActionTab(city, pane);
             return;
         }
-        city.stopProduction();
+        controller.stopCityProduction(city);
         RegisterPageGraphicalController.showPopup("Production stopped.");
         makeTheCityActionTab(city, pane);
         return;
@@ -297,7 +297,7 @@ public class CitiesGraphicalController {
 
 
 
-        ArrayList<UnitType> purchasableUnits = city.calculatePurchasableUnitTypes();
+        ArrayList<UnitType> purchasableUnits = controller.calculateCityPurchasableUnitTypes(city);
         for (UnitType unit : purchasableUnits) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
@@ -322,7 +322,7 @@ public class CitiesGraphicalController {
         Text buildingsText = new Text("Purchasable Buildings:");
         buildingsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         cityCommandsBox.getChildren().add(buildingsText);
-        ArrayList<BuildingType> purchasableBuildings = city.calculatePurchasableBuildingTypes();
+        ArrayList<BuildingType> purchasableBuildings = controller.calculateCityPurchasableBuildingTypes(city);
         for (BuildingType building : purchasableBuildings) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
@@ -357,19 +357,19 @@ public class CitiesGraphicalController {
     }
 
     private static void purchase(City city, Pane pane, Producible chosenPurchasable){
-        if (city.getOwner().getGoldCount() < chosenPurchasable.getCost()) {
+        if (controller.getCityOwnerGoldCount(city) < chosenPurchasable.getCost()) {
             RegisterPageGraphicalController.showPopup("You don't have enough gold to purchase this item!");
             makeProductionPanel(city, pane);
             return;
         }
 
         if (chosenPurchasable instanceof BuildingType) {
-            city.addBuilding((BuildingType) chosenPurchasable);
+            controller.addBuildingToCity(city, (BuildingType) chosenPurchasable);
             RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
             makeProductionPanel(city, pane);
         }
         if (chosenPurchasable instanceof UnitType) {
-            if (city.getCentralTile().doesPackingLetUnitEnter((UnitType) chosenPurchasable)) {
+            if (controller.doesPackingLetUnitEnterCity(city, (UnitType) chosenPurchasable)) {
                 controller.createUnit((UnitType) chosenPurchasable, city.getOwner(), city.getCentralTile());
                 RegisterPageGraphicalController.showPopup("Successfully purchased " + chosenPurchasable.getName());
                 try {
@@ -387,8 +387,8 @@ public class CitiesGraphicalController {
     }
 
     public static void makeChooseProductionPanel(City city, Pane pane){
-        if(city.getEntityInProduction() != null){
-            RegisterPageGraphicalController.showPopup("This city is already producing a " + city.getEntityInProduction().getName() + ". Its production will be halted if you choose another production");
+        if(controller.getCityEntityInProduction(city) != null){
+            RegisterPageGraphicalController.showPopup("This city is already producing a " + controller.getCityEntityInProduction(city).getName() + ". Its production will be halted if you choose another production");
         }
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
@@ -396,8 +396,8 @@ public class CitiesGraphicalController {
         Text text = new Text("Choose This City's Next Production From The Below Lists: (by clicking on images)");
         text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         cityCommandsBox.getChildren().add(text);
-        ArrayList<UnitType> producibleUnits = city.calculateProductionReadyUnitTypes();
-        ArrayList<BuildingType> producibleBuildings = city.calculateProductionReadyBuildingTypes(false);
+        ArrayList<UnitType> producibleUnits = controller.calculateCityProductionReadyUnitTypes(city);
+        ArrayList<BuildingType> producibleBuildings = controller.calculateCityProductionReadyBuildingTypesFalseValue(city);
         Text unitsText = new Text("Units:");
         unitsText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         cityCommandsBox.getChildren().add(unitsText);
@@ -405,20 +405,20 @@ public class CitiesGraphicalController {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setSpacing(10);
-            int hammerCost = producibleUnit.calculateHammerCost();
-            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            int hammerCost = controller.calculateProductionHammerCost(producibleUnit);
+            int turnsRequired = (int) Math.ceil((double) hammerCost / controller.calculateOutputForCity(city).getProduction());
             Circle circle = new Circle();
             circle.setRadius(15);
             circle.setFill(Images.getImage(producibleUnit.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if(!city.getCentralTile().doesPackingLetUnitEnter((UnitType) producibleUnit)){
+                    if(!controller.doesPackingLetUnitEnterCity(city, producibleUnit)){
                         RegisterPageGraphicalController.showPopup("There is already a unit in the city. You need to move it to make room!");
                         makeProductionPanel(city, pane);
                         return;
                     }
-                    city.changeProduction(producibleUnit);
+                    controller.changeCityProduction(city, producibleUnit);
                     RegisterPageGraphicalController.showPopup("Set city's production to " + producibleUnit.getName());
                     makeProductionPanel(city, pane);
                 }
@@ -443,15 +443,15 @@ public class CitiesGraphicalController {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setSpacing(10);
-            int hammerCost = producibleBuilding.calculateHammerCost();
-            int turnsRequired = (int) Math.ceil((double) hammerCost / city.calculateOutput().getProduction());
+            int hammerCost = controller.calculateProductionHammerCost(producibleBuilding);
+            int turnsRequired = (int) Math.ceil((double) hammerCost / controller.calculateOutputForCity(city).getProduction());
             Circle circle = new Circle();
             circle.setRadius(15);
             circle.setFill(Images.getImage(producibleBuilding.getName()));
             circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    city.changeProduction(producibleBuilding);
+                    controller.changeCityProduction(city, producibleBuilding);
                     RegisterPageGraphicalController.showPopup("Set city's production to " + producibleBuilding.getName());
                     makeProductionPanel(city, pane);
                 }
@@ -569,22 +569,14 @@ public class CitiesGraphicalController {
             }
         });
         cityCommandsBox.getChildren().add(back);
-
-
-
-
-
-
     }
 
     private static void showNonWorkingTiles(City city, Pane pane){
-        ArrayList<Citizen> citizens = city.getCitizens();
-        ArrayList<Tile> nonWorkingTiles = city.getUnworkedTiles();
         for(int i = 0; i < pane.getChildren().size(); i++){
             if(pane.getChildren().get(i) instanceof Polygon){
                 Polygon hexagon = (Polygon) pane.getChildren().get(i);
                 TileImage tileImage = getTileImageFromHexagon(hexagon);
-                if(tileImage instanceof Tile && nonWorkingTiles.contains((Tile) tileImage)){
+                if(tileImage instanceof Tile && controller.doesCityNonWorkingTilesContainsTile(city, (Tile) tileImage)){
                     hexagon.setStroke(Color.RED);
                 }
             }
@@ -592,18 +584,11 @@ public class CitiesGraphicalController {
     }
 
     private static void showWorkingTiles(City city, Pane pane){
-        ArrayList<Citizen> citizens = city.getCitizens();
-        ArrayList<Tile> workingTiles = new ArrayList<>();
-        for(int i = 0; i < citizens.size(); i++){
-            if(citizens.get(i).getWorkPlace() instanceof Tile){
-                workingTiles.add((Tile) citizens.get(i).getWorkPlace());
-            }
-        }
         for(int i = 0; i < pane.getChildren().size(); i++){
             if(pane.getChildren().get(i) instanceof Polygon){
                 Polygon hexagon = (Polygon) pane.getChildren().get(i);
                 TileImage tileImage = getTileImageFromHexagon(hexagon);
-                if(tileImage instanceof Tile && workingTiles.contains((Tile) tileImage)){
+                if(tileImage instanceof Tile && controller.doesCityWorkingTilesContainsTile(city, ((Tile) tileImage))){
                     hexagon.setStroke(Color.RED);
                 }
             }
@@ -693,19 +678,18 @@ public class CitiesGraphicalController {
             return;
         }
         Tile tile = (Tile) tileImage;
-        if (!city.getTerritories().contains(tile)) {
+        if (!controller.doesCityHasTileInTerritory(city, tile)) {
             RegisterPageGraphicalController.showPopup("The tile you have entered is not in this city's territory!");
             makeTheCityActionTab(city, pane);
             return;
         }
-        if (!city.isTileBeingWorked(tile)) {
+        if (!controller.isCityTileBeingWorked(city, tile)) {
             RegisterPageGraphicalController.showPopup("This tile is not being worked!");
             makeTheCityActionTab(city, pane);
             return;
         }
-        Citizen citizen = city.getCitizenAssignedToTile(tile);
-        citizen.setWorkPlace(null);
-        RegisterPageGraphicalController.showPopup("Tile at Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap() + " freed! A citizen is out of work!");
+        controller.freeCityTile(city, tile);
+        RegisterPageGraphicalController.showPopup("Tile at Y: " + controller.findTileYCoordinateInMap(tile) + ", X: " + controller.findTileXCoordinateInMap(tile) + " freed! A citizen is out of work!");
         makeTheCityActionTab(city, pane);
     }
 
@@ -716,29 +700,29 @@ public class CitiesGraphicalController {
             return;
         }
         Tile tile = (Tile) tileImage;
-        if (!city.getTerritories().contains(tile)) {
+        if (!controller.doesCityHasTileInTerritory(city, tile)) {
             RegisterPageGraphicalController.showPopup("The tile you have entered is not in this city's territory!");
             makeTheCityActionTab(city, pane);
             return;
         }
-        if (tile.calculateDistance(city.getCentralTile()) > 2) {
+        if (controller.calculateDistanceFromTile(tile, city.getCentralTile()) > 2) {
             RegisterPageGraphicalController.showPopup("This tile is too far away from city center!");
             makeTheCityActionTab(city, pane);
             return;
         }
-        if (city.isTileBeingWorked(tile)) {
+        if (controller.isCityTileBeingWorked(city, tile)) {
             RegisterPageGraphicalController.showPopup("This tile is already being worked!");
             makeTheCityActionTab(city, pane);
             return;
         }
-        if (city.calculateWorklessCitizenCount() == 0) {
+        if (controller.calculateWorklessCitizenCountForCity(city) == 0) {
             RegisterPageGraphicalController.showPopup("There are no workless citizens to assign to this tile! Free a citizen and try again.");
             makeTheCityActionTab(city, pane);
             return;
         }
-        Citizen citizen = city.getWorklessCitizen();
-        city.assignCitizenToWorkplace(tile, citizen);
-        RegisterPageGraphicalController.showPopup("Citizen assigned to tile at Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+        Citizen citizen = controller.getCityWorklessCitizen(city);
+        controller.assignCitizenToWorkPlaceForCity(city, tile, citizen);
+        RegisterPageGraphicalController.showPopup("Citizen assigned to tile at Y: " + controller.findTileYCoordinateInMap(tile) + ", X: " + controller.findTileXCoordinateInMap(tile));
         makeTheCityActionTab(city, pane);
     }
 
@@ -835,7 +819,7 @@ public class CitiesGraphicalController {
 
         Text text = new Text("Workless citizens count:");
         text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
-        Text num = new Text(String.valueOf(city.calculateWorklessCitizenCount()));
+        Text num = new Text(String.valueOf(controller.calculateWorklessCitizenCountForCity(city)));
         num.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(text);
         vbox.getChildren().add(num);
@@ -845,7 +829,7 @@ public class CitiesGraphicalController {
             circle.setRadius(25);
             circle.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Food.png").toExternalForm()).toExternalForm())));
             hBox.getChildren().add(circle);
-            Text foodCount = new Text(String.valueOf(city.calculateWorklessCitizenCount()));
+            Text foodCount = new Text(String.valueOf(controller.calculateWorklessCitizenCountForCity(city)));
             foodCount.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
             hBox.getChildren().add(foodCount);
             hBox.setAlignment(Pos.CENTER);
@@ -884,7 +868,7 @@ public class CitiesGraphicalController {
 
         Text text = new Text("Working citizens count:");
         text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
-        Text num = new Text(String.valueOf(city.getCitizens().size() - city.calculateWorklessCitizenCount()));
+        Text num = new Text(String.valueOf(city.getCitizens().size() - controller.calculateWorklessCitizenCountForCity(city)));
         num.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(text);
         vbox.getChildren().add(num);
@@ -933,7 +917,7 @@ public class CitiesGraphicalController {
         text.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(text);
 
-        Producible currentProduction = city.getEntityInProduction();
+        Producible currentProduction = controller.getCityEntityInProduction(city);
         Text secondText = new Text("Currently producing: ");
         secondText.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
         vbox.getChildren().add(secondText);
@@ -952,8 +936,8 @@ public class CitiesGraphicalController {
             else if(currentProduction instanceof UnitType){
                 circle.setFill(Images.getImage(currentProduction.getName()));
             }
-            int hammerCost = currentProduction.calculateHammerCost();
-            int productionOutput = city.calculateOutput().getProduction();
+            int hammerCost = controller.calculateProductionHammerCost(currentProduction);
+            int productionOutput = controller.calculateOutputForCity(city).getProduction();
             int hammerCount = (int) city.getHammerCount();
             int turnsRemaining = (int) Math.ceil((double) (hammerCost - hammerCount) / productionOutput);
             String info = currentProduction.getName() + ": (hammers " + hammerCount + " out of " + hammerCost + ")" + " " + turnsRemaining + " turns remaining";
@@ -976,14 +960,14 @@ public class CitiesGraphicalController {
                 circle.setFill(Images.getImage(producible.getName()));
 
             }
-            String info = producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + producible.calculateHammerCost();
+            String info = producible.getName() + ": " + city.getProductionReserve().get(producible) + " out of " + controller.calculateProductionHammerCost(producible);
             hBox.getChildren().add(circle);
             addTextToHBox(hBox, info);
             vbox.getChildren().add(hBox);
         }
 
         addTextToVBox(vbox, "Production-Ready Units:");
-        for (UnitType type : city.calculateProductionReadyUnitTypes()) {
+        for (UnitType type : controller.calculateCityProductionReadyUnitTypes(city)) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setSpacing(20);
@@ -999,7 +983,7 @@ public class CitiesGraphicalController {
 
 
         addTextToVBox(vbox, "Production-Ready Buildings:");
-        for (BuildingType type : city.calculateProductionReadyBuildingTypes()) {
+        for (BuildingType type : controller.calculateCityProductionReadyBuildingTypes(city)) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER);
             hBox.setSpacing(20);

@@ -1638,4 +1638,139 @@ public class GameController {
     }
 
 
+    public void deselectCity(City city){
+        city.getOwner().setSelectedEntity(null);
+    }
+
+    public ArrayList<Tile> findCityPurchasableTiles(City city){
+        return city.findPurchasableTiles();
+    }
+
+    public int calculateNextTilePriceForCity(City city){
+        return city.calculateNextTilePrice();
+    }
+
+    public double getCityOwnerGoldCount(City city){
+        return city.getOwner().getGoldCount();
+    }
+
+    public void decreaseCivilizationGold(Civilization civ, int cost){
+        civ.decreaseGold(cost);
+    }
+
+    public boolean isCityCapital(City city){
+        return city.isCapital();
+    }
+
+    public boolean isCityTileBeingWorked(City city, Tile tile){
+        return city.isTileBeingWorked(tile);
+    }
+
+    public Output calculateOutputForCity(City city){
+        return city.calculateOutput();
+    }
+
+    public double calculateCityBeakerProduction(City city){
+        return city.calculateBeakerProduction();
+    }
+
+    public int calculateDistanceFromTile(Tile tile, Tile dest){
+        return tile.calculateDistance(dest);
+    }
+
+    public void executeRangedAttackCity(City city, combative comb){
+        CombatController.getCombatController().executeRangedAttack(city, comb);
+    }
+
+    public boolean doesCityHasTileInTerritory(City city, Tile tile){
+        return city.getTerritories().contains(tile);
+    }
+
+    public int calculateWorklessCitizenCountForCity(City city){
+        return city.calculateWorklessCitizenCount();
+    }
+
+    public Citizen getCityWorklessCitizen(City city){
+        return city.getWorklessCitizen();
+    }
+
+    public void assignCitizenToWorkPlaceForCity(City city, Tile tile, Citizen citizen){
+        city.assignCitizenToWorkplace(tile, citizen);
+    }
+
+    public void freeCityTile(City city, Tile tile){
+        Citizen citizen = city.getCitizenAssignedToTile(tile);
+        citizen.setWorkPlace(null);
+    }
+
+    public ArrayList<Tile> getCityWorkingTiles(City city){
+        ArrayList<Citizen> citizens = city.getCitizens();
+        ArrayList<Tile> workingTiles = new ArrayList<>();
+        for(int i = 0; i < citizens.size(); i++){
+            if(citizens.get(i).getWorkPlace() instanceof Tile){
+                workingTiles.add((Tile) citizens.get(i).getWorkPlace());
+            }
+        }
+        return workingTiles;
+    }
+
+    public boolean doesCityWorkingTilesContainsTile(City city, Tile tile){
+        ArrayList<Tile> workingTiles = getCityWorkingTiles(city);
+        return workingTiles.contains(tile);
+    }
+
+    public boolean doesCityNonWorkingTilesContainsTile(City city, Tile tile){
+        return city.getUnworkedTiles().contains(tile);
+    }
+
+    public Producible getCityEntityInProduction(City city){
+        return city.getEntityInProduction();
+    }
+
+    public int calculateProductionHammerCost(Producible producible){
+        return producible.calculateHammerCost();
+    }
+
+    public ArrayList<UnitType> calculateCityProductionReadyUnitTypes(City city){
+        return city.calculateProductionReadyUnitTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypes(City city){
+        return city.calculateProductionReadyBuildingTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypesFalseValue(City city){
+        return city.calculateProductionReadyBuildingTypes(false);
+    }
+
+    public boolean doesPackingLetUnitEnterCity(City city, UnitType type){
+        return city.getCentralTile().doesPackingLetUnitEnter(type);
+    }
+
+    public void changeCityProduction(City city, Producible producible){
+        city.changeProduction(producible);
+    }
+
+    public void stopCityProduction(City city){
+        city.stopProduction();
+    }
+
+    public ArrayList<UnitType> calculateCityPurchasableUnitTypes(City city){
+        return city.calculatePurchasableUnitTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityPurchasableBuildingTypes(City city){
+        return city.calculatePurchasableBuildingTypes();
+    }
+
+    public void addBuildingToCity(City city, BuildingType type){
+        city.addBuilding(type);
+    }
+
+
+
+
+
+
+
 }

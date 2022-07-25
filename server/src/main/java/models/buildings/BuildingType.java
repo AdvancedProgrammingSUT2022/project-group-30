@@ -89,7 +89,11 @@ public enum BuildingType implements Producible, EnumInterface {
     private final ArrayList<BuildingType> prerequisiteBuildingTypes;
     private final boolean shouldBeNearRiver;
 
+    @SerializedName("type")
+    private String typeName;
+
     private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, double happiness, String name) {
+        this.typeName = getClass().getName();
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;
@@ -101,6 +105,7 @@ public enum BuildingType implements Producible, EnumInterface {
 
     private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, ArrayList<BuildingType> prerequisiteBuildingType,
                          double happiness, String name) {
+        this.typeName = getClass().getName();
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;
@@ -112,6 +117,7 @@ public enum BuildingType implements Producible, EnumInterface {
 
     private BuildingType(double cost, double maintenanceCost, Technology prerequisiteTechnology, boolean shouldBeNearRiver,
                          double happiness, String name) {
+        this.typeName = getClass().getName();
         this.cost = cost;
         this.maintenanceCost = maintenanceCost;
         this.prerequisiteTechnology = prerequisiteTechnology;
