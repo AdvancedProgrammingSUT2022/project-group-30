@@ -117,23 +117,21 @@ public class CivilizationGamePageController {
     }
 
     private void passTurn() {
-//        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-//        if (idleUnits.isEmpty() == false && !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
-//            return;
-//        }
-//        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && currentPlayer.getResearchProject() == null &&
-//                !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("You should start a research project!");
-//            return;
-//        }
-//
-//        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
-//        if (citiesWaitingForProduction.isEmpty() == false && !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
-//            return;
-//        }
-
+        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
+            return;
+        }
+        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("You should start a research project!");
+            return;
+        }
+        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
+        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
+            return;
+        }
         controller.goToNextPlayer();
         try {
             Main.loadFxmlFile("CivilizationGamePage");

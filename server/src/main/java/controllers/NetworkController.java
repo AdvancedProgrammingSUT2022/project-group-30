@@ -185,6 +185,12 @@ public class NetworkController {
                         castedResult.set(i, new DiplomaticRelation(castedResult.get(i)));
                     }
                     response = new Response(gson.toJson(castedResult));
+                } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof City) {
+                    ArrayList<City> castedResult = (ArrayList<City>) result;
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new City(castedResult.get(i)));
+                    }
+                    response = new Response(gson.toJson(castedResult));
                 } else {
                     response = new Response(gson.toJson(result));
                 }

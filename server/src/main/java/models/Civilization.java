@@ -297,10 +297,6 @@ public class Civilization implements TurnHandler {
     }
 
     public void addLuxuryResource(LuxuryResource resource, int amount) {
-        System.out.println("resource: " + resource.getName());
-        System.out.println("resource object:" + resource);
-        System.out.println("server resource: " + LuxuryResource.getLuxuryResourceByName(resource.getName()));
-
         luxuryResources.put(resource, luxuryResources.get(resource) + amount);
     }
 
