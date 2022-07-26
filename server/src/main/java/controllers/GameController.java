@@ -675,6 +675,14 @@ public class GameController {
         return false;
     }
 
+    public Unit getUnit(Unit unit) {
+        return unit;
+    }
+
+    public City getCity(City city) {
+        return city;
+    }
+
     public void foundCityWithSettler(Unit unit) {
         City newCity = new City(unit.getOwner(), unit.getLocation());
         newCity.addCitizen();

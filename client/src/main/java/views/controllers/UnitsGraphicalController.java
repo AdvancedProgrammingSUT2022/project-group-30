@@ -76,7 +76,12 @@ public class UnitsGraphicalController {
         unitCommandsBox.setSpacing(10);
     }
 
+    public static Unit reloadUnit(Unit unit) {
+        return controller.getUnit(unit);
+    }
+
     public static void makeTheUnitActionTab(Unit unit, Pane pane) throws MalformedURLException {
+        unit = reloadUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(true);
         unitCommandsBox.setDisable(false);
@@ -115,16 +120,14 @@ public class UnitsGraphicalController {
                     deselectUnit(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.SLEEP.getName())) {
+        } else if (command.getName().equals(UnitCommands.SLEEP.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     sleepUnit(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.ALERT.getName())) {
+        } else if (command.getName().equals(UnitCommands.ALERT.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -132,8 +135,7 @@ public class UnitsGraphicalController {
                 }
             });
 
-        }
-        else if (command.getName().equals(UnitCommands.FORTIFY.getName())) {
+        } else if (command.getName().equals(UnitCommands.FORTIFY.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -141,8 +143,7 @@ public class UnitsGraphicalController {
                 }
             });
 
-        }
-        else if (command.getName().equals(UnitCommands.FORTIFY_UNTIL_HEALED.getName())) {
+        } else if (command.getName().equals(UnitCommands.FORTIFY_UNTIL_HEALED.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -150,8 +151,7 @@ public class UnitsGraphicalController {
                 }
             });
 
-        }
-        else if (command.getName().equals(UnitCommands.GARRISON.getName())) {
+        } else if (command.getName().equals(UnitCommands.GARRISON.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -159,8 +159,7 @@ public class UnitsGraphicalController {
                 }
             });
 
-        }
-        else if (command.getName().equals(UnitCommands.AWAKE.getName())) {
+        } else if (command.getName().equals(UnitCommands.AWAKE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -168,80 +167,70 @@ public class UnitsGraphicalController {
                 }
             });
 
-        }
-        else if (command.getName().equals(UnitCommands.CANCEL_MOVE.getName())) {
+        } else if (command.getName().equals(UnitCommands.CANCEL_MOVE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     cancelUnitMove(unit, pane);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.DELETE.getName())) {
+        } else if (command.getName().equals(UnitCommands.DELETE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     deleteAUnit(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.MOVE_TO.getName())) {
+        } else if (command.getName().equals(UnitCommands.MOVE_TO.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileAsDestination(pane);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.FOUND_CITY.getName())) {
+        } else if (command.getName().equals(UnitCommands.FOUND_CITY.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     foundCity(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.MELEE_ATTACK.getName())) {
+        } else if (command.getName().equals(UnitCommands.MELEE_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileToMeleeAttack(unit, pane);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.RANGED_ATTACK.getName())) {
+        } else if (command.getName().equals(UnitCommands.RANGED_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     waitForChoosingTileForRangedAttack(unit, pane);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.SHOW_INFO.getName())) {
+        } else if (command.getName().equals(UnitCommands.SHOW_INFO.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     showUnitInfo(unit, pane);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.SET_UP_FOR_RANGED_ATTACK.getName())) {
+        } else if (command.getName().equals(UnitCommands.SET_UP_FOR_RANGED_ATTACK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     setUpForRangedAttack(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.PILLAGE.getName())) {
+        } else if (command.getName().equals(UnitCommands.PILLAGE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     pillage(unit);
                 }
             });
-        }
-        else if (command.getName().equals(UnitCommands.WORK_ACTIONS.getName())) {
+        } else if (command.getName().equals(UnitCommands.WORK_ACTIONS.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -263,7 +252,6 @@ public class UnitsGraphicalController {
                 });
             }
         }
-
     }
 
     private static void rangedAttack(TileImage tileImage, Unit unit) {
@@ -747,7 +735,8 @@ public class UnitsGraphicalController {
         box.getChildren().add(info);
     }
 
-    public static void makeWorkPanel(Unit unit, Pane pane) {
+    public static void makeWorkPanel(Unit inUnit, Pane pane) {
+        Unit unit = reloadUnit(inUnit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(true);
         unitCommandsBox.setDisable(false);
@@ -785,8 +774,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.ROAD, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_RAILROAD.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_RAILROAD.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -794,8 +782,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.RAILROAD, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_FARM.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_FARM.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -803,8 +790,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovementAndRemoveFeature(unit, ImprovementType.FARM));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_MINE.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_MINE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -813,8 +799,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovementAndRemoveFeature(unit, ImprovementType.FARM));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_TRADING_POST.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_TRADING_POST.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -822,8 +807,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.TRADING_POST, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_LUMBER_MILL.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_LUMBER_MILL.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -831,8 +815,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.LUMBER_MILL, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_PASTURE.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_PASTURE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -841,8 +824,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.PASTURE, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_PLANTATION.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_PLANTATION.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -851,8 +833,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.PLANTATION, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_QUARRY.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_QUARRY.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -860,8 +841,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.QUARRY, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.BUILD_CAMP.getName())) {
+        } else if (command.getName().equals(WorkerCommands.BUILD_CAMP.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -869,8 +849,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new BuildImprovement(ImprovementType.CAMP, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.CLEAR_FOREST.getName())) {
+        } else if (command.getName().equals(WorkerCommands.CLEAR_FOREST.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -878,8 +857,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.FOREST, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.CLEAR_JUNGLE.getName())) {
+        } else if (command.getName().equals(WorkerCommands.CLEAR_JUNGLE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -887,8 +865,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.JUNGLE, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.CLEAR_MARSH.getName())) {
+        } else if (command.getName().equals(WorkerCommands.CLEAR_MARSH.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -897,8 +874,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new ClearFeature(Feature.MARSH, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.CLEAR_ROUTES.getName())) {
+        } else if (command.getName().equals(WorkerCommands.CLEAR_ROUTES.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -906,8 +882,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new ClearRoutes(unit));
-        }
-        else if (command.getName().equals(WorkerCommands.FIX_IMPROVEMENT.getName())) {
+        } else if (command.getName().equals(WorkerCommands.FIX_IMPROVEMENT.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -915,8 +890,7 @@ public class UnitsGraphicalController {
                 }
             });
             addTooltipForWorkButtons(button, unit, new FixPillage(controller.getTypeOfPillagedImprovement(unit), unit));
-        }
-        else if (command.getName().equals(WorkerCommands.FIX_ROUTE.getName())) {
+        } else if (command.getName().equals(WorkerCommands.FIX_ROUTE.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -929,8 +903,7 @@ public class UnitsGraphicalController {
             else
                 improvementType = ImprovementType.RAILROAD;
             addTooltipForWorkButtons(button, unit, new FixPillage(improvementType, unit));
-        }
-        else if (command.getName().equals(WorkerCommands.STOP_WORK.getName())) {
+        } else if (command.getName().equals(WorkerCommands.STOP_WORK.getName())) {
             button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -1263,7 +1236,7 @@ public class UnitsGraphicalController {
         if (work instanceof BuildImprovement && controller.getTileWork(unit.getLocation()) instanceof BuildImprovement && ((BuildImprovement) work).getImprovement().getName().equals(((BuildImprovement) controller.getTileWork(unit.getLocation())).getImprovement().getName())) {
             turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
-        if (work instanceof BuildImprovementAndRemoveFeature && controller.getTileWork(unit.getLocation()) instanceof BuildImprovementAndRemoveFeature && ((BuildImprovementAndRemoveFeature) work).getImprovement().getName().equals(((BuildImprovementAndRemoveFeature) controller.getTileWork(unit.getLocation())).getImprovement().getName()) ) {
+        if (work instanceof BuildImprovementAndRemoveFeature && controller.getTileWork(unit.getLocation()) instanceof BuildImprovementAndRemoveFeature && ((BuildImprovementAndRemoveFeature) work).getImprovement().getName().equals(((BuildImprovementAndRemoveFeature) controller.getTileWork(unit.getLocation())).getImprovement().getName())) {
             turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
         if (work instanceof FixPillage && controller.getTileWork(unit.getLocation()) instanceof FixPillage && ((FixPillage) work).getImprovementType().getName().equals(((FixPillage) controller.getTileWork(unit.getLocation())).getImprovementType().getName())) {

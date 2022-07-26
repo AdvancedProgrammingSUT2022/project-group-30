@@ -250,6 +250,16 @@ public class GameController {
         return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
+    public Unit getUnit(Unit unit) {
+        Request request = new Request("getUnit", MyGson.toJson(unit));
+        return (Unit) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public City getCity(City city) {
+        Request request = new Request("getCity", MyGson.toJson(city));
+        return (City) NetworkController.getNetworkController().transferData(request);
+    }
+
     public void foundCityWithSettler(Unit unit) {
         Request request = new Request("foundCityWithSettler", MyGson.toJson(unit));
         NetworkController.getNetworkController().transferData(request);

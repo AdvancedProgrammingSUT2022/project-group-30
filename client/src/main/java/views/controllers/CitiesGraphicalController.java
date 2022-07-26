@@ -73,7 +73,12 @@ public class CitiesGraphicalController {
         cityCommandsBox.setSpacing(10);
     }
 
+    public static City reloadCity(City city) {
+        return controller.getCity(city);
+    }
+
     public static void makeTheCityActionTab(City city, Pane pane){
+        city = reloadCity(city);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
         cityCommandsBox.setDisable(false);
@@ -214,6 +219,7 @@ public class CitiesGraphicalController {
     }
 
     public static void makeProductionPanel(City city, Pane pane){
+        city = reloadCity(city);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
         cityCommandsBox.setDisable(false);
@@ -284,7 +290,8 @@ public class CitiesGraphicalController {
         return;
     }
 
-    public static void makePurchaseProductionPanel(City city, Pane pane){
+    public static void makePurchaseProductionPanel(City inCity, Pane pane){
+        City city = reloadCity(inCity);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
         cityCommandsBox.setDisable(false);
@@ -341,7 +348,6 @@ public class CitiesGraphicalController {
             info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
             hBox.getChildren().add(info);
             cityCommandsBox.getChildren().add(hBox);
-
         }
 
         Button back = new Button("back");
@@ -386,7 +392,8 @@ public class CitiesGraphicalController {
 
     }
 
-    public static void makeChooseProductionPanel(City city, Pane pane){
+    public static void makeChooseProductionPanel(City inCity, Pane pane){
+        City city = reloadCity(inCity);
         if(controller.getCityEntityInProduction(city) != null){
             RegisterPageGraphicalController.showPopup("This city is already producing a " + controller.getCityEntityInProduction(city).getName() + ". Its production will be halted if you choose another production");
         }
@@ -475,6 +482,7 @@ public class CitiesGraphicalController {
     }
 
     public static void makeCitizenManagementPanel(City city, Pane pane){
+        city = reloadCity(city);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
         cityCommandsBox.setDisable(false);
@@ -485,7 +493,8 @@ public class CitiesGraphicalController {
 
     }
 
-    public static void makeCitizenManagementShowInfoPanel(City city, Pane pane){
+    public static void makeCitizenManagementShowInfoPanel(City inCity, Pane pane){
+        City city = reloadCity(inCity);
         cityCommandsBox.getChildren().clear();
         cityActionTabPane.setVisible(true);
         cityCommandsBox.setDisable(false);
