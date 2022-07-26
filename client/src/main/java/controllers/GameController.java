@@ -220,6 +220,36 @@ public class GameController {
         return (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request, Unit[].class);
     }
 
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        Request request = new Request("getDiplomaticRelation", MyGson.toJson(civ1), MyGson.toJson(civ2));
+        return (DiplomaticRelation) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        Request request = new Request("getDiscoveredCivilizations", MyGson.toJson(civilization));
+        return (ArrayList<Civilization>) NetworkController.getNetworkController().transferData(request, Civilization[].class);
+    }
+
+    public void addGoldToCiv(Civilization civ, double amount) {
+        Request request = new Request("addGoldToCiv", MyGson.toJson(civ), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void reduceGoldFromCiv(Civilization civ, int amount) {
+        Request request = new Request("reduceGoldFromCiv", MyGson.toJson(civ), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addLuxuryResourceToCiv(Civilization civ, LuxuryResource resource, int amount) {
+        Request request = new Request("addLuxuryResourceToCiv", MyGson.toJson(civ), MyGson.toJson(resource), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addStrategicResourceToCiv(Civilization civ, StrategicResource resource, int amount) {
+        Request request = new Request("addStrategicResourceToCiv", MyGson.toJson(civ), MyGson.toJson(resource), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         Request request = new Request("getMilitaryUnitInTile", MyGson.toJson(tile));
         return (Unit) NetworkController.getNetworkController().transferData(request);

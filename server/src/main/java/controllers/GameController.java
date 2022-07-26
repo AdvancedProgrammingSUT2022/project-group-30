@@ -616,6 +616,30 @@ public class GameController {
         return units;
     }
 
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        return gameDataBase.getDiplomaticRelation(civ1, civ2);
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        return gameDataBase.getDiscoveredCivilizations(civilization);
+    }
+
+    public void addGoldToCiv(Civilization civ, double amount) {
+        civ.addGold(amount);
+    }
+
+    public void reduceGoldFromCiv(Civilization civ, int amount) {
+        civ.reduceGold(amount);
+    }
+
+    public void addLuxuryResourceToCiv(Civilization civ, LuxuryResource resource, int amount) {
+        civ.addLuxuryResource(resource, amount);
+    }
+
+    public void addStrategicResourceToCiv(Civilization civ, StrategicResource resource, int amount) {
+        civ.addStrategicResource(resource, amount);
+    }
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         for (Unit unit : gameDataBase.getUnits()) {
             if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {

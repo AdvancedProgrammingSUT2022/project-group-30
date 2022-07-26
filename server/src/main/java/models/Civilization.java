@@ -46,7 +46,7 @@ public class Civilization implements TurnHandler {
 
     public Civilization(Civilization civ) {
         this.id = civ.getId();
-        this.name = "Ghost";
+        this.name = civ.name;
         this.mapImage = null;
         this.capital = null;
         this.originCapital = null;
@@ -544,5 +544,13 @@ public class Civilization implements TurnHandler {
 
     public void setMapImage(HashMap<Tile, TileImage> mapImage) {
         this.mapImage = mapImage;
+    }
+
+    @Override
+    public boolean equals(Object civ) {
+        if (civ instanceof Civilization) {
+            return ((Civilization) civ).getId() == id;
+        }
+        return false;
     }
 }

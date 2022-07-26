@@ -77,7 +77,7 @@ public class CivilizationGamePageController {
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
         initializeNextTurnButton();
-//        initializeDiplomacyButton();
+        initializeDiplomacyButton();
     }
 
     private void initializeDiplomacyButton() {

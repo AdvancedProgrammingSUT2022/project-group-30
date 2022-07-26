@@ -545,4 +545,12 @@ public class Civilization implements TurnHandler {
     public void setMapImage(HashMap<Tile, TileImage> mapImage) {
         this.mapImage = mapImage;
     }
+
+    @Override
+    public boolean equals(Object civ) {
+        if (civ instanceof Civilization) {
+            return ((Civilization) civ).getId() == id;
+        }
+        return false;
+    }
 }
