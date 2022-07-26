@@ -1,6 +1,8 @@
 package views.controllers;
 
 import controllers.MainPageController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
@@ -25,7 +27,8 @@ import java.util.ArrayList;
 
 public class ScoreboardPageController {
 
-    private MainPageController controller = MainPageController.getMainPageController();
+
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private TableView<User> scoreboard;
@@ -41,18 +44,25 @@ public class ScoreboardPageController {
     private TableColumn<User, String> lastScoreChangeTimeColumn;
     @FXML
     private TableColumn<User, String> lastLoginTimeColumn;
+    @FXML
+    public TableColumn<User, Boolean> isOnline;
 
     @FXML
     public void initialize(){
         this.controller.sortUsersArrayList();
         scoreboard.setFixedCellSize(60);
-        ArrayList<User> users = ProgramDatabase.getProgramDatabase().getUsers();
+        ArrayList<User> users = controller.getUsers();
+        for(int i = 0; i < users.size(); i++){
+            users.get(i).setIsOnline(controller.getUserById(users.get(i).getId()).getIsOnline());
+        }
         rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
         avatarColumn.setCellValueFactory(new PropertyValueFactory<>("imageName"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
         lastScoreChangeTimeColumn.setCellValueFactory(new PropertyValueFactory<>("lastScoreChangeTime"));
         lastLoginTimeColumn.setCellValueFactory(new PropertyValueFactory<>("lastLoginTime"));
+        isOnline.setCellValueFactory(new PropertyValueFactory<>("isOnline"));
+
 
         avatarColumn.setCellFactory(col -> {
             TableCell<User, String> cell = new TableCell<>();
@@ -73,12 +83,16 @@ public class ScoreboardPageController {
         scoreboard.setRowFactory(tableView -> {
             TableRow<User> row = new TableRow<>();
             row.itemProperty().addListener((obs, oldOrder, newOrder) ->
-                    row.pseudoClassStateChanged(higlighted, newOrder != null && newOrder.getUsername().equals(ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername())));
+                    row.pseudoClassStateChanged(higlighted, newOrder != null && newOrder.getUsername().equals(controller.getLoggedInUserUsername(NetworkController.getNetworkController().getToken()))));
             return row;
         });
     }
 
     public void back(MouseEvent mouseEvent) throws IOException {
         Main.loadFxmlFile("MainPage");
+    }
+
+    public void refresh(MouseEvent mouseEvent) throws IOException {
+        Main.loadFxmlFile("ScoreboardPage");
     }
 }

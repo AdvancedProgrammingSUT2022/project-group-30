@@ -92,7 +92,7 @@ public class LoginPageController {
     public void loginUser(String username) {
         User user = this.programDatabase.getUserByUsername(username);
         this.programDatabase.setLoggedInUser(user);
-        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
+        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(NetworkController.getNetworkController().getToken());
         writeUsersListToFile();
     }
 

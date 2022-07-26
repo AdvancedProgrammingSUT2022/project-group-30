@@ -1,6 +1,8 @@
 package views.controllers;
 
 import controllers.MainPageController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -10,7 +12,7 @@ import java.io.IOException;
 
 public class MainPageGraphicalController {
 
-    private MainPageController controller = MainPageController.getMainPageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private VBox box;
@@ -21,7 +23,7 @@ public class MainPageGraphicalController {
     }
 
     public void logout(MouseEvent mouseEvent) throws IOException {
-        this.controller.logoutUser();
+        this.controller.logoutUser(NetworkController.getNetworkController().getToken());
         Main.loadFxmlFile("SecondPage");
     }
 

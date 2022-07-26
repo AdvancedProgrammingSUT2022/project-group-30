@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.LoginPageController;
+import controllers.NetworkController;
 import controllers.ProgramController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -89,7 +90,7 @@ public class RegisterPageGraphicalController {
             showPopup("user with nickname " + nickname.getText() + " already exists.");
             return;
         }
-        this.controller.registerUser(username.getText(), password.getText(), nickname.getText());
+        this.controller.registerUser(username.getText(), password.getText(), nickname.getText(), NetworkController.getNetworkController().getToken());
         showPopup("user created successfully!");
         Main.loadFxmlFile("MainPage");
     }

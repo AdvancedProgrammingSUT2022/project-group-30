@@ -6,7 +6,11 @@ import models.User;
 import models.chat.ChatDataBase;
 import models.chat.TokenData;
 import netPackets.Request;
+import terminalViews.GameView;
+import terminalViews.ProfilePageView;
+import terminalViews.View;
 import utilities.MyGson;
+import views.Main;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,6 +18,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,8 +130,8 @@ public class ProgramController {
         return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void loginUser(String username) {
-        Request request = new Request("ProgramController", "loginUser", MyGson.toJson(username));
+    public void loginUser(String username, int token) {
+        Request request = new Request("ProgramController", "loginUser", MyGson.toJson(username), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 
@@ -172,12 +178,37 @@ public class ProgramController {
         NetworkController.getNetworkController().transferData(request);
     }
 
-    public void registerUser(String username, String password, String nickname) {
-        Request request = new Request("ProgramController", "registerUser", MyGson.toJson(username), MyGson.toJson(password), MyGson.toJson(nickname));
+    public void registerUser(String username, String password, String nickname, int token) {
+        Request request = new Request("ProgramController", "registerUser", MyGson.toJson(username), MyGson.toJson(password), MyGson.toJson(nickname), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 
-    
+    public void logoutUser(int token) {
+        Request request = new Request("ProgramController", "logoutUser", MyGson.toJson(token));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+
+    public View findTheNextMenu(String menuName) {
+        Request request = new Request("ProgramController", "findTheNextMenu", MyGson.toJson(menuName));
+        return (View) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void sortUsersArrayList() {
+        Request request = new Request("ProgramController", "sortUsersArrayList");
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<User> getUsers() {
+        Request request = new Request("ProgramController", "getUsers");
+        return (ArrayList<User>) NetworkController.getNetworkController().transferData(request, User[].class);
+    }
+
+
+    public String getLoggedInUserUsername(int token){
+        Request request=new Request("ProgramController","getLoggedInUserUsername",MyGson.toJson(token));
+        return(String)NetworkController.getNetworkController().transferData(request);
+    }
 
 
 }

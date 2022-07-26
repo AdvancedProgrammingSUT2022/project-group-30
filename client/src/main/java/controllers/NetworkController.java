@@ -16,7 +16,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class NetworkController {
-    private final static int PORT_NUMBER = 6000;
+    private final static int PORT_NUMBER = 8000;
     private static NetworkController networkController;
 
     private Socket socket;

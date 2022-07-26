@@ -24,7 +24,7 @@ public class MainPageController {
     }
 
     public void logoutUser() {
-        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
+        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(NetworkController.getNetworkController().getToken());
         LoginPageController.writeUsersListToFile();
         this.programDatabase.setLoggedInUser(null);
     }

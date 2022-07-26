@@ -7,9 +7,10 @@
     "nickname": "mahyarafshin",
     "score": 0,
     "imageName": "3.jpeg",
-    "lastLoginTime": "2022/07/20 00:22:19",
+    "lastLoginTime": "2022/07/27 04:07:52",
     "lastScoreChangeTime": "2022/07/11 16:41:15",
-    "invitations": []
+    "invitations": [],
+    "isOnline": false
   },
   {
     "rank": 2,
@@ -21,7 +22,8 @@
     "imageName": "0.jpeg",
     "lastLoginTime": "2022/07/11 16:42:09",
     "lastScoreChangeTime": "2022/07/11 16:41:46",
-    "invitations": []
+    "invitations": [],
+    "isOnline": false
   },
   {
     "rank": -1,
@@ -33,7 +35,8 @@
     "imageName": "2.jpeg",
     "lastLoginTime": "2022/07/18 00:18:38",
     "lastScoreChangeTime": "2022/07/18 00:18:35",
-    "invitations": []
+    "invitations": [],
+    "isOnline": false
   },
   {
     "rank": -1,
@@ -44,6 +47,7 @@
     "score": 0,
     "imageName": "2.jpeg",
     "lastScoreChangeTime": "2022/07/27 02:49:08",
-    "invitations": []
+    "invitations": [],
+    "isOnline": false
   }
 ]

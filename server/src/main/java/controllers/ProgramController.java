@@ -4,8 +4,13 @@ import models.ProgramDatabase;
 import models.User;
 import models.chat.ChatDataBase;
 import models.chat.TokenData;
+import terminalViews.GameView;
+import terminalViews.ProfilePageView;
+import terminalViews.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,11 +123,12 @@ public class ProgramController {
         return menuName.equals("Main Menu") ? true : false;
     }
 
-    public void loginUser(String username) {
+    public void loginUser(String username, int token) {
         User user = this.database.getUserByUsername(username);
-        this.database.setLoggedInUser(user, NetworkController.getNetworkController().getToken());
-        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime();
+        this.database.setLoggedInUser(user, token);
+        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(token);
         LoginPageController.writeUsersListToFile();
+        getUserById(fetchTokenData(token).getLoggedInUser()).setIsOnline(true);
     }
 
 
@@ -166,10 +172,46 @@ public class ProgramController {
         LoginPageController.writeUsersListToFile();
     }
 
-    public void registerUser(String username, String password, String nickname){
+    public void registerUser(String username, String password, String nickname, int token){
         User user = new User(username, password, nickname, 0);
         addUser(user);
-        loginUser(username);
+        loginUser(username, token);
+    }
+
+    public void logoutUser(int token) {
+        ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(token);
+        LoginPageController.writeUsersListToFile();
+        this.database.setLoggedInUser(null);
+        getUserById(fetchTokenData(token).getLoggedInUser()).setIsOnline(false);
+    }
+
+
+
+    public View findTheNextMenu(String menuName) {
+        if (menuName.equals("Profile Menu")) {
+            return ProfilePageView.getProfilePageView();
+        }
+        if (menuName.equals("Game Menu")) {
+            return GameView.getGameView();
+        }
+        return null;
+    }
+
+    public void sortUsersArrayList(){
+        ArrayList<User> users = ProgramDatabase.getProgramDatabase().getUsers();
+        Comparator<User> comparator = Comparator.comparing(User::getScore).reversed().thenComparing(User::getLastScoreChangeTime).thenComparing(User::getUsername);
+        Collections.sort(users, comparator);
+        for(int i = 0; i < users.size(); i++){
+            users.get(i).setRank(i + 1);
+        }
+    }
+
+    public ArrayList<User> getUsers(){
+        return database.getUsers();
+    }
+
+    public String getLoggedInUserUsername(int token){
+        return ProgramDatabase.getProgramDatabase().getLoggedInUser(token).getUsername();
     }
 
 }

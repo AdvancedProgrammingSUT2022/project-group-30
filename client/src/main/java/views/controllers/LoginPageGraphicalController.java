@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.LoginPageController;
+import controllers.NetworkController;
 import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -28,7 +29,7 @@ public class LoginPageGraphicalController {
             RegisterPageGraphicalController.showPopup("Username and password didn't match!");
             return;
         }
-        this.controller.loginUser(username.getText());
+        this.controller.loginUser(username.getText(), NetworkController.getNetworkController().getToken());
         RegisterPageGraphicalController.showPopup("user logged in successfully!");
         Main.loadFxmlFile("MainPage");
     }

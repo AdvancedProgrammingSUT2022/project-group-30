@@ -38,8 +38,8 @@ public class ProgramDatabase {
         return null;
     }
 
-    public void updateLoggedInUserLastLoginTime(){
-//        this.loggedInUsers.setLastLoginTime(this.getCurrentDate());
+    public void updateLoggedInUserLastLoginTime(int token){
+        getLoggedInUser(token).setLastLoginTime(this.getCurrentDate());
         // THIS METHOD SHOULD BE CHANGED TO SUPPORT TOKENS
     }
 

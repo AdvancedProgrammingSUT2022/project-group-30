@@ -22,7 +22,10 @@ public class User {
     private String lastScoreChangeTime;  // note : be careful of updating this field after each game and score change using updateUserLastScoreChangeTime() function in ProgramDatabase.java
     private ArrayList<Notification> invitations;
 
+    private boolean isOnline;
+
     public User(String username, String password, String nickname, int score) {
+        this.isOnline = false;
         this.rank = -1; // initialize ranking into -1
         this.id = findNextId();
         this.username = username;
@@ -135,5 +138,13 @@ public class User {
             e.printStackTrace();
         }
         return nextId;
+    }
+
+    public void setIsOnline(boolean isOnline){
+        this.isOnline = isOnline;
+    }
+
+    public boolean getIsOnline(){
+        return this.isOnline;
     }
 }

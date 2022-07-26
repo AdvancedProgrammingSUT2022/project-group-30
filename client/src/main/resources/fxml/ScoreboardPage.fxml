@@ -22,11 +22,13 @@
                     <TableColumn fx:id="scoreColumn" editable="false" text="Score" />
                     <TableColumn fx:id="lastScoreChangeTimeColumn" editable="false" text="Last Win" />
                     <TableColumn fx:id="lastLoginTimeColumn" editable="false" text="Last Login" />
+                    <TableColumn fx:id="isOnline" editable="false" text="Online/Ofline" />
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
+            <Button text="refresh" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#refresh"/>
             <Button text="Back" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#back"/>
         </VBox>
     </center>
