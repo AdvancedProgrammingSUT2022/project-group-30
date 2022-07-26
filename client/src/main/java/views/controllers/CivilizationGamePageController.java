@@ -64,7 +64,7 @@ public class CivilizationGamePageController {
     public void initialize() throws MalformedURLException {
 
 
-        //controller.makeEverythingVisible();
+        controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(currentPlayer.getFrameBase());
         pane.getChildren().clear();

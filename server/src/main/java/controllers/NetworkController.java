@@ -7,7 +7,9 @@ import models.diplomacy.Diplomacy;
 import models.diplomacy.DiplomaticRelation;
 import models.diplomacy.Message;
 import models.improvements.Improvement;
+import models.interfaces.Selectable;
 import models.interfaces.TileImage;
+import models.interfaces.combative;
 import models.resources.BonusResource;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
@@ -71,7 +73,28 @@ public class NetworkController {
             for (int i = 0; i < arguments.size(); i++) {
                 Gson gson = MyGson.getGson();
                 Class argumentClass = method.getParameterTypes()[i];
-                if (argumentClass == Unit.class) {
+                if(argumentClass == combative.class){
+                    System.out.println("its combative");
+                    combative com = (combative) gson.fromJson(arguments.get(i), argumentClass);
+                    if(com instanceof Unit){
+                        int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
+                        parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                    } else{
+                        int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
+                        parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                    }
+                } else if(argumentClass == Selectable.class){
+                    System.out.println("its combative");
+                    Selectable sel = (Selectable) gson.fromJson(arguments.get(i), argumentClass);
+                    if(sel instanceof Unit){
+                        int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
+                        parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                    }
+                    else {
+                        int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
+                        parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                    }
+                } else if (argumentClass == Unit.class) {
                     int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
                 } else if (argumentClass == City.class) {
@@ -132,6 +155,7 @@ public class NetworkController {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }
             }
+
             Object result = method.invoke(GameController.getGameController(), (Object[]) parsedArguments);
             if (result == null) {
                 return MyGson.toJson(new Response(MyGson.toJson(null)));

@@ -1894,6 +1894,13 @@ public class GameController {
     }
 
     public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit){
+        System.out.println("Server civs");
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            System.out.println(civilization);
+        }
+        System.out.println("received civs:");
+        System.out.println(target.getOwner());
+        System.out.println(unit.getOwner());
         return GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar();
     }
 
