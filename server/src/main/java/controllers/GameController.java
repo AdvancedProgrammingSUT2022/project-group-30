@@ -51,6 +51,7 @@ public class GameController {
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
         foundCityWithSettler(getCurrentPlayer().getUnits().get(0));
+        makeEverythingVisible();
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {
@@ -621,6 +622,7 @@ public class GameController {
     }
 
     public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        ArrayList<Civilization> result = gameDataBase.getDiscoveredCivilizations(civilization);
         return gameDataBase.getDiscoveredCivilizations(civilization);
     }
 
@@ -1189,12 +1191,14 @@ public class GameController {
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
             if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null) {
                 newMapImage.put(tile, null);
-                discoverCivsInTile(tile);
             } else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());
-            else newMapImage.put(tile, tile);
+            else {
+                newMapImage.put(tile, tile);
+                discoverCivsInTile(tile);
+            }
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
