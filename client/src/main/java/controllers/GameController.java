@@ -1,9 +1,6 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import models.*;
-import models.buildings.Building;
 import models.buildings.BuildingType;
 import models.diplomacy.*;
 import models.improvements.Improvement;
@@ -13,21 +10,14 @@ import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
 import models.technology.Technology;
-import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
 import models.works.*;
 import netPackets.Request;
-import netPackets.Response;
-import utilities.Debugger;
 import utilities.MyGson;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class GameController {
@@ -113,6 +103,11 @@ public class GameController {
     public boolean canWorkerClearRoutes(Unit worker) {
         Request request = new Request("GameController", "canWorkerClearRoutes", MyGson.toJson(worker));
         return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void sendDiplomaticMessage(DiplomaticMessage diplomaticMessage, Civilization sender, Civilization receiver) {
+        Request request = new Request("GameController", "sendDiplomaticMessage", MyGson.toJson(diplomaticMessage), MyGson.toJson(sender), MyGson.toJson(receiver));
+        NetworkController.getNetworkController().transferData(request);
     }
 
     public boolean canWorkerClearFeature(Unit worker, Feature feature) {

@@ -9,7 +9,7 @@ public class DiplomaticRelation extends Diplomacy {
     private boolean areMutuallyVisible = false;
     private boolean areAtWar = false;
     private int friendliness = 0;
-    private ArrayList<Message> messages = new ArrayList<>();
+    private ArrayList<DiplomaticMessage> diplomaticMessages = new ArrayList<>();
 
     public DiplomaticRelation(Civilization civ1, Civilization civ2) {
         super();
@@ -21,18 +21,18 @@ public class DiplomaticRelation extends Diplomacy {
         this.areMutuallyVisible = diplomaticRelation.areMutuallyVisible;
         this.areAtWar = diplomaticRelation.areAtWar;
         this.friendliness = diplomaticRelation.friendliness;
-        this.messages = diplomaticRelation.messages;
+        this.diplomaticMessages = diplomaticRelation.diplomaticMessages;
         this.pair = new CivilizationPair(new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(0)),
                 new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(1)));
     }
 
     public void addMessage(String text, Civilization sender) {
-        Message newMessage = new Message(text, sender);
-        messages.add(newMessage);
+        DiplomaticMessage newDiplomaticMessage = new DiplomaticMessage(text, sender);
+        diplomaticMessages.add(newDiplomaticMessage);
     }
 
-    public ArrayList<Message> getMessages() {
-        return messages;
+    public ArrayList<DiplomaticMessage> getMessages() {
+        return diplomaticMessages;
     }
 
     public boolean areMutuallyVisible() {

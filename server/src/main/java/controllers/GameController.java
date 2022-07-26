@@ -1,6 +1,5 @@
 package controllers;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import models.*;
 import models.buildings.Building;
@@ -23,8 +22,6 @@ import utilities.Debugger;
 import utilities.MyGson;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -190,6 +187,11 @@ public class GameController {
         return true;
     }
 
+    public void sendDiplomaticMessage(DiplomaticMessage diplomaticMessage, Civilization sender, Civilization receiver) {
+//        System.out.println("done: " + diplomaticMessage.getMessage());
+        getDiplomaticRelation(sender, receiver).getMessages().add(diplomaticMessage);
+    }
+
     public boolean canWorkerClearFeature(Unit worker, Feature feature) {
         if (isWorkerWorking(worker)) {
             return false;
@@ -291,7 +293,7 @@ public class GameController {
         return null;
     }
 
-    public Message findMessageById(int id) {
+    public DiplomaticMessage findMessageById(int id) {
         // TODO
         return null;
     }

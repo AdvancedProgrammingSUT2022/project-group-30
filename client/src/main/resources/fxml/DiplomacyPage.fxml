@@ -27,8 +27,11 @@
             <VBox fx:id="chatBox" BorderPane.alignment="CENTER_LEFT">
                 <ListView fx:id="messageList"/>
                 <HBox>
-                    <TextField fx:id="newMessageField" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="sendButton" text="SEND"/>
+                    <TextField fx:id="newMessageField" HBox.hgrow="ALWAYS" minHeight="60"/>
+                    <VBox spacing="5" alignment="CENTER">
+                        <Button fx:id="sendButton" text="SEND" onAction="#onSendButtonClick"/>
+                        <Button fx:id="reloadButton" text="RELOAD" onAction="#onReloadButtonClick"/>
+                    </VBox>
                 </HBox>
             </VBox>
         </left>

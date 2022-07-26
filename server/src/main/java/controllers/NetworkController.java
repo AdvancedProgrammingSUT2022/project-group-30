@@ -6,7 +6,7 @@ import models.*;
 import models.buildings.Building;
 import models.diplomacy.Diplomacy;
 import models.diplomacy.DiplomaticRelation;
-import models.diplomacy.Message;
+import models.diplomacy.DiplomaticMessage;
 import models.improvements.Improvement;
 import models.interfaces.Selectable;
 import models.interfaces.TileImage;
@@ -137,9 +137,6 @@ public class NetworkController {
                 } else if (argumentClass == Diplomacy.class) {
                     int id = ((Diplomacy) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findDiplomacyById(id);
-                } else if (argumentClass == Message.class) {
-                    int id = ((Message) gson.fromJson(arguments.get(i), argumentClass)).getId();
-                    parsedArguments[i] = GameController.getGameController().findMessageById(id);
                 } else if (argumentClass == TechnologyMap.class) {
                     int id = ((TechnologyMap) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findTechnologyMapById(id);

@@ -2,8 +2,8 @@ package models.diplomacy;
 
 import models.Civilization;
 
-public class Message {
-    protected final int id;
+public class DiplomaticMessage {
+    protected int id;
     public  int getId() {
         return id;
     }
@@ -12,7 +12,11 @@ public class Message {
     private String message;
     private Civilization sender;
 
-    public Message(String message, Civilization sender) {
+    public DiplomaticMessage() {
+        id = 0;
+    }
+
+    public DiplomaticMessage(String message, Civilization sender) {
         this.id = nextAvailableId;
         nextAvailableId++;
 

@@ -11,8 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.util.Callback;
 import models.Civilization;
-import models.GameDataBase;
-import models.diplomacy.Message;
+import models.diplomacy.DiplomaticMessage;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -27,12 +26,14 @@ public class DiplomacyPageController {
     @FXML
     private ListView<Civilization> civilizationsList;
     @FXML
-    private ListView<Message> messageList;
+    private ListView<DiplomaticMessage> messageList;
     @FXML
     private Label relationStatusField;
+    @FXML
+    private TextField newMessageField;
 
     private ObservableList<Civilization> civsListData;
-    private ObservableList<Message> messagesData;
+    private ObservableList<DiplomaticMessage> messagesData;
 
     private GameController controller;
     private Civilization selectedCiv = null;
@@ -48,17 +49,21 @@ public class DiplomacyPageController {
     }
 
     private void initializeMessageList() {
-        ArrayList<Message> messages = controller.getDiplomaticRelation(controller.getCurrentPlayer(), selectedCiv).getMessages();
+        ArrayList<DiplomaticMessage> diplomaticMessages = controller.getDiplomaticRelation(controller.getCurrentPlayer(), selectedCiv).getMessages();
+        System.out.println("messages:");
+        for (DiplomaticMessage diplomaticMessage : diplomaticMessages) {
+            System.out.println(diplomaticMessage.getMessage());
+        }
 //        messages.add(new Message("meow", controller.getCurrentPlayer()));
 //        messages.add(new Message("helloooo:)", selectedCiv));
 //        messages.add(new Message("noooooo", controller.getCurrentPlayer()));
         messagesData = FXCollections.observableArrayList();
-        messagesData.setAll(messages);
+        messagesData.setAll(diplomaticMessages);
         messageList.setItems(messagesData);
         System.out.println(messagesData.size());
-        messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
+        messageList.setCellFactory(new Callback<ListView<DiplomaticMessage>, ListCell<DiplomaticMessage>>() {
             @Override
-            public ListCell<Message> call(ListView listView) {
+            public ListCell<DiplomaticMessage> call(ListView listView) {
                 return new MessageBox();
             }
         });
@@ -185,6 +190,23 @@ public class DiplomacyPageController {
     }
 
     @FXML
+    private void onSendButtonClick() {
+        if (selectedCiv == null) {
+            return;
+        }
+        String messageText = newMessageField.getText();
+        DiplomaticMessage newDiplomaticMessage = new DiplomaticMessage(messageText, GameController.getGameController().getCurrentPlayer());
+        controller.sendDiplomaticMessage(newDiplomaticMessage, newDiplomaticMessage.getSender(), selectedCiv);
+        newMessageField.setText("");
+        initializeMessageList();
+    }
+
+    @FXML
+    private void onReloadButtonClick() {
+        initializeMessageList();
+    }
+
+    @FXML
     private void onBackButtonClick() {
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -209,14 +231,14 @@ public class DiplomacyPageController {
         }
     }
 
-    private static class MessageBox extends ListCell<Message> {
+    private static class MessageBox extends ListCell<DiplomaticMessage> {
         @Override
-        public void updateItem(Message message, boolean empty) {
-            if (message == null || empty) {
+        public void updateItem(DiplomaticMessage diplomaticMessage, boolean empty) {
+            if (diplomaticMessage == null || empty) {
                 return;
             }
-            Label textLabel = new Label(message.getMessage());
-            if (message.getSender().equals(GameController.getGameController().getCurrentPlayer())) {
+            Label textLabel = new Label(diplomaticMessage.getMessage());
+            if (diplomaticMessage.getSender().equals(GameController.getGameController().getCurrentPlayer())) {
                 AnchorPane.setRightAnchor(textLabel, 10.0);
             } else {
                 AnchorPane.setLeftAnchor(textLabel, 10.0);
