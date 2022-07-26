@@ -12,7 +12,7 @@ public class Improvement {
     private static int nextAvailableId = 0;
 
     private final ImprovementType type;
-    private final Civilization founder;
+    private transient final Civilization founder;
 
     private boolean isPillaged;
 

@@ -1,5 +1,8 @@
 package views.customcomponents;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -11,23 +14,33 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.ProgramDatabase;
 import models.chat.Message;
+import views.Main;
+
+import java.io.IOException;
 
 public class MessageBox extends ListCell<Message> {
+    public MessageBox(String fxmlName) {
+        this.fxmlName = fxmlName;
+    }
+
+    private String fxmlName;
+    private boolean isViewerSender;
     @Override
     public void updateItem(Message item, boolean empty) {
         super.updateItem(item, empty);
         this.getStyleClass().add("messageBox");
         if (item != null && !empty) {
+            isViewerSender = item.getSenderId() == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId();
             AnchorPane pane = new AnchorPane();
-            MessageComponent box = new MessageComponent(item);
+            MessageComponent box = new MessageComponent(item, isViewerSender);
             pane.getChildren().add(box);
-            if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+            if (isViewerSender) {
                 AnchorPane.setRightAnchor(box, 10.0);
             } else {
                 AnchorPane.setLeftAnchor(box, 10.0);
             }
             setGraphic(pane);
-            if (item.getSenderId() == ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()) {
+            if (isViewerSender) {
                 this.setContextMenu(createContextMenu(item));
             }
         }
@@ -35,11 +48,6 @@ public class MessageBox extends ListCell<Message> {
 
     private ContextMenu createContextMenu(Message item) {
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem deleteForMeItem = new MenuItem();
-        deleteForMeItem.setText("Delete for me");
-        deleteForMeItem.setOnAction(event -> {
-            deleteForMe(item);
-        });
         MenuItem deleteForEveryoneItem = new MenuItem();
         deleteForEveryoneItem.setText("Delete for everybody");
         deleteForEveryoneItem.setOnAction(event -> {
@@ -53,17 +61,18 @@ public class MessageBox extends ListCell<Message> {
                 showEditPopup(item);
             }
         });
-        contextMenu.getItems().addAll(deleteForMeItem, deleteForEveryoneItem, editItem);
+        contextMenu.getItems().addAll(deleteForEveryoneItem, editItem);
         contextMenu.getStyleClass().add("messageContextMenu");
         return contextMenu;
     }
 
-    private void deleteForMe(Message message) {
-        getListView().getItems().remove(message);
-    }
-
     private void deleteForEveryone(Message message) {
-        getListView().getItems().remove(message);
+        ChatController.getChatController().deleteMessage(message.getId());
+        try {
+            Main.loadFxmlFile(fxmlName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showEditPopup(Message message) {
@@ -82,7 +91,12 @@ public class MessageBox extends ListCell<Message> {
         button.setPrefWidth(100);
         button.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 20; -fx-background-color: #007900; -fx-text-fill: white");
         button.setOnAction(event -> {
-            message.setText(textArea.getText());
+            ChatController.getChatController().editMessageText(message.getId(), textArea.getText());
+            try {
+                Main.loadFxmlFile(fxmlName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             stage.close();
         });
         box.getChildren().addAll(textArea, button);

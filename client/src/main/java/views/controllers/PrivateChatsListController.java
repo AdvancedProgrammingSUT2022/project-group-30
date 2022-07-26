@@ -1,10 +1,12 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import models.ProgramDatabase;
 import models.User;
-import models.chat.ChatDataBase;
 import views.Main;
 
 import java.io.IOException;
@@ -16,16 +18,16 @@ public class PrivateChatsListController {
     @FXML
     protected void onChatButtonClick() {
         String contactUsername = contactUsernameField.getText();
-        User contact = ProgramDatabase.getProgramDatabase().getUserByUsername(contactUsername);
+        User contact = ProgramController.getProgramController().getUserByUsername(contactUsername);
         if (contact == null) {
             RegisterPageGraphicalController.showPopup("Username not found!");
             return;
         }
-        if (contact == ProgramDatabase.getProgramDatabase().getLoggedInUser()) {
+        if (contact == ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken())) {
             RegisterPageGraphicalController.showPopup("Invalid username!");
             return;
         }
-        ChatDataBase.getChatDatabase().setCurrentPrivateContactId(contact.getId());
+        ChatController.getChatController().setCurrentPrivateContactId(contact.getId(), NetworkController.getNetworkController().getToken());
 
         try {
             Main.loadFxmlFile("PrivateChatPage");

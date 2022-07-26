@@ -1,5 +1,9 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.GameController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import models.ProgramDatabase;
@@ -16,16 +20,16 @@ public class RoomsListController {
     @FXML
     protected void onEnterRoomButtonClick() {
         String roomName = roomNameField.getText();
-        Room room = ChatDataBase.getChatDatabase().getRoomByName(roomName);
+        Room room = ChatController.getChatController().getRoomByName(roomName);
         if (room == null) {
             RegisterPageGraphicalController.showPopup("Room not Found!");
             return;
         }
-        if (!room.getParticipants().contains(ProgramDatabase.getProgramDatabase().getLoggedInUser().getId())) {
+        if (!room.getParticipants().contains(ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getId())) {
             RegisterPageGraphicalController.showPopup("You are not a member of this room!");
             return;
         }
-        ChatDataBase.getChatDatabase().setCurrentRoom(room);
+        ChatController.getChatController().setCurrentRoom(room.getId(), NetworkController.getNetworkController().getToken());
         try {
             Main.loadFxmlFile("RoomChatPage");
         } catch (IOException e) {
@@ -40,14 +44,15 @@ public class RoomsListController {
             RegisterPageGraphicalController.showPopup("Room name is invalid!");
             return;
         }
-        Room room = ChatDataBase.getChatDatabase().getRoomByName(roomName);
+        Room room = ChatController.getChatController().getRoomByName(roomName);
         if (room != null) {
             RegisterPageGraphicalController.showPopup("Room name is already taken!");
             return;
         }
-        ChatDataBase.getChatDatabase().createNewRoom(ProgramDatabase.getProgramDatabase().getLoggedInUser(), roomName);
+        ChatController.getChatController().createNewRoom(ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()), roomName);
         RegisterPageGraphicalController.showPopup("Room " + roomName + " has been created!");
-        ChatDataBase.getChatDatabase().setCurrentRoom(ChatDataBase.getChatDatabase().getRoomByName(roomName));
+        ChatController.getChatController().setCurrentRoom(ChatController.getChatController().getRoomByName(roomName).getId(),
+                NetworkController.getNetworkController().getToken());
         try {
             Main.loadFxmlFile("RoomChatPage");
         } catch (IOException e) {

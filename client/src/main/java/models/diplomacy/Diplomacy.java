@@ -4,17 +4,21 @@ import models.CivilizationPair;
 
 public abstract class Diplomacy {
     protected final int id;
+    protected static int nextAvailableId = 0;
+    protected CivilizationPair pair;
+
     public  int getId() {
         return id;
     }
-    protected static int nextAvailableId = 0;
 
     public Diplomacy() {
         this.id = nextAvailableId;
         nextAvailableId++;
     }
 
-    protected CivilizationPair pair;
+    public Diplomacy(Diplomacy diplomacy) {
+        this.id = diplomacy.id;
+    }
 
     public CivilizationPair getPair() {
         return this.pair;

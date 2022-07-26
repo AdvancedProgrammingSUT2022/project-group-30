@@ -24,7 +24,7 @@ public class Civilization implements TurnHandler {
     private final int id;
     private static int nextAvailableId = 0;
     private final String name;
-    private HashMap<Tile, TileImage> mapImage = new HashMap<>();
+    private HashMap<Tile, TileImage> mapImage = new HashMap<>();    //
     private boolean isEverythingVisibleCheatCodeInEffect = false;
     private boolean isTurnBreakDisabled = false;
     private HashMap<LuxuryResource, Integer> luxuryResources = LuxuryResource.makeRawHashMap();
@@ -37,12 +37,39 @@ public class Civilization implements TurnHandler {
     private double happiness;
     private double diplomaticCredit;
     private double score;
-    private City capital;
-    private City originCapital;
+    private City capital;   //
+    private City originCapital; //
     private Tile frameBase;
-    private Selectable selectedEntity;
+    private Selectable selectedEntity;  //
     private ArrayList<Notification> notifications = new ArrayList<>();
     private boolean isDefeated;
+
+    public Civilization(Civilization civ) {
+        this.id = civ.getId();
+        this.name = civ.name;
+        this.mapImage = null;
+        this.capital = null;
+        this.originCapital = null;
+        this.selectedEntity = null;
+        this.isEverythingVisibleCheatCodeInEffect = civ.isEverythingVisibleCheatCodeInEffect;
+        this.isTurnBreakDisabled = civ.isTurnBreakDisabled;
+        this.luxuryResources = civ.luxuryResources;
+        this.strategicResources = civ.strategicResources;
+        this.technologies = civ.technologies;
+        this.goldCount = civ.goldCount;
+        this.beakerCount = civ.beakerCount;
+        this.researchProject = civ.researchProject;
+        this.researchReserve = civ.researchReserve;
+        this.happiness = civ.happiness;
+        this.diplomaticCredit = civ.diplomaticCredit;
+        this.score = civ.score;
+        this.capital = null;
+        this.originCapital = null;
+        this.frameBase = civ.frameBase;
+        this.selectedEntity = null;
+        this.notifications = civ.notifications;
+        this.isDefeated = civ.isDefeated;
+    }
 
     public Civilization(String name) {
         this.id = nextAvailableId;
@@ -513,5 +540,17 @@ public class Civilization implements TurnHandler {
 
     public int getId() {
         return id;
+    }
+
+    public void setMapImage(HashMap<Tile, TileImage> mapImage) {
+        this.mapImage = mapImage;
+    }
+
+    @Override
+    public boolean equals(Object civ) {
+        if (civ instanceof Civilization) {
+            return ((Civilization) civ).getId() == id;
+        }
+        return false;
     }
 }

@@ -24,7 +24,7 @@
 
         <Button text="Private Chats" prefWidth="300" styleClass="blackButton" onAction="#onPrivateChatsButtonClick"/>
         <Button text="Group Chats" prefWidth="300" styleClass="blackButton" onAction="#onRoomsButtonClick"/>
-        <Button text="Global Chat" prefWidth="300" styleClass="blackButton"/>
+        <Button text="Global Chat" prefWidth="300" styleClass="blackButton" onAction="#onGlobalChatButtonClick"/>
         <Button text="Back" prefWidth="300" styleClass="redButton" onAction="#onBackButtonClick">
             <VBox.margin>
                 <Insets top="30"/>

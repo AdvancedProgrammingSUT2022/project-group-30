@@ -1,11 +1,13 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.Tile;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
 public class FixPillage extends Work {
     private ImprovementType improvementType;
+
 
     public FixPillage(ImprovementType improvementType, Unit worker) {
         this.improvementType = improvementType;

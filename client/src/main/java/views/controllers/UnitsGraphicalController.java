@@ -52,7 +52,12 @@ public class UnitsGraphicalController {
     private static VBox unitCommandsBox;
     private static boolean isAnswerYes;
 
+    private static Civilization currentPlayer;
+    private static TileImage[][] tilesToShow;
+
     public static void initializeUnitActionTab(Pane pane) {
+        currentPlayer = controller.getCurrentPlayer();
+        tilesToShow = controller.getCivilizationImageToShowOnScene(currentPlayer);
         unitActionTabPane = new ScrollPane();
         pane.getChildren().add(unitActionTabPane);
         unitCommandsBox = new VBox();
@@ -71,7 +76,12 @@ public class UnitsGraphicalController {
         unitCommandsBox.setSpacing(10);
     }
 
+    public static Unit reloadUnit(Unit unit) {
+        return controller.getUnit(unit);
+    }
+
     public static void makeTheUnitActionTab(Unit unit, Pane pane) throws MalformedURLException {
+        unit = reloadUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(true);
         unitCommandsBox.setDisable(false);
@@ -85,10 +95,10 @@ public class UnitsGraphicalController {
         circle.setRadius(30);
         circle.setFill(Images.getImage(unit.getType().getName()));
         unitCommandsBox.getChildren().add(circle);
-        Text name = new Text(controller.getCurrentPlayer().getName() + "'s " + unit.getType().getName());
+        Text name = new Text(currentPlayer.getName() + "'s " + unit.getType().getName());
         name.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(name);
-        Text mp = new Text("MP: " + unit.getMovePointsLeft());
+        Text mp = new Text("MP: " + controller.getUnitMovePointsLeft(unit));
         mp.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #ee0606;");
         unitCommandsBox.getChildren().add(mp);
         Text cs = new Text("CS: " + unit.getType().getCombatStrength());
@@ -242,7 +252,6 @@ public class UnitsGraphicalController {
                 });
             }
         }
-
     }
 
     private static void rangedAttack(TileImage tileImage, Unit unit) {
@@ -256,8 +265,8 @@ public class UnitsGraphicalController {
             return;
         }
         Tile targetTile = (Tile) tileImage;
-        if (targetTile.calculateDistance(unit.getLocation()) > unit.getType().getRange() ||
-                !controller.getVisibleTilesByUnit(unit).contains(targetTile)) {
+        if (controller.calculateDistanceFromTile(unit.getLocation(), targetTile) > unit.getType().getRange() ||
+                !controller.doesVisibleTileForUnitContainsTile(unit, targetTile)) {
             RegisterPageGraphicalController.showPopup("You can only attack target that are seen and within range!");
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
@@ -266,7 +275,7 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+        if (!controller.doesTileContainEnemyCombative(targetTile, controller.getUnitOwner(unit))) {
             RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
@@ -275,14 +284,14 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        if (!GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar()) {
+        combative target = controller.getPriorityTargetInTile(targetTile, controller.getUnitOwner(unit));
+        if (!controller.areUnitAndTargetOwnerAtWar(target, unit)) {
             AttackYesNoDialog dialog = new AttackYesNoDialog() {
                 @Override
                 public void onYesButtonClick() {
-                    GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
-                    CombatController.getCombatController().executeRangedAttack(unit, target);
-                    RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+                    controller.setUnitAndTargetOwnerAtWar(target, unit, true);
+                    controller.executeRangedAttackUnit(unit, target);
+                    RegisterPageGraphicalController.showPopup("Ranged Attacked " + controller.findTileYCoordinateInMap(targetTile) + ", " + controller.findTileXCoordinateInMap(targetTile));
                     try {
                         Main.loadFxmlFile("CivilizationGamePage");
                     } catch (IOException e) {
@@ -293,8 +302,8 @@ public class UnitsGraphicalController {
             };
             dialog.show();
         } else {
-            CombatController.getCombatController().executeRangedAttack(unit, target);
-            RegisterPageGraphicalController.showPopup("Ranged Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+            controller.executeRangedAttackUnit(unit, target);
+            RegisterPageGraphicalController.showPopup("Ranged Attacked " + controller.findTileYCoordinateInMap(targetTile) + ", " + controller.findTileXCoordinateInMap(targetTile));
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
             } catch (IOException e) {
@@ -338,7 +347,7 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+        if (!controller.doesTileContainEnemyCombative(targetTile, controller.getUnitOwner(unit))) {
             RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
@@ -347,12 +356,12 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
-        if (!GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar()) {
+        combative target = controller.getPriorityTargetInTile(targetTile, controller.getUnitOwner(unit));
+        if (!controller.areUnitAndTargetOwnerAtWar(target, unit)) {
             AttackYesNoDialog dialog = new AttackYesNoDialog() {
                 @Override
                 public void onYesButtonClick() {
-                    GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(true);
+                    controller.setUnitAndTargetOwnerAtWar(target, unit, true);
                     applyMeleeAttackEffects(unit, target, targetTile);
                     this.close();
                 }
@@ -364,12 +373,12 @@ public class UnitsGraphicalController {
     }
 
     public static void applyMeleeAttackEffects(Unit unit, combative target, Tile targetTile) {
-        CombatController.getCombatController().executeMeleeAttack(unit, target);
+        controller.executeMeleeAttackUnit(unit, target);
         if (target instanceof City) {
             City targetCity = (City) target;
             if (targetCity.isDefeated()) {
-                if (targetCity.isOriginalCapital() && targetCity.getFounder() == unit.getOwner()) {
-                    CombatController.getCombatController().annexCity(targetCity, controller.getCurrentPlayer());
+                if (controller.isCityOriginalCapital(targetCity) && controller.isCityFounderEqualToUnitOwner(targetCity, unit)) {
+                    controller.annexCity(targetCity, currentPlayer);
                     try {
                         Main.loadFxmlFile("CivilizationGamePage");
                     } catch (IOException e) {
@@ -379,7 +388,7 @@ public class UnitsGraphicalController {
                     CityDefeatDialog defeatDialog = new CityDefeatDialog() {
                         @Override
                         public void onDestroyButtonClick() {
-                            CombatController.getCombatController().kill(targetCity);
+                            controller.killCity(targetCity);
                             try {
                                 Main.loadFxmlFile("CivilizationGamePage");
                             } catch (IOException e) {
@@ -390,7 +399,7 @@ public class UnitsGraphicalController {
 
                         @Override
                         public void onAnnexButtonClick() {
-                            CombatController.getCombatController().annexCity(targetCity, controller.getCurrentPlayer());
+                            controller.annexCity(targetCity, currentPlayer);
                             try {
                                 Main.loadFxmlFile("CivilizationGamePage");
                             } catch (IOException e) {
@@ -402,7 +411,7 @@ public class UnitsGraphicalController {
                 }
             }
         }
-        RegisterPageGraphicalController.showPopup("Melee Attacked " + targetTile.findTileYCoordinateInMap() + ", " + targetTile.findTileXCoordinateInMap());
+        RegisterPageGraphicalController.showPopup("Melee Attacked " + controller.findTileYCoordinateInMap(targetTile) + ", " + controller.findTileXCoordinateInMap(targetTile));
         try {
             Main.loadFxmlFile("CivilizationGamePage");
         } catch (IOException e) {
@@ -411,9 +420,7 @@ public class UnitsGraphicalController {
     }
 
     private static void setUpForRangedAttack(Unit unit) {
-        unit.assemble();
-        unit.setMovePointsLeft(0);
-        unit.setPath(null);
+        controller.setupUnitForRangedAttack(unit);
         RegisterPageGraphicalController.showPopup("Unit successfully assembled!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -448,28 +455,30 @@ public class UnitsGraphicalController {
         vbox.setSpacing(10);
         pane.setCenter(vbox);
 
-        addTextToVBox(vbox, unit.getOwner().getName() + "'s " + unit.getType().getName());
+        addTextToVBox(vbox, controller.getUnitOwner(unit).getName() + "'s " + unit.getType().getName());
         addTextToVBox(vbox, "State: " + unit.getState());
-        if (unit.getType().getCombatType() == CombatType.SIEGE) {
-            addTextToVBox(vbox, (unit.isAssembled()) ? "Assembled" : "Disassembled");
+        if (unit.getType().getCombatType().getName().equals(CombatType.SIEGE.getName())) {
+            addTextToVBox(vbox, (controller.isUnitAssembled(unit)) ? "Assembled" : "Disassembled");
         }
-        if (unit.getType() == UnitType.WORKER) {
+
+        if (unit.getType().getName().equals(UnitType.WORKER.getName())) {
             if (controller.getWorkersWork(unit) == null) {
                 addTextToVBox(vbox, "Not Currently Working...");
             } else {
                 addTextToVBox(vbox, "Work: " + controller.getWorkersWork(unit).getTitle());
-                Tile location = controller.getWorkersWork(unit).findLocation();
-                addTextToVBox(vbox, "Work Place: Y: " + location.findTileYCoordinateInMap() + ", X: " + location.findTileXCoordinateInMap());
+                Tile location = controller.findWorkLocation(controller.getWorkersWork(unit));
+                addTextToVBox(vbox, "Work Place: Y: " + controller.findTileYCoordinateInMap(location) + ", X: " + controller.findTileXCoordinateInMap(location));
 
             }
         }
-        addTextToVBox(vbox, "Y: " + unit.getLocation().findTileYCoordinateInMap() + ", X: " + unit.getLocation().findTileXCoordinateInMap());
-        addTextToVBox(vbox, "Move Points: " + unit.getMovePointsLeft() + " out of " + unit.getType().getMovementSpeed());
-        addTextToVBox(vbox, "Hit Points: " + unit.getHitPointsLeft() + " out of " + unit.getType().getHitPoints());
+
+        addTextToVBox(vbox, "Y: " + controller.findTileYCoordinateInMap(unit.getLocation()) + ", X: " + controller.findTileXCoordinateInMap(unit.getLocation()));
+        addTextToVBox(vbox, "Move Points: " + controller.getUnitMovePointsLeft(unit) + " out of " + unit.getType().getMovementSpeed());
+        addTextToVBox(vbox, "Hit Points: " + controller.getUnitHitPointsLeft(unit) + " out of " + unit.getType().getHitPoints());
         if (unit.getPath() != null) {
             addTextToVBox(vbox, "Path:");
             for (Tile tile : unit.getPath()) {
-                addTextToVBox(vbox, "Y: " + tile.findTileYCoordinateInMap() + ", X: " + tile.findTileXCoordinateInMap());
+                addTextToVBox(vbox, "Y: " + controller.findTileYCoordinateInMap(tile) + ", X: " + controller.findTileXCoordinateInMap(tile));
             }
         }
 
@@ -488,7 +497,7 @@ public class UnitsGraphicalController {
     }
 
     private static void foundCity(Unit unit) {
-        if (unit.getMovePointsLeft() == 0) {
+        if (controller.getUnitMovePointsLeft(unit) == 0) {
             RegisterPageGraphicalController.showPopup("Settler has no movepoints!");
             return;
         }
@@ -497,7 +506,7 @@ public class UnitsGraphicalController {
             return;
         }
         controller.foundCityWithSettler(unit);
-        controller.getCurrentPlayer().setSelectedEntity(null);
+        controller.setPlayersSelectedEntity(null);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -510,7 +519,7 @@ public class UnitsGraphicalController {
     }
 
     private static void cancelUnitMove(Unit unit, Pane pane) {
-        unit.setPath(null);
+        controller.cancelUnitMove(unit);
         try {
             makeTheUnitActionTab(unit, pane);
         } catch (MalformedURLException e) {
@@ -519,8 +528,7 @@ public class UnitsGraphicalController {
     }
 
     private static void deleteAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        controller.deleteUnit(unit);
+        controller.deleteAUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -532,7 +540,7 @@ public class UnitsGraphicalController {
     }
 
     private static void awakeAUnit(Unit unit, Pane pane) {
-        unit.setState(UnitState.AWAKE);
+        controller.awakeUnit(unit);
         try {
             makeTheUnitActionTab(unit, pane);
         } catch (MalformedURLException e) {
@@ -541,47 +549,42 @@ public class UnitsGraphicalController {
     }
 
     private static void garrisonAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.GARRISON);
+        controller.garrisonUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void fortifyAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFY);
+        controller.fortifyUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void fortifyAUnitUntilHealed(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFYUNTILHEALED);
+        controller.fortifyUnitUntilHealed(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void alertAUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ALERT);
+        controller.alertUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void sleepUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ASLEEP);
+        controller.sleepUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
     }
 
     private static void deselectUnit(Unit unit) {
-        unit.getOwner().setSelectedEntity(null);
+        controller.deselectUnit(unit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(false);
         unitCommandsBox.setDisable(true);
@@ -592,7 +595,7 @@ public class UnitsGraphicalController {
             RegisterPageGraphicalController.showPopup("You can only choose visible tiles as destination!");
             return;
         }
-        Unit unit = (Unit) controller.getCurrentPlayer().getSelectedEntity();
+        Unit unit = (Unit) controller.getCivilizationSelectedEntity(currentPlayer);
         Tile destination = (Tile) tileImage;
         if (controller.isTileImpassable(destination)) {
             RegisterPageGraphicalController.showPopup("The destination you have entered is impassable!");
@@ -605,10 +608,10 @@ public class UnitsGraphicalController {
         }
 
         // SET UNITS PATH
-        unit.setPath(path);
+        controller.setUnitPath(unit, unit.getLocation(), destination);
         // MOVE AND UPDATE FOG OF WAR
         controller.moveUnitAlongItsPath(unit);
-        if (unit.getMovePointsLeft() == 0) {
+        if (controller.getUnitMovePointsLeft(unit) == 0) {
             deselectUnit(unit);
         }
         unitCommandsBox.getChildren().clear();
@@ -644,7 +647,7 @@ public class UnitsGraphicalController {
             result.put(command, false);
         }
 
-        boolean isUnitAWorkingWorker = unit.getType() == UnitType.WORKER && controller.isWorkerWorking(unit);
+        boolean isUnitAWorkingWorker = unit.getType().getName().equals(UnitType.WORKER.getName()) && controller.isWorkerWorking(unit);
         if (controller.canUnitSetUpForRangedAttack(unit)) {
             result.put(UnitCommands.SET_UP_FOR_RANGED_ATTACK, true);
         }
@@ -666,12 +669,12 @@ public class UnitsGraphicalController {
             result.put(UnitCommands.MOVE_TO, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType() == UnitType.SETTLER && unit.getMovePointsLeft() > 0) {
+        if (unit.getState().waitsForCommand && unit.getType().getName().equals(UnitType.SETTLER.getName()) && controller.getUnitMovePointsLeft(unit) > 0) {
             result.put(UnitCommands.FOUND_CITY, true);
         }
 
-        if (unit.getState() == UnitState.AWAKE) {
-            if (unit.getType().getCombatType().isStateAllowed(UnitState.FORTIFY)) {
+        if (unit.getState().getName().equals(UnitState.AWAKE.getName())) {
+            if (controller.isStateAllowedForUnit(unit, UnitState.FORTIFY)) {
                 result.put(UnitCommands.FORTIFY, true);
                 if (unit.getHitPointsLeft() < unit.getType().getHitPoints()) {
                     result.put(UnitCommands.FORTIFY_UNTIL_HEALED, true);
@@ -685,13 +688,13 @@ public class UnitsGraphicalController {
             result.put(UnitCommands.AWAKE, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType() == UnitType.WORKER) {
+        if (unit.getState().waitsForCommand && unit.getType().getName().equals(UnitType.WORKER.getName())) {
             result.put(UnitCommands.WORK_ACTIONS, true);
         }
 
-        if (unit.getState().waitsForCommand && unit.getType().getCombatType().isStateAllowed(UnitState.GARRISON) &&
+        if (unit.getState().waitsForCommand && controller.isStateAllowedForUnit(unit, UnitState.GARRISON) &&
                 controller.getCityCenteredInTile(unit.getLocation()) != null &&
-                controller.getCityCenteredInTile(unit.getLocation()).getOwner() == unit.getOwner()) {
+                controller.isCityOwnerEqualToUnitOwner(controller.getCityCenteredInTile(unit.getLocation()), unit)) {
             result.put(UnitCommands.GARRISON, true);
         }
 
@@ -702,14 +705,13 @@ public class UnitsGraphicalController {
     }
 
     private static TileImage getTileImageFromHexagon(Polygon hexagon) {
-        TileImage[][] tilesToShow = GameMap.getGameMap().getCivilizationImageToShowOnScene(controller.getCurrentPlayer());
         double startXCoordinate = hexagon.getPoints().get(0);
         double startYCoordinate = hexagon.getPoints().get(1);
         for (int i = 0; i < tilesToShow.length; i++) {
             for (int j = 0; j < tilesToShow[i].length; j++) {
                 double xCoordinate = 160 + (double) 32 / (double) 2 * (1 + 3 * j);
                 int isOdd = 1;
-                if (controller.getCurrentPlayer().getFrameBase().findTileXCoordinateInMap() % 2 == 1) {
+                if (controller.findTileXCoordinateInMap(currentPlayer.getFrameBase()) % 2 == 1) {
                     isOdd = -1;
                 }
                 double yCoordinate = 69 + Math.sqrt(3) * 32 * (i + isOdd * (double) (j % 2) / (double) 2);
@@ -733,7 +735,8 @@ public class UnitsGraphicalController {
         box.getChildren().add(info);
     }
 
-    public static void makeWorkPanel(Unit unit, Pane pane) {
+    public static void makeWorkPanel(Unit inUnit, Pane pane) {
+        Unit unit = reloadUnit(inUnit);
         unitCommandsBox.getChildren().clear();
         unitActionTabPane.setVisible(true);
         unitCommandsBox.setDisable(false);
@@ -895,7 +898,7 @@ public class UnitsGraphicalController {
                 }
             });
             ImprovementType improvementType;
-            if (unit.getLocation().containsImprovment(ImprovementType.ROAD))
+            if (controller.doesTileContainsImprovement(unit.getLocation(), ImprovementType.ROAD))
                 improvementType = ImprovementType.ROAD;
             else
                 improvementType = ImprovementType.RAILROAD;
@@ -977,10 +980,10 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof BuildImprovement &&
-                    ((BuildImprovement) location.getWork()).getImprovement() == improvementType) {
-                ((BuildImprovement) location.getWork()).startWork(worker);
+        if (controller.getTileWork(location) != null) {
+            if (controller.getTileWork(location) instanceof BuildImprovement &&
+                    ((BuildImprovement) controller.getTileWork(location)).getImprovement().getName().equals(improvementType.getName())) {
+                controller.startWork(controller.getTileWork(location), worker);
                 RegisterPageGraphicalController.showPopup("Resumed " + improvementType.getName().toLowerCase() + " construction here");
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
@@ -1000,9 +1003,7 @@ public class UnitsGraphicalController {
                 return;
             }
         }
-        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
-        location.setWork(newWork);
-        worker.setPath(null);
+        controller.buildImprovement(worker, improvementType, location);
         RegisterPageGraphicalController.showPopup("Started the construction of a " + improvementType.getName().toLowerCase() + " here!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1013,11 +1014,11 @@ public class UnitsGraphicalController {
 
     private static boolean askToReplace(Tile location) {
         Improvement nonRouteImprovement;
-        if ((nonRouteImprovement = location.getNonRouteImprovement()) != null) {
+        if ((nonRouteImprovement = controller.getNonRootImprovementForTile(location)) != null) {
             askYesOrNoQuestionPopup("There is already an improvement (" + nonRouteImprovement.getType().getName()
                     + ") on this tile, do you wish to replace it? y/n");
             if (isAnswerYes) {
-                location.removeImprovement(nonRouteImprovement);
+                controller.removeImprovementForTile(location, nonRouteImprovement);
                 RegisterPageGraphicalController.showPopup("Removed " + nonRouteImprovement.getType().getName() + " improvement!");
                 return true;
             } else {
@@ -1077,10 +1078,10 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof BuildImprovementAndRemoveFeature &&
-                    (((BuildImprovementAndRemoveFeature) location.getWork()).getImprovement() == type)) {
-                ((BuildImprovementAndRemoveFeature) location.getWork()).startWork(worker);
+        if (controller.getTileWork(location) != null) {
+            if (controller.getTileWork(location) instanceof BuildImprovementAndRemoveFeature &&
+                    (((BuildImprovementAndRemoveFeature) controller.getTileWork(location)).getImprovement().getName().equals(type.getName()))) {
+                controller.startWork(controller.getTileWork(location), worker);
                 RegisterPageGraphicalController.showPopup("Resumed " + type.getName().toLowerCase() + " construction here");
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
@@ -1100,9 +1101,7 @@ public class UnitsGraphicalController {
                 return;
             }
         }
-        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
-        location.setWork(newWork);
-        worker.setPath(null);
+        controller.buildImprovementAndRemoveFeature(worker, type, location);
         RegisterPageGraphicalController.showPopup("Started the construction of a " + type.getName().toLowerCase() + " here!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1114,10 +1113,10 @@ public class UnitsGraphicalController {
 
     private static void clearFeature(Unit worker, Feature feature) {
         Tile location = worker.getLocation();
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof ClearFeature &&
-                    ((ClearFeature) location.getWork()).getFeature() == feature) {
-                ((ClearFeature) location.getWork()).startWork(worker);
+        if (controller.getTileWork(location) != null) {
+            if (controller.getTileWork(location) instanceof ClearFeature &&
+                    ((ClearFeature) controller.getTileWork(location)).getFeature().getName().equals(feature.getName())) {
+                controller.startWork(controller.getTileWork(location), worker);
                 RegisterPageGraphicalController.showPopup("Resumed " + feature.getName().toLowerCase() + " clearance here");
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
@@ -1137,8 +1136,7 @@ public class UnitsGraphicalController {
                 return;
             }
         }
-        location.setWork(new ClearFeature(feature, worker));
-        worker.setPath(null);
+        controller.clearFeature(worker, feature, location);
         RegisterPageGraphicalController.showPopup("Started the clearance of a " + feature.getName().toLowerCase() + " here!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1149,9 +1147,9 @@ public class UnitsGraphicalController {
 
     private static void clearRoutes(Unit worker) {
         Tile location = worker.getLocation();
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof ClearRoutes) {
-                ((ClearRoutes) location.getWork()).startWork(worker);
+        if (controller.getTileWork(location) != null) {
+            if (controller.getTileWork(location) instanceof ClearRoutes) {
+                controller.startWork(controller.getTileWork(location), worker);
                 RegisterPageGraphicalController.showPopup("Resumed routes clearance here");
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
@@ -1171,8 +1169,7 @@ public class UnitsGraphicalController {
                 return;
             }
         }
-        location.setWork(new ClearRoutes(worker));
-        worker.setPath(null);
+        controller.clearRout(worker, location);
         RegisterPageGraphicalController.showPopup("Started the clearance of routes here!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1186,14 +1183,14 @@ public class UnitsGraphicalController {
         ImprovementType improvementType;
         if (!isRoute)
             improvementType = controller.getTypeOfPillagedImprovement(worker);
-        else if (worker.getLocation().containsImprovment(ImprovementType.ROAD))
+        else if (controller.doesTileContainsImprovement(location, ImprovementType.ROAD))
             improvementType = ImprovementType.ROAD;
         else
             improvementType = ImprovementType.RAILROAD;
-        if (location.getWork() != null) {
-            if (location.getWork() instanceof FixPillage &&
-                    ((FixPillage) location.getWork()).getImprovementType() == improvementType) {
-                ((FixPillage) location.getWork()).startWork(worker);
+        if (controller.getTileWork(location) != null) {
+            if (controller.getTileWork(location) instanceof FixPillage &&
+                    ((FixPillage) controller.getTileWork(location)).getImprovementType().getName().equals(improvementType.getName())) {
+                controller.startWork(controller.getTileWork(location), worker);
                 RegisterPageGraphicalController.showPopup("Resumed " + improvementType.getName().toLowerCase() + " fixation here");
                 try {
                     Main.loadFxmlFile("CivilizationGamePage");
@@ -1213,8 +1210,7 @@ public class UnitsGraphicalController {
                 return;
             }
         }
-        location.setWork(new FixPillage(improvementType, worker));
-        worker.setPath(null);
+        controller.fixImprovement(worker, improvementType, location);
         RegisterPageGraphicalController.showPopup("Started the fixation of a " + improvementType.getName().toLowerCase() + " here!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1225,7 +1221,7 @@ public class UnitsGraphicalController {
 
     private static void stopWork(Unit worker) {
         Work work = controller.getWorkersWork(worker);
-        work.stopWork();
+        controller.stopWork(work);
         RegisterPageGraphicalController.showPopup("Stopped this units work!");
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -1237,20 +1233,20 @@ public class UnitsGraphicalController {
     private static void addTooltipForWorkButtons(Button button, Unit unit, Work work) {
         int totalTurns = work.getTurnsRemaining();
         int turnsLeft = totalTurns;
-        if (work instanceof BuildImprovement && unit.getLocation().getWork() instanceof BuildImprovement && ((BuildImprovement) work).getImprovement() == ((BuildImprovement) unit.getLocation().getWork()).getImprovement()) {
-            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        if (work instanceof BuildImprovement && controller.getTileWork(unit.getLocation()) instanceof BuildImprovement && ((BuildImprovement) work).getImprovement().getName().equals(((BuildImprovement) controller.getTileWork(unit.getLocation())).getImprovement().getName())) {
+            turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
-        if (work instanceof BuildImprovementAndRemoveFeature && unit.getLocation().getWork() instanceof BuildImprovementAndRemoveFeature && ((BuildImprovementAndRemoveFeature) work).getImprovement() == ((BuildImprovementAndRemoveFeature) unit.getLocation().getWork()).getImprovement()) {
-            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        if (work instanceof BuildImprovementAndRemoveFeature && controller.getTileWork(unit.getLocation()) instanceof BuildImprovementAndRemoveFeature && ((BuildImprovementAndRemoveFeature) work).getImprovement().getName().equals(((BuildImprovementAndRemoveFeature) controller.getTileWork(unit.getLocation())).getImprovement().getName())) {
+            turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
-        if (work instanceof FixPillage && unit.getLocation().getWork() instanceof FixPillage && ((FixPillage) work).getImprovementType() == ((FixPillage) unit.getLocation().getWork()).getImprovementType()) {
-            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        if (work instanceof FixPillage && controller.getTileWork(unit.getLocation()) instanceof FixPillage && ((FixPillage) work).getImprovementType().getName().equals(((FixPillage) controller.getTileWork(unit.getLocation())).getImprovementType().getName())) {
+            turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
-        if (work instanceof ClearFeature && unit.getLocation().getWork() instanceof ClearFeature && ((ClearFeature) work).getFeature() == ((ClearFeature) unit.getLocation().getWork()).getFeature()) {
-            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        if (work instanceof ClearFeature && controller.getTileWork(unit.getLocation()) instanceof ClearFeature && ((ClearFeature) work).getFeature().getName().equals(((ClearFeature) controller.getTileWork(unit.getLocation())).getFeature().getName())) {
+            turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
-        if (work instanceof ClearRoutes && unit.getLocation().getWork() instanceof ClearRoutes) {
-            turnsLeft = unit.getLocation().getWork().getTurnsRemaining();
+        if (work instanceof ClearRoutes && controller.getTileWork(unit.getLocation()) instanceof ClearRoutes) {
+            turnsLeft = controller.getTileWork(unit.getLocation()).getTurnsRemaining();
         }
         String note = "turns remaining: " + String.valueOf(turnsLeft) + " out of " + String.valueOf(totalTurns);
         GamePageController.setToolTipForButton(button, note);

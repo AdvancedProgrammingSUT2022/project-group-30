@@ -1,5 +1,8 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +16,7 @@ import models.ProgramDatabase;
 import models.User;
 import models.chat.ChatDataBase;
 import models.chat.Message;
+import models.chat.PrivateChat;
 import views.Main;
 import views.customcomponents.MessageBox;
 
@@ -31,25 +35,35 @@ public class PrivateChatPageController {
 
     private ObservableList<Message> data;
 
+    private ChatController controller;
+    private NetworkController netController;
+
+    private int currentUserId;
+    private int contactId;
+    private int chatId;
+
     @FXML
     public void initialize() {
-        User currentUser = ProgramDatabase.getProgramDatabase().getLoggedInUser();
-        User contact = ProgramDatabase.getProgramDatabase().getUserById(ChatDataBase.getChatDatabase().getCurrentPrivateContactId());
+        controller = ChatController.getChatController();
+        netController = NetworkController.getNetworkController();
+
+        currentUserId = ProgramController.getProgramController().getLoggedInUser(netController.getToken()).getId();
+        User contact = ProgramController.getProgramController().getUserById(controller.getCurrentPrivateContactId(netController.getToken()));
+        contactId = contact.getId();
+        PrivateChat chat = controller.fetchPrivateChatForUsers(currentUserId, contactId);
+
         contactUsernameField.setText(contact.getUsername());
         contactImage.setFill(new ImagePattern(new Image("file:src/main/resources/images/avatars/" + contact.getImageName())));
         contactImage.setStroke(Color.BLACK);
         contactImage.setStyle("-fx-background-size: cover;");
+        chatId = chat.getId();
         data = FXCollections.observableArrayList();
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message("meow"));
-        messages.add(new Message("Hi"));
-        messages.add(new Message("weeee"));
-        messages.add(new Message("1", 1));
-        messages.add(new Message("2"));
-        messages.add(new Message("3"));
-        messages.add(new Message("4", 1));
-        messages.add(new Message("I hanshf hlsfhel hosdfh sfn efhfndn jldhfdls hflsdh foe"));
-        messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;", 2));
+        ArrayList<Message> messages = chat.getMessages();
+        for (Message message : messages) {
+            if (message.getSenderId() != currentUserId && !message.isSeen()) {
+                controller.markMessageAsSeen(message.getId());
+            }
+        }
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setFocusTraversable(false);
@@ -59,16 +73,28 @@ public class PrivateChatPageController {
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
             @Override
             public ListCell<Message> call(ListView<Message> messageListView) {
-                return new MessageBox();
+                return new MessageBox("PrivateChatPage");
             }
         });
     }
 
     @FXML
     protected void onSendButtonClick() {
-        data.add(new Message(textArea.getText()));
-        textArea.setText("");
-        scrollToBottom();
+        controller.addMessagetoPrivateChat(chatId, new Message(textArea.getText(), currentUserId));
+        try {
+            Main.loadFxmlFile("PrivateChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void onRefreshButtonClick() {
+        try {
+            Main.loadFxmlFile("PrivateChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

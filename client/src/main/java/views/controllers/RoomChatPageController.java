@@ -1,5 +1,8 @@
 package views.controllers;
 
+import controllers.ChatController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +17,7 @@ import models.chat.ChatDataBase;
 import models.chat.Message;
 import models.chat.Room;
 import views.Main;
+import views.customcomponents.AddMemberDialog;
 import views.customcomponents.MessageBox;
 
 import java.io.IOException;
@@ -29,22 +33,26 @@ public class RoomChatPageController {
 
     private ObservableList<Message> data;
 
+    private ChatController controller;
+    private NetworkController netController;
+    private Room room;
+    private User currentUser;
+
     @FXML
     public void initialize() {
-        User currentUser = ProgramDatabase.getProgramDatabase().getLoggedInUser();
-        Room room = ChatDataBase.getChatDatabase().getCurrentRoom();
+        controller = ChatController.getChatController();
+        netController = NetworkController.getNetworkController();
+
+        currentUser = ProgramController.getProgramController().getLoggedInUser(netController.getToken());
+        room =  controller.getCurrentRoom(netController.getToken());
         roomNameField.setText(room.getName());
         data = FXCollections.observableArrayList();
-        ArrayList<Message> messages = new ArrayList<>();
-        messages.add(new Message("meow"));
-        messages.add(new Message("Hi"));
-        messages.add(new Message("weeee"));
-        messages.add(new Message("1", 1));
-        messages.add(new Message("2"));
-        messages.add(new Message("3"));
-        messages.add(new Message("4", 1));
-        messages.add(new Message("I hanshf hlsfhel hosdfh sfn efhfndn jldhfdls hflsdh foe"));
-        messages.add(new Message("I, Tonya:\nmeow meow\nfhdskfs;", 2));
+        ArrayList<Message> messages = room.getMessages();
+        for (Message message : messages) {
+            if (message.getSenderId() != currentUser.getId() && !message.isSeen()) {
+                controller.markMessageAsSeen(message.getId());
+            }
+        }
         data.setAll(messages);
         messageList.setItems(data);
         messageList.setFocusTraversable(false);
@@ -54,7 +62,7 @@ public class RoomChatPageController {
         messageList.setCellFactory(new Callback<ListView<Message>, ListCell<Message>>() {
             @Override
             public ListCell<Message> call(ListView<Message> messageListView) {
-                return new MessageBox();
+                return new MessageBox("RoomChatPage");
             }
         });
     }
@@ -70,14 +78,31 @@ public class RoomChatPageController {
 
     @FXML
     protected void onSendButtonClick() {
-        data.add(new Message(textArea.getText(), ProgramDatabase.getProgramDatabase().getLoggedInUser().getId()));
-        textArea.setText("");
-        scrollToBottom();
+        controller.addMessageToRoom(room.getId(), new Message(textArea.getText(), currentUser.getId()));
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void onRefreshButtonClick() {
+        try {
+            Main.loadFxmlFile("RoomChatPage");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     protected void onAddMemberButtonClick() {
-        RegisterPageGraphicalController.showPopup("hello");
+        if (currentUser.getId() != room.getOwnerId()) {
+            RegisterPageGraphicalController.showPopup("You do not own this group!");
+            return;
+        }
+        AddMemberDialog addMemberDialog = new AddMemberDialog(room.getId());
+        addMemberDialog.show();
     }
 
     private void scrollToBottom() {

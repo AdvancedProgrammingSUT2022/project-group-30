@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BonusResource extends Resource {
+    private static ArrayList<BonusResource> allTypes = new ArrayList<>();
+
     public static BonusResource BANANA = new BonusResource(new Output(0, 1, 0),
             ImprovementType.PLANTATION,
             new ArrayList<TerrainProperty>(Arrays.asList(Feature.JUNGLE)), "Banana");
@@ -37,5 +39,22 @@ public class BonusResource extends Resource {
     public BonusResource(Output output, ImprovementType prerequisiteImprovement,
                          ArrayList<TerrainProperty> allowedTerrains, String name) {
         super(output, prerequisiteImprovement, allowedTerrains, name);
+        if (allTypes == null) {
+            allTypes = new ArrayList<>();
+        }
+        allTypes.add(this);
+    }
+
+    public static ArrayList<BonusResource> getAllTypes() {
+        return new ArrayList<BonusResource>(allTypes);
+    }
+
+    public static BonusResource getBonusResourceByName(String name) {
+        for (BonusResource allType : allTypes) {
+            if (allType.getName().equalsIgnoreCase(name)) {
+                return allType;
+            }
+        }
+        return null;
     }
 }

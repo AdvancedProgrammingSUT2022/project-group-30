@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.annotations.SerializedName;
 import controllers.GameController;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -36,14 +37,29 @@ public class Tile implements Workable, TileImage, TurnHandler {
     private Output output;
     private ArrayList<Feature> features = new ArrayList<>();
 
+    @SerializedName("type")
+    private String typeName;
+
     public Tile(TerrainType terrainType,
                 HashMap<Resource, Integer> resources, Ruins ruins) {
+        this.typeName = getClass().getName();
         this.id = newAvailableId;
         newAvailableId++;
         this.output = new Output(0, 0, 0);
         this.setTerrainTypeAndFeaturesAndApplyOutputChanges(terrainType, new ArrayList<>());
         this.resources = resources;
         this.ruins = ruins;
+    }
+
+    public Tile(Tile tile){
+        this.id = tile.getId();
+        this.terrainType = tile.terrainType;
+        this.resources = tile.resources;
+        this.improvements = tile.improvements;
+        this.ruins = tile.ruins;
+        this.work = null;
+        this.output = tile.output;
+        this.features = tile.features;
     }
 
     public TileHistory createTileHistory() {

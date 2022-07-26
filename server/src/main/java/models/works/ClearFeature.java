@@ -1,5 +1,6 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.Feature;
 import models.Tile;
 import models.units.Unit;
@@ -8,6 +9,7 @@ import utilities.Debugger;
 public class ClearFeature extends Work {
 
     private Feature feature;
+
 
     public ClearFeature(Feature feature, Unit worker) {
         this.feature = feature;

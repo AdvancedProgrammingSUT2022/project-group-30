@@ -1,27 +1,33 @@
 package models.improvements;
 
+import com.google.gson.annotations.SerializedName;
 import models.Feature;
 import models.Output;
 import models.TerrainType;
 import models.Tile;
+import models.interfaces.EnumInterface;
 import models.interfaces.TerrainProperty;
 import models.technology.Technology;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public enum ImprovementType {
+public enum ImprovementType implements EnumInterface {
+    @SerializedName("Enum models.improvements.ImprovementType Camp")
     CAMP(new Output(0, 0, 0), Technology.TRAPPING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(Feature.FOREST, TerrainType.TUNDRA, TerrainType.HILLS,
                             TerrainType.PLAINS)),
             0, "Camp", 4),
+    @SerializedName("Enum models.improvements.ImprovementType Farm")
     FARM(new Output(0, 1, 0), Technology.AGRICULTURE,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.GRASSLAND, TerrainType.DESERT)),
             0, "Farm", 6),
+    @SerializedName("Enum models.improvements.ImprovementType Lumber Mill")
     LUMBER_MILL(new Output(0, 0, 1), Technology.ENGINEERING,
             new ArrayList<TerrainProperty>(Arrays.asList(Feature.FOREST)), 0, "Lumber Mill", 5),
+    @SerializedName("Enum models.improvements.ImprovementType Mine")
     MINE(new Output(0, 0, 1), Technology.MINING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
@@ -29,31 +35,37 @@ public enum ImprovementType {
                             TerrainType.SNOW, TerrainType.HILLS, Feature.FOREST,
                             Feature.JUNGLE, Feature.OASIS)),
             0, "Mine", 6),
+    @SerializedName("Enum models.improvements.ImprovementType Pasture")
     PASTURE(new Output(0, 0, 0), Technology.ANIMAL_HUSBANDRY,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA, TerrainType.HILLS)),
             0, "Pasture", 6),
+    @SerializedName("Enum models.improvements.ImprovementType Plantation")
     PLANTATION(new Output(0, 0, 0), Technology.CALENDAR,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             Feature.FOREST, Feature.JUNGLE, Feature.OASIS, Feature.MARSH)),
             0, "Plantation", 5),
+    @SerializedName("Enum models.improvements.ImprovementType Quarry")
     QUARRY(new Output(0, 0, 0), Technology.MASONRY,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA, TerrainType.HILLS)),
             0, "Quarry", 6),
+    @SerializedName("Enum models.improvements.ImprovementType Trading Post")
     TRADING_POST(new Output(2, 0, 0), Technology.TRAPPING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA)),
             0, "Trading Post", 6),
+    @SerializedName("Enum models.improvements.ImprovementType Manufactory")
     MANUFACTORY(new Output(0, 0, 2), Technology.ENGINEERING,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.PLAINS, TerrainType.DESERT, TerrainType.GRASSLAND,
                             TerrainType.TUNDRA, TerrainType.SNOW)),
             0, "Manufactory", 7),
+    @SerializedName("Enum models.improvements.ImprovementType Road")
     ROAD(new Output(0, 0, 0), Technology.THE_WHEEL,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.DESERT, TerrainType.GRASSLAND, TerrainType.HILLS,
@@ -61,6 +73,7 @@ public enum ImprovementType {
                             Feature.FLOOD_PLAINS, Feature.FOREST,
                             Feature.JUNGLE, Feature.MARSH, Feature.OASIS)),
             0, "Road", 3),
+    @SerializedName("Enum models.improvements.ImprovementType Rail Road")
     RAILROAD(new Output(0, 0, 0), Technology.RAILROAD,
             new ArrayList<TerrainProperty>(
                     Arrays.asList(TerrainType.DESERT, TerrainType.GRASSLAND, TerrainType.HILLS,

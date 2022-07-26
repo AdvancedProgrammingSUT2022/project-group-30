@@ -8,10 +8,7 @@ import models.buildings.BuildingType;
 import models.diplomacy.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
-import models.interfaces.MPCostInterface;
-import models.interfaces.TileImage;
-import models.interfaces.TurnHandler;
-import models.interfaces.combative;
+import models.interfaces.*;
 import models.resources.LuxuryResource;
 import models.resources.Resource;
 import models.resources.StrategicResource;
@@ -21,10 +18,13 @@ import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
-import models.works.Work;
+import models.works.*;
 import utilities.Debugger;
+import utilities.MyGson;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -50,6 +50,7 @@ public class GameController {
         GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+        foundCityWithSettler(getCurrentPlayer().getUnits().get(0));
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {
@@ -615,6 +616,47 @@ public class GameController {
         return units;
     }
 
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        return gameDataBase.getDiplomaticRelation(civ1, civ2);
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        ArrayList<Civilization> result = gameDataBase.getDiscoveredCivilizations(civilization);
+        return gameDataBase.getDiscoveredCivilizations(civilization);
+    }
+
+    public void addGoldToCiv(Civilization civ, double amount) {
+        civ.addGold(amount);
+    }
+
+    public City getCityOfTile(Tile tile) {
+        return tile.getCityOfTile();
+    }
+
+    public Civilization getTileCityOwner(Tile tile) {
+        return tile.getCityOfTile().getOwner();
+    }
+
+    public void addFeatureAndApplyChangesForTile(Tile tile, Feature feature) {
+        tile.addFeatureAndApplyChanges(feature);
+    }
+
+    public void removeAllFeaturesAndApplyChangesForTile(Tile tile) {
+        tile.removeAllFeaturesAndApplyChanges();
+    }
+
+    public void reduceGoldFromCiv(Civilization civ, int amount) {
+        civ.reduceGold(amount);
+    }
+
+    public void addLuxuryResourceToCiv(Civilization civ, LuxuryResource resource, int amount) {
+        civ.addLuxuryResource(resource, amount);
+    }
+
+    public void addStrategicResourceToCiv(Civilization civ, StrategicResource resource, int amount) {
+        civ.addStrategicResource(resource, amount);
+    }
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         for (Unit unit : gameDataBase.getUnits()) {
             if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
@@ -672,6 +714,14 @@ public class GameController {
             }
         }
         return false;
+    }
+
+    public Unit getUnit(Unit unit) {
+        return unit;
+    }
+
+    public City getCity(City city) {
+        return city;
     }
 
     public void foundCityWithSettler(Unit unit) {
@@ -1074,6 +1124,14 @@ public class GameController {
         return tiles;
     }
 
+    public void makeCivLearnAllTechnologiesWithCheat(Civilization civ) {
+        civ.learnAllTechnologiesWithCheat();
+    }
+
+    public void makeCivLearnTechnologyWithCheat(Civilization civ, Technology technology) {
+        civ.learnTechnologyWithCheat(technology);
+    }
+
     public boolean isTileBlocker(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.HILLS) || tile.getTerrainType().equals(TerrainType.MOUNTAIN) || tile.getFeatures().contains(Feature.FOREST))
             return true;
@@ -1156,12 +1214,14 @@ public class GameController {
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
             if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null) {
                 newMapImage.put(tile, null);
-                discoverCivsInTile(tile);
             } else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());
-            else newMapImage.put(tile, tile);
+            else {
+                newMapImage.put(tile, tile);
+                discoverCivsInTile(tile);
+            }
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);
@@ -1513,13 +1573,13 @@ public class GameController {
             return meta;
         FileInputStream fileInputStream = new FileInputStream(file);
         String data = new String(fileInputStream.readAllBytes());
-        meta = new Gson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+        meta = MyGson.getGson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
         fileInputStream.close();
         return meta;
     }
 
     public void saveMeta(HashMap<String, ArrayList<String>> input) throws IOException {
-        String data = new Gson().toJson(input);
+        String data = MyGson.getGson().toJson(input);
         FileOutputStream fileOutputStream = new FileOutputStream("meta.json");
         fileOutputStream.write(data.getBytes());
         fileOutputStream.close();
@@ -1562,18 +1622,396 @@ public class GameController {
     }
 
     public ArrayList<String> listSavedFiles(boolean isAuto) throws IOException {
-        HashMap<String, ArrayList<String>> meta = loadMeta();
-        String name = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
-        File file = new File("save");
-        String[] files = file.list();
-        ArrayList<String> filesArrayList = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            if ((isAuto && files[i].startsWith("auto")) || (!isAuto && files[i].startsWith("manual"))) {
-                if (meta.get(files[i]).contains(name))
-                    filesArrayList.add(files[i]);
+//        HashMap<String, ArrayList<String>> meta = loadMeta();
+//         NEEDS CHANGING
+//        String name = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+//        File file = new File("save");
+//        String[] files = file.list();
+//        ArrayList<String> filesArrayList = new ArrayList<>();
+//        for (int i = 0; i < files.length; i++) {
+//            if ((isAuto && files[i].startsWith("auto")) || (!isAuto && files[i].startsWith("manual"))) {
+//                if (meta.get(files[i]).contains(name))
+//                    filesArrayList.add(files[i]);
+//            }
+//        }
+//        return filesArrayList;
+        return null;
+    }
+
+    public TileImage[][] getCivilizationImageToShowOnScene(Civilization civ){
+        return GameMap.getGameMap().getCivilizationImageToShowOnScene(civ);
+    }
+
+    public int findTileXCoordinateInMap(Tile tile){
+        return tile.findTileXCoordinateInMap();
+    }
+
+    public int findTileYCoordinateInMap(Tile tile){
+        return tile.findTileYCoordinateInMap();
+    }
+
+    public void setPlayersSelectedEntity(Selectable selectable){
+        this.getCurrentPlayer().setSelectedEntity(selectable);
+    }
+
+    public boolean isCityOwnerEqualToCurrentPlayer(City city){
+        return city.getOwner().equals(this.getCurrentPlayer());
+    }
+
+    public boolean isUnitOwnerEqualToCurrentPlayer(Unit unit){
+        return unit.getOwner().equals(this.getCurrentPlayer());
+    }
+
+    public ArrayList<RiverSegment> getMapRivers(){
+        return GameMap.getGameMap().getRivers();
+    }
+
+    public String findRiverSegmentDirectionForTile(RiverSegment river, Tile tile){
+        return river.findRiverSegmentDirectionForTile(tile);
+    }
+
+    public boolean isTileImageEqualToTile(Tile tile, TileImage tileImage){
+        return ((Tile) tileImage).equals(tile);
+    }
+
+    public Tile getTileFromMap(int x, int y){
+        return GameMap.getGameMap().getTile(x, y);
+    }
+
+    public void setCurrentPlayerFrameBase(Tile tile){
+        this.getCurrentPlayer().setFrameBase(tile);
+    }
+
+    public Output calculateTheoreticalOutputForTile(Tile tile){
+        return tile.calculateTheoreticalOutput();
+    }
+
+    public boolean canResourceBeExploitedForTile(Resource resource, Tile tile){
+        return resource.canBeExploited(tile);
+    }
+
+    public ArrayList<City> getCivilizationCities(Civilization civ){
+        return civ.getCities();
+    }
+
+    public ArrayList<City> getCivilizationCitiesWaitingForProduction(Civilization civ){
+        return civ.getCitiesWaitingForProduction();
+    }
+
+
+    public void deselectCity(City city){
+        city.getOwner().setSelectedEntity(null);
+    }
+
+    public ArrayList<Tile> findCityPurchasableTiles(City city){
+        return city.findPurchasableTiles();
+    }
+
+    public int calculateNextTilePriceForCity(City city){
+        return city.calculateNextTilePrice();
+    }
+
+    public double getCityOwnerGoldCount(City city){
+        return city.getOwner().getGoldCount();
+    }
+
+    public void decreaseCivilizationGold(Civilization civ, int cost){
+        civ.decreaseGold(cost);
+    }
+
+    public boolean isCityCapital(City city){
+        return city.isCapital();
+    }
+
+    public boolean isCityTileBeingWorked(City city, Tile tile){
+        return city.isTileBeingWorked(tile);
+    }
+
+    public Output calculateOutputForCity(City city){
+        return city.calculateOutput();
+    }
+
+    public double calculateCityBeakerProduction(City city){
+        return city.calculateBeakerProduction();
+    }
+
+    public int calculateDistanceFromTile(Tile tile, Tile dest){
+        return tile.calculateDistance(dest);
+    }
+
+    public void executeRangedAttackCity(City city, combative comb){
+        CombatController.getCombatController().executeRangedAttack(city, comb);
+    }
+
+    public boolean doesCityHasTileInTerritory(City city, Tile tile){
+        return city.getTerritories().contains(tile);
+    }
+
+    public int calculateWorklessCitizenCountForCity(City city){
+        return city.calculateWorklessCitizenCount();
+    }
+
+    public Citizen getCityWorklessCitizen(City city){
+        return city.getWorklessCitizen();
+    }
+
+    public void assignCitizenToWorkPlaceForCity(City city, Tile tile, Citizen citizen){
+        city.assignCitizenToWorkplace(tile, citizen);
+    }
+
+    public void freeCityTile(City city, Tile tile){
+        Citizen citizen = city.getCitizenAssignedToTile(tile);
+        citizen.setWorkPlace(null);
+    }
+
+    public ArrayList<Tile> getCityWorkingTiles(City city){
+        ArrayList<Citizen> citizens = city.getCitizens();
+        ArrayList<Tile> workingTiles = new ArrayList<>();
+        for(int i = 0; i < citizens.size(); i++){
+            if(citizens.get(i).getWorkPlace() instanceof Tile){
+                workingTiles.add((Tile) citizens.get(i).getWorkPlace());
             }
         }
-        return filesArrayList;
+        return workingTiles;
     }
+
+    public boolean doesCityWorkingTilesContainsTile(City city, Tile tile){
+        ArrayList<Tile> workingTiles = getCityWorkingTiles(city);
+        return workingTiles.contains(tile);
+    }
+
+    public boolean doesCityNonWorkingTilesContainsTile(City city, Tile tile){
+        return city.getUnworkedTiles().contains(tile);
+    }
+
+    public Producible getCityEntityInProduction(City city){
+        return city.getEntityInProduction();
+    }
+
+    public int calculateProductionHammerCost(Producible producible){
+        return producible.calculateHammerCost();
+    }
+
+    public ArrayList<UnitType> calculateCityProductionReadyUnitTypes(City city){
+        return city.calculateProductionReadyUnitTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypes(City city){
+        return city.calculateProductionReadyBuildingTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityProductionReadyBuildingTypesFalseValue(City city){
+        return city.calculateProductionReadyBuildingTypes(false);
+    }
+
+    public boolean doesPackingLetUnitEnterCity(City city, UnitType type){
+        return city.getCentralTile().doesPackingLetUnitEnter(type);
+    }
+
+    public void changeCityProduction(City city, Producible producible){
+        city.changeProduction(producible);
+    }
+
+    public void stopCityProduction(City city){
+        city.stopProduction();
+    }
+
+    public ArrayList<UnitType> calculateCityPurchasableUnitTypes(City city){
+        return city.calculatePurchasableUnitTypes();
+    }
+
+    public ArrayList<BuildingType> calculateCityPurchasableBuildingTypes(City city){
+        return city.calculatePurchasableBuildingTypes();
+    }
+
+    public void addBuildingToCity(City city, BuildingType type){
+        city.addBuilding(type);
+    }
+
+    public boolean isStateAllowedForUnit(Unit unit, UnitState state){
+        return unit.getType().getCombatType().isStateAllowed(state);
+    }
+
+    public boolean isCityOwnerEqualToUnitOwner(City city, Unit unit){
+        return city.getOwner().equals(unit.getOwner());
+    }
+
+    public void deselectUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+    }
+
+    public void alertUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ALERT);
+    }
+
+    public void sleepUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ASLEEP);
+    }
+
+    public void fortifyUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFY);
+    }
+
+    public void garrisonUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.GARRISON);
+    }
+
+    public void fortifyUnitUntilHealed(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFYUNTILHEALED);
+    }
+
+    public void awakeUnit(Unit unit){
+        unit.setState(UnitState.AWAKE);
+    }
+
+    public void deleteAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        deleteUnit(unit);
+    }
+
+    public void cancelUnitMove(Unit unit){
+        unit.setPath(null);
+    }
+
+    public Selectable getCivilizationSelectedEntity(Civilization civ){
+        return civ.getSelectedEntity();
+    }
+
+    public void setUnitPath(Unit unit, Tile location, Tile destination){
+        unit.setPath(findPath(unit, unit.getLocation(), destination));
+    }
+
+    public int getUnitMovePointsLeft(Unit unit){
+        return unit.getMovePointsLeft();
+    }
+
+    public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit){
+        System.out.println("Server civs");
+        for (Civilization civilization : gameDataBase.getCivilizations()) {
+            System.out.println(civilization);
+        }
+        System.out.println("received civs:");
+        System.out.println(target.getOwner());
+        System.out.println(unit.getOwner());
+        return GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar();
+    }
+
+    public void setUnitAndTargetOwnerAtWar(combative target, Unit unit, boolean atWar){
+        GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(atWar);
+    }
+
+    public void executeMeleeAttackUnit(Unit unit, combative target){
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+    }
+
+    public boolean isCityOriginalCapital(City city){
+        return city.isOriginalCapital();
+    }
+
+    public boolean isCityFounderEqualToUnitOwner(City city, Unit unit){
+        return city.getFounder().equals(unit.getOwner());
+    }
+
+    public void annexCity(City city, Civilization civilization){
+        CombatController.getCombatController().annexCity(city, civilization);
+    }
+
+    public void killCity(City city){
+        CombatController.getCombatController().kill(city);
+    }
+
+    public boolean doesVisibleTileForUnitContainsTile(Unit unit, Tile tile){
+        return getVisibleTilesByUnit(unit).contains(tile);
+    }
+
+    public Civilization getUnitOwner(Unit unit){
+        return unit.getOwner();
+    }
+
+    public void executeRangedAttackUnit(Unit unit, combative target){
+        CombatController.getCombatController().executeRangedAttack(unit, target);
+    }
+
+    public boolean isUnitAssembled(Unit unit){
+        return unit.isAssembled();
+    }
+
+    public int getUnitHitPointsLeft(Unit unit){
+        return unit.getHitPointsLeft();
+    }
+
+    public void setupUnitForRangedAttack(Unit unit){
+        unit.assemble();
+        unit.setMovePointsLeft(0);
+        unit.setPath(null);
+    }
+
+    public Tile findWorkLocation(Work work){
+        return work.findLocation();
+    }
+
+    public Improvement getNonRootImprovementForTile(Tile tile){
+        return tile.getNonRouteImprovement();
+    }
+
+    public void removeImprovementForTile(Tile tile, Improvement improvement){
+        tile.removeImprovement(improvement);
+    }
+
+    public Work getTileWork(Tile tile){
+        return tile.getWork();
+    }
+
+    public void startWork(Work work, Unit unit){
+        work.startWork(unit);
+    }
+
+    public void buildImprovement(Unit worker, ImprovementType improvementType, Tile location){
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
+        location.setWork(newWork);
+        worker.setPath(null);
+    }
+
+    public void buildImprovementAndRemoveFeature(Unit worker, ImprovementType type, Tile location){
+        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
+        location.setWork(newWork);
+        worker.setPath(null);
+    }
+
+    public void clearFeature(Unit worker, Feature feature, Tile location){
+        location.setWork(new ClearFeature(feature, worker));
+        worker.setPath(null);
+    }
+
+    public void stopWork(Work work){
+        work.stopWork();
+    }
+
+    public boolean doesTileContainsImprovement(Tile tile, ImprovementType type){
+        return tile.containsImprovment(type);
+    }
+
+    public void fixImprovement(Unit worker, ImprovementType type, Tile location){
+        location.setWork(new FixPillage(type, worker));
+        worker.setPath(null);
+    }
+
+    public void clearRout(Unit worker, Tile location){
+        location.setWork(new ClearRoutes(worker));
+        worker.setPath(null);
+    }
+
+
+
+
+
+
+
+
 
 }

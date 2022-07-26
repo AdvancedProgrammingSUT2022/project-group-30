@@ -1,5 +1,7 @@
 package models.chat;
 
+import controllers.ChatController;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -8,6 +10,8 @@ import java.util.Date;
 import java.util.SimpleTimeZone;
 
 public class Message {
+    private final int id;
+
     private int senderId;
     private boolean isHiddenToSender;
     private String text;
@@ -18,18 +22,21 @@ public class Message {
         this.text = text;
         senderId = 0;
         setDefaults();
+        this.id = ChatController.getChatController().getNextMessageId();
     }
 
-    public Message(String text, int id) {
+    public Message(String text, int senderId) {
         this.text = text;
-        senderId = id;
+        this.senderId = senderId;
         setDefaults();
+        this.id = ChatController.getChatController().getNextMessageId();
     }
 
+    // for gson
     public Message() {
         this.text = "default";
         senderId = 0;
-        setDefaults();
+        this.id = 0;
     }
 
     private void setDefaults() {
@@ -94,5 +101,9 @@ public class Message {
 
     public void setTimeSent(String timeSent) {
         this.timeSent = timeSent;
+    }
+
+    public int getId() {
+        return id;
     }
 }

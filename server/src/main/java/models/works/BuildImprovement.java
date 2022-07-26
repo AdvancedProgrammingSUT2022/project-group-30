@@ -1,5 +1,6 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.Tile;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -7,6 +8,7 @@ import models.units.Unit;
 
 public class BuildImprovement extends Work {
     protected ImprovementType improvementType;
+
 
     public BuildImprovement(ImprovementType improvementType, Unit worker) {
         this.improvementType = improvementType;

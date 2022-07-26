@@ -1,47 +1,45 @@
 package netPackets;
 
 import com.google.gson.Gson;
-import models.GameMap;
+import utilities.MyGson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Request {
+    private String controllerName;
     private String methodName;
     private ArrayList<String> arguments;
-    private ControllerType controllerType;
 
-    public Request(String methodName, String... arguments){
-        this.methodName = methodName;
-        this.arguments = new ArrayList<>(Arrays.asList(arguments));
-        this.controllerType = ControllerType.GAME_CONTROLLER;
+    public Request() {
+
     }
 
-    public Request(String methodName, ControllerType controllerType, String... arguments){
+    public Request(String controllerName, String methodName, String... arguments) {
+        this.controllerName = controllerName;
         this.methodName = methodName;
         this.arguments = new ArrayList<>(Arrays.asList(arguments));
-        this.controllerType = controllerType;
     }
 
-    public String toJson(){
-        Gson gson = new Gson();
+    public String toJson() {
+        Gson gson = MyGson.getGson();
         return gson.toJson(this);
     }
 
-    public static Request fromJson(String json){
-        Gson gson = new Gson();
+    public static Request fromJson(String json) {
+        Gson gson = MyGson.getGson();
         return gson.fromJson(json, Request.class);
     }
 
-    public String getMethodName(){
+    public String getMethodName() {
         return this.methodName;
     }
 
-    public ArrayList<String> getArguments(){
+    public ArrayList<String> getArguments() {
         return this.arguments;
     }
 
-    public ControllerType getControllerType() {
-        return controllerType;
+    public String getControllerName() {
+        return controllerName;
     }
 }

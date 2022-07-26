@@ -1,5 +1,6 @@
 package models.buildings;
 
+import com.google.gson.annotations.SerializedName;
 import models.City;
 import models.TerrainType;
 import models.interfaces.Workable;
@@ -12,12 +13,16 @@ public class Building implements Workable {
 
     protected static int nextAvailableId = 0;
 
-    private final BuildingType type;
+    private final BuildingType buildingType;
+
+    @SerializedName("type")
+    private String typeName;
 
     public Building(BuildingType type) {
+        this.typeName = getClass().getName();
         this.id = nextAvailableId;
         nextAvailableId++;
-        this.type = type;
+        this.buildingType = type;
     }
 
     public Building createImage() { // create a deep copy of the object
@@ -25,7 +30,7 @@ public class Building implements Workable {
     }
 
     public BuildingType getType() {
-        return type;
+        return buildingType;
     }
 
     public static boolean isCityCompatibleWithBuildingType(City city, BuildingType type) {

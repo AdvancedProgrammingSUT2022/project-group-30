@@ -1,10 +1,12 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.Tile;
 import models.improvements.ImprovementType;
 import models.units.Unit;
 
 public class ClearRoutes extends Work {
+
     public ClearRoutes(Unit worker) {
         this.worker = worker;
         turnsRemaining = calculateRequiredTurns();
