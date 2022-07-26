@@ -347,7 +347,7 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        if (!controller.doesTileContainEnemyCombative(targetTile, unit.getOwner())) {
+        if (!controller.doesTileContainEnemyCombative(targetTile, controller.getUnitOwner(unit))) {
             RegisterPageGraphicalController.showPopup("You can't attack this tile because there are no hostile units in it!");
             try {
                 Main.loadFxmlFile("CivilizationGamePage");
@@ -356,7 +356,7 @@ public class UnitsGraphicalController {
             }
             return;
         }
-        combative target = controller.getPriorityTargetInTile(targetTile, unit.getOwner());
+        combative target = controller.getPriorityTargetInTile(targetTile, controller.getUnitOwner(unit));
         if (!controller.areUnitAndTargetOwnerAtWar(target, unit)) {
             AttackYesNoDialog dialog = new AttackYesNoDialog() {
                 @Override

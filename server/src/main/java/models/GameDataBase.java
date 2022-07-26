@@ -1,5 +1,6 @@
 package models;
 
+import com.google.gson.Gson;
 import menusEnumerations.AutoSave;
 import models.diplomacy.Diplomacy;
 import models.diplomacy.DiplomaticRelation;
@@ -79,6 +80,7 @@ public class GameDataBase implements java.io.Serializable{
                 return relation;
             }
         }
+        System.out.println("fuck be madaret");
         return null;
     }
 

@@ -71,8 +71,12 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
-        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
+        System.out.println(currentPlayer.getCities());
+        if (debugMode || (currentPlayer.getResearchProject() == null && !controller.getCivilizationCities(currentPlayer).isEmpty())) {
             createTechnologyPopup();
+        }
+        else{
+            System.out.println("kire khar");
         }
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
@@ -117,21 +121,21 @@ public class CivilizationGamePageController {
     }
 
     private void passTurn() {
-        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
-            return;
-        }
-        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
-                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("You should start a research project!");
-            return;
-        }
-        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
-        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
-            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
-            return;
-        }
+//        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+//        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
+//            return;
+//        }
+//        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+//                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("You should start a research project!");
+//            return;
+//        }
+//        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
+//        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+//            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
+//            return;
+//        }
         controller.goToNextPlayer();
         try {
             Main.loadFxmlFile("CivilizationGamePage");

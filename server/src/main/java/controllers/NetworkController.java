@@ -61,7 +61,7 @@ public class NetworkController {
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
 //            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
-                if (methods[i].getName().equals(request.getMethodName())) {
+                if (methods[i].getName().equals(request.getMethodName()) && methods[i].getParameterCount() == request.getArguments().size()) {
                     method = methods[i];
                     break;
                 }

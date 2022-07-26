@@ -13,7 +13,7 @@ public class Building implements Workable {
 
     protected static int nextAvailableId = 0;
 
-    private final BuildingType type;
+    private final BuildingType buildingType;
 
     @SerializedName("type")
     private String typeName;
@@ -22,7 +22,7 @@ public class Building implements Workable {
         this.typeName = getClass().getName();
         this.id = nextAvailableId;
         nextAvailableId++;
-        this.type = type;
+        this.buildingType = type;
     }
 
     public Building createImage() { // create a deep copy of the object
@@ -30,7 +30,7 @@ public class Building implements Workable {
     }
 
     public BuildingType getType() {
-        return type;
+        return buildingType;
     }
 
     public static boolean isCityCompatibleWithBuildingType(City city, BuildingType type) {
