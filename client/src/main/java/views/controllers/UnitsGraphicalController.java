@@ -385,11 +385,11 @@ public class UnitsGraphicalController {
     }
 
     public static void applyMeleeAttackEffects(Unit unit, combative target, Tile targetTile) {
-        CombatController.getCombatController().executeMeleeAttack(unit, target);
+        controller.executeMeleeAttackUnit(unit, target);
         if (target instanceof City) {
             City targetCity = (City) target;
             if (targetCity.isDefeated()) {
-                if (targetCity.isOriginalCapital() && targetCity.getFounder() == unit.getOwner()) {
+                if (controller.isCityOriginalCapital(targetCity) && controller.isCityFounderEqualToUnitOwner(targetCity, unit)) {
                     CombatController.getCombatController().annexCity(targetCity, controller.getCurrentPlayer());
                     try {
                         Main.loadFxmlFile("CivilizationGamePage");

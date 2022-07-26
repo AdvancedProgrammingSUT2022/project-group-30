@@ -952,5 +952,17 @@ public class GameController {
         GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(atWar);
     }
 
+    public void executeMeleeAttackUnit(Unit unit, combative target){
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+    }
+
+    public boolean isCityOriginalCapital(City city){
+        return city.isOriginalCapital();
+    }
+
+    public boolean isCityFounderEqualToUnitOwner(City city, Unit unit){
+        return city.getFounder().equals(unit.getOwner());
+    }
+
 
 }
