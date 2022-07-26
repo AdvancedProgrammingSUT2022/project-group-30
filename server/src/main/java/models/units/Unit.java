@@ -51,9 +51,14 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.hasAttackedThisTurn = unit.hasAttackedThisTurn;
         this.inactivityDuration = unit.inactivityDuration;
         this.stateDuration = unit.stateDuration;
-        this.path = new ArrayList<>();
-        for(int i = 0; i < unit.path.size(); i++){
-            this.path.add(new Tile(unit.path.get(i)));
+        if(unit.path != null) {
+            this.path = new ArrayList<>();
+            for (int i = 0; i < unit.path.size(); i++) {
+                this.path.add(new Tile(unit.path.get(i)));
+            }
+        }
+        else{
+            this.path = null;
         }
 
     }

@@ -882,175 +882,199 @@ public class GameController {
         NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isStateAllowedForUnit(Unit unit, UnitState state){
-        return unit.getType().getCombatType().isStateAllowed(state);
+    public boolean isStateAllowedForUnit(Unit unit, UnitState state) {
+        Request request = new Request("isStateAllowedForUnit", MyGson.toJson(unit), MyGson.toJson(state));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isCityOwnerEqualToUnitOwner(City city, Unit unit){
-        return city.getOwner().equals(unit.getOwner());
+    public boolean isCityOwnerEqualToUnitOwner(City city, Unit unit) {
+        Request request = new Request("isCityOwnerEqualToUnitOwner", MyGson.toJson(city), MyGson.toJson(unit));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void deselectUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
+    public void deselectUnit(Unit unit) {
+        Request request = new Request("deselectUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void alertUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ALERT);
+    public void alertUnit(Unit unit) {
+        Request request = new Request("alertUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void sleepUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.ASLEEP);
+    public void sleepUnit(Unit unit) {
+        Request request = new Request("sleepUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void fortifyUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFY);
+    public void fortifyUnit(Unit unit) {
+        Request request = new Request("fortifyUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void garrisonUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.GARRISON);
+    public void garrisonUnit(Unit unit) {
+        Request request = new Request("garrisonUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void fortifyUnitUntilHealed(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        unit.setState(UnitState.FORTIFYUNTILHEALED);
+    public void fortifyUnitUntilHealed(Unit unit) {
+        Request request = new Request("fortifyUnitUntilHealed", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void awakeUnit(Unit unit){
-        unit.setState(UnitState.AWAKE);
+    public void awakeUnit(Unit unit) {
+        Request request = new Request("awakeUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void deleteAUnit(Unit unit){
-        unit.getOwner().setSelectedEntity(null);
-        deleteUnit(unit);
+    public void deleteAUnit(Unit unit) {
+        Request request = new Request("deleteAUnit", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void cancelUnitMove(Unit unit){
-        unit.setPath(null);
+    public void cancelUnitMove(Unit unit) {
+        Request request = new Request("cancelUnitMove", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public Selectable getCivilizationSelectedEntity(Civilization civ){
-        return civ.getSelectedEntity();
+    public Selectable getCivilizationSelectedEntity(Civilization civ) {
+        Request request = new Request("getCivilizationSelectedEntity", MyGson.toJson(civ));
+        return (Selectable) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void setUnitPath(Unit unit, Tile location, Tile destination){
-        unit.setPath(findPath(unit, unit.getLocation(), destination));
+    public void setUnitPath(Unit unit, Tile location, Tile destination) {
+        Request request = new Request("setUnitPath", MyGson.toJson(unit), MyGson.toJson(location), MyGson.toJson(destination));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public int getUnitMovePointsLeft(Unit unit){
-        return unit.getMovePointsLeft();
+    public int getUnitMovePointsLeft(Unit unit) {
+        Request request = new Request("getUnitMovePointsLeft", MyGson.toJson(unit));
+        return (int) NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit){
-        return GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar();
+    public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit) {
+        Request request = new Request("areUnitAndTargetOwnerAtWar", MyGson.toJson(target), MyGson.toJson(unit));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void setUnitAndTargetOwnerAtWar(combative target, Unit unit, boolean atWar){
-        GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(atWar);
+    public void setUnitAndTargetOwnerAtWar(combative target, Unit unit, boolean atWar) {
+        Request request = new Request("setUnitAndTargetOwnerAtWar", MyGson.toJson(target), MyGson.toJson(unit), MyGson.toJson(atWar));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void executeMeleeAttackUnit(Unit unit, combative target){
-        CombatController.getCombatController().executeMeleeAttack(unit, target);
+    public void executeMeleeAttackUnit(Unit unit, combative target) {
+        Request request = new Request("executeMeleeAttackUnit", MyGson.toJson(unit), MyGson.toJson(target));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isCityOriginalCapital(City city){
-        return city.isOriginalCapital();
+    public boolean isCityOriginalCapital(City city) {
+        Request request = new Request("isCityOriginalCapital", MyGson.toJson(city));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isCityFounderEqualToUnitOwner(City city, Unit unit){
-        return city.getFounder().equals(unit.getOwner());
+    public boolean isCityFounderEqualToUnitOwner(City city, Unit unit) {
+        Request request = new Request("isCityFounderEqualToUnitOwner", MyGson.toJson(city), MyGson.toJson(unit));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void annexCity(City city, Civilization civilization){
-        CombatController.getCombatController().annexCity(city, civilization);
+    public void annexCity(City city, Civilization civilization) {
+        Request request = new Request("annexCity", MyGson.toJson(city), MyGson.toJson(civilization));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void killCity(City city){
-        CombatController.getCombatController().kill(city);
+    public void killCity(City city) {
+        Request request = new Request("killCity", MyGson.toJson(city));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean doesVisibleTileForUnitContainsTile(Unit unit, Tile tile){
-        return getVisibleTilesByUnit(unit).contains(tile);
+    public boolean doesVisibleTileForUnitContainsTile(Unit unit, Tile tile) {
+        Request request = new Request("doesVisibleTileForUnitContainsTile", MyGson.toJson(unit), MyGson.toJson(tile));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public Civilization getUnitOwner(Unit unit){
-        return unit.getOwner();
+    public Civilization getUnitOwner(Unit unit) {
+        Request request = new Request("getUnitOwner", MyGson.toJson(unit));
+        return (Civilization) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void executeRangedAttackUnit(Unit unit, combative target){
-        CombatController.getCombatController().executeRangedAttack(unit, target);
+    public void executeRangedAttackUnit(Unit unit, combative target) {
+        Request request = new Request("executeRangedAttackUnit", MyGson.toJson(unit), MyGson.toJson(target));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean isUnitAssembled(Unit unit){
-        return unit.isAssembled();
+    public boolean isUnitAssembled(Unit unit) {
+        Request request = new Request("isUnitAssembled", MyGson.toJson(unit));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public int getUnitHitPointsLeft(Unit unit){
-        return unit.getHitPointsLeft();
+    public int getUnitHitPointsLeft(Unit unit) {
+        Request request = new Request("getUnitHitPointsLeft", MyGson.toJson(unit));
+        return (int) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void setupUnitForRangedAttack(Unit unit){
-        unit.assemble();
-        unit.setMovePointsLeft(0);
-        unit.setPath(null);
+    public void setupUnitForRangedAttack(Unit unit) {
+        Request request = new Request("setupUnitForRangedAttack", MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public Tile findWorkLocation(Work work){
-        return work.findLocation();
+    public Tile findWorkLocation(Work work) {
+        Request request = new Request("findWorkLocation", MyGson.toJson(work));
+        return (Tile) NetworkController.getNetworkController().transferData(request);
     }
 
-    public Improvement getNonRootImprovementForTile(Tile tile){
-        return tile.getNonRouteImprovement();
+    public Improvement getNonRootImprovementForTile(Tile tile) {
+        Request request = new Request("getNonRootImprovementForTile", MyGson.toJson(tile));
+        return (Improvement) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void removeImprovementForTile(Tile tile, Improvement improvement){
-        tile.removeImprovement(improvement);
+    public void removeImprovementForTile(Tile tile, Improvement improvement) {
+        Request request = new Request("removeImprovementForTile", MyGson.toJson(tile), MyGson.toJson(improvement));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public Work getTileWork(Tile tile){
-        return tile.getWork();
+    public Work getTileWork(Tile tile) {
+        Request request = new Request("getTileWork", MyGson.toJson(tile));
+        return (Work) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void startWork(Work work, Unit unit){
-        work.startWork(unit);
+    public void startWork(Work work, Unit unit) {
+        Request request = new Request("startWork", MyGson.toJson(work), MyGson.toJson(unit));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void buildImprovement(Unit worker, ImprovementType improvementType, Tile location){
-        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
-        location.setWork(newWork);
-        worker.setPath(null);
+    public void buildImprovement(Unit worker, ImprovementType improvementType, Tile location) {
+        Request request = new Request("buildImprovement", MyGson.toJson(worker), MyGson.toJson(improvementType), MyGson.toJson(location));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void buildImprovementAndRemoveFeature(Unit worker, ImprovementType type, Tile location){
-        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
-        location.setWork(newWork);
-        worker.setPath(null);
+    public void buildImprovementAndRemoveFeature(Unit worker, ImprovementType type, Tile location) {
+        Request request = new Request("buildImprovementAndRemoveFeature", MyGson.toJson(worker), MyGson.toJson(type), MyGson.toJson(location));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void clearFeature(Unit worker, Feature feature, Tile location){
-        location.setWork(new ClearFeature(feature, worker));
-        worker.setPath(null);
+    public void clearFeature(Unit worker, Feature feature, Tile location) {
+        Request request = new Request("clearFeature", MyGson.toJson(worker), MyGson.toJson(feature), MyGson.toJson(location));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void stopWork(Work work){
-        work.stopWork();
+    public void stopWork(Work work) {
+        Request request = new Request("stopWork", MyGson.toJson(work));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public boolean doesTileContainsImprovement(Tile tile, ImprovementType type){
-        return tile.containsImprovment(type);
+    public boolean doesTileContainsImprovement(Tile tile, ImprovementType type) {
+        Request request = new Request("doesTileContainsImprovement", MyGson.toJson(tile), MyGson.toJson(type));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void fixImprovement(Unit worker, ImprovementType type, Tile location){
-        location.setWork(new FixPillage(type, worker));
-        worker.setPath(null);
+    public void fixImprovement(Unit worker, ImprovementType type, Tile location) {
+        Request request = new Request("fixImprovement", MyGson.toJson(worker), MyGson.toJson(type), MyGson.toJson(location));
+        NetworkController.getNetworkController().transferData(request);
     }
 
-    public void clearRout(Unit worker, Tile location){
-        location.setWork(new ClearRoutes(worker));
-        worker.setPath(null);
+    public void clearRout(Unit worker, Tile location) {
+        Request request = new Request("clearRout", MyGson.toJson(worker), MyGson.toJson(location));
+        NetworkController.getNetworkController().transferData(request);
     }
 
 
