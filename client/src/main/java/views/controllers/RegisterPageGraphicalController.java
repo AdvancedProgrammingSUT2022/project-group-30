@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.LoginPageController;
+import controllers.ProgramController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -24,7 +25,7 @@ import java.nio.file.Paths;
 
 public class RegisterPageGraphicalController {
 
-    private LoginPageController controller = LoginPageController.getLoginPageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private TextField username;
@@ -88,9 +89,7 @@ public class RegisterPageGraphicalController {
             showPopup("user with nickname " + nickname.getText() + " already exists.");
             return;
         }
-        User user = new User(username.getText(), password.getText(), nickname.getText(), 0);
-        this.controller.addUser(user);
-        this.controller.loginUser(username.getText());
+        this.controller.registerUser(username.getText(), password.getText(), nickname.getText());
         showPopup("user created successfully!");
         Main.loadFxmlFile("MainPage");
     }

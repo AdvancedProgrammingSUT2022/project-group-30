@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.LoginPageController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public class LoginPageGraphicalController {
 
-    private LoginPageController controller = LoginPageController.getLoginPageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private VBox box;
