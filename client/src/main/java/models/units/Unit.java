@@ -8,6 +8,7 @@ import models.Tile;
 import models.interfaces.Selectable;
 import models.interfaces.TurnHandler;
 import models.interfaces.combative;
+import models.works.Work;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.id = unit.getId();
         this.owner = null;
         this.unitType = unit.getType();
-        this.location = unit.getLocation();
+        this.location = new Tile(unit.getLocation());
         this.hitPointsLeft = unit.hitPointsLeft;
         this.movePointsLeft = unit.movePointsLeft;
         this.state = unit.state;
@@ -50,7 +51,10 @@ public class Unit implements Selectable, TurnHandler, combative {
         this.hasAttackedThisTurn = unit.hasAttackedThisTurn;
         this.inactivityDuration = unit.inactivityDuration;
         this.stateDuration = unit.stateDuration;
-        this.path = unit.path;
+        this.path = new ArrayList<>();
+        for(int i = 0; i < unit.path.size(); i++){
+            this.path.add(new Tile(unit.path.get(i)));
+        }
 
     }
 

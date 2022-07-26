@@ -14,7 +14,7 @@ public abstract class Work implements TurnHandler {
     private static int nextAvailableId = 0;
 
     protected int turnsRemaining;
-    protected Unit worker;
+    protected transient Unit worker;
     protected boolean isInProgress;
 
     public Work() {

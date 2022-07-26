@@ -51,6 +51,17 @@ public class Tile implements Workable, TileImage, TurnHandler {
         this.ruins = ruins;
     }
 
+    public Tile(Tile tile){
+        this.id = tile.getId();
+        this.terrainType = tile.terrainType;
+        this.resources = tile.resources;
+        this.improvements = tile.improvements;
+        this.ruins = tile.ruins;
+        this.work = null;
+        this.output = tile.output;
+        this.features = tile.features;
+    }
+
     public TileHistory createTileHistory() {
         TileHistory history = new TileHistory();
         Tile tile = new Tile(terrainType, new HashMap<Resource, Integer>(resources), null);

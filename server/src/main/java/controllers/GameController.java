@@ -18,7 +18,7 @@ import models.units.CombatType;
 import models.units.Unit;
 import models.units.UnitState;
 import models.units.UnitType;
-import models.works.Work;
+import models.works.*;
 import utilities.Debugger;
 import utilities.MyGson;
 
@@ -1766,6 +1766,179 @@ public class GameController {
     public void addBuildingToCity(City city, BuildingType type){
         city.addBuilding(type);
     }
+
+    public boolean isStateAllowedForUnit(Unit unit, UnitState state){
+        return unit.getType().getCombatType().isStateAllowed(state);
+    }
+
+    public boolean isCityOwnerEqualToUnitOwner(City city, Unit unit){
+        return city.getOwner().equals(unit.getOwner());
+    }
+
+    public void deselectUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+    }
+
+    public void alertUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ALERT);
+    }
+
+    public void sleepUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.ASLEEP);
+    }
+
+    public void fortifyUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFY);
+    }
+
+    public void garrisonUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.GARRISON);
+    }
+
+    public void fortifyUnitUntilHealed(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        unit.setState(UnitState.FORTIFYUNTILHEALED);
+    }
+
+    public void awakeUnit(Unit unit){
+        unit.setState(UnitState.AWAKE);
+    }
+
+    public void deleteAUnit(Unit unit){
+        unit.getOwner().setSelectedEntity(null);
+        deleteUnit(unit);
+    }
+
+    public void cancelUnitMove(Unit unit){
+        unit.setPath(null);
+    }
+
+    public Selectable getCivilizationSelectedEntity(Civilization civ){
+        return civ.getSelectedEntity();
+    }
+
+    public void setUnitPath(Unit unit, Tile location, Tile destination){
+        unit.setPath(findPath(unit, unit.getLocation(), destination));
+    }
+
+    public int getUnitMovePointsLeft(Unit unit){
+        return unit.getMovePointsLeft();
+    }
+
+    public boolean areUnitAndTargetOwnerAtWar(combative target, Unit unit){
+        return GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).areAtWar();
+    }
+
+    public void setUnitAndTargetOwnerAtWar(combative target, Unit unit, boolean atWar){
+        GameDataBase.getGameDataBase().getDiplomaticRelation(target.getOwner(), unit.getOwner()).setAreAtWar(atWar);
+    }
+
+    public void executeMeleeAttackUnit(Unit unit, combative target){
+        CombatController.getCombatController().executeMeleeAttack(unit, target);
+    }
+
+    public boolean isCityOriginalCapital(City city){
+        return city.isOriginalCapital();
+    }
+
+    public boolean isCityFounderEqualToUnitOwner(City city, Unit unit){
+        return city.getFounder().equals(unit.getOwner());
+    }
+
+    public void annexCity(City city, Civilization civilization){
+        CombatController.getCombatController().annexCity(city, civilization);
+    }
+
+    public void killCity(City city){
+        CombatController.getCombatController().kill(city);
+    }
+
+    public boolean doesVisibleTileForUnitContainsTile(Unit unit, Tile tile){
+        return getVisibleTilesByUnit(unit).contains(tile);
+    }
+
+    public Civilization getUnitOwner(Unit unit){
+        return unit.getOwner();
+    }
+
+    public void executeRangedAttackUnit(Unit unit, combative target){
+        CombatController.getCombatController().executeRangedAttack(unit, target);
+    }
+
+    public boolean isUnitAssembled(Unit unit){
+        return unit.isAssembled();
+    }
+
+    public int getUnitHitPointsLeft(Unit unit){
+        return unit.getHitPointsLeft();
+    }
+
+    public void setupUnitForRangedAttack(Unit unit){
+        unit.assemble();
+        unit.setMovePointsLeft(0);
+        unit.setPath(null);
+    }
+
+    public Tile findWorkLocation(Work work){
+        return work.findLocation();
+    }
+
+    public Improvement getNonRootImprovementForTile(Tile tile){
+        return tile.getNonRouteImprovement();
+    }
+
+    public void removeImprovementForTile(Tile tile, Improvement improvement){
+        tile.removeImprovement(improvement);
+    }
+
+    public Work getTileWork(Tile tile){
+        return tile.getWork();
+    }
+
+    public void startWork(Work work, Unit unit){
+        work.startWork(unit);
+    }
+
+    public void buildImprovement(Unit worker, ImprovementType improvementType, Tile location){
+        BuildImprovement newWork = new BuildImprovement(improvementType, worker);
+        location.setWork(newWork);
+        worker.setPath(null);
+    }
+
+    public void buildImprovementAndRemoveFeature(Unit worker, ImprovementType type, Tile location){
+        BuildImprovementAndRemoveFeature newWork = new BuildImprovementAndRemoveFeature(worker, type);
+        location.setWork(newWork);
+        worker.setPath(null);
+    }
+
+    public void clearFeature(Unit worker, Feature feature, Tile location){
+        location.setWork(new ClearFeature(feature, worker));
+        worker.setPath(null);
+    }
+
+    public void stopWork(Work work){
+        work.stopWork();
+    }
+
+    public boolean doesTileContainsImprovement(Tile tile, ImprovementType type){
+        return tile.containsImprovment(type);
+    }
+
+    public void fixImprovement(Unit worker, ImprovementType type, Tile location){
+        location.setWork(new FixPillage(type, worker));
+        worker.setPath(null);
+    }
+
+    public void clearRout(Unit worker, Tile location){
+        location.setWork(new ClearRoutes(worker));
+        worker.setPath(null);
+    }
+
+
 
 
 
