@@ -213,7 +213,7 @@ public class CivilizationGamePageController {
     }
 
     public void setSceneOnKeyPressed() {
-//        addCheatBox();
+        addCheatBox();
 
 //        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
 //        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
@@ -974,7 +974,7 @@ public class CivilizationGamePageController {
                         if ((matcher = CheatCodes.MAKE_EVERYTHING_VISIBLE.getMatcher(text)) != null) {
                             controller.makeEverythingVisible();
                         } else if ((matcher = CheatCodes.ADD_GOLD.getMatcher(text)) != null) {
-                            currentPlayer.addGold(200);
+                            controller.addGoldToCiv(controller.getCurrentPlayer(), 200);
                         } else if ((matcher = CheatCodes.DISABLE_TURN_BREAK.getMatcher(text)) != null) {
                             controller.disableTurnBreak();
                         } else if ((matcher = CheatCodes.ADD_STRATEGIC_RESOURCE.getMatcher(text)) != null) {
@@ -983,14 +983,14 @@ public class CivilizationGamePageController {
                             if (chosenResource == null) {
                                 return;
                             }
-                            currentPlayer.addStrategicResource(chosenResource, 5);
+                            controller.addStrategicResourceToCiv(controller.getCurrentPlayer(), chosenResource, 5);
                         } else if ((matcher = CheatCodes.ADD_LUXURY_RESOURCE.getMatcher(text)) != null) {
                             String name = matcher.group("name");
                             LuxuryResource chosenResource = LuxuryResource.getLuxuryResourceByName(name);
                             if (chosenResource == null) {
                                 return;
                             }
-                            currentPlayer.addLuxuryResource(chosenResource, 5);
+                            controller.addLuxuryResourceToCiv(controller.getCurrentPlayer(), chosenResource, 5);
                         } else if ((matcher = CheatCodes.ADD_UNIT.getMatcher(text)) != null) {
                             String name = matcher.group("name");
                             int y = Integer.parseInt(matcher.group("y"));
@@ -1037,7 +1037,7 @@ public class CivilizationGamePageController {
                                 return;
                             }
                             if (chosenType != ImprovementType.ROAD && chosenType != ImprovementType.RAILROAD &&
-                                    (tile.getCityOfTile() == null || tile.getCityOfTile().getOwner() != currentPlayer)) {
+                                    (controller.getCityOfTile(tile) == null || !controller.getTileCityOwner(tile).equals(controller.getCurrentPlayer()))) {
                                 return;
                             }
                             controller.addImprovementToTile(tile, chosenType);
@@ -1053,7 +1053,7 @@ public class CivilizationGamePageController {
                             if (chosenFeature == null) {
                                 return;
                             }
-                            tile.addFeatureAndApplyChanges(chosenFeature);
+                            controller.addFeatureAndApplyChangesForTile(tile, chosenFeature);
                         } else if ((matcher = CheatCodes.CLEAR_ALL_FEATURES.getMatcher(text)) != null) {
                             int x = Integer.parseInt(matcher.group("x"));
                             int y = Integer.parseInt(matcher.group("y"));
@@ -1061,7 +1061,7 @@ public class CivilizationGamePageController {
                                 return;
                             }
                             Tile tile = controller.getTileByCoordinates(x, y);
-                            tile.removeAllFeaturesAndApplyChanges();
+                            controller.removeAllFeaturesAndApplyChangesForTile(tile);
                         }
                         try {
                             Main.loadFxmlFile("CivilizationGamePage");

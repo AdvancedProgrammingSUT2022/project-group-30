@@ -235,6 +235,26 @@ public class GameController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public City getCityOfTile(Tile tile) {
+        Request request = new Request("getCityOfTile", MyGson.toJson(tile));
+        return (City) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Civilization getTileCityOwner(Tile tile) {
+        Request request = new Request("getTileCityOwner", MyGson.toJson(tile));
+        return (Civilization) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addFeatureAndApplyChangesForTile(Tile tile, Feature feature) {
+        Request request = new Request("addFeatureAndApplyChangesForTile", MyGson.toJson(tile), MyGson.toJson(feature));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void removeAllFeaturesAndApplyChangesForTile(Tile tile) {
+        Request request = new Request("removeAllFeaturesAndApplyChangesForTile", MyGson.toJson(tile));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public void reduceGoldFromCiv(Civilization civ, int amount) {
         Request request = new Request("reduceGoldFromCiv", MyGson.toJson(civ), MyGson.toJson(amount));
         NetworkController.getNetworkController().transferData(request);

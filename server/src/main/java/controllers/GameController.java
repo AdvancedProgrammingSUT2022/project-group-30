@@ -630,6 +630,22 @@ public class GameController {
         civ.addGold(amount);
     }
 
+    public City getCityOfTile(Tile tile) {
+        return tile.getCityOfTile();
+    }
+
+    public Civilization getTileCityOwner(Tile tile) {
+        return tile.getCityOfTile().getOwner();
+    }
+
+    public void addFeatureAndApplyChangesForTile(Tile tile, Feature feature) {
+        tile.addFeatureAndApplyChanges(feature);
+    }
+
+    public void removeAllFeaturesAndApplyChangesForTile(Tile tile) {
+        tile.removeAllFeaturesAndApplyChanges();
+    }
+
     public void reduceGoldFromCiv(Civilization civ, int amount) {
         civ.reduceGold(amount);
     }

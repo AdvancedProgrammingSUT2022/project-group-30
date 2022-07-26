@@ -8,6 +8,10 @@ import models.diplomacy.DiplomaticRelation;
 import models.diplomacy.Message;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
+import models.resources.BonusResource;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.technology.TechnologyMap;
 import models.units.Unit;
 import models.works.Work;
@@ -115,6 +119,15 @@ public class NetworkController {
                 } else if (argumentClass == RiverSegment.class) {
                     int id = ((RiverSegment) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findRiverSegmentById(id);
+                } else if (argumentClass == LuxuryResource.class) {
+                    String name = ((LuxuryResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = LuxuryResource.getLuxuryResourceByName(name);
+                } else if (argumentClass == StrategicResource.class) {
+                    String name = ((StrategicResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = StrategicResource.getStrategicResourceByName(name);
+                } else if (argumentClass == BonusResource.class) {
+                    String name = ((BonusResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = BonusResource.getBonusResourceByName(name);
                 } else {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }
