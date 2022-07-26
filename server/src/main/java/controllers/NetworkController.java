@@ -160,6 +160,12 @@ public class NetworkController {
                         castedResult.set(i, new Unit(castedResult.get(i)));
                     }
                     response = new Response(gson.toJson(castedResult));
+                } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof Civilization) {
+                    ArrayList<Civilization> castedResult = (ArrayList<Civilization>) result;
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new Civilization(castedResult.get(i)));
+                    }
+                    response = new Response(gson.toJson(castedResult));
                 } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof DiplomaticRelation) {
                     ArrayList<DiplomaticRelation> castedResult = (ArrayList<DiplomaticRelation>) result;
                     for (int i = castedResult.size() - 1; i >= 0; i--) {

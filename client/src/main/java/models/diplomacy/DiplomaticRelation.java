@@ -18,6 +18,10 @@ public class DiplomaticRelation extends Diplomacy {
 
     public DiplomaticRelation(DiplomaticRelation diplomaticRelation) {
         super(diplomaticRelation);
+        this.areMutuallyVisible = diplomaticRelation.areMutuallyVisible;
+        this.areAtWar = diplomaticRelation.areAtWar;
+        this.friendliness = diplomaticRelation.friendliness;
+        this.messages = diplomaticRelation.messages;
         this.pair = new CivilizationPair(new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(0)),
                 new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(1)));
     }
