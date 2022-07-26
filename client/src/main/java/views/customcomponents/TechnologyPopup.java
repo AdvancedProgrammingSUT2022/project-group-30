@@ -72,7 +72,7 @@ public class TechnologyPopup extends VBox {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getClickCount() > 1) {
-                    GameController.getGameController().stopPreviousResearchAndStartNext(GameDataBase.getGameDataBase().getCurrentPlayer(), tech);
+                    GameController.getGameController().stopPreviousResearchAndStartNext(GameController.getGameController().getCurrentPlayer(), tech);
                     TechnologyPopup.this.setVisible(false);
                 }
             }

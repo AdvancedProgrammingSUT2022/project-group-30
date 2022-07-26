@@ -59,11 +59,11 @@ public class CivilizationGamePageController {
     private Button goToNextTurnButton;
     private Civilization currentPlayer;
     private TileImage[][] tilesToShow;
-    
+
     @FXML
     public void initialize() throws MalformedURLException {
 
-        
+
         //controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(currentPlayer.getFrameBase());
@@ -71,9 +71,9 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
-//        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
-//            createTechnologyPopup();
-//        }
+        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
+            createTechnologyPopup();
+        }
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
         initializeNextTurnButton();
@@ -204,7 +204,7 @@ public class CivilizationGamePageController {
         pane.getChildren().add(techPopup);
         techPopup.setLayoutX(20);
         techPopup.setLayoutY(20);
-        techPopup.updateInfo(currentPlayer.getTechnologies());
+        techPopup.updateInfo(GameController.getGameController().getCurrentPlayer().getTechnologies());
     }
 
 
@@ -213,7 +213,7 @@ public class CivilizationGamePageController {
     }
 
     public void setSceneOnKeyPressed() {
-        //addCheatBox();
+//        addCheatBox();
 
 //        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
 //        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
@@ -226,6 +226,14 @@ public class CivilizationGamePageController {
 //                }
 //            }
 //        });
+
+        KeyCombination cheatCombo = new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN);
+        Main.getScene().getAccelerators().put(cheatCombo, new Runnable() {
+            @Override
+            public void run() {
+                createTechnologyPopup();
+            }
+        });
 
         Main.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
@@ -427,7 +435,7 @@ public class CivilizationGamePageController {
         }
     }
 
-    private void drawRiverForTile(Tile tile, String direction){
+    private void drawRiverForTile(Tile tile, String direction) {
         if (findTileCoordinatesInScene(tile, tilesToShow).isEmpty()) {
             return;
         }
@@ -771,7 +779,7 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements){
+    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements) {
         TableView<Improvement> tableView = new TableView<>();
         TableColumn<Improvement, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Improvement");

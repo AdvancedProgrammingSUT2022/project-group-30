@@ -54,7 +54,7 @@ public class NetworkController {
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
-            System.out.println("Processing: " + request.getMethodName());
+//            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];

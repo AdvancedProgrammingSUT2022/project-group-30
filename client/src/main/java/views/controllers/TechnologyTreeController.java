@@ -78,11 +78,11 @@ public class TechnologyTreeController {
                         Matcher matcher;
                         if ((matcher = CheatCodes.UNLOCK_TECHNOLOGY.getMatcher(textField.getText())) != null) {
                             if (matcher.group("name").equalsIgnoreCase("all")) {
-                                GameController.getGameController().getCurrentPlayer().learnAllTechnologiesWithCheat();
+                                GameController.getGameController().makeCivLearnAllTechnologiesWithCheat(GameController.getGameController().getCurrentPlayer());
                             }
                             Technology technology = Technology.getTechnologyByName(matcher.group("name"));
                             if (technology != null) {
-                                GameController.getGameController().getCurrentPlayer().learnTechnologyWithCheat(technology);
+                                GameController.getGameController().makeCivLearnTechnologyWithCheat(GameController.getGameController().getCurrentPlayer(), technology);
                             }
                         }
                         try {

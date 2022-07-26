@@ -446,6 +446,16 @@ public class GameController {
         return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
     }
 
+    public void makeCivLearnAllTechnologiesWithCheat(Civilization civ) {
+        Request request = new Request("makeCivLearnAllTechnologiesWithCheat", MyGson.toJson(civ));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void makeCivLearnTechnologyWithCheat(Civilization civ, Technology technology) {
+        Request request = new Request("makeCivLearnTechnologyWithCheat", MyGson.toJson(civ), MyGson.toJson(technology));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public boolean isTileBlocker(Tile tile) {
         Request request = new Request("isTileBlocker", MyGson.toJson(tile));
         return (boolean) NetworkController.getNetworkController().transferData(request);

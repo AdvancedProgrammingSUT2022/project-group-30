@@ -1075,6 +1075,14 @@ public class GameController {
         return tiles;
     }
 
+    public void makeCivLearnAllTechnologiesWithCheat(Civilization civ) {
+        civ.learnAllTechnologiesWithCheat();
+    }
+
+    public void makeCivLearnTechnologyWithCheat(Civilization civ, Technology technology) {
+        civ.learnTechnologyWithCheat(technology);
+    }
+
     public boolean isTileBlocker(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.HILLS) || tile.getTerrainType().equals(TerrainType.MOUNTAIN) || tile.getFeatures().contains(Feature.FOREST))
             return true;
