@@ -1229,16 +1229,11 @@ public class GameController {
 
     public void makeEverythingVisible() {
         Civilization player = getCurrentPlayer();
-        System.out.println("salam");
         for (Tile tile : player.getMapImage().keySet()) {
             discoverCivsInTile(tile);
-            System.out.println("kiram tu zarrabi");
             player.getMapImage().put(tile, tile);
-            System.out.println("kiram tu fazli");
         }
-        System.out.println("eshgham pourya");
         player.setEverythingVisibleCheatCodeInEffect(true);
-        System.out.println("kose nane kusheshi");
     }
 
     public void discoverCivsInTile(Tile tile) {
