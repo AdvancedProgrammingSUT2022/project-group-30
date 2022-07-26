@@ -1,16 +1,14 @@
 package views.customcomponents;
 
+import controllers.ProgramController;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import models.ProgramDatabase;
 import models.User;
 import models.chat.Message;
 
@@ -18,9 +16,9 @@ public class MessageComponent extends VBox {
     Message message;
     Label seenLabel;
 
-    public MessageComponent(Message message) {
+    public MessageComponent(Message message, boolean isViewerSender) {
         this.message = message;
-        User sender = ProgramDatabase.getProgramDatabase().getUserById(message.getSenderId());
+        User sender = ProgramController.getProgramController().getUserById(message.getSenderId());
 
         HBox senderInfo = new HBox();
         senderInfo.setAlignment(Pos.CENTER_LEFT);
@@ -50,7 +48,10 @@ public class MessageComponent extends VBox {
         timeSent.setText(message.getTimeSentAsHHMM());
         seenLabel = new Label();
         seenLabel.setText((message.isSeen()) ? "seen" : "unseen");
-        bottomPane.getChildren().addAll(timeSent, seenLabel);
+        bottomPane.getChildren().add(timeSent);
+        if (isViewerSender) {
+            bottomPane.getChildren().add(seenLabel);
+        }
 
         setStyle("-fx-border-radius: 10px; -fx-background-color: #7272ff; -fx-padding: 10px");
 

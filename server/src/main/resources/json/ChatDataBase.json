@@ -1,0 +1,40 @@
+{
+  "privateChats": [
+    {
+      "id": 0,
+      "user1Id": 0,
+      "user2Id": 1,
+      "messages": [
+        {
+          "id": 1,
+          "senderId": 0,
+          "isHiddenToSender": false,
+          "text": "hiiii",
+          "seen": false,
+          "timeSent": "2022/07/26 02:46:14"
+        }
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "id": 0,
+      "name": "meow",
+      "participants": [
+        0
+      ],
+      "ownerId": 0,
+      "messages": []
+    }
+  ],
+  "globalChat": [
+    {
+      "id": 0,
+      "senderId": 0,
+      "isHiddenToSender": false,
+      "text": "hello",
+      "seen": false,
+      "timeSent": "2022/07/26 02:46:05"
+    }
+  ]
+}

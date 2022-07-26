@@ -1,5 +1,6 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.Feature;
 import models.Tile;
 import models.improvements.Improvement;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BuildImprovementAndRemoveFeature extends BuildImprovement {
+
+
     public BuildImprovementAndRemoveFeature(Unit worker, ImprovementType type) {
         super(type, worker);
     }

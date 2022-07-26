@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonToken;
 import models.*;
 import models.buildings.Building;
 import models.diplomacy.Diplomacy;
@@ -21,10 +22,7 @@ import netPackets.Request;
 import netPackets.Response;
 import utilities.MyGson;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -55,12 +53,30 @@ public class NetworkController {
         return networkController;
     }
 
+    private int nextToken = 0;
+    public synchronized int getToken() {
+        int tokenCopy = nextToken;
+        nextToken++;
+        return tokenCopy;
+    }
+
     private String process(String data) {
-//        System.out.println(data);
+//        System.out.println("processing: " + data);
         Request request = Request.fromJson(data);
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
-            Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
+            Method[] methods = null;
+            Object controller = null;
+            if (request.getControllerName().equals("GameController")) {
+                methods = GameController.getGameController().getClass().getDeclaredMethods();
+                controller = GameController.getGameController();
+            } else if (request.getControllerName().equals("ChatController")) {
+                methods = ChatController.getChatController().getClass().getDeclaredMethods();
+                controller = ChatController.getChatController();
+            } else if (request.getControllerName().equals("ProgramController")) {
+                methods = ProgramController.getProgramController().getClass().getDeclaredMethods();
+                controller = ProgramController.getProgramController();
+            }
 //            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName()) && methods[i].getParameterCount() == request.getArguments().size()) {
@@ -155,8 +171,7 @@ public class NetworkController {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }
             }
-
-            Object result = method.invoke(GameController.getGameController(), (Object[]) parsedArguments);
+            Object result = method.invoke(controller, (Object[]) parsedArguments);
             if (result == null) {
                 return MyGson.toJson(new Response(MyGson.toJson(null)));
             } else {
@@ -244,6 +259,8 @@ public class NetworkController {
                     try {
                         DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                        int connectionToken = getToken();
+                        dataOutputStream.writeInt(connectionToken);
                         while (true) {
                             try {
                                 int length = dataInputStream.readInt();

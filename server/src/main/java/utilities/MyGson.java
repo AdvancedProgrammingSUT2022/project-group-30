@@ -14,6 +14,7 @@ import models.technology.Technology;
 import models.units.CombatType;
 import models.units.UnitState;
 import models.units.UnitType;
+import models.works.Work;
 import netPackets.JsonDeserializerWithInheritance;
 
 public class MyGson {
@@ -25,6 +26,7 @@ public class MyGson {
             .registerTypeAdapter(Selectable.class, new JsonDeserializerWithInheritance<Selectable>())
             .registerTypeAdapter(Producible.class, new JsonDeserializerWithInheritance<Producible>())
             .registerTypeAdapter(combative.class, new JsonDeserializerWithInheritance<combative>())
+            .registerTypeAdapter(Work.class, new JsonDeserializerWithInheritance<Work>())
 //            .registerTypeAdapter(BuildingType.class, new JsonDeserializerWithInheritance<BuildingType>())
 //            .registerTypeAdapter(ImprovementType.class, new JsonDeserializerWithInheritance<ImprovementType>())
 //            .registerTypeAdapter(Technology.class, new JsonDeserializerWithInheritance<Technology>())

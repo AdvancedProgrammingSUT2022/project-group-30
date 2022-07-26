@@ -1,5 +1,6 @@
 package models.works;
 
+import com.google.gson.annotations.SerializedName;
 import models.GameDataBase;
 import models.Tile;
 import models.interfaces.TurnHandler;
@@ -17,7 +18,11 @@ public abstract class Work implements TurnHandler {
     protected transient Unit worker;
     protected boolean isInProgress;
 
+    @SerializedName("type")
+    private String typeName;
+
     public Work() {
+        this.typeName = getClass().getName();
         id = nextAvailableId;
         nextAvailableId++;
     }

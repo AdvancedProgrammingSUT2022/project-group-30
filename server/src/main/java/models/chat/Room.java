@@ -1,12 +1,22 @@
 package models.chat;
 
+import controllers.ChatController;
+
 import java.util.ArrayList;
 
 public class Room {
+    private int id;
     private String name;
     private ArrayList<Integer> participants = new ArrayList<>();
-    private int owner;
+    private int ownerId;
     private ArrayList<Message> messages = new ArrayList<>();
+
+    public Room() {
+    }
+
+    public Room(int id) {
+        this.id = id;
+    }
 
     public ArrayList<Integer> getParticipants() {
         return participants;
@@ -16,12 +26,12 @@ public class Room {
         this.participants = participants;
     }
 
-    public int getOwner() {
-        return owner;
+    public int getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(int owner) {
-        this.owner = owner;
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
     }
 
     public ArrayList<Message> getMessages() {
@@ -40,4 +50,7 @@ public class Room {
         this.name = name;
     }
 
+    public int getId() {
+        return id;
+    }
 }
