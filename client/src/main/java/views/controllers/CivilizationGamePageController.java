@@ -59,11 +59,11 @@ public class CivilizationGamePageController {
     private Button goToNextTurnButton;
     private Civilization currentPlayer;
     private TileImage[][] tilesToShow;
-    
+
     @FXML
     public void initialize() throws MalformedURLException {
 
-        
+
         //controller.makeEverythingVisible();
         //printAllTilesInfo();
         //showTileValues(currentPlayer.getFrameBase());
@@ -71,13 +71,13 @@ public class CivilizationGamePageController {
         drawMap();
         setSceneOnKeyPressed();
         createStatusBar();
-//        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
-//            createTechnologyPopup();
-//        }
+        if (debugMode || (currentPlayer.getResearchProject() == null && !currentPlayer.getCities().isEmpty())) {
+            createTechnologyPopup();
+        }
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
         initializeNextTurnButton();
-//        initializeDiplomacyButton();
+        initializeDiplomacyButton();
     }
 
     private void initializeDiplomacyButton() {
@@ -117,23 +117,21 @@ public class CivilizationGamePageController {
     }
 
     private void passTurn() {
-//        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
-//        if (idleUnits.isEmpty() == false && !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
-//            return;
-//        }
-//        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && currentPlayer.getResearchProject() == null &&
-//                !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("You should start a research project!");
-//            return;
-//        }
-//
-//        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
-//        if (citiesWaitingForProduction.isEmpty() == false && !currentPlayer.isTurnBreakDisabled()) {
-//            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
-//            return;
-//        }
-
+        ArrayList<Unit> idleUnits = controller.getCurrentPlayersUnitsWaitingForCommand();
+        if (idleUnits.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some units are waiting for a command!");
+            return;
+        }
+        if (!controller.getCivilizationCities(currentPlayer).isEmpty() && controller.getCurrentPlayer().getResearchProject() == null &&
+                !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("You should start a research project!");
+            return;
+        }
+        ArrayList<City> citiesWaitingForProduction = controller.getCivilizationCitiesWaitingForProduction(currentPlayer);
+        if (citiesWaitingForProduction.isEmpty() == false && !controller.getCurrentPlayer().isTurnBreakDisabled()) {
+            RegisterPageGraphicalController.showPopup("Some cities are waiting for their next production!");
+            return;
+        }
         controller.goToNextPlayer();
         try {
             Main.loadFxmlFile("CivilizationGamePage");
@@ -204,7 +202,7 @@ public class CivilizationGamePageController {
         pane.getChildren().add(techPopup);
         techPopup.setLayoutX(20);
         techPopup.setLayoutY(20);
-        techPopup.updateInfo(currentPlayer.getTechnologies());
+        techPopup.updateInfo(GameController.getGameController().getCurrentPlayer().getTechnologies());
     }
 
 
@@ -213,7 +211,7 @@ public class CivilizationGamePageController {
     }
 
     public void setSceneOnKeyPressed() {
-        //addCheatBox();
+        addCheatBox();
 
 //        KeyCombination diplomacyCombo = new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN);
 //        Main.getScene().getAccelerators().put(diplomacyCombo, new Runnable() {
@@ -226,6 +224,14 @@ public class CivilizationGamePageController {
 //                }
 //            }
 //        });
+
+        KeyCombination cheatCombo = new KeyCodeCombination(KeyCode.T, KeyCombination.CONTROL_DOWN);
+        Main.getScene().getAccelerators().put(cheatCombo, new Runnable() {
+            @Override
+            public void run() {
+                createTechnologyPopup();
+            }
+        });
 
         Main.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
@@ -427,7 +433,7 @@ public class CivilizationGamePageController {
         }
     }
 
-    private void drawRiverForTile(Tile tile, String direction){
+    private void drawRiverForTile(Tile tile, String direction) {
         if (findTileCoordinatesInScene(tile, tilesToShow).isEmpty()) {
             return;
         }
@@ -771,7 +777,7 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements){
+    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements) {
         TableView<Improvement> tableView = new TableView<>();
         TableColumn<Improvement, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Improvement");
@@ -966,7 +972,7 @@ public class CivilizationGamePageController {
                         if ((matcher = CheatCodes.MAKE_EVERYTHING_VISIBLE.getMatcher(text)) != null) {
                             controller.makeEverythingVisible();
                         } else if ((matcher = CheatCodes.ADD_GOLD.getMatcher(text)) != null) {
-                            currentPlayer.addGold(200);
+                            controller.addGoldToCiv(controller.getCurrentPlayer(), 200);
                         } else if ((matcher = CheatCodes.DISABLE_TURN_BREAK.getMatcher(text)) != null) {
                             controller.disableTurnBreak();
                         } else if ((matcher = CheatCodes.ADD_STRATEGIC_RESOURCE.getMatcher(text)) != null) {
@@ -975,14 +981,14 @@ public class CivilizationGamePageController {
                             if (chosenResource == null) {
                                 return;
                             }
-                            currentPlayer.addStrategicResource(chosenResource, 5);
+                            controller.addStrategicResourceToCiv(controller.getCurrentPlayer(), chosenResource, 5);
                         } else if ((matcher = CheatCodes.ADD_LUXURY_RESOURCE.getMatcher(text)) != null) {
                             String name = matcher.group("name");
                             LuxuryResource chosenResource = LuxuryResource.getLuxuryResourceByName(name);
                             if (chosenResource == null) {
                                 return;
                             }
-                            currentPlayer.addLuxuryResource(chosenResource, 5);
+                            controller.addLuxuryResourceToCiv(controller.getCurrentPlayer(), chosenResource, 5);
                         } else if ((matcher = CheatCodes.ADD_UNIT.getMatcher(text)) != null) {
                             String name = matcher.group("name");
                             int y = Integer.parseInt(matcher.group("y"));
@@ -1029,7 +1035,7 @@ public class CivilizationGamePageController {
                                 return;
                             }
                             if (chosenType != ImprovementType.ROAD && chosenType != ImprovementType.RAILROAD &&
-                                    (tile.getCityOfTile() == null || tile.getCityOfTile().getOwner() != currentPlayer)) {
+                                    (controller.getCityOfTile(tile) == null || !controller.getTileCityOwner(tile).equals(controller.getCurrentPlayer()))) {
                                 return;
                             }
                             controller.addImprovementToTile(tile, chosenType);
@@ -1045,7 +1051,7 @@ public class CivilizationGamePageController {
                             if (chosenFeature == null) {
                                 return;
                             }
-                            tile.addFeatureAndApplyChanges(chosenFeature);
+                            controller.addFeatureAndApplyChangesForTile(tile, chosenFeature);
                         } else if ((matcher = CheatCodes.CLEAR_ALL_FEATURES.getMatcher(text)) != null) {
                             int x = Integer.parseInt(matcher.group("x"));
                             int y = Integer.parseInt(matcher.group("y"));
@@ -1053,7 +1059,7 @@ public class CivilizationGamePageController {
                                 return;
                             }
                             Tile tile = controller.getTileByCoordinates(x, y);
-                            tile.removeAllFeaturesAndApplyChanges();
+                            controller.removeAllFeaturesAndApplyChangesForTile(tile);
                         }
                         try {
                             Main.loadFxmlFile("CivilizationGamePage");

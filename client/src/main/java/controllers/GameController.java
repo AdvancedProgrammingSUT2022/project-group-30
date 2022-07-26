@@ -220,6 +220,56 @@ public class GameController {
         return (ArrayList<Unit>) NetworkController.getNetworkController().transferData(request, Unit[].class);
     }
 
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        Request request = new Request("getDiplomaticRelation", MyGson.toJson(civ1), MyGson.toJson(civ2));
+        return (DiplomaticRelation) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        Request request = new Request("getDiscoveredCivilizations", MyGson.toJson(civilization));
+        return (ArrayList<Civilization>) NetworkController.getNetworkController().transferData(request, Civilization[].class);
+    }
+
+    public void addGoldToCiv(Civilization civ, double amount) {
+        Request request = new Request("addGoldToCiv", MyGson.toJson(civ), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public City getCityOfTile(Tile tile) {
+        Request request = new Request("getCityOfTile", MyGson.toJson(tile));
+        return (City) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public Civilization getTileCityOwner(Tile tile) {
+        Request request = new Request("getTileCityOwner", MyGson.toJson(tile));
+        return (Civilization) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addFeatureAndApplyChangesForTile(Tile tile, Feature feature) {
+        Request request = new Request("addFeatureAndApplyChangesForTile", MyGson.toJson(tile), MyGson.toJson(feature));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void removeAllFeaturesAndApplyChangesForTile(Tile tile) {
+        Request request = new Request("removeAllFeaturesAndApplyChangesForTile", MyGson.toJson(tile));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void reduceGoldFromCiv(Civilization civ, int amount) {
+        Request request = new Request("reduceGoldFromCiv", MyGson.toJson(civ), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addLuxuryResourceToCiv(Civilization civ, LuxuryResource resource, int amount) {
+        Request request = new Request("addLuxuryResourceToCiv", MyGson.toJson(civ), MyGson.toJson(resource), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void addStrategicResourceToCiv(Civilization civ, StrategicResource resource, int amount) {
+        Request request = new Request("addStrategicResourceToCiv", MyGson.toJson(civ), MyGson.toJson(resource), MyGson.toJson(amount));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         Request request = new Request("getMilitaryUnitInTile", MyGson.toJson(tile));
         return (Unit) NetworkController.getNetworkController().transferData(request);
@@ -454,6 +504,16 @@ public class GameController {
     public ArrayList<Tile> getAdjacentTiles(Tile tile) {
         Request request = new Request("getAdjacentTiles", MyGson.toJson(tile));
         return (ArrayList<Tile>) NetworkController.getNetworkController().transferData(request, Tile[].class);
+    }
+
+    public void makeCivLearnAllTechnologiesWithCheat(Civilization civ) {
+        Request request = new Request("makeCivLearnAllTechnologiesWithCheat", MyGson.toJson(civ));
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void makeCivLearnTechnologyWithCheat(Civilization civ, Technology technology) {
+        Request request = new Request("makeCivLearnTechnologyWithCheat", MyGson.toJson(civ), MyGson.toJson(technology));
+        NetworkController.getNetworkController().transferData(request);
     }
 
     public boolean isTileBlocker(Tile tile) {

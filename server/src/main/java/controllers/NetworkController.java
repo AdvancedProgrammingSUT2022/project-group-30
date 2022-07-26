@@ -4,9 +4,14 @@ import com.google.gson.Gson;
 import models.*;
 import models.buildings.Building;
 import models.diplomacy.Diplomacy;
+import models.diplomacy.DiplomaticRelation;
 import models.diplomacy.Message;
 import models.improvements.Improvement;
 import models.interfaces.TileImage;
+import models.resources.BonusResource;
+import models.resources.LuxuryResource;
+import models.resources.Resource;
+import models.resources.StrategicResource;
 import models.technology.TechnologyMap;
 import models.units.Unit;
 import models.works.Work;
@@ -54,7 +59,7 @@ public class NetworkController {
         try {
             Method method = null/*= GameController.class.getMethod(request.getMethodName())*/;
             Method[] methods = GameController.getGameController().getClass().getDeclaredMethods();
-            System.out.println("Processing: " + request.getMethodName());
+//            System.out.println("Processing: " + request.getMethodName());
             for (int i = 0; i < methods.length; i++) {
                 if (methods[i].getName().equals(request.getMethodName())) {
                     method = methods[i];
@@ -114,6 +119,15 @@ public class NetworkController {
                 } else if (argumentClass == RiverSegment.class) {
                     int id = ((RiverSegment) gson.fromJson(arguments.get(i), argumentClass)).getId();
                     parsedArguments[i] = GameController.getGameController().findRiverSegmentById(id);
+                } else if (argumentClass == LuxuryResource.class) {
+                    String name = ((LuxuryResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = LuxuryResource.getLuxuryResourceByName(name);
+                } else if (argumentClass == StrategicResource.class) {
+                    String name = ((StrategicResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = StrategicResource.getStrategicResourceByName(name);
+                } else if (argumentClass == BonusResource.class) {
+                    String name = ((BonusResource) gson.fromJson(arguments.get(i), argumentClass)).getName();
+                    parsedArguments[i] = BonusResource.getBonusResourceByName(name);
                 } else {
                     parsedArguments[i] = gson.fromJson(arguments.get(i), argumentClass);
                 }
@@ -150,19 +164,31 @@ public class NetworkController {
 //                    castedResult.setMapImage(map);
                     Civilization castedResult = (Civilization) result;
                     response = new Response(gson.toJson(new Civilization(castedResult)));
+                } else if (result instanceof DiplomaticRelation) {
+                    DiplomaticRelation castedResult = (DiplomaticRelation) result;
+                    response = new Response(gson.toJson(new DiplomaticRelation(castedResult)));
                 } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof Unit) {
                     ArrayList<Unit> castedResult = (ArrayList<Unit>) result;
-//                    ArrayList<HashMap<Tile, TileImage>> maps = new ArrayList<>();
-//                    for (int i = 0; i < castedResult.size(); i++) {
-//                        maps.add(castedResult.get(i).getOwner().getMapImage());
-//                        castedResult.get(i).getOwner().setMapImage(null);
-//                    }
-//                    response = new Response(gson.toJson(result));
-//                    for (int i = 0; i < castedResult.size(); i++) {
-//                        castedResult.get(i).getOwner().setMapImage(maps.get(i));
-//                    }
                     for (int i = castedResult.size() - 1; i >= 0; i--) {
                         castedResult.set(i, new Unit(castedResult.get(i)));
+                    }
+                    response = new Response(gson.toJson(castedResult));
+                } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof Civilization) {
+                    ArrayList<Civilization> castedResult = (ArrayList<Civilization>) result;
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new Civilization(castedResult.get(i)));
+                    }
+                    response = new Response(gson.toJson(castedResult));
+                } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof DiplomaticRelation) {
+                    ArrayList<DiplomaticRelation> castedResult = (ArrayList<DiplomaticRelation>) result;
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new DiplomaticRelation(castedResult.get(i)));
+                    }
+                    response = new Response(gson.toJson(castedResult));
+                } else if (result instanceof ArrayList<?> && ((ArrayList) result).size() > 0 && ((ArrayList) result).get(0) instanceof City) {
+                    ArrayList<City> castedResult = (ArrayList<City>) result;
+                    for (int i = castedResult.size() - 1; i >= 0; i--) {
+                        castedResult.set(i, new City(castedResult.get(i)));
                     }
                     response = new Response(gson.toJson(castedResult));
                 } else {

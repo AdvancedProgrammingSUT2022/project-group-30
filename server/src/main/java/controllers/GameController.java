@@ -616,6 +616,47 @@ public class GameController {
         return units;
     }
 
+    public DiplomaticRelation getDiplomaticRelation(Civilization civ1, Civilization civ2) {
+        return gameDataBase.getDiplomaticRelation(civ1, civ2);
+    }
+
+    public ArrayList<Civilization> getDiscoveredCivilizations(Civilization civilization) {
+        ArrayList<Civilization> result = gameDataBase.getDiscoveredCivilizations(civilization);
+        return gameDataBase.getDiscoveredCivilizations(civilization);
+    }
+
+    public void addGoldToCiv(Civilization civ, double amount) {
+        civ.addGold(amount);
+    }
+
+    public City getCityOfTile(Tile tile) {
+        return tile.getCityOfTile();
+    }
+
+    public Civilization getTileCityOwner(Tile tile) {
+        return tile.getCityOfTile().getOwner();
+    }
+
+    public void addFeatureAndApplyChangesForTile(Tile tile, Feature feature) {
+        tile.addFeatureAndApplyChanges(feature);
+    }
+
+    public void removeAllFeaturesAndApplyChangesForTile(Tile tile) {
+        tile.removeAllFeaturesAndApplyChanges();
+    }
+
+    public void reduceGoldFromCiv(Civilization civ, int amount) {
+        civ.reduceGold(amount);
+    }
+
+    public void addLuxuryResourceToCiv(Civilization civ, LuxuryResource resource, int amount) {
+        civ.addLuxuryResource(resource, amount);
+    }
+
+    public void addStrategicResourceToCiv(Civilization civ, StrategicResource resource, int amount) {
+        civ.addStrategicResource(resource, amount);
+    }
+
     public Unit getMilitaryUnitInTile(Tile tile) {
         for (Unit unit : gameDataBase.getUnits()) {
             if (unit.getLocation() == tile && unit.getType().getCombatType() != CombatType.CIVILIAN) {
@@ -1083,6 +1124,14 @@ public class GameController {
         return tiles;
     }
 
+    public void makeCivLearnAllTechnologiesWithCheat(Civilization civ) {
+        civ.learnAllTechnologiesWithCheat();
+    }
+
+    public void makeCivLearnTechnologyWithCheat(Civilization civ, Technology technology) {
+        civ.learnTechnologyWithCheat(technology);
+    }
+
     public boolean isTileBlocker(Tile tile) {
         if (tile.getTerrainType().equals(TerrainType.HILLS) || tile.getTerrainType().equals(TerrainType.MOUNTAIN) || tile.getFeatures().contains(Feature.FOREST))
             return true;
@@ -1165,12 +1214,14 @@ public class GameController {
         for (Tile tile : GameDataBase.getGameDataBase().getMap().getAllMapTiles()) {
             if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) == null) {
                 newMapImage.put(tile, null);
-                discoverCivsInTile(tile);
             } else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof TileHistory)
                 newMapImage.put(tile, civilization.getMapImage().get(tile));
             else if (!visibleTiles.contains(tile) && civilization.getMapImage().get(tile) instanceof Tile)
                 newMapImage.put(tile, tile.createTileHistory());
-            else newMapImage.put(tile, tile);
+            else {
+                newMapImage.put(tile, tile);
+                discoverCivsInTile(tile);
+            }
         }
         civilization.getMapImage().clear();
         civilization.getMapImage().putAll(newMapImage);

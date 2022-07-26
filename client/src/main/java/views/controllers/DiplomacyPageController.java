@@ -34,13 +34,11 @@ public class DiplomacyPageController {
     private ObservableList<Civilization> civsListData;
     private ObservableList<Message> messagesData;
 
-    private GameDataBase database;
     private GameController controller;
     private Civilization selectedCiv = null;
 
     @FXML
     public void initialize() {
-        database = GameDataBase.getGameDataBase();
         controller = GameController.getGameController();
 //        for (CivilizationPair civilizationPair : GameDataBase.getGameDataBase().getCivilizationPairs()) {
 //            System.out.println(civilizationPair.getCivilizationsArray().get(0).getName() + " " +
@@ -50,7 +48,7 @@ public class DiplomacyPageController {
     }
 
     private void initializeMessageList() {
-        ArrayList<Message> messages = database.getDiplomaticRelation(controller.getCurrentPlayer(), selectedCiv).getMessages();
+        ArrayList<Message> messages = controller.getDiplomaticRelation(controller.getCurrentPlayer(), selectedCiv).getMessages();
 //        messages.add(new Message("meow", controller.getCurrentPlayer()));
 //        messages.add(new Message("helloooo:)", selectedCiv));
 //        messages.add(new Message("noooooo", controller.getCurrentPlayer()));
@@ -64,86 +62,10 @@ public class DiplomacyPageController {
                 return new MessageBox();
             }
         });
-//        messageList.setSelectionModel(new MultipleSelectionModel<Message>() {
-//            @Override
-//            public ObservableList<Integer> getSelectedIndices() {
-//                return FXCollections.<Integer>emptyObservableList();
-//            }
-//
-//            @Override
-//            public ObservableList getSelectedItems() {
-//                return FXCollections.<Message>emptyObservableList();
-//            }
-//
-//            @Override
-//            public void selectIndices(int i, int... ints) {
-//
-//            }
-//
-//            @Override
-//            public void selectAll() {
-//
-//            }
-//
-//            @Override
-//            public void selectFirst() {
-//
-//            }
-//
-//            @Override
-//            public void selectLast() {
-//
-//            }
-//
-//            @Override
-//            public void clearAndSelect(int i) {
-//
-//            }
-//
-//            @Override
-//            public void select(int i) {
-//
-//            }
-//
-//            @Override
-//            public void select(Message o) {
-//
-//            }
-//
-//            @Override
-//            public void clearSelection(int i) {
-//
-//            }
-//
-//            @Override
-//            public void clearSelection() {
-//
-//            }
-//
-//            @Override
-//            public boolean isSelected(int i) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean isEmpty() {
-//                return false;
-//            }
-//
-//            @Override
-//            public void selectPrevious() {
-//
-//            }
-//
-//            @Override
-//            public void selectNext() {
-//
-//            }
-//        });
     }
 
     private void initializeCivilizationsList() {
-        ArrayList<Civilization> discoveredCivs = database.getDiscoveredCivilizations(controller.getCurrentPlayer());
+        ArrayList<Civilization> discoveredCivs = controller.getDiscoveredCivilizations(controller.getCurrentPlayer());
         civsListData = FXCollections.observableArrayList();
         civsListData.setAll(discoveredCivs);
         civilizationsList.setItems(civsListData);
@@ -165,14 +87,12 @@ public class DiplomacyPageController {
     private void updateInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append(selectedCiv.getName()).append("\n");
-        if (database.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areMutuallyVisible())
-        {
+        if (controller.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areMutuallyVisible()) {
             sb.append("Discovery Status: Discovered\n");
         } else {
             sb.append("Discovery Status: Not Discovered\n");
         }
-        if (database.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areAtWar())
-        {
+        if (controller.getDiplomaticRelation(selectedCiv, controller.getCurrentPlayer()).areAtWar()) {
             sb.append("War Status: At War\n");
         } else {
             sb.append("War Status: At Peace\n");
@@ -216,8 +136,8 @@ public class DiplomacyPageController {
                     messageLabel.setText("You don't have enough gold!");
                     return;
                 }
-                controller.getCurrentPlayer().reduceGold(amount);
-                selectedCiv.addGold(amount);
+                controller.reduceGoldFromCiv(controller.getCurrentPlayer(), amount);
+                controller.addGoldToCiv(selectedCiv, amount);
                 // NOTIF?
                 updateInfo();
                 this.close();
@@ -234,8 +154,8 @@ public class DiplomacyPageController {
         ResourcePicker resourcePicker = new ResourcePicker(controller.getCurrentPlayer().getLuxuryResources()) {
             @Override
             protected void onResourceButtonClick(Resource resource) {
-                controller.getCurrentPlayer().addLuxuryResource((LuxuryResource) resource, -1);
-                selectedCiv.addLuxuryResource((LuxuryResource) resource, 1);
+                controller.addLuxuryResourceToCiv(controller.getCurrentPlayer(), (LuxuryResource) resource, -1);
+                controller.addLuxuryResourceToCiv(selectedCiv, (LuxuryResource) resource, 1);
 //                System.out.println(resource.getName() + " " + controller.getCurrentPlayer().getLuxuryResources().get(resource));
 //                System.out.println(resource.getName() + " " + selectedCiv.getLuxuryResources().get(resource));
                 this.close();
@@ -253,8 +173,8 @@ public class DiplomacyPageController {
         ResourcePicker resourcePicker = new ResourcePicker(controller.getCurrentPlayer().getStrategicResources()) {
             @Override
             protected void onResourceButtonClick(Resource resource) {
-                controller.getCurrentPlayer().addStrategicResource((StrategicResource) resource, -1);
-                selectedCiv.addStrategicResource((StrategicResource) resource, 1);
+                controller.addStrategicResourceToCiv(controller.getCurrentPlayer(), (StrategicResource) resource, -1);
+                controller.addStrategicResourceToCiv(selectedCiv, (StrategicResource) resource, 1);
 //                System.out.println(resource.getName() + " " + controller.getCurrentPlayer().getStrategicResources().get(resource));
 //                System.out.println(resource.getName() + " " + selectedCiv.getStrategicResources().get(resource));
                 this.close();
@@ -296,7 +216,7 @@ public class DiplomacyPageController {
                 return;
             }
             Label textLabel = new Label(message.getMessage());
-            if (message.getSender() == GameController.getGameController().getCurrentPlayer()) {
+            if (message.getSender().equals(GameController.getGameController().getCurrentPlayer())) {
                 AnchorPane.setRightAnchor(textLabel, 10.0);
             } else {
                 AnchorPane.setLeftAnchor(textLabel, 10.0);
