@@ -16,6 +16,12 @@ public class DiplomaticRelation extends Diplomacy {
         this.pair = new CivilizationPair(civ1, civ2);
     }
 
+    public DiplomaticRelation(DiplomaticRelation diplomaticRelation) {
+        super(diplomaticRelation);
+        this.pair = new CivilizationPair(new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(0)),
+                new Civilization(diplomaticRelation.pair.getCivilizationsArray().get(1)));
+    }
+
     public void addMessage(String text, Civilization sender) {
         Message newMessage = new Message(text, sender);
         messages.add(newMessage);
