@@ -1,6 +1,7 @@
 package models;
 
 import com.google.gson.Gson;
+import controllers.LoginPageController;
 import menusEnumerations.AutoSave;
 import models.diplomacy.Diplomacy;
 import models.diplomacy.DiplomaticRelation;
@@ -222,6 +223,7 @@ public class GameDataBase implements java.io.Serializable{
         for (Player player : players) {
             player.getUser().setScore(player.getUser().getScore() + (int) player.getCivilization().getScore());
         }
+        LoginPageController.writeUsersListToFile();
     }
 
     public Civilization getWinner() {
