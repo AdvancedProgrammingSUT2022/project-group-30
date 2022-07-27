@@ -127,8 +127,10 @@ public class ProgramController {
         User user = this.database.getUserByUsername(username);
         this.database.setLoggedInUser(user, token);
         ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(token);
-        LoginPageController.writeUsersListToFile();
         getUserById(fetchTokenData(token).getLoggedInUser()).setIsOnline(true);
+        LoginPageController.writeUsersListToFile();
+        System.out.println(user.getIsOnline());
+
     }
 
 
@@ -180,9 +182,9 @@ public class ProgramController {
 
     public void logoutUser(int token) {
         ProgramDatabase.getProgramDatabase().updateLoggedInUserLastLoginTime(token);
-        LoginPageController.writeUsersListToFile();
         this.database.setLoggedInUser(null);
         getUserById(fetchTokenData(token).getLoggedInUser()).setIsOnline(false);
+        LoginPageController.writeUsersListToFile();
     }
 
 

@@ -52,9 +52,6 @@ public class ScoreboardPageController {
         this.controller.sortUsersArrayList();
         scoreboard.setFixedCellSize(60);
         ArrayList<User> users = controller.getUsers();
-        for(int i = 0; i < users.size(); i++){
-            users.get(i).setIsOnline(controller.getUserById(users.get(i).getId()).getIsOnline());
-        }
         rankColumn.setCellValueFactory(new PropertyValueFactory<>("rank"));
         avatarColumn.setCellValueFactory(new PropertyValueFactory<>("imageName"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));

@@ -97,6 +97,7 @@ public class LoginPageController {
     }
 
     public static void readUsersListFromFile() {
+        System.out.println("heeeey");
         try {
             String input = new String(Files.readAllBytes(Paths.get("src", "main", "resources", "json", "Users.json")));
             ArrayList<User> users = MyGson.getGson().fromJson(input, new TypeToken<List<User>>() {
