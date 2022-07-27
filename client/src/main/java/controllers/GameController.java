@@ -330,6 +330,36 @@ public class GameController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public int calculateYear() {
+        Request request = new Request("GameController", "calculateYear");
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public void winByCheat() {
+        Request request = new Request("GameController", "winByCheat");
+        NetworkController.getNetworkController().transferData(request);
+    }
+
+    public boolean hasGameEnded() {
+        Request request = new Request("GameController", "hasGameEnded");
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Civilization> getCivilizations() {
+        Request request = new Request("GameController", "getCivilizations");
+        return (ArrayList<Civilization>) NetworkController.getNetworkController().transferData(request, Civilization[].class);
+    }
+
+    public Civilization getWinner() {
+        Request request = new Request("GameController", "getWinner");
+        return (Civilization) NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int getCivilizationScore(Civilization civilization) {
+        Request request = new Request("GameController", "getCivilizationScore", MyGson.toJson(civilization));
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
+
     public void endGameByTime() {
         Request request = new Request("GameController", "endGameByTime");
         NetworkController.getNetworkController().transferData(request);
@@ -1140,6 +1170,11 @@ public class GameController {
     public void clearRout(Unit worker, Tile location) {
         Request request = new Request("GameController", "clearRout", MyGson.toJson(worker), MyGson.toJson(location));
         NetworkController.getNetworkController().transferData(request);
+    }
+
+    public boolean isCityDefeated(City city){
+        Request request = new Request("GameController", "isCityDefeated", MyGson.toJson(city));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
 

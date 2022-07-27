@@ -216,6 +216,7 @@ public class CombatController {
             // TODO: civ loses
             GameController.getGameController().defeatCivilization(civilization);
             System.out.println("civ " + civilization.getName() + " has lost!");
+            GameController.getGameController().checkVictoryByDominion();
             return;
         }
         civilization.changeCapital(civilization.getCities().get(0));

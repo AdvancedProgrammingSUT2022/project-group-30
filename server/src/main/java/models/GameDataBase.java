@@ -18,6 +18,8 @@ public class GameDataBase implements java.io.Serializable{
     private ArrayList<DiplomaticRelation> diplomaticRelations = new ArrayList<>();
     private Civilization currentPlayer;
     private ArrayList<Player> players = new ArrayList<>();
+    private boolean hasGameEnded = false;
+    private Civilization winner = null;
 
     private int turnNumber = 0;
 
@@ -207,5 +209,26 @@ public class GameDataBase implements java.io.Serializable{
             names.add(player.getUser().getUsername());
         }
         return names;
+    }
+
+    public boolean isHasGameEnded() {
+        return hasGameEnded;
+    }
+
+    public void endGame(Civilization winner) {
+        this.hasGameEnded = hasGameEnded;
+        gameDataBase.setWinner(winner);
+
+        for (Player player : players) {
+            player.getUser().setScore(player.getUser().getScore() + (int) player.getCivilization().getScore());
+        }
+    }
+
+    public Civilization getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Civilization winner) {
+        this.winner = winner;
     }
 }

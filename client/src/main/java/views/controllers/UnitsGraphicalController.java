@@ -376,7 +376,7 @@ public class UnitsGraphicalController {
         controller.executeMeleeAttackUnit(unit, target);
         if (target instanceof City) {
             City targetCity = (City) target;
-            if (targetCity.isDefeated()) {
+            if (controller.isCityDefeated(targetCity)) {
                 if (controller.isCityOriginalCapital(targetCity) && controller.isCityFounderEqualToUnitOwner(targetCity, unit)) {
                     controller.annexCity(targetCity, currentPlayer);
                     try {

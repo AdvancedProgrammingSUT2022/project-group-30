@@ -1,0 +1,27 @@
+.topLabel {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 30;
+    -fx-text-fill: black;
+}
+
+.backButton {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-background-color: green;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-min-width: 200;
+    -fx-min-height: 50;
+}
+
+.winnerLabel {
+    -fx-background-color: blue !important;
+}
+
+.civLabel {
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 20;
+    -fx-padding: 15;
+    -fx-background-color: #515151;
+    -fx-text-fill: white;
+}

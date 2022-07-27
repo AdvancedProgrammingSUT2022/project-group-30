@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="views.controllers.WinLosePageController"
+      prefHeight="400.0" prefWidth="600.0" alignment="CENTER" styleClass="enteringMenus">
+    <padding>
+        <Insets topRightBottomLeft="20"/>
+    </padding>
+
+    <Label text="The Game Has Ended!" styleClass="topLabel">
+        <VBox.margin>
+            <Insets bottom="30"/>
+        </VBox.margin>
+    </Label>
+
+    <VBox fx:id="standingBox" spacing="10" alignment="CENTER">
+    </VBox>
+
+    <Button styleClass="backButton" onAction="#onBackButtonClick" text="BACK">
+        <VBox.margin>
+            <Insets top="15"/>
+        </VBox.margin>
+    </Button>
+
+    <stylesheets>
+        <URL value="@../css/WinLosePage.css"/>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
+</VBox>

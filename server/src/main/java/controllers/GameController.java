@@ -188,7 +188,6 @@ public class GameController {
     }
 
     public void sendDiplomaticMessage(DiplomaticMessage diplomaticMessage, Civilization sender, Civilization receiver) {
-//        System.out.println("done: " + diplomaticMessage.getMessage());
         getDiplomaticRelation(sender, receiver).getMessages().add(diplomaticMessage);
     }
 
@@ -753,7 +752,9 @@ public class GameController {
                 }
             }
         }
-        makeCivilizationWin(dominator);
+        if (dominator != null) {
+            makeCivilizationWin(dominator);
+        }
     }
 
     public boolean doesCivilizationHaveItsOriginalCapital(Civilization civilization) {
@@ -775,9 +776,33 @@ public class GameController {
                 defeatCivilization(civ);
             }
         }
-
         civilization.setScore(calculateScoreForCivilization(civilization) * (2050 - gameDataBase.calculateYear()) / 500);
-        // TODO : end game and stuff
+        gameDataBase.endGame(civilization);
+    }
+
+    public int calculateYear() {
+        return gameDataBase.calculateYear();
+    }
+
+    public void winByCheat() {
+        System.out.println("mobarak");
+        makeCivilizationWin(getCurrentPlayer());
+    }
+
+    public boolean hasGameEnded() {
+        return gameDataBase.isHasGameEnded();
+    }
+
+    public ArrayList<Civilization> getCivilizations() {
+        return GameDataBase.getGameDataBase().getCivilizations();
+    }
+
+    public Civilization getWinner() {
+        return gameDataBase.getWinner();
+    }
+
+    public int getCivilizationScore(Civilization civilization) {
+        return calculateScoreForCivilization(civilization);
     }
 
     public void endGameByTime() {
@@ -2006,6 +2031,10 @@ public class GameController {
     public void clearRout(Unit worker, Tile location){
         location.setWork(new ClearRoutes(worker));
         worker.setPath(null);
+    }
+
+    public boolean isCityDefeated(City city){
+        return city.isDefeated();
     }
 
 

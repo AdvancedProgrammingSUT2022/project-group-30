@@ -103,12 +103,16 @@ public class NetworkController {
                     System.out.println("its combative");
                     Selectable sel = (Selectable) gson.fromJson(arguments.get(i), argumentClass);
                     if(sel instanceof Unit){
-                        int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                        if(((Unit) gson.fromJson(arguments.get(i), Unit.class)) != null) {
+                            int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                        }
                     }
                     else {
-                        int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                        if(((City) gson.fromJson(arguments.get(i), City.class)) != null) {
+                            int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                        }
                     }
                 } else if (argumentClass == Unit.class) {
                     int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();

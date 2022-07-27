@@ -1,6 +1,7 @@
 package views.controllers;
 
 import controllers.GameController;
+import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +23,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -62,7 +64,17 @@ public class CivilizationGamePageController {
 
     @FXML
     public void initialize() throws MalformedURLException {
-
+        if (controller.hasGameEnded()) {
+            PauseTransition delay = new PauseTransition(Duration.seconds(1));
+            delay.setOnFinished(event -> {
+                try {
+                    Main.loadFxmlFile("WinLosePage");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            delay.play();
+        }
 
         controller.makeEverythingVisible();
         //printAllTilesInfo();
@@ -74,9 +86,6 @@ public class CivilizationGamePageController {
         System.out.println(currentPlayer.getCities());
         if (debugMode || (currentPlayer.getResearchProject() == null && !controller.getCivilizationCities(currentPlayer).isEmpty())) {
             createTechnologyPopup();
-        }
-        else{
-            System.out.println("kire khar");
         }
         UnitsGraphicalController.initializeUnitActionTab(this.pane);
         CitiesGraphicalController.initializeCityActionTab(this.pane);
@@ -930,6 +939,7 @@ public class CivilizationGamePageController {
         happiness.setRadius(10);
         happiness.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Outputs/Happiness.png").toExternalForm()).toExternalForm())));
         Text happinessText = new Text("" + currentPlayer.getHappiness());
+        Text year = new Text("      " + controller.calculateYear());
 
         data.setSpacing(20);
         data.getChildren().add(science);
@@ -938,6 +948,8 @@ public class CivilizationGamePageController {
         data.getChildren().add(goldText);
         data.getChildren().add(happiness);
         data.getChildren().add(happinessText);
+        data.getChildren().add(year );
+
 
         Rectangle pause = new Rectangle();
         pause.setHeight(20);
@@ -1064,6 +1076,8 @@ public class CivilizationGamePageController {
                             }
                             Tile tile = controller.getTileByCoordinates(x, y);
                             controller.removeAllFeaturesAndApplyChangesForTile(tile);
+                        } else if ((matcher = CheatCodes.WIN.getMatcher(text)) != null) {
+                            controller.winByCheat();
                         }
                         try {
                             Main.loadFxmlFile("CivilizationGamePage");

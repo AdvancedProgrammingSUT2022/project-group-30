@@ -49,7 +49,7 @@ public class NetworkController {
     }
 
     public Object transferData(Request request) {
-        System.out.println("request: " + request.getMethodName());
+//        System.out.println("request: " + request.getMethodName());
         try {
             byte[] data = request.toJson().getBytes(StandardCharsets.UTF_8);
             dataOutputStream.writeInt(data.length);
