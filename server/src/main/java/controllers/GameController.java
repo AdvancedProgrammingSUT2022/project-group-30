@@ -2006,6 +2006,54 @@ public class GameController {
         worker.setPath(null);
     }
 
+    public ArrayList<Notification> getAllNotificationsForCivilization(Civilization civilization){
+        return civilization.getNotifications();
+    }
+
+    public ArrayList<Unit> getCivilizationMilitaryUnits(Civilization civ){
+        return civ.getMilitaryUnits();
+    }
+
+    public ArrayList<LuxuryResource> getCivilizationLuxuryResource(Civilization civilization){
+        HashMap<LuxuryResource, Integer> luxuryResources = civilization.getLuxuryResources();
+        ArrayList<LuxuryResource> result = new ArrayList<>();
+        for (Map.Entry<LuxuryResource, Integer> entry : luxuryResources.entrySet()) {
+            if (entry.getValue() > 0) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    public ArrayList<StrategicResource> getCivilizationStrategicResource(Civilization civilization){
+        HashMap<StrategicResource, Integer> strategicResources = civilization.getStrategicResources();
+        ArrayList<StrategicResource> result = new ArrayList<>();
+        for (Map.Entry<StrategicResource, Integer> entry : strategicResources.entrySet()) {
+            if (entry.getValue() > 0) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    public int calculateNetGoldProductionForCivilization(Civilization civ){
+        return (int) civ.calculateNetGoldProduction();
+    }
+
+    public int calculateTotalBeakersForCivilization(Civilization civ){
+        return (int) civ.calculateTotalBeakers();
+    }
+
+    public int calculateTotalFoodFromCitizensForCivilization(Civilization civ){
+        return (int) civ.calculateTotalFoodFromCities();
+    }
+
+    public ArrayList<Improvement> getCivilizationAllImprovements(Civilization civ){
+        return civ.getAllImprovements();
+    }
+
+
+
 
 
 

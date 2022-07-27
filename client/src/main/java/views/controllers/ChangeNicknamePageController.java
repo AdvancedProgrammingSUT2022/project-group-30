@@ -1,6 +1,8 @@
 package views.controllers;
 
+import controllers.NetworkController;
 import controllers.ProfilePageController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -11,7 +13,7 @@ import java.io.IOException;
 
 public class ChangeNicknamePageController {
 
-    private ProfilePageController controller = ProfilePageController.getProfilePageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private VBox box;
@@ -28,7 +30,7 @@ public class ChangeNicknamePageController {
             RegisterPageGraphicalController.showPopup("user with nickname " + nickname.getText() + " already exists.");
             return;
         }
-        this.controller.changeLoggedInUserNickname(nickname.getText());
+        this.controller.changeLoggedInUserNickname(nickname.getText(), NetworkController.getNetworkController().getToken());
         RegisterPageGraphicalController.showPopup("nickname changed successfully!");
         Main.loadFxmlFile("ProfilePage");
     }

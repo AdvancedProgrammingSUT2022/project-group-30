@@ -1,6 +1,8 @@
 package views.controllers;
 
+import controllers.NetworkController;
 import controllers.ProfilePageController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,7 +16,7 @@ import java.net.URL;
 
 public class ProfilePageGraphicalController {
 
-    private ProfilePageController controller = ProfilePageController.getProfilePageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private VBox box;
@@ -24,7 +26,7 @@ public class ProfilePageGraphicalController {
     @FXML
     public void initialize() {
         controller.setProgramDatabase();
-        String imageName = controller.getLoggedInUserImageName();
+        String imageName = controller.getLoggedInUserImageName(NetworkController.getNetworkController().getToken());
         box.getChildren().remove(profilePhoto);
         profilePhoto = new ImageView(new Image("file:src/main/resources/images/avatars/" + imageName, 150, 150, false, false));
         box.getChildren().add(0, profilePhoto);
@@ -39,7 +41,7 @@ public class ProfilePageGraphicalController {
     }
 
     public void changeNickname(MouseEvent mouseEvent) throws IOException {
-        Main.loadFxmlFile("ChangeNickname");
+        Main.loadFxmlFile("ChangeNicknamePage");
     }
 
     public void back(MouseEvent mouseEvent) throws IOException {

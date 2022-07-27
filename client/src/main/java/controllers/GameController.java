@@ -1147,7 +1147,45 @@ public class GameController {
         NetworkController.getNetworkController().transferData(request);
     }
 
+    public ArrayList<Notification> getAllNotificationsForCivilization(Civilization civilization){
+        Request request=new Request("GameController","getAllNotificationsForCivilization",MyGson.toJson(civilization));
+        return(ArrayList<Notification>)NetworkController.getNetworkController().transferData(request,Notification[].class);
+    }
 
+    public ArrayList<Unit> getCivilizationMilitaryUnits(Civilization civ){
+        Request request=new Request("GameController","getCivilizationMilitaryUnits",MyGson.toJson(civ));
+        return(ArrayList<Unit>)NetworkController.getNetworkController().transferData(request,Unit[].class);
+    }
+
+    public ArrayList<LuxuryResource> getCivilizationLuxuryResource(Civilization civilization){
+        Request request=new Request("GameController","getCivilizationLuxuryResource",MyGson.toJson(civilization));
+        return(ArrayList<LuxuryResource>)NetworkController.getNetworkController().transferData(request,LuxuryResource[].class);
+    }
+
+    public ArrayList<StrategicResource> getCivilizationStrategicResource(Civilization civilization){
+        Request request=new Request("GameController","getCivilizationStrategicResource",MyGson.toJson(civilization));
+        return(ArrayList<StrategicResource>)NetworkController.getNetworkController().transferData(request,StrategicResource[].class);
+    }
+
+    public int calculateNetGoldProductionForCivilization(Civilization civ){
+        Request request=new Request("GameController","calculateNetGoldProductionForCivilization",MyGson.toJson(civ));
+        return(int)NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int calculateTotalBeakersForCivilization(Civilization civ){
+        Request request=new Request("GameController","calculateTotalBeakersForCivilization",MyGson.toJson(civ));
+        return(int)NetworkController.getNetworkController().transferData(request);
+    }
+
+    public int calculateTotalFoodFromCitizensForCivilization(Civilization civ){
+        Request request=new Request("GameController","calculateTotalFoodFromCitizensForCivilization",MyGson.toJson(civ));
+        return(int)NetworkController.getNetworkController().transferData(request);
+    }
+
+    public ArrayList<Improvement> getCivilizationAllImprovements(Civilization civ){
+        Request request=new Request("GameController","getCivilizationAllImprovements",MyGson.toJson(civ));
+        return(ArrayList<Improvement>)NetworkController.getNetworkController().transferData(request,Improvement[].class);
+    }
 
 
 }

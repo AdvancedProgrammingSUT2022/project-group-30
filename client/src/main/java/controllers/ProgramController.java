@@ -146,13 +146,13 @@ public class ProgramController {
         return (ProgramDatabase) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void changeLoggedInUserNickname(String nickname) {
-        Request request = new Request("ProgramController", "changeLoggedInUserNickname", MyGson.toJson(nickname));
+    public void changeLoggedInUserNickname(String nickname, int token) {
+        Request request = new Request("ProgramController", "changeLoggedInUserNickname", MyGson.toJson(nickname), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 
-    public void changeLoggedInUserPassword(String newPassword) {
-        Request request = new Request("ProgramController", "changeLoggedInUserPassword", MyGson.toJson(newPassword));
+    public void changeLoggedInUserPassword(String newPassword, int token) {
+        Request request = new Request("ProgramController", "changeLoggedInUserPassword", MyGson.toJson(newPassword), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 
@@ -163,18 +163,18 @@ public class ProgramController {
 
 
     // returns true if the password is correct, false otherwise
-    public boolean checkLoggedInUserPassword(String password) {
-        Request request = new Request("ProgramController", "checkLoggedInUserPassword", MyGson.toJson(password));
+    public boolean checkLoggedInUserPassword(String password, int token) {
+        Request request = new Request("ProgramController", "checkLoggedInUserPassword", MyGson.toJson(password), MyGson.toJson(token));
         return (boolean) NetworkController.getNetworkController().transferData(request);
     }
 
-    public String getLoggedInUserImageName() {
-        Request request = new Request("ProgramController", "getLoggedInUserImageName");
+    public String getLoggedInUserImageName(int token) {
+        Request request = new Request("ProgramController", "getLoggedInUserImageName", MyGson.toJson(token));
         return (String) NetworkController.getNetworkController().transferData(request);
     }
 
-    public void changeLoggedInUsersProfileImage(String imageName) {
-        Request request = new Request("ProgramController", "changeLoggedInUsersProfileImage", MyGson.toJson(imageName));
+    public void changeLoggedInUsersProfileImage(String imageName, int token) {
+        Request request = new Request("ProgramController", "changeLoggedInUsersProfileImage", MyGson.toJson(imageName), MyGson.toJson(token));
         NetworkController.getNetworkController().transferData(request);
     }
 

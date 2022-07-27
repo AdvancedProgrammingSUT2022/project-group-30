@@ -1,6 +1,8 @@
 package views.controllers;
 
+import controllers.NetworkController;
 import controllers.ProfilePageController;
+import controllers.ProgramController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -11,7 +13,7 @@ import java.io.IOException;
 
 public class ChangePasswordPageController {
 
-    private ProfilePageController controller = ProfilePageController.getProfilePageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private TextField currentPassword;
@@ -22,7 +24,7 @@ public class ChangePasswordPageController {
 
     public void submit(MouseEvent mouseEvent) throws IOException {
         controller.setProgramDatabase();
-        if (!this.controller.checkLoggedInUserPassword(currentPassword.getText())) {
+        if (!this.controller.checkLoggedInUserPassword(currentPassword.getText(), NetworkController.getNetworkController().getToken())) {
             RegisterPageGraphicalController.showPopup("current password is invalid");
             return;
         }
@@ -38,9 +40,10 @@ public class ChangePasswordPageController {
             RegisterPageGraphicalController.showPopup("The Password must contain at least one uppercase letter, one lowercase letter, and one number character.");
             return;
         }
-        this.controller.changeLoggedInUserPassword(newPassword.getText());
+        this.controller.changeLoggedInUserPassword(newPassword.getText(), NetworkController.getNetworkController().getToken());
         RegisterPageGraphicalController.showPopup("password changed successfully!");
-        Main.loadFxmlFile("ProfilePage");
+        this.controller.logoutUser(NetworkController.getNetworkController().getToken());
+        Main.loadFxmlFile("SecondPage");
     }
 
     public void back(MouseEvent mouseEvent) throws IOException {

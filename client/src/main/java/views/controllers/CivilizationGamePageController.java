@@ -22,6 +22,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import menusEnumerations.DemographicPanelCommands;
 import models.*;
 import models.improvements.Improvement;
 import models.improvements.ImprovementType;
@@ -42,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 public class CivilizationGamePageController {
@@ -57,6 +59,11 @@ public class CivilizationGamePageController {
     private TechnologyPopup techPopup;
     private Button goToDiplomacyPageButton;
     private Button goToNextTurnButton;
+
+    private Button notificationHistoryButton;
+    private Button economicOverviewButton;
+    private Button militaryOverviewButton;
+    private Button demographicPanelButton;
     private Civilization currentPlayer;
     private TileImage[][] tilesToShow;
 
@@ -82,6 +89,7 @@ public class CivilizationGamePageController {
         CitiesGraphicalController.initializeCityActionTab(this.pane);
         initializeNextTurnButton();
         initializeDiplomacyButton();
+        initializeInfoButtons();
     }
 
     private void initializeDiplomacyButton() {
@@ -1076,5 +1084,482 @@ public class CivilizationGamePageController {
                 cheatBox.show();
             }
         });
+    }
+
+    private void initializeInfoButtons(){
+        notificationHistoryButton = new Button("Notification History");
+        notificationHistoryButton.getStyleClass().add("menu-button");
+        notificationHistoryButton.setPrefHeight(30);
+        notificationHistoryButton.setPrefWidth(100);
+        notificationHistoryButton.setLayoutX(350);
+        notificationHistoryButton.setLayoutY(670);
+        pane.getChildren().add(notificationHistoryButton);
+        notificationHistoryButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                showAllNotification();
+            }
+        });
+
+        economicOverviewButton = new Button("Economic Overview");
+        economicOverviewButton.getStyleClass().add("menu-button");
+        economicOverviewButton.setPrefHeight(30);
+        economicOverviewButton.setPrefWidth(100);
+        economicOverviewButton.setLayoutX(475);
+        economicOverviewButton.setLayoutY(670);
+        pane.getChildren().add(economicOverviewButton);
+        economicOverviewButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                economicOverviewPanel();
+            }
+        });
+
+        militaryOverviewButton = new Button("Military Overview");
+        militaryOverviewButton.getStyleClass().add("menu-button");
+        militaryOverviewButton.setPrefHeight(30);
+        militaryOverviewButton.setPrefWidth(100);
+        militaryOverviewButton.setLayoutX(600);
+        militaryOverviewButton.setLayoutY(670);
+        pane.getChildren().add(militaryOverviewButton);
+        militaryOverviewButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                militaryOverviewPanel();
+            }
+        });
+
+        demographicPanelButton = new Button("Demographic Panel");
+        demographicPanelButton.getStyleClass().add("menu-button");
+        demographicPanelButton.setPrefHeight(30);
+        demographicPanelButton.setPrefWidth(100);
+        demographicPanelButton.setLayoutX(725);
+        demographicPanelButton.setLayoutY(670);
+        pane.getChildren().add(demographicPanelButton);
+
+        demographicPanelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                demographicPanel();
+            }
+        });
+
+
+
+    }
+
+    private void militaryOverviewPanel() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        ArrayList<Unit> militaryUnits = controller.getCivilizationMilitaryUnits(currentPlayer);
+        if (militaryUnits.isEmpty()) {
+            addTextToVBox(vbox, "You don't have any military units to show!");
+        } else {
+            addTextToVBox(vbox, "Your military units : ");
+            for (int i = 0; i < militaryUnits.size(); i++) {
+                addTextToVBox(vbox, " " + (i + 1) + "- " + militaryUnits.get(i).getType().getName() + " in Y: " + controller.findTileYCoordinateInMap(militaryUnits.get(i).getLocation()) + " , X: " + controller.findTileYCoordinateInMap(militaryUnits.get(i).getLocation()));
+            }
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showAllNotification() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        ArrayList<Notification> notifications = controller.getAllNotificationsForCivilization(currentPlayer);
+        addTextToVBox(vbox, "Your all notifications :");
+        for (int i = 0; i < notifications.size(); i++) {
+            addTextToVBox(vbox, " " + (i + 1) + "- " + notifications.get(i).getText() + " , in turn: " + notifications.get(i).getTurnNumber());
+        }
+        this.controller.seenAllNotifications();
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    private void demographicPanel(){
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        ArrayList<DemographicPanelCommands> demographicPanelCommands = DemographicPanelCommands.getAllCommands();
+        addTextToVBox(vbox, "Demographic panel commands:");
+        for (DemographicPanelCommands demographicPanelCommand : demographicPanelCommands) {
+            addButtonForDemographicPanelCommands(demographicPanelCommand, vbox);
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    private void addButtonForDemographicPanelCommands(DemographicPanelCommands demographicPanelCommand, VBox vbox){
+        Button button = new Button();
+        button.setText(demographicPanelCommand.getName());
+        button.setPrefWidth(200);
+        button.setPrefHeight(50);
+        button.getStyleClass().add("menu-button");
+        if(demographicPanelCommand.getName().equals(DemographicPanelCommands.TERRITORY_SIZE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showTerritorySize();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+        else if(demographicPanelCommand.getName().equals(DemographicPanelCommands.GOLD_COUNT.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showGoldCount();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+        else if(demographicPanelCommand.getName().equals(DemographicPanelCommands.RESOURCES.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showAllResources();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+        else if(demographicPanelCommand.getName().equals(DemographicPanelCommands.IMPROVEMENTS.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showAllImprovements();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+        else if(demographicPanelCommand.getName().equals(DemographicPanelCommands.OUTPUT.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showOutput();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+        else if(demographicPanelCommand.getName().equals(DemographicPanelCommands.SCORE.getName())){
+            button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    showScore();
+                }
+            });
+            vbox.getChildren().add(button);
+        }
+
+
+
+
+    }
+
+    private void showAllImprovements() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        addTextToVBox(vbox, "You have these improvements on different tiles : (if there is two same improvements, it means that you have that on two tiles)");
+
+
+        ArrayList<Improvement> improvements = controller.getCivilizationAllImprovements(currentPlayer);
+        for (int i = 0; i < improvements.size(); i++) {
+            HBox hbox = new HBox();
+            hbox.setAlignment(Pos.CENTER);
+            hbox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(20);
+            circle.setFill(Images.getImage(improvements.get(i).getType().getName()));
+            hbox.getChildren().add(circle);
+            addTextToHBox(hbox, " - " + improvements.get(i).getType().getName());
+            vbox.getChildren().add(hbox);
+
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showScore() {
+        RegisterPageGraphicalController.showPopup("Your score is : " + this.controller.calculateScoreForCivilization(currentPlayer));
+    }
+
+
+    private void showOutput() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        addTextToVBox(vbox, "Your collectable outputs in each turn:");
+        addOutputLine("Gold", vbox);
+        addOutputLine("Production", vbox);
+        addOutputLine("Food", vbox);
+
+
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void addOutputLine(String name, VBox vBox){
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(20);
+        Circle circle = new Circle();
+        circle.setRadius(20);
+        circle.setFill(Images.getImage(name));
+        hBox.getChildren().add(circle);
+        if(name.equalsIgnoreCase("Gold")){
+            addTextToHBox(hBox, "Gold : " + controller.calculateNetGoldProductionForCivilization(currentPlayer));
+        }
+        else if(name.equalsIgnoreCase("Food")){
+            addTextToHBox(hBox, "Production : " + controller.calculateTotalBeakersForCivilization(currentPlayer));
+        }
+        else if(name.equalsIgnoreCase("Production")){
+            addTextToHBox(hBox, "Food : " + controller.calculateTotalFoodFromCitizensForCivilization(currentPlayer));
+        }
+    }
+
+    private void showAllResources() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+        addTextToVBox(vbox, "Your luxury resources:");
+        ArrayList<LuxuryResource> luxuryResources = controller.getCivilizationLuxuryResource(currentPlayer);
+        for(int i = 0; i < luxuryResources.size(); i++){
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            circle.setFill(Images.getImage(luxuryResources.get(i).getName()));
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, luxuryResources.get(i).getName());
+            vbox.getChildren().add(hBox);
+        }
+        addTextToVBox(vbox, "Your strategic resources:");
+        ArrayList<StrategicResource> strategicResources = controller.getCivilizationStrategicResource(currentPlayer);
+        for(int i = 0; i < strategicResources.size(); i++){
+            HBox hBox = new HBox();
+            hBox.setAlignment(Pos.CENTER);
+            hBox.setSpacing(20);
+            Circle circle = new Circle();
+            circle.setRadius(30);
+            circle.setFill(Images.getImage(strategicResources.get(i).getName()));
+            hBox.getChildren().add(circle);
+            addTextToHBox(hBox, strategicResources.get(i).getName());
+            vbox.getChildren().add(hBox);
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showGoldCount() {
+        RegisterPageGraphicalController.showPopup("You have " + (int) currentPlayer.getGoldCount() + " golds!");
+    }
+
+    private void showTerritorySize() {
+        int territorySize = this.controller.calculateCivilizationTerritorySize(currentPlayer);
+        RegisterPageGraphicalController.showPopup("You have " + territorySize + " tiles!");
+    }
+
+    private void economicOverviewPanel() {
+        Stage stage = new Stage();
+        ScrollPane scrollPane = new ScrollPane();
+        BorderPane pane = new BorderPane();
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        pane.getStylesheets().addAll(this.pane.getStylesheets());
+        pane.getStyleClass().add("shadow-pane");
+        pane.setPrefHeight(600);
+        pane.setPrefWidth(600);
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        pane.setCenter(vbox);
+
+        ArrayList<City> cities = this.controller.getCivilizationCities(currentPlayer);
+        addTextToVBox(vbox, "You have " + cities.size() + " cities");
+        for (int i = 0; i < cities.size(); i++) {
+            addTextToVBox(vbox, "*******************************");
+            addTextToVBox(vbox, "City central tile is in Y: " + controller.findTileYCoordinateInMap(cities.get(i).getCentralTile()) + " , X: " + controller.findTileYCoordinateInMap(cities.get(i).getCentralTile()));
+            addTextToVBox(vbox, " population : " + cities.get(i).getCitizens().size());
+            addTextToVBox(vbox, " effective combat strength : " + cities.get(i).getCombatStrength());
+            addTextToVBox(vbox, " food : " + controller.calculateOutputForCity(cities.get(i)).getFood());
+            addTextToVBox(vbox, " gold : " + controller.calculateOutputForCity(cities.get(i)).getGold());
+            addTextToVBox(vbox, " production : " + controller.calculateOutputForCity(cities.get(i)).getProduction());
+            addTextToVBox(vbox, " science : " + controller.calculateCityBeakerProduction(cities.get(i)));
+            if (cities.get(i).getEntityInProduction() == null) {
+                addTextToVBox(vbox, " This city doesn't have any entity in production!");
+            } else {
+                addTextToVBox(vbox, " entity in production : " + controller.getCityEntityInProduction(cities.get(i)).getName());
+                addTextToVBox(vbox, " turns left : " + String.valueOf((int) ((controller.getCityEntityInProduction(cities.get(i)).getCost() - cities.get(i).getHammerCount()) / controller.calculateOutputForCity(cities.get(i)).getProduction())));
+            }
+        }
+
+        Button button = new Button();
+        button.setText("Ok");
+        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                stage.hide();
+            }
+        });
+        vbox.getChildren().add(button);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void addTextToVBox(VBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
+    }
+
+    private void addTextToHBox(HBox box, String text){
+        Text info = new Text(text);
+        info.setStyle("-fx-font-family: \"Times New Roman\"; -fx-font-size: 18; -fx-fill: #00bbff;");
+        box.getChildren().add(info);
     }
 }

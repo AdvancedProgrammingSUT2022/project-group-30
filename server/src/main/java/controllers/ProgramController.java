@@ -143,13 +143,13 @@ public class ProgramController {
         return this.database;
     }
 
-    public void changeLoggedInUserNickname(String nickname) {
-        this.database.getLoggedInUser().setNickname(nickname);
+    public void changeLoggedInUserNickname(String nickname, int token) {
+        getUserById(fetchTokenData(token).getLoggedInUser()).setNickname(nickname);
         LoginPageController.writeUsersListToFile();
     }
 
-    public void changeLoggedInUserPassword(String newPassword) {
-        this.database.getLoggedInUser().setPassword(newPassword);
+    public void changeLoggedInUserPassword(String newPassword, int token) {
+        getUserById(fetchTokenData(token).getLoggedInUser()).setPassword(newPassword);
         LoginPageController.writeUsersListToFile();
     }
 
@@ -158,19 +158,19 @@ public class ProgramController {
     }
 
     // returns true if the password is correct, false otherwise
-    public boolean checkLoggedInUserPassword(String password) {
-        if (this.database.getLoggedInUser().getPassword().equals(password)) {
+    public boolean checkLoggedInUserPassword(String password, int token) {
+        if (getUserById(fetchTokenData(token).getLoggedInUser()).getPassword().equals(password)) {
             return true;
         }
         return false;
     }
 
-    public String getLoggedInUserImageName(){
-        return this.database.getLoggedInUser().getImageName();
+    public String getLoggedInUserImageName(int token){
+        return getUserById(fetchTokenData(token).getLoggedInUser()).getImageName();
     }
 
-    public void changeLoggedInUsersProfileImage(String imageName){
-        this.database.getLoggedInUser().setImageName(imageName);
+    public void changeLoggedInUsersProfileImage(String imageName, int token){
+        getUserById(fetchTokenData(token).getLoggedInUser()).setImageName(imageName);
         LoginPageController.writeUsersListToFile();
     }
 

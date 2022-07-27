@@ -1,6 +1,8 @@
 package views.controllers;
 
+import controllers.NetworkController;
 import controllers.ProfilePageController;
+import controllers.ProgramController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,7 +23,7 @@ import java.nio.file.Paths;
 
 public class ChangeProfilePhotoPageController {
 
-    private ProfilePageController controller = ProfilePageController.getProfilePageController();
+    private ProgramController controller = ProgramController.getProgramController();
 
     @FXML
     private Pane pane;
@@ -104,7 +106,7 @@ public class ChangeProfilePhotoPageController {
             public void handle(MouseEvent mouseEvent) {
                 String[] tokens = imageView.getImage().getUrl().toString().split("/");
                 String imageName = tokens[tokens.length - 1];
-                ChangeProfilePhotoPageController.this.controller.changeLoggedInUsersProfileImage(imageName);
+                ChangeProfilePhotoPageController.this.controller.changeLoggedInUsersProfileImage(imageName, NetworkController.getNetworkController().getToken());
                 try {
                     Main.loadFxmlFile("ProfilePage");
                 } catch (IOException e) {
@@ -121,7 +123,7 @@ public class ChangeProfilePhotoPageController {
             return;
         String[] tokens = Paths.get(file.getAbsoluteFile().getAbsolutePath()).toString().split("/");
         String imageName = tokens[tokens.length - 1];
-        this.controller.changeLoggedInUsersProfileImage(imageName);
+        this.controller.changeLoggedInUsersProfileImage(imageName, NetworkController.getNetworkController().getToken());
         Files.copy(Paths.get(file.getAbsoluteFile().getAbsolutePath()), Paths.get("src/main/resources/images/avatars/" + imageName));
         Main.loadFxmlFile("ProfilePage");
     }
