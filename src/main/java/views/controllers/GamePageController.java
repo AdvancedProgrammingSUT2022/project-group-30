@@ -19,10 +19,10 @@ public class GamePageController {
 
     @FXML
     private Button newGameButton;
-    @FXML
-    private Button resumeButton;
-    @FXML
-    private Button saveButton;
+//    @FXML
+//    private Button resumeButton;
+//    @FXML
+//    private Button saveButton;
     @FXML
     private Button loadSavedGamesButton;
     @FXML
@@ -39,8 +39,8 @@ public class GamePageController {
     @FXML
     public void initialize(){
         setToolTipForButton(newGameButton, "starts a new game");
-        setToolTipForButton(resumeButton, "resumes the stopped game");
-        setToolTipForButton(saveButton, "saves the stopped game");
+//        setToolTipForButton(resumeButton, "resumes the stopped game");
+//        setToolTipForButton(saveButton, "saves the stopped game");
         setToolTipForButton(loadSavedGamesButton, "shows you the previous saved games and you can choose them to resume");
         setToolTipForButton(autoSaveButton, "activates auto save");
         setToolTipForButton(invitationButton, "allows you to invite other players to play Civilization V");
@@ -64,7 +64,8 @@ public class GamePageController {
     }
 
     public void resumeSavedGames(MouseEvent mouseEvent) throws IOException {
-       GameController.getGameController().loadGame("hello");
+       GameController.getGameController().initializeGameFromFile("game");
+       Main.loadFxmlFile("CivilizationGamePage");
     }
 
     public void autoSave(MouseEvent mouseEvent) throws IOException {

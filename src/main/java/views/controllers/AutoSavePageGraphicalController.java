@@ -27,12 +27,12 @@ public class AutoSavePageGraphicalController {
         GameDataBase.getGameDataBase().setAutoSaveMode(AutoSave.AFTER_EACH_TURN);
     }
 
-    public void afterEachUnitAction(MouseEvent mouseEvent) {
-        GameDataBase.getGameDataBase().setAutoSaveMode(AutoSave.AFTER_EACH_ACTION);
+    public void afterResearchCompletion(MouseEvent mouseEvent) {
+        GameDataBase.getGameDataBase().setAutoSaveMode(AutoSave.AFTER_RESEARCH_COMPLETION);
     }
 
-    public void afterEachAttack(MouseEvent mouseEvent) {
-        GameDataBase.getGameDataBase().setAutoSaveMode(AutoSave.AFTER_EACH_ATTACK);
+    public void afterCityCreation(MouseEvent mouseEvent) {
+        GameDataBase.getGameDataBase().setAutoSaveMode(AutoSave.AFTER_CITY_CREATION);
     }
 
     public void Off(MouseEvent mouseEvent) {
@@ -40,12 +40,11 @@ public class AutoSavePageGraphicalController {
     }
 
     public void applyChanges(MouseEvent mouseEvent) {
-        if(this.autoSavePageController.checkNumberOfSavedFilesErrors(numberOfSavedFiles.getText()))
+        if (this.autoSavePageController.checkNumberOfSavedFilesErrors(numberOfSavedFiles.getText()))
             RegisterPageGraphicalController.showPopup("Please enter a number between 1 and 10!");
-        else if(GameDataBase.getGameDataBase().getAutoSaveMode() == AutoSave.OFF)
+        else if (GameDataBase.getGameDataBase().getAutoSaveMode() == AutoSave.OFF)
             RegisterPageGraphicalController.showPopup("Auto save mode is off!");
-        else
-        {
+        else {
             GameDataBase.getGameDataBase().setNumberOfAutoSavedFiles(Integer.parseInt(numberOfSavedFiles.getText()));
             RegisterPageGraphicalController.showPopup("Changes saved successfully!");
         }

@@ -18,7 +18,8 @@ public enum CheatCodes {
     KILL_UNIT("avada kedavra (?<y>\\d+)\\s*[,: ]\\s*(?<x>\\d+)"),
     MAKE_IMPROVEMENT("do you wanna build a snowman (?<name>.*) (?<y>\\d+)\\s*[:, ](?<x>\\d+)"),
     DEPLOY_FEATURE("deploy feature (?<name>.*) (?<y>\\d+)\\s*[:, ](?<x>\\d+)"),
-    CLEAR_ALL_FEATURES("smite (?<y>\\d+)\\s*[:, ](?<x>\\d+)");
+    CLEAR_ALL_FEATURES("smite (?<y>\\d+)\\s*[:, ](?<x>\\d+)"),
+    WRITE_TO_FILE("write");
 
 
     private String regex;

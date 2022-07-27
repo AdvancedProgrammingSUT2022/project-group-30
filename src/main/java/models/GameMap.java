@@ -17,13 +17,17 @@ import java.util.Scanner;
 public class GameMap implements java.io.Serializable{
     private static GameMap gameMap;
 
+    public static void setGameMap(GameMap newGameMap) {
+        gameMap = newGameMap;
+        System.out.println(gameMap.map);
+    }
+
     public static final int EXPENSIVE_MOVEMENT_COST = 10000;
 
     private Tile[][] map;
     private ArrayList<RiverSegment> rivers = new ArrayList<>();
 
     private GameMap() {
-
     }
 
     public void loadMapFromFile(int mapHeight, int mapWidth, int startingYPosition, int startingXPosition) {
@@ -39,6 +43,7 @@ public class GameMap implements java.io.Serializable{
         if (gameMap != null) {
             return gameMap;
         }
+        System.out.println("gameMap being initialized...");
         gameMap = new GameMap();
         return gameMap;
     }
@@ -409,7 +414,6 @@ public class GameMap implements java.io.Serializable{
     }
 
     public Tile[][] getMap() {
-
         return this.map;
     }
 

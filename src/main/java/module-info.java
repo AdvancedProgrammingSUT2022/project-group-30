@@ -3,12 +3,18 @@ module com.example.civilization {
     requires javafx.fxml;
     requires javafx.media;
     requires com.google.gson;
+    requires xstream;
 
-    
+
     opens controllers to javafx.fxml, com.google.gson;
-    opens models to javafx.fxml, com.google.gson, javafx.base;
-    opens models.resources to javafx.fxml, javafx.base;
-    opens models.improvements to javafx.fxml, javafx.base;
+    opens models to javafx.fxml, com.google.gson, javafx.base, xstream;
+    opens models.resources to javafx.fxml, javafx.base, xstream;
+    opens models.improvements to javafx.fxml, javafx.base, xstream;
+    opens models.diplomacy to xstream;
+    opens models.technology to xstream;
+    opens models.buildings to xstream;
+    opens models.units to xstream;
+    opens models.works to xstream;
     opens terminalViews to javafx.fxml;
     opens views to javafx.fxml;
     opens views.controllers to javafx.fxml;

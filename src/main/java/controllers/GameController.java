@@ -2,6 +2,8 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import models.*;
 import models.buildings.Building;
 import models.buildings.BuildingType;
@@ -24,6 +26,8 @@ import models.works.Work;
 import utilities.Debugger;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -49,6 +53,36 @@ public class GameController {
         GameMap.getGameMap().loadMapFromFile(mapHeight, mapWidth, startingYPosition, startingXPosition);
         assignCivsToPlayersAndInitializePrimaryUnits(mapHeight, mapWidth, startingYPosition, startingXPosition);
         gameDataBase.setCurrentPlayer(gameDataBase.getPlayers().get(0).getCivilization());
+    }
+
+    public void initializeGameFromFile(String filename) {
+        loadGameDatabaseFromFile(filename);
+        GameMap.setGameMap(gameDataBase.getMap());
+        System.out.println("gamemap: " + GameMap.getGameMap());
+        System.out.println("map: " + GameMap.getGameMap().getMap());
+    }
+
+    public void loadGameDatabaseFromFile(String filename) {
+        try {
+            String xml = new String(Files.readAllBytes(Paths.get("src/main/resources/saves/" + filename + ".xml")));
+            XStream xStream = new XStream();
+            xStream.addPermission(AnyTypePermission.ANY);
+            if (xml.length() > 0) {
+                gameDataBase = (GameDataBase) xStream.fromXML(xml);
+                GameDataBase.setGameDataBase(gameDataBase);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void writeGameDatabaseToFile() {
+        XStream xStream = new XStream();
+        try {
+            Files.writeString(Paths.get("src/main/resources/saves/game.xml"), xStream.toXML(gameDataBase));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {
@@ -1418,7 +1452,8 @@ public class GameController {
             return meta;
         FileInputStream fileInputStream = new FileInputStream(file);
         String data = new String(fileInputStream.readAllBytes());
-        meta = new Gson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+        meta = new Gson().fromJson(data, new TypeToken<HashMap<String, ArrayList<String>>>() {
+        }.getType());
         fileInputStream.close();
         return meta;
     }
@@ -1460,7 +1495,7 @@ public class GameController {
         }
     }
 
-    public void saveGameManually(){
+    public void saveGameManually() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyـMMـddـhhـmmـss");
         saveGame("manual_save_" + dateTimeFormatter.format(now));

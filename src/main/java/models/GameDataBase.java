@@ -1,14 +1,24 @@
 package models;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import menusEnumerations.AutoSave;
 import models.diplomacy.Diplomacy;
 import models.diplomacy.DiplomaticRelation;
 import models.diplomacy.WarInfo;
 import models.units.Unit;
+import com.thoughtworks.xstream.XStream;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.Permission;
 import java.util.ArrayList;
 
-public class GameDataBase implements java.io.Serializable{
+public class GameDataBase implements java.io.Serializable {
+    public static void setGameDataBase(GameDataBase newGameDataBase) {
+        gameDataBase = newGameDataBase;
+    }
     private static GameDataBase gameDataBase = null;
     private GameMap map = GameMap.getGameMap();
     private ArrayList<City> cities = new ArrayList<>();
@@ -21,9 +31,7 @@ public class GameDataBase implements java.io.Serializable{
     private int turnNumber = 0;
 
     private int numberOfAutoSavedFiles = 5;
-
     private int currrentAutoSaveNumber = 1;
-
     private AutoSave autoSaveMode = AutoSave.OFF;
 
     private GameDataBase() {
@@ -135,7 +143,7 @@ public class GameDataBase implements java.io.Serializable{
         return civilizations;
     }
 
-    public static void setGameDataBaseWithForce(GameDataBase gameDataBase){
+    public static void setGameDataBaseWithForce(GameDataBase gameDataBase) {
         GameDataBase.gameDataBase = gameDataBase;
     }
 
@@ -163,11 +171,20 @@ public class GameDataBase implements java.io.Serializable{
         this.currrentAutoSaveNumber = currrentAutoSaveNumber;
     }
 
-    public ArrayList<String> getAllPlayersUsername(){
-        ArrayList<String > names = new ArrayList<>();
+    public ArrayList<String> getAllPlayersUsername() {
+        ArrayList<String> names = new ArrayList<>();
         for (Player player : this.players) {
             names.add(player.getUser().getUsername());
         }
         return names;
+    }
+
+    public void writeToFile() {
+        XStream xStream = new XStream();
+        try {
+            Files.writeString(Paths.get("game.xml"), xStream.toXML(this));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
