@@ -92,23 +92,31 @@ public class NetworkController {
                 if(argumentClass == combative.class){
                     System.out.println("its combative");
                     combative com = (combative) gson.fromJson(arguments.get(i), argumentClass);
-                    if(com instanceof Unit){
-                        int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
-                    } else{
-                        int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                    if(com != null) {
+                        if (com instanceof Unit) {
+                            int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                        } else {
+                            int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                        }
+                    }else{
+                        parsedArguments[i] = null;
                     }
                 } else if(argumentClass == Selectable.class){
                     System.out.println("its combative");
                     Selectable sel = (Selectable) gson.fromJson(arguments.get(i), argumentClass);
-                    if(sel instanceof Unit){
-                        int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                    if(sel != null) {
+                        if (sel instanceof Unit) {
+                            int id = ((Unit) gson.fromJson(arguments.get(i), Unit.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findUnitById(id);
+                        } else {
+                            int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
+                            parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                        }
                     }
-                    else {
-                        int id = ((City) gson.fromJson(arguments.get(i), City.class)).getId();
-                        parsedArguments[i] = GameDataBase.getGameDataBase().findCityById(id);
+                    else{
+                        parsedArguments[i] = null;
                     }
                 } else if (argumentClass == Unit.class) {
                     int id = ((Unit) gson.fromJson(arguments.get(i), argumentClass)).getId();
@@ -245,12 +253,12 @@ public class NetworkController {
     }
 
     public void run() {
-        User[] players = new User[2];
-        LoginPageController.getLoginPageController().setProgramDatabase();
-        players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
-        players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
-        GameController.getGameController().addPlayers(players);
-        GameController.getGameController().initializeGame(20, 30, 0, 8);
+//        User[] players = new User[2];
+//        LoginPageController.getLoginPageController().setProgramDatabase();
+//        players[0] = ProgramDatabase.getProgramDatabase().getUserByUsername("mahyarafshin");
+//        players[1] = ProgramDatabase.getProgramDatabase().getUserByUsername("amir");
+//        GameController.getGameController().addPlayers(players);
+//        GameController.getGameController().initializeGame(20, 30, 0, 8);
         try {
             serverSocket = new ServerSocket(PORT_NUMBER);
             while (true) {

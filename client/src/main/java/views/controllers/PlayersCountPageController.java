@@ -62,6 +62,7 @@ public class PlayersCountPageController {
         for (int i = 0; i < usernames.size(); i++) {
             players[i + 1] = ProgramController.getProgramController().getUserByUsername(usernames.get(i));
         }
+        System.out.println("player count: " + players.length);
         this.controller.addPlayers(players);
     }
 
