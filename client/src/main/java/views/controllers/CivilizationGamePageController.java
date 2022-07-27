@@ -956,6 +956,12 @@ public class CivilizationGamePageController {
         settings.setHeight(20);
         settings.setWidth(20);
         settings.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Settings.png").toExternalForm()).toExternalForm())));
+        settings.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+            }
+        });
 
         buttons.getChildren().add(pause);
         buttons.getChildren().add(settings);
