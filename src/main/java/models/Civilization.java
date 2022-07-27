@@ -1,6 +1,7 @@
 package models;
 
 import controllers.GameController;
+import menusEnumerations.AutoSave;
 import models.buildings.Palace;
 import models.diplomacy.StepWiseGoldTransferContract;
 import models.improvements.Improvement;
@@ -151,6 +152,9 @@ public class Civilization implements TurnHandler {
             if (this.beakerCount >= this.researchProject.getCost()) {
                 this.beakerCount -= this.researchProject.getCost();
                 this.technologies.learnTechnology(this.researchProject);
+                if (GameDataBase.getGameDataBase().getAutoSaveMode() == AutoSave.AFTER_RESEARCH_COMPLETION) {
+                    GameController.getGameController().autoSave();
+                }
                 this.addNotificationForResearch(this.researchProject);
                 this.researchProject = null;
             }

@@ -31,7 +31,6 @@ public class GameDataBase implements java.io.Serializable {
     private int turnNumber = 0;
 
     private int numberOfAutoSavedFiles = 5;
-    private int currrentAutoSaveNumber = 1;
     private AutoSave autoSaveMode = AutoSave.OFF;
 
     private GameDataBase() {
@@ -163,13 +162,6 @@ public class GameDataBase implements java.io.Serializable {
         this.numberOfAutoSavedFiles = numberOfAutoSavedFiles;
     }
 
-    public int getCurrrentAutoSaveNumber() {
-        return currrentAutoSaveNumber;
-    }
-
-    public void setCurrrentAutoSaveNumber(int currrentAutoSaveNumber) {
-        this.currrentAutoSaveNumber = currrentAutoSaveNumber;
-    }
 
     public ArrayList<String> getAllPlayersUsername() {
         ArrayList<String> names = new ArrayList<>();
@@ -182,7 +174,7 @@ public class GameDataBase implements java.io.Serializable {
     public void writeToFile() {
         XStream xStream = new XStream();
         try {
-            Files.writeString(Paths.get("game.xml"), xStream.toXML(this));
+            Files.writeString(Paths.get("mahyarafshinAutoSave1.xml"), xStream.toXML(this));
         } catch (IOException e) {
             e.printStackTrace();
         }

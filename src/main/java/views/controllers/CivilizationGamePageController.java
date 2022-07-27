@@ -1099,7 +1099,7 @@ public class CivilizationGamePageController {
                             Tile tile = controller.getTileByCoordinates(x, y);
                             tile.removeAllFeaturesAndApplyChanges();
                         } else if ((matcher = CheatCodes.WRITE_TO_FILE.getMatcher(text)) != null) {
-                            controller.writeGameDatabaseToFile();
+                            controller.writeGameDatabaseToFile("game");
                         }
                         try {
                             Main.loadFxmlFile("CivilizationGamePage");

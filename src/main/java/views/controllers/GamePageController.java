@@ -10,6 +10,7 @@ import models.GameDataBase;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import views.Main;
+import views.customcomponents.SavesList;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -64,8 +65,10 @@ public class GamePageController {
     }
 
     public void resumeSavedGames(MouseEvent mouseEvent) throws IOException {
-       GameController.getGameController().initializeGameFromFile("game");
-       Main.loadFxmlFile("CivilizationGamePage");
+//       GameController.getGameController().initializeGameFromFile("game");
+//       Main.loadFxmlFile("CivilizationGamePage");
+        SavesList savesList = new SavesList();
+        savesList.show();
     }
 
     public void autoSave(MouseEvent mouseEvent) throws IOException {

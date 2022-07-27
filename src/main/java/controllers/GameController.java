@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.AnyTypePermission;
+import menusEnumerations.AutoSave;
 import models.*;
 import models.buildings.Building;
 import models.buildings.BuildingType;
@@ -31,6 +32,8 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GameController {
     private static GameController gameController;
@@ -76,13 +79,85 @@ public class GameController {
         }
     }
 
-    public void writeGameDatabaseToFile() {
+    public void writeGameDatabaseToFile(String filename) {
         XStream xStream = new XStream();
         try {
-            Files.writeString(Paths.get("src/main/resources/saves/game.xml"), xStream.toXML(gameDataBase));
+            Files.writeString(Paths.get("src/main/resources/saves/" + filename + ".xml"), xStream.toXML(gameDataBase));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void autoSave() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        writeGameDatabaseToFile(username + "AutoSave" + getNextAutoSaveIndex());
+//        while (getNumberOfAutoSaves() > gameDataBase.getNumberOfAutoSavedFiles()) {
+//            File file = new File("src/main/resource/saves/" + username + "AutoSave" + getLowestAutoSaveIndex() + ".xml");
+//            file.delete();
+//        }
+    }
+
+    public int getNextAutoSaveIndex() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        int topIndex = 0;
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                int index = Integer.parseInt(matcher.group("index"));
+                if (index >= topIndex) {
+                    topIndex = index;
+                }
+            }
+        }
+        return topIndex + 1;
+    }
+
+    public int getLowestAutoSaveIndex() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        int lowestIndex = 11;
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                int index = Integer.parseInt(matcher.group("index"));
+                if (index <= lowestIndex) {
+                    lowestIndex = index;
+                }
+            }
+        }
+        return lowestIndex;
+    }
+
+    public int getNumberOfAutoSaves() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        int count = 0;
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public ArrayList<String> getUsersSaves() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        ArrayList<String> result = new ArrayList<>();
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                result.add(file.getName().replace(".xml", ""));
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 
     public void addCivilizationToPairs(Civilization newCivilization) {
@@ -627,6 +702,10 @@ public class GameController {
         }
 
         removeUnit(unit);
+
+        if (gameDataBase.getAutoSaveMode() == AutoSave.AFTER_CITY_CREATION) {
+            autoSave();
+        }
     }
 
     public void checkVictoryByDominion() {
@@ -750,6 +829,10 @@ public class GameController {
             if (diplomaticRelation instanceof TurnHandler) {
                 ((TurnHandler) diplomaticRelation).goToNextTurn();
             }
+        }
+
+        if (gameDataBase.getAutoSaveMode() == AutoSave.AFTER_EACH_TURN) {
+            autoSave();
         }
     }
 
