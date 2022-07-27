@@ -29,12 +29,14 @@ public class SavesList extends Stage {
         headLabel.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 24;");
         parent.getChildren().addAll(headLabel);
         VBox.setMargin(headLabel, new Insets(0,0,30,0));
-        ArrayList<String> allSaves = GameController.getGameController().getUsersSaves();
+        ArrayList<String> autoSaves = GameController.getGameController().getUserAutoSaves();
         ArrayList<String> savesToShow = new ArrayList<>();
         int savesCount = GameDataBase.getGameDataBase().getNumberOfAutoSavedFiles();
-        for (int i = allSaves.size() - 1; i >= 0 && i >= allSaves.size() - savesCount; i--) {
-            savesToShow.add(allSaves.get(i));
+        for (int i = autoSaves.size() - 1; i >= 0 && i >= autoSaves.size() - savesCount; i--) {
+            savesToShow.add(autoSaves.get(i));
         }
+        savesToShow.addAll(GameController.getGameController().getUserSaves());
+
         for (String saveName : savesToShow) {
             Button button = new Button(saveName);
             button.setStyle("-fx-font-size: 15; -fx-font-family: 'Times New Roman'; -fx-background-color: white; -fx-text-fill: black; -fx-pref-width: 300;");

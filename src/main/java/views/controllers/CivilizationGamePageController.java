@@ -809,7 +809,7 @@ public class CivilizationGamePageController {
         return tableView;
     }
 
-    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements){
+    private TableView<Improvement> getImprovementTable(Tile tile, ArrayList<Improvement> improvements) {
         TableView<Improvement> tableView = new TableView<>();
         TableColumn<Improvement, String> imageColumn = new TableColumn<>();
         imageColumn.setText("Improvement");
@@ -977,6 +977,16 @@ public class CivilizationGamePageController {
         pause.setHeight(20);
         pause.setWidth(20);
         pause.setFill(new ImagePattern(new Image(new URL(Main.class.getResource("/images/Icons/Pause.png").toExternalForm()).toExternalForm())));
+        pause.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    Main.loadFxmlFile("PauseMenu");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         Rectangle settings = new Rectangle();
         settings.setHeight(20);

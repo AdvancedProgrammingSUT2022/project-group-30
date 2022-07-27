@@ -97,12 +97,34 @@ public class GameController {
 //        }
     }
 
+    public void saveGame() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        writeGameDatabaseToFile(username + "Save" + getNextSaveIndex());
+    }
+
     public int getNextAutoSaveIndex() {
         String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
         File savesFolder = new File("src/main/resources/saves/");
         int topIndex = 0;
         for (File file : savesFolder.listFiles()) {
             Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                int index = Integer.parseInt(matcher.group("index"));
+                if (index >= topIndex) {
+                    topIndex = index;
+                }
+            }
+        }
+        return topIndex + 1;
+    }
+
+    public int getNextSaveIndex() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        int topIndex = 0;
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "Save(?<index>\\d+).xml");
             Matcher matcher = p.matcher(file.getName());
             if (matcher.matches()) {
                 int index = Integer.parseInt(matcher.group("index"));
@@ -145,12 +167,27 @@ public class GameController {
         return count;
     }
 
-    public ArrayList<String> getUsersSaves() {
+    public ArrayList<String> getUserAutoSaves() {
         String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
         File savesFolder = new File("src/main/resources/saves/");
         ArrayList<String> result = new ArrayList<>();
         for (File file : savesFolder.listFiles()) {
             Pattern p = Pattern.compile(username + "AutoSave(?<index>\\d+).xml");
+            Matcher matcher = p.matcher(file.getName());
+            if (matcher.matches()) {
+                result.add(file.getName().replace(".xml", ""));
+            }
+        }
+        Collections.sort(result);
+        return result;
+    }
+
+    public ArrayList<String> getUserSaves() {
+        String username = ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername();
+        File savesFolder = new File("src/main/resources/saves/");
+        ArrayList<String> result = new ArrayList<>();
+        for (File file : savesFolder.listFiles()) {
+            Pattern p = Pattern.compile(username + "Save(?<index>\\d+).xml");
             Matcher matcher = p.matcher(file.getName());
             if (matcher.matches()) {
                 result.add(file.getName().replace(".xml", ""));

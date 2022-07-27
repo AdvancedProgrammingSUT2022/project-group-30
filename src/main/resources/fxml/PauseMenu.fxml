@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="views.controllers.PauseMenuController"
+            prefHeight="720" prefWidth="1280" styleClass="enteringMenus">
+
+    <center>
+        <VBox spacing="30" alignment="CENTER" fx:id="box">
+            <Button text="Resume Game" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#onResumeGameButtonClick"/>
+            <Button text="Save and Exit" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#onSaveAndExitButtonClick"/>
+            <Button text="Exit" styleClass="menu-button" prefHeight="50" prefWidth="200" onMouseClicked="#onExitButtonClick"/>
+        </VBox>
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/MenusStyle.css"/>
+    </stylesheets>
+
+</BorderPane>
