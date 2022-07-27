@@ -134,6 +134,7 @@ public class GameController {
 
     public void addPlayers(User[] players) {
         gameDataBase.addPlayers(players);
+
     }
 
     public boolean areCoordinatesValid(int x, int y) {
@@ -2052,14 +2053,21 @@ public class GameController {
         return civ.getAllImprovements();
     }
 
+    public boolean isUserInGame(int token) {
+        Integer loggedInId = ProgramController.getProgramController().fetchTokenData(token).getLoggedInUser();
+        if (loggedInId == null) {
+            return false;
+        }
+        User user = ProgramController.getProgramController().getUserById(loggedInId);
+        for (Player player : gameDataBase.getPlayers()) {
+            if (player.getUser().equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-
-
-
-
-
-
-
-
-
+    public int getPlayersCount() {
+        return gameDataBase.getPlayers().size();
+    }
 }

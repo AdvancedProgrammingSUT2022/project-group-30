@@ -35,13 +35,13 @@ public class ChooseMapPageController {
     private VBox box;
 
     @FXML
-    public void initialize(){
-        this.playersCount = controller.getGameDataBase().getPlayers().size();
+    public void initialize() {
+        this.playersCount = controller.getPlayersCount();
         setDefaultMapDimensions();
     }
 
-    private void setDefaultMapDimensions(){
-        switch (this.playersCount){
+    private void setDefaultMapDimensions() {
+        switch (this.playersCount) {
             case 2:
                 this.mapHeight = 20;
                 this.mapWidth = 30;
@@ -76,36 +76,39 @@ public class ChooseMapPageController {
     }
 
     public void start(MouseEvent mouseEvent) throws IOException {
+        System.out.println(this.startingXPosition);
+        System.out.println(this.startingYPosition);
+        System.out.println(playersCount);
         controller.initializeGame(this.mapHeight, this.mapWidth, this.startingYPosition, this.startingXPosition);
         Main.loadFxmlFile("CivilizationGamePage");
     }
 
-    private void mapDimensionsErrorHandling(int height, int width){
-        if(height > 52 || width > 80){
+    private void mapDimensionsErrorHandling(int height, int width) {
+        if (height > 52 || width > 80) {
             RegisterPageGraphicalController.showPopup("This map is extremely large!");
             return;
         }
-        switch (this.playersCount){
+        switch (this.playersCount) {
             case 2:
-                if(height < 20 || width < 30){
+                if (height < 20 || width < 30) {
                     RegisterPageGraphicalController.showPopup("Minimum height : 20, Minimum width : 30");
                     return;
                 }
                 break;
             case 3:
-                if(height < 30 || width < 40){
+                if (height < 30 || width < 40) {
                     RegisterPageGraphicalController.showPopup("Minimum height : 30, Minimum width : 40");
                     return;
                 }
                 break;
             case 4:
-                if(height < 40 || width < 50){
+                if (height < 40 || width < 50) {
                     RegisterPageGraphicalController.showPopup("Minimum height : 40, Minimum width : 50");
                     return;
                 }
                 break;
             case 5:
-                if(height < 50 || width < 60){
+                if (height < 50 || width < 60) {
                     RegisterPageGraphicalController.showPopup("Minimum height : 50, Minimum width : 60");
                     return;
                 }

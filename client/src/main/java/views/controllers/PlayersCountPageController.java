@@ -1,6 +1,8 @@
 package views.controllers;
 
 import controllers.GameController;
+import controllers.NetworkController;
+import controllers.ProgramController;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -44,42 +46,39 @@ public class PlayersCountPageController {
     public void setOpponents(MouseEvent mouseEvent) {
         if (firstButton.equals(mouseEvent.getSource())) {
             this.opponentsNumber = 1;
-        }
-        else if(secondButton.equals(mouseEvent.getSource())){
+        } else if (secondButton.equals(mouseEvent.getSource())) {
             this.opponentsNumber = 2;
-        }
-        else if(thirdButton.equals(mouseEvent.getSource())){
+        } else if (thirdButton.equals(mouseEvent.getSource())) {
             this.opponentsNumber = 3;
-        }
-        else if(fourthButton.equals(mouseEvent.getSource())){
+        } else if (fourthButton.equals(mouseEvent.getSource())) {
             this.opponentsNumber = 4;
         }
         enterPlayersUsernames();
     }
 
-    public void setPlayers(ArrayList<String> usernames){
+    public void setPlayers(ArrayList<String> usernames) {
         User[] players = new User[usernames.size() + 1];
-        players[0] = ProgramDatabase.getProgramDatabase().getLoggedInUser();
-        for(int i = 0; i < usernames.size(); i++){
-            players[i + 1] = ProgramDatabase.getProgramDatabase().getUserByUsername(usernames.get(i));
+        players[0] = ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken());
+        for (int i = 0; i < usernames.size(); i++) {
+            players[i + 1] = ProgramController.getProgramController().getUserByUsername(usernames.get(i));
         }
         this.controller.addPlayers(players);
     }
 
     public void enteredStartingPlayersErrorHandling(ArrayList<String> usernames) throws IOException {
-        for(int i = 0; i < usernames.size(); i++){
-            if(ProgramDatabase.getProgramDatabase().getUserByUsername(usernames.get(i)) == null){
+        for (int i = 0; i < usernames.size(); i++) {
+            if (ProgramController.getProgramController().getUserByUsername(usernames.get(i)) == null) {
                 RegisterPageGraphicalController.showPopup("Invalid players!");
                 return;
             }
-            if(usernames.get(i).equals(ProgramDatabase.getProgramDatabase().getLoggedInUser().getUsername())){
+            if (usernames.get(i).equals(ProgramController.getProgramController().getLoggedInUser(NetworkController.getNetworkController().getToken()).getUsername())) {
                 RegisterPageGraphicalController.showPopup("You cannot play with yourself");
                 return;
             }
         }
-        for(int i = 0; i < usernames.size(); i++){
-            for(int j = i + 1; j < usernames.size(); j++){
-                if(usernames.get(i).equals(usernames.get(j))){
+        for (int i = 0; i < usernames.size(); i++) {
+            for (int j = i + 1; j < usernames.size(); j++) {
+                if (usernames.get(i).equals(usernames.get(j))) {
                     RegisterPageGraphicalController.showPopup("Two or more usernames are the same");
                     return;
                 }
@@ -89,7 +88,7 @@ public class PlayersCountPageController {
         Main.loadFxmlFile("ChooseMapPage");
     }
 
-    public void enterPlayersUsernames(){
+    public void enterPlayersUsernames() {
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefHeight(720);
         borderPane.setPrefWidth(1280);
@@ -100,7 +99,7 @@ public class PlayersCountPageController {
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(30);
 
-        for(int i = 0; i < opponentsNumber; i++){
+        for (int i = 0; i < opponentsNumber; i++) {
             TextField textField = new TextField();
             textField.getStyleClass().add("text-field");
             textField.setPromptText("Enter your opponent username:");
@@ -118,8 +117,8 @@ public class PlayersCountPageController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 ArrayList<String> usernames = new ArrayList<>();
-                for(int i = 0; i < vbox.getChildren().size(); i++){
-                    if(vbox.getChildren().get(i) instanceof TextField) {
+                for (int i = 0; i < vbox.getChildren().size(); i++) {
+                    if (vbox.getChildren().get(i) instanceof TextField) {
                         TextField field = (TextField) vbox.getChildren().get(i);
                         usernames.add(field.getText());
                     }
@@ -152,7 +151,5 @@ public class PlayersCountPageController {
         vbox.getChildren().add(back);
 
         Main.getScene().setRoot(borderPane);
-
-
     }
 }

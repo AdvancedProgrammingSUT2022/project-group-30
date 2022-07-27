@@ -1,10 +1,12 @@
 package views.controllers;
 
 import controllers.GameController;
+import controllers.NetworkController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import models.GameDataBase;
 import javafx.scene.text.TextAlignment;
@@ -20,14 +22,6 @@ public class GamePageController {
     @FXML
     private Button newGameButton;
     @FXML
-    private Button resumeButton;
-    @FXML
-    private Button saveButton;
-    @FXML
-    private Button loadSavedGamesButton;
-    @FXML
-    private Button autoSaveButton;
-    @FXML
     private Button invitationButton;
     @FXML
     private Button receivedInvitationsButton;
@@ -39,10 +33,6 @@ public class GamePageController {
     @FXML
     public void initialize(){
         setToolTipForButton(newGameButton, "starts a new game");
-        setToolTipForButton(resumeButton, "resumes the stopped game");
-        setToolTipForButton(saveButton, "saves the stopped game");
-        setToolTipForButton(loadSavedGamesButton, "shows you the previous saved games and you can choose them to resume");
-        setToolTipForButton(autoSaveButton, "activates auto save");
         setToolTipForButton(invitationButton, "allows you to invite other players to play Civilization V");
         setToolTipForButton(receivedInvitationsButton, "shows you your received invitations");
         setToolTipForButton(backButton, "opens main menu");
@@ -53,22 +43,11 @@ public class GamePageController {
     }
 
     public void startNewGame(MouseEvent mouseEvent) throws IOException {
-        Main.loadFxmlFile("PlayersCountPage");
-    }
-
-    public void resumeGame(MouseEvent mouseEvent) {
-    }
-
-    public void saveGame(MouseEvent mouseEvent) throws IOException {
-        GameController.getGameController().saveGameManually();
-    }
-
-    public void resumeSavedGames(MouseEvent mouseEvent) throws IOException {
-       GameController.getGameController().loadGame("hello");
-    }
-
-    public void autoSave(MouseEvent mouseEvent) throws IOException {
-        Main.loadFxmlFile("AutoSavePage");
+        if (GameController.getGameController().isUserInGame(NetworkController.getNetworkController().getToken())) {
+            Main.loadFxmlFile("CivilizationGamePage");
+        } else {
+            Main.loadFxmlFile("PlayersCountPage");
+        }
     }
 
     public void invite(MouseEvent mouseEvent) throws IOException {

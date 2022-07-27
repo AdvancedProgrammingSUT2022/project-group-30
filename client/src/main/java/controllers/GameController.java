@@ -1187,5 +1187,13 @@ public class GameController {
         return(ArrayList<Improvement>)NetworkController.getNetworkController().transferData(request,Improvement[].class);
     }
 
+    public boolean isUserInGame(int token) {
+        Request request = new Request("GameController", "isUserInGame", MyGson.toJson(token));
+        return (boolean) NetworkController.getNetworkController().transferData(request);
+    }
 
+    public int getPlayersCount() {
+        Request request = new Request("GameController", "getPlayersCount");
+        return (int) NetworkController.getNetworkController().transferData(request);
+    }
 }
